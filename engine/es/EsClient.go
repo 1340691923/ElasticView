@@ -35,4 +35,6 @@ type EsClient interface {
 	Reindex(sourceIndex, destinationIndex string) (interface{}, error)
 	GetMappings() (interface{}, error)
 	IndexPutSettings(indexName string, body Json) (interface{}, error)
+	GetVersion() int
+	SetVersion(version int)
 }

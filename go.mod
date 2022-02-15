@@ -20,6 +20,7 @@ require (
 	github.com/olivere/elastic v6.2.35+incompatible
 	github.com/olivere/elastic/v7 v7.0.24
 	github.com/spf13/viper v1.7.1
+	github.com/tidwall/gjson v1.14.0
 	github.com/valyala/fasthttp v1.26.0
 	go.uber.org/zap v1.17.0
 	golang.org/x/text v0.3.6

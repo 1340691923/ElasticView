@@ -1,10 +1,14 @@
 package es_optimize
 
-import "github.com/olivere/elastic"
+import (
+	elasticV6 "github.com/olivere/elastic"
+	elasticV7 "github.com/olivere/elastic/v7"
+)
 
 type OptimizeInterface interface {
 	SetIndexName(indexName string)
-	Do(client *elastic.Client) (err error)
+	DoV6(client *elasticV6.Client) (err error)
+	DoV7(client *elasticV7.Client) (err error)
 }
 
 // 索引操作工厂

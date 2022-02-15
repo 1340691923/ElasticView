@@ -12,7 +12,7 @@ type EsClientV7 struct {
 	esConnectConfig EsConnect
 }
 
-func NewEsClientV7(esConnectConfig EsConnect) (client EsClient, err error) {
+func NewEsClientV7(esConnectConfig *EsConnect) (esClient *elasticV7.Client, err error) {
 
 	optList := []elasticV7.ClientOptionFunc{
 		elasticV7.SetSniff(false),
@@ -25,15 +25,10 @@ func NewEsClientV7(esConnectConfig EsConnect) (client EsClient, err error) {
 		optList = append(optList, elasticV7.SetBasicAuth(esConnectConfig.User, esConnectConfig.Pwd))
 	}
 
-	esClient, err := elasticV7.NewSimpleClient(optList...)
+	esClient, err = elasticV7.NewSimpleClient(optList...)
 
 	if err != nil {
 		return
-	}
-
-	client = &EsClientV7{
-		Client:          esClient,
-		esConnectConfig: esConnectConfig,
 	}
 
 	return

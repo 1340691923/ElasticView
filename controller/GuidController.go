@@ -7,6 +7,7 @@ import (
 	"github.com/1340691923/ElasticView/platform-basic-libs/response"
 	"github.com/1340691923/ElasticView/platform-basic-libs/util"
 	. "github.com/gofiber/fiber/v2"
+	"strings"
 )
 
 // 引导控制器
@@ -33,7 +34,7 @@ func (this GuidController) Finish(ctx *Ctx) error {
 			"guid_name": gmGuidModel.GuidName,
 		}).RunWith(db.Sqlx).Exec()
 
-	if err != nil {
+	if err != nil && strings.Contains(err.Error(), "Error 1062") {
 		return this.Error(ctx, err)
 	}
 	return this.Success(ctx, response.OperateSuccess, nil)
