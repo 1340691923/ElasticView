@@ -1,10 +1,9 @@
 package controller
 
 import (
-	"context"
+	es2 "github.com/1340691923/ElasticView/platform-basic-libs/service/es"
 
 	"github.com/1340691923/ElasticView/engine/es"
-	"github.com/1340691923/ElasticView/platform-basic-libs/response"
 	. "github.com/gofiber/fiber/v2"
 )
 
@@ -15,67 +14,37 @@ type EsMappingController struct {
 
 // Es 映射列表
 func (this EsMappingController) ListAction(ctx *Ctx) error {
-	esConnect := es.EsMapGetProperties{}
-	err := ctx.BodyParser(&esConnect)
+	esMapGetProperties := new(es.EsMapGetProperties)
+	err := ctx.BodyParser(&esMapGetProperties)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	esClinet, err := es.GetEsClientV6ByID(esConnect.EsConnectID)
+	esConnect, err := es.GetEsClientByID(esMapGetProperties.EsConnectID)
 	if err != nil {
 		return this.Error(ctx, err)
-	}
-	if esConnect.IndexName == "" {
-		res, err := esClinet.GetMappings()
-		if err != nil {
-			return this.Error(ctx, err)
-		}
-		return this.Success(ctx, response.SearchSuccess, res)
-	} else {
-		res, err := esClinet.(*es.EsClientV6).Client.GetMapping().Index(esConnect.IndexName).Do(ctx.Context())
-		if err != nil {
-			return this.Error(ctx, err)
-		}
-		return this.Success(ctx, response.SearchSuccess, res)
 	}
 
+	esService, err := es2.NewEsService(esConnect)
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+	return esService.EsMappingList(ctx, esMapGetProperties)
 }
-
-/*func (this EsMappingController) GetPropertiesAction(ctx *fiber.Ctx) {
-	esConnect := es.EsMapGetProperties{}
-	err := ctx.BodyParser(&esConnect)
-	if err != nil {
-		return this.Error(ctx, err)
-	}
-	esClinet, err := es.GetEsClientV6ByID(esConnect.EsConnectID)
-	if err != nil {
-		return this.Error(ctx, err)
-	}
-	res, err := esClinet.(*es.EsClientV6).Client.GetMapping().Index("")
-	if err != nil {
-		return this.Error(ctx, err)
-	}
-	return this.Success(ctx, response.SearchSuccess, res)
-}*/
 
 // 修改映射
 func (this EsMappingController) UpdateMappingAction(ctx *Ctx) error {
-	updateMapping := es.UpdateMapping{}
+	updateMapping := new(es.UpdateMapping)
 	err := ctx.BodyParser(&updateMapping)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	esClinet, err := es.GetEsClientV6ByID(updateMapping.EsConnect)
+	esConnect, err := es.GetEsClientByID(updateMapping.EsConnect)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	res, err := esClinet.(*es.EsClientV6).Client.PutMapping().
-		Index(updateMapping.IndexName).
-		Type(updateMapping.TypeName).
-		UpdateAllTypes(true).
-		BodyJson(updateMapping.Properties).
-		Do(context.Background())
+	esService, err := es2.NewEsService(esConnect)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	return this.Success(ctx, response.OperateSuccess, res)
+	return esService.UpdateMapping(ctx, updateMapping)
 }

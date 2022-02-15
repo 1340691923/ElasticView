@@ -170,7 +170,9 @@ export default {
     testConnect(scope) {
       this.list[scope.$index].connectLoading = true
       PingAction(scope.row).then(res => {
+
         if (res.code == 0) {
+          console.log("res",res)
           this.$message({
             type: 'success',
             message: `连接成功,ES版本为 :${res.data.version.number}`

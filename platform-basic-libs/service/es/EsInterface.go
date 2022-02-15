@@ -1,67 +1,58 @@
 package es
 
-import . "github.com/gofiber/fiber/v2"
-
-type EsBackUpInterface interface {
-	SnapshotRepositoryList(ctx *Ctx)
-	SnapshotCreateRepository(ctx *Ctx)
-	CleanupeRepository(ctx *Ctx)
-	SnapshotDeleteRepository(ctx *Ctx)
-	CreateSnapshot(ctx *Ctx)
-	SnapshotList(ctx *Ctx)
-	SnapshotDelete(ctx *Ctx)
-	SnapshotDetail(ctx *Ctx)
-	SnapshotRestore(ctx *Ctx)
-	SnapshotStatus(ctx *Ctx)
-}
+import (
+	"errors"
+	"github.com/1340691923/ElasticView/engine/es"
+	"github.com/gofiber/fiber/v2"
+)
 
 type EsInterface interface {
-	Ping(ctx *Ctx)
-	Cat(ctx *Ctx)
-	RunDsl(ctx *Ctx)
-	SqlToDsl(ctx *Ctx)
-	Optimize(ctx *Ctx)
-	RecoverCanWrite(ctx *Ctx)
+	SnapshotRepositoryList(ctx *fiber.Ctx, esSnapshotInfo *es.EsSnapshotInfo) (err error)
+	SnapshotCreateRepository(ctx *fiber.Ctx, snapshotCreateRepository *es.SnapshotCreateRepository) (err error)
+	CleanupeRepository(ctx *fiber.Ctx, repository *es.CleanupeRepository) (err error)
+	SnapshotDeleteRepository(ctx *fiber.Ctx, repository *es.SnapshotDeleteRepository) (err error)
+	CreateSnapshot(ctx *fiber.Ctx, snapshot *es.CreateSnapshot) (err error)
+	SnapshotList(ctx *fiber.Ctx, list *es.SnapshotList) (err error)
+	SnapshotDelete(ctx *fiber.Ctx, snapshotDelete *es.SnapshotDelete) (err error)
+	SnapshotDetail(ctx *fiber.Ctx, detail *es.SnapshotDetail) (err error)
+	SnapshotRestore(ctx *fiber.Ctx, restore *es.SnapshotRestore) (err error)
+	SnapshotStatus(ctx *fiber.Ctx, status *es.SnapshotStatus) (err error)
+	Cat(ctx *fiber.Ctx, rest *es.EsCat) (err error)
+	RunDsl(ctx *fiber.Ctx, optimize *es.EsRest) (err error)
+	Optimize(ctx *fiber.Ctx, optimize *es.EsOptimize) (err error)
+	RecoverCanWrite(ctx *fiber.Ctx) (err error)
+	EsDocDeleteRowByID(ctx *fiber.Ctx, id *es.EsDocDeleteRowByID) (err error)
+	EsDocUpdateByID(ctx *fiber.Ctx, id *es.EsDocUpdateByID) (err error)
+	EsDocInsert(ctx *fiber.Ctx, id *es.EsDocUpdateByID) (err error)
+	EsIndexCreate(ctx *fiber.Ctx, info *es.EsIndexInfo) (err error)
+	EsIndexDelete(ctx *fiber.Ctx, info *es.EsIndexInfo) (err error)
+	EsIndexGetSettings(ctx *fiber.Ctx, info *es.EsIndexInfo) (err error)
+	EsIndexGetSettingsInfo(ctx *fiber.Ctx, info *es.EsIndexInfo) (err error)
+	EsIndexGetAlias(ctx *fiber.Ctx, info *es.EsAliasInfo) (err error)
+	EsIndexOperateAlias(ctx *fiber.Ctx, info *es.EsAliasInfo) (err error)
+	EsIndexReindex(ctx *fiber.Ctx, info *es.EsReIndexInfo) (err error)
+	EsIndexIndexNames(ctx *fiber.Ctx) (err error)
+	EsIndexStats(ctx *fiber.Ctx, info *es.EsIndexInfo) (err error)
+	EsIndexCatStatus(ctx *fiber.Ctx, info *es.EsIndexInfo) (err error)
+	EsMappingList(ctx *fiber.Ctx, properties *es.EsMapGetProperties) (err error)
+	UpdateMapping(ctx *fiber.Ctx, mapping *es.UpdateMapping) (err error)
+	TaskList(ctx *fiber.Ctx) (err error)
+	Cancel(ctx *fiber.Ctx, task *es.CancelTask) (err error)
 }
 
-type EsDocInterface interface {
-	DeleteRowByID(ctx *Ctx)
-	UpdateByID(ctx *Ctx)
-	Insert(ctx *Ctx)
+var VerError = errors.New("ES版本暂只支持6,7")
+
+var EsServiceMap = map[int]func(conn *es.EsConnect) (EsInterface, error){
+	6: NewEsServiceV6,
+	7: NewEsServiceV7,
 }
 
-type EsIndexInterface interface {
-	Create(ctx *Ctx)
-	Delete(ctx *Ctx)
-	GetSettings(ctx *Ctx)
-	GetSettingsInfo(ctx *Ctx)
-	GetAlias(ctx *Ctx)
-	OperateAlias(ctx *Ctx)
-	Reindex(ctx *Ctx)
-	IndexNames(ctx *Ctx)
-	Stats(ctx *Ctx)
-	CatStatus(ctx *Ctx)
-}
-
-type EsLinkInterface interface {
-	List(ctx *Ctx)
-	Opt(ctx *Ctx)
-	Insert(ctx *Ctx)
-	Update(ctx *Ctx)
-	Delete(ctx *Ctx)
-}
-
-type EsMappingInterface interface {
-	List(ctx *Ctx)
-	UpdateMapping(ctx *Ctx)
-}
-
-type GuidInterface interface {
-	Finish(ctx *Ctx)
-	IsFinish(ctx *Ctx)
-}
-
-type TaskInterface interface {
-	List(ctx *Ctx)
-	Cancel(ctx *Ctx)
+func NewEsService(conn *es.EsConnect) (EsInterface, error) {
+	var found bool
+	var fn func(conn *es.EsConnect) (EsInterface, error)
+	if fn, found = EsServiceMap[conn.Version]; !found {
+		return nil, VerError
+	}
+	fn = EsServiceMap[conn.Version]
+	return fn(conn)
 }

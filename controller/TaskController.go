@@ -2,10 +2,8 @@ package controller
 
 import (
 	"github.com/1340691923/ElasticView/engine/es"
-	"github.com/1340691923/ElasticView/platform-basic-libs/response"
+	es2 "github.com/1340691923/ElasticView/platform-basic-libs/service/es"
 	. "github.com/gofiber/fiber/v2"
-
-	"github.com/olivere/elastic"
 )
 
 // Es 任务控制器
@@ -15,48 +13,40 @@ type TaskController struct {
 
 // 任务列表
 func (this TaskController) ListAction(ctx *Ctx) error {
-	taskListReq := es.TaskList{}
+	taskListReq := new(es.TaskList)
 	err := ctx.BodyParser(&taskListReq)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	esClinet, err := es.GetEsClientV6ByID(taskListReq.EsConnect)
+	esConnect, err := es.GetEsClientByID(taskListReq.EsConnect)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
+	esService, err := es2.NewEsService(esConnect)
 
-	tasksListService := esClinet.(*es.EsClientV6).Client.TasksList().Detailed(true)
-
-	tasksListResponse, err := tasksListService.Do(ctx.Context())
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-
-	taskListRes := map[string]*elastic.TaskInfo{}
-
-	for _, node := range tasksListResponse.Nodes {
-		for taskId, taskInfo := range node.Tasks {
-			taskListRes[taskId] = taskInfo
-		}
-	}
-
-	return this.Success(ctx, response.SearchSuccess, taskListRes)
+	return esService.TaskList(ctx)
 }
 
 // 取消任务
 func (this TaskController) CancelAction(ctx *Ctx) error {
-	cancelTask := es.CancelTask{}
+	cancelTask := new(es.CancelTask)
 	err := ctx.BodyParser(&cancelTask)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	esClinet, err := es.GetEsClientV6ByID(cancelTask.EsConnect)
+	esConnect, err := es.GetEsClientByID(cancelTask.EsConnect)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	res, err := esClinet.(*es.EsClientV6).Client.TasksCancel().TaskId(cancelTask.TaskID).Do(ctx.Context())
+
+	esService, err := es2.NewEsService(esConnect)
+
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	return this.Success(ctx, response.OperateSuccess, res)
+	return esService.Cancel(ctx, cancelTask)
+
 }

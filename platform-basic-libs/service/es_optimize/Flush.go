@@ -2,8 +2,8 @@ package es_optimize
 
 import (
 	"context"
-
-	"github.com/olivere/elastic"
+	elasticV6 "github.com/olivere/elastic"
+	elasticV7 "github.com/olivere/elastic/v7"
 )
 
 // Flush
@@ -15,7 +15,16 @@ func (this *Flush) SetIndexName(indexName string) {
 	this.indexName = append(this.indexName, indexName)
 }
 
-func (this Flush) Do(client *elastic.Client) (err error) {
+func (this Flush) DoV6(client *elasticV6.Client) (err error) {
+	if len(this.indexName) == 0 {
+		_, err = client.Flush().Do(context.Background())
+		return
+	}
+	_, err = client.Flush(this.indexName...).Do(context.Background())
+	return
+}
+
+func (this Flush) DoV7(client *elasticV7.Client) (err error) {
 	if len(this.indexName) == 0 {
 		_, err = client.Flush().Do(context.Background())
 		return

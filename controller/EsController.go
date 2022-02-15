@@ -3,19 +3,11 @@ package controller
 import (
 	"context"
 	"errors"
-	"fmt"
-	"strconv"
-	"strings"
-
 	"github.com/1340691923/ElasticView/engine/es"
-	"github.com/1340691923/ElasticView/model"
-	"github.com/1340691923/ElasticView/platform-basic-libs/jwt"
 	"github.com/1340691923/ElasticView/platform-basic-libs/response"
-	"github.com/1340691923/ElasticView/platform-basic-libs/service/es_optimize"
-	. "github.com/gofiber/fiber/v2"
-
+	es2 "github.com/1340691923/ElasticView/platform-basic-libs/service/es"
 	"github.com/cch123/elasticsql"
-	"github.com/olivere/elastic"
+	. "github.com/gofiber/fiber/v2"
 )
 
 //Es 基本操作
@@ -25,117 +17,80 @@ type EsController struct {
 
 // Ping
 func (this EsController) PingAction(ctx *Ctx) error {
-	esConnect := es.EsConnect{}
-	err := ctx.BodyParser(&esConnect)
+	esConnect := new(es.EsConnect)
+	err := ctx.BodyParser(esConnect)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	esClinet, err := es.GetEsClient(esConnect)
-	if err != nil {
-		return this.Error(ctx, err)
+
+	switch esConnect.Version {
+	case 6:
+		esClient, err := es.NewEsClientV6(esConnect)
+		if err != nil {
+			return this.Error(ctx, err)
+		}
+		data, _, err := esClient.Ping(esConnect.Ip).Do(context.Background())
+		if err != nil {
+			return this.Error(ctx, err)
+		}
+		return this.Success(ctx, response.OperateSuccess, data)
+	case 7:
+		esClient, err := es.NewEsClientV7(esConnect)
+		if err != nil {
+			return this.Error(ctx, err)
+		}
+		data, _, err := esClient.Ping(esConnect.Ip).Do(context.Background())
+		if err != nil {
+			return this.Error(ctx, err)
+		}
+		return this.Success(ctx, response.OperateSuccess, data)
+	default:
+
 	}
-	data, _, err := esClinet.Ping()
-	if err != nil {
-		return this.Error(ctx, err)
-	}
-	return this.Success(ctx, response.OperateSuccess, data)
+
+	return this.Error(ctx, errors.New("版本暂时只支持6或者7"))
+
 }
 
 // Es 的CAT API
 func (this EsController) CatAction(ctx *Ctx) error {
 
-	esCat := es.EsCat{}
+	esCat := new(es.EsCat)
 	err := ctx.BodyParser(&esCat)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	esClinet, err := es.GetEsClientV6ByID(esCat.EsConnect)
-	if err != nil {
-		return this.Error(ctx, err)
-	}
-	var data interface{}
-
-	switch esCat.Cat {
-	case "CatHealth":
-		data, err = esClinet.(*es.EsClientV6).Client.CatHealth().Human(true).Do(ctx.Context())
-	case "CatShards":
-		data, err = esClinet.(*es.EsClientV6).Client.CatShards().Human(true).Do(ctx.Context())
-	case "CatCount":
-		data, err = esClinet.(*es.EsClientV6).Client.CatCount().Human(true).Do(ctx.Context())
-	case "CatAllocation":
-		data, err = esClinet.(*es.EsClientV6).Client.CatAllocation().Human(true).Do(ctx.Context())
-	case "CatAliases":
-		data, err = esClinet.(*es.EsClientV6).Client.CatAliases().Human(true).Do(ctx.Context())
-	case "CatIndices":
-		if esCat.IndexBytesFormat != "" {
-			data, err = esClinet.(*es.EsClientV6).Client.CatIndices().Human(true).Bytes(esCat.IndexBytesFormat).Do(ctx.Context())
-		} else {
-			data, err = esClinet.(*es.EsClientV6).Client.CatIndices().Human(true).Do(ctx.Context())
-		}
-	case "CatSegments":
-		data, err = esClinet.(*es.EsClientV6).Client.IndexSegments().Human(true).Do(ctx.Context())
-	case "CatStats":
-		data, err = esClinet.(*es.EsClientV6).Client.ClusterStats().Human(true).Do(ctx.Context())
-	}
-
+	esConnect, err := es.GetEsClientByID(esCat.EsConnect)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
 
-	return this.Success(ctx, response.SearchSuccess, data)
+	esService, err := es2.NewEsService(esConnect)
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+	return esService.Cat(ctx, esCat)
+
 }
 
 func (this EsController) RunDslAction(ctx *Ctx) error {
 
-	esRest := es.EsRest{}
+	esRest := new(es.EsRest)
 	err := ctx.BodyParser(&esRest)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	esClinet, err := es.GetEsClientV6ByID(esRest.EsConnect)
-	if err != nil {
-		return this.Error(ctx, err)
-	}
-	esRest.Method = strings.ToUpper(esRest.Method)
-	if esRest.Method == "GET" {
-		c, err := jwt.ParseToken(ctx.Get("X-Token"))
-		if err != nil {
-			return this.Error(ctx, err)
-		}
-
-		gmDslHistoryModel := model.GmDslHistoryModel{
-			Uid:    int(c.ID),
-			Method: esRest.Method,
-			Path:   esRest.Path,
-			Body:   esRest.Body,
-		}
-
-		err = gmDslHistoryModel.Insert()
-
-		if err != nil {
-			return this.Error(ctx, err)
-		}
-	}
-
-	res, err := esClinet.(*es.EsClientV6).Client.PerformRequest(context.TODO(), elastic.PerformRequestOptions{
-		Method: esRest.Method,
-		Path:   esRest.Path,
-		Body:   esRest.Body,
-	})
+	esConnect, err := es.GetEsClientByID(esRest.EsConnect)
 
 	if err != nil {
 		return this.Error(ctx, err)
 	}
 
-	if res.StatusCode != 200 && res.StatusCode != 201 {
-		return this.Output(ctx, map[string]interface{}{
-			"code": res.StatusCode,
-			"msg":  fmt.Sprintf("请求异常! 错误码 :" + strconv.Itoa(res.StatusCode)),
-			"data": res.Body,
-		})
+	esService, err := es2.NewEsService(esConnect)
+	if err != nil {
+		return this.Error(ctx, err)
 	}
-
-	return this.Success(ctx, response.OperateSuccess, res.Body)
+	return esService.RunDsl(ctx, esRest)
 }
 
 // SQL 转换为 DSL
@@ -153,63 +108,38 @@ func (this EsController) SqlToDslAction(ctx *Ctx) error {
 
 // 一些索引的操作
 func (this EsController) OptimizeAction(ctx *Ctx) error {
-	esOptimize := es.EsOptimize{}
+	esOptimize := new(es.EsOptimize)
 	err := ctx.BodyParser(&esOptimize)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	esClinet, err := es.GetEsClientV6ByID(esOptimize.EsConnect)
+	esConnect, err := es.GetEsClientByID(esOptimize.EsConnect)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
 
-	optimize := es_optimize.OptimizeFactory(esOptimize.Command)
-
-	if optimize == nil {
-		return this.Error(ctx, errors.New("不支持该指令"))
-
-	}
-	if esOptimize.IndexName != "" {
-		optimize.SetIndexName(esOptimize.IndexName)
-	}
-	err = optimize.Do(esClinet.(*es.EsClientV6).Client)
+	esService, err := es2.NewEsService(esConnect)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	return this.Success(ctx, response.OperateSuccess, nil)
+	return esService.Optimize(ctx, esOptimize)
 }
 
 // 将索引恢复为可写状态   由于不可抗力，ES禁止写后，默认不会自动恢复
 func (this EsController) RecoverCanWrite(ctx *Ctx) error {
-	esConnect := es.EsConnectID{}
-	err := ctx.BodyParser(&esConnect)
+	esConnectID := new(es.EsConnectID)
+	err := ctx.BodyParser(&esConnectID)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	esClinet, err := es.GetEsClientV6ByID(esConnect.EsConnectID)
+	esConnect, err := es.GetEsClientByID(esConnectID.EsConnectID)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-
-	res, err := esClinet.(*es.EsClientV6).Client.PerformRequest(ctx.Context(), elastic.PerformRequestOptions{
-		Method: "PUT",
-		Path:   "/_settings",
-		Body: map[string]interface{}{
-			"index": map[string]interface{}{
-				"blocks": map[string]interface{}{
-					"read_only_allow_delete": "false",
-				},
-			},
-		},
-	})
-
-	if res.StatusCode != 200 && res.StatusCode != 201 {
-		return this.Output(ctx, map[string]interface{}{
-			"code": res.StatusCode,
-			"msg":  fmt.Sprintf("请求异常! 错误码 :" + strconv.Itoa(res.StatusCode)),
-			"data": res.Body,
-		})
+	esService, err := es2.NewEsService(esConnect)
+	if err != nil {
+		return this.Error(ctx, err)
 	}
+	return esService.RecoverCanWrite(ctx)
 
-	return this.Success(ctx, response.OperateSuccess, res.Body)
 }
