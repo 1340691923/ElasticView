@@ -1,0 +1,18 @@
+{
+  "log":{
+    "storageDays":4,
+    "logDir":"logs"
+  },
+  "port":8090,
+  "mysql":{
+    "username":"root",
+    "pwd":"123456",
+    "ip":"192.168.1.236",
+    "port":"3306",
+    "dbName":"es_view",
+    "maxOpenConns":10,
+    "maxIdleConns":10
+  },
+  "appSecret": "1340691923@qq.com",
+  "deBug": true
+}
