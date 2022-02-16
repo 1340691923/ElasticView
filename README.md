@@ -53,3 +53,7 @@ ElasticView
  * 第二步：cd vue && cnpm install (安装前端依赖)
  * 第三步：npm run build:stage （打前端正式包）
  * 第五步：windows: go build -o ElasticView.exe`|| linux : 双击build_linux.bat // 编译go可执行程序 ``
+ 
+ ## 其他开源项目
+ * 铸龙用户行为分析系统     https://github.com/1340691923/xwl_bi
+ * 软考成绩快查工具               https://github.com/1340691923/SoftTestMonitor
