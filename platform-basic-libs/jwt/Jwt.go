@@ -8,7 +8,7 @@ import (
 	"github.com/1340691923/ElasticView/platform-basic-libs/my_error"
 	"github.com/1340691923/ElasticView/platform-basic-libs/util"
 
-	jwt "github.com/dgrijalva/jwt-go"
+	jwt "github.com/golang-jwt/jwt"
 )
 
 var jwtSecret = util.Str2bytes("1340691923@qq.com")

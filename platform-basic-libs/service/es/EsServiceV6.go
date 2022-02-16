@@ -493,13 +493,15 @@ func (this EsServiceV6) EsMappingList(ctx *fiber.Ctx, esConnect *es.EsMapGetProp
 		if err != nil {
 			return this.Error(ctx, err)
 		}
-		return this.Success(ctx, response.SearchSuccess, res)
+
+		return this.Success(ctx, response.SearchSuccess, map[string]interface{}{"list": res, "ver": 6})
 	} else {
 		res, err := this.esClient.GetMapping().Index(esConnect.IndexName).Do(ctx.Context())
 		if err != nil {
 			return this.Error(ctx, err)
 		}
-		return this.Success(ctx, response.SearchSuccess, res)
+
+		return this.Success(ctx, response.SearchSuccess, map[string]interface{}{"list": res, "ver": 6})
 	}
 }
 

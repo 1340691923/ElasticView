@@ -608,7 +608,7 @@ export default {
       const res = await ListAction(input)
 
       if (res.code == 0) {
-        this.activeData = JSON.stringify(res.data[indexName].mappings, null, '\t')
+        this.activeData = JSON.stringify(res.data['list'][indexName].mappings, null, '\t')
       }
     },
     getMapping(v) {
@@ -671,7 +671,7 @@ export default {
       input['es_connect'] = this.$store.state.baseData.EsConnectID
       const { code, data, msg } = await ListAction(input)
       if (code == 0) {
-        this.mappings = data
+        this.mappings = data['list']
       } else {
         this.$message({
           type: 'error',
@@ -769,8 +769,8 @@ export default {
           res = await ListAction(input)
 
           if (res.code == 0) {
-            this.activeData = JSON.stringify(res.data[this.indexName].mappings, null, '\t')
-            if (Object.keys(res.data[this.indexName].mappings).length == 0) {
+            this.activeData = JSON.stringify(res.data['list'][this.indexName].mappings, null, '\t')
+            if (Object.keys(res.data['list'][this.indexName].mappings).length == 0) {
               this.$message({
                 type: 'error',
                 message: '您还没有设置映射结构'

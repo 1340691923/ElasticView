@@ -2,7 +2,7 @@
   <div>
     <el-dialog :close-on-click-modal="false" :visible.sync="open" title="新增/修改快照存储库" @close="closeDialog">
       <el-card class="box-card">
-        <el-form label-width="500px" label-position="left">
+        <el-form label-width="300px" label-position="left">
           <el-form-item label="存储库名">
             <el-input v-model="form.name" placeholder="存储库名" />
           </el-form-item>
