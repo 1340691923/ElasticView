@@ -317,17 +317,32 @@ export default {
         const { data, code, msg } = await ListAction(input)
 
         if (code == 0) {
-          const mappings = Object.keys(data[input['index_name']].mappings)
-          const tableHeader = Object.keys(data[input['index_name']].mappings[mappings[0]].properties)
-          this.properties = data[input['index_name']].mappings[mappings[0]].properties
-          const tmpTableHeader = []
-          tmpTableHeader.push('_id')
-          for (const i in tableHeader) {
-            if (tableHeader[i] != '_id') {
-              tmpTableHeader.push(tableHeader[i])
+
+          if(data.ver == 6){
+            const mappings = Object.keys(data.list[input['index_name']].mappings)
+
+            const tableHeader = Object.keys(data.list[input['index_name']].mappings[mappings[0]].properties)
+            this.properties = data.list[input['index_name']].mappings[mappings[0]].properties
+            const tmpTableHeader = []
+            tmpTableHeader.push('_id')
+            for (const i in tableHeader) {
+              if (tableHeader[i] != '_id') {
+                tmpTableHeader.push(tableHeader[i])
+              }
             }
+            this.tableHeader = tmpTableHeader
+          }else if(data.ver == 7){
+            const tableHeader = Object.keys(data.list[input['index_name']].mappings.properties)
+            this.properties = data.list[input['index_name']].mappings.properties
+            const tmpTableHeader = []
+            tmpTableHeader.push('_id')
+            for (const i in tableHeader) {
+              if (tableHeader[i] != '_id') {
+                tmpTableHeader.push(tableHeader[i])
+              }
+            }
+            this.tableHeader = tmpTableHeader
           }
-          this.tableHeader = tmpTableHeader
         } else {
           this.$message({
             type: 'error',

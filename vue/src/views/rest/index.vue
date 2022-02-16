@@ -95,7 +95,7 @@ export default {
       input['es_connect'] = this.$store.state.baseData.EsConnectID
       const res = await ListAction(input)
       if (res.code == 0) {
-        const list = res.data
+        const list = res.data.list
         const indices = Object.keys(list)
         this.queryData = []
         const queryData = clone(esPathKeyWords)
@@ -103,7 +103,9 @@ export default {
         for (const esPathKeyWord of queryData) {
           if (esPathKeyWord.value.indexOf('{indices}') !== -1) {
             for (const indice of indices) {
+
               const mappings = Object.keys(list[indice]['mappings'])
+
               if (mappings.length == 0) {
                 mappings[0] = '{type}'
               }

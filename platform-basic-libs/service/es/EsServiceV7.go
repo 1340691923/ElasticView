@@ -507,13 +507,15 @@ func (this EsServiceV7) EsMappingList(ctx *fiber.Ctx, esConnect *es.EsMapGetProp
 		if err != nil {
 			return this.Error(ctx, err)
 		}
-		return this.Success(ctx, response.SearchSuccess, res)
+
+		return this.Success(ctx, response.SearchSuccess, map[string]interface{}{"list": res, "ver": 7})
 	} else {
 		res, err := this.esClient.GetMapping().Index(esConnect.IndexName).Do(ctx.Context())
 		if err != nil {
 			return this.Error(ctx, err)
 		}
-		return this.Success(ctx, response.SearchSuccess, res)
+
+		return this.Success(ctx, response.SearchSuccess, map[string]interface{}{"list": res, "ver": 7})
 	}
 }
 
@@ -644,13 +646,11 @@ func (this EsServiceV7) SnapshotCreateRepository(ctx *fiber.Ctx, snapshotCreateR
 	case "fs":
 		if len(pathRepo) == 0 {
 			return this.Error(ctx, errors.New("请先设置 path.repo"))
-
 		}
 		settings["location"] = snapshotCreateRepository.Location
 	case "url":
 		if len(getAllowedUrls) == 0 {
 			return this.Error(ctx, errors.New("请先设置 allowed_urls"))
-
 		}
 		settings["url"] = snapshotCreateRepository.Location
 	default:

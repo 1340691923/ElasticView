@@ -553,7 +553,7 @@ export default {
       input['es_connect'] = this.$store.state.baseData.EsConnectID
       const { data, code, msg } = await ListAction(input)
       if (code == 0) {
-        this.indexNameList = Object.keys(data)
+        this.indexNameList = Object.keys(data.list)
         this.mappings = data
       } else {
         this.$message({
