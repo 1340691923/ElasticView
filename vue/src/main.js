@@ -15,7 +15,12 @@ import 'intro.js/introjs.css'
 import VueClipboard from 'vue-clipboard2'
 Vue.use(VueClipboard)
 
+Vue.config.productionTip = false
 
+import Antd from 'ant-design-vue'
+import 'ant-design-vue/dist/antd.css'
+
+Vue.use(Antd)
 
 // excel导出
 import JsonExcel from 'vue-json-excel'

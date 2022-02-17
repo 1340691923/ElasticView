@@ -823,26 +823,26 @@ export const esBodyKeyWords = [
   { caption: 'exists', meta: 'exists', value: `"exists"`, score: 1 },
   {
     caption: 'query', meta: 'query', value: `"query":{
-  
+
   }`,
     score: 1 },
   {
     caption: 'must', meta: 'must', value: `"must": [
      {}
-  ], 
+  ],
 `,
     score: 1 },
   {
     caption: 'must_not', meta: 'must_not', value: `"must_not": [
      {}
-  ], 
+  ],
 `,
     score: 1 },
   {
     caption: 'should', meta: 'should', value: `
   "should": [
      {}
-  ], 
+  ],
 `,
     score: 1 },
   { caption: 'filter', meta: 'filter', value: `"filter"`, score: 1 },
@@ -878,7 +878,7 @@ export const esBodyKeyWords = [
       "FIELD": {
       "value": ""
      }
-  ,score:1},   
+  ,score:1},
 "`,
     score: 1 },
   {
@@ -894,14 +894,14 @@ export const esBodyKeyWords = [
     caption: 'regexp', meta: 'regexp', value: `"
   "regexp": {
       "FIELD": "REGEXP"
-    ,score:1},   
+    ,score:1},
 "`,
     score: 1 },
   {
     caption: 'fuzzy', meta: 'fuzzy', value: `
   "fuzzy": {
     "FIELD": {}
-  }  
+  }
 `,
     score: 1 },
   { caption: 'type', meta: 'type', value: `"type":"typeVal"`, score: 1 },
@@ -924,11 +924,11 @@ export const esBodyKeyWords = [
   { caption: 'ctx._source.remove(key)', meta: 'ctx._source.remove(key)', value: `"ctx._source.remove(key)"`, score: 1 },
   {
     caption: 'terms', meta: 'terms', value: `"terms": {
-       "key": [ 
-        "val1", 
-        "val2", 
-        "valN", 
-      ] 
+       "key": [
+        "val1",
+        "val2",
+        "valN",
+      ]
     }`,
     score: 1 },
   { caption: 'text type', meta: 'text', value: `"type":"text"`, score: 1 },
@@ -961,31 +961,31 @@ export const esBodyKeyWords = [
   {
     caption: 'avg', meta: 'avg', value: `
   "avg" : {
-      "field" : "key" 
+      "field" : "key"
    }`,
     score: 1 },
   {
     caption: 'min', meta: 'min', value: `
   "min" : {
-      "field" : "min" 
+      "field" : "min"
    }`,
     score: 1 },
   {
     caption: 'max', meta: 'max', value: `
   "max" : {
-      "field" : "key" 
+      "field" : "key"
    }`,
     score: 1 },
   {
     caption: 'sum', meta: 'sum', value: `
   "sum" : {
-      "field" : "key" 
+      "field" : "key"
    }`,
     score: 1 },
   {
     caption: 'count', meta: 'count', value: `
   "count" : {
-      "field" : "key" 
+      "field" : "key"
    }`,
     score: 1 },
 
@@ -1020,7 +1020,7 @@ export const esBodyKeyWords = [
   {
     caption: '_source', meta: '_source', value: `
   "_source": [
-  
+
   ]
 `,
     score: 2 },
@@ -1042,7 +1042,7 @@ export const esBodyKeyWords = [
   { caption: 'precision_threshold', meta: 'precision_threshold', value: `precision_threshold:40000`, score: 1 },
   {
     caption: 'cardinality', meta: 'cardinality', value: `
-  "cardinality": 
+  "cardinality":
   {
       "field": "key",
       "precision_threshold":40000
@@ -1193,3 +1193,49 @@ export const esSettingsWords = [
   }
 
 ]
+
+export const dataTypeCalcuSymbol = {
+  1: {
+    '=': '等于',
+    '!=': '不等于',
+    '<': '小于',
+    '>': '大于',
+    'isNotNull': '有值',
+    'isNull': '无值',
+    'range': '区间',
+    '<=': '小于等于',
+    '>=': '大于等于'
+  },
+  2: {
+    '=': '等于',
+    '!=': '不等于',
+    '<': '小于',
+    '>': '大于',
+    'isNotNull': '有值',
+    'isNull': '无值',
+    'range': '区间',
+    '<=': '小于等于',
+    '>=': '大于等于'
+  },
+  3: {
+    '=': '等于',
+    '!=': '不等于',
+    'isNotNull': '有值',
+    'isNull': '无值',
+    'match': '正则匹配',
+    'notmatch': '正则不匹配'
+  },
+  4: {
+    'rangeTime': '时间区间'
+  },
+  5: {},
+  6: {},
+  7: {},
+  8: {},
+  9: {}
+}
+
+export const inputSymbolArr = ['>', '<', '<=', '>=', 'match', 'notmatch']
+export const noValueSymbolArr = ['isNotNull', 'isNull']
+export const rangeSymbolArr = ['range']
+export const rangeTimeSymbolArr = ['rangeTime']
