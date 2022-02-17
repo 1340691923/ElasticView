@@ -178,6 +178,27 @@ export const asyncRoutes = [
         }
       }
     ]
+  },
+  {
+    path: '/navicat',
+    component: 'layout',
+    redirect: '/navicat/index',
+    alwaysShow: false,
+    meta: {
+      title: '数据管理',
+      icon: 'el-icon-copy-document'
+    },
+    children: [
+      {
+        path: 'index',
+        component: 'views/navicat/index',
+        name: 'index',
+        meta: {
+          title: '数据管理',
+          icon: 'el-icon-first-aid-kit'
+        }
+      }
+    ]
   }
 ]
 // todo ...    映射增删改查    查询可视化   监控数据可视化
@@ -195,6 +216,7 @@ export const RoutesComponentmaps = {
   'views/indices/reindex': () => import('@/views/indices/reindex'),
   'views/task/index': () => import('@/views/task/index'),
   'views/back-up/index': () => import('@/views/back-up/index'),
-  'views/back-up/snapshot': () => import('@/views/back-up/snapshot')
+  'views/back-up/snapshot': () => import('@/views/back-up/snapshot'),
+  'views/navicat/index': () => import('@/views/navicat/index')
 }
 
