@@ -11,13 +11,12 @@
           </div>
         </div>
       </div>
-      <split-pane :min-percent="0" :default-percent="20" split="vertical">
+      <split-pane :min-percent="4"  :default-percent="20" split="vertical">
         <template slot="paneL">
           <div
             id="scollL"
             style="height: 95%;width: 100px;display: inline-block; height: 100%;vertical-align: top;width: 100%;background: white;"
           >
-
             <div style="width: 100%;height: calc(100% - 80px); overflow-x: hidden; overflow-y: auto;padding: 10px">
               <div
                 style="width: 100%;height:90px;margin-bottom: 0px;z-index: 10000;position: absolute;top:0px;left: 0px;padding: 20px;
@@ -27,8 +26,6 @@
 
               <el-menu
                 style="margin-top: 100px"
-
-
                 active-text-color="rgb(64 158 255)"
                 v-loading="loadingMenu">
                 <div v-for="(v,index2) in getIndexList" :key="index2" :index="index2">
@@ -54,20 +51,15 @@
           </div>
         </template>
         <template slot="paneR">
-          <split-pane :default-percent="80" split="vertical">
+          <split-pane :default-percent="80" :min-percent="3" split="vertical">
             <template slot="paneL">
-              <div
-                style="height: 95%;width: 100px;display: inline-block; height: 100%;vertical-align: top;width: 100%;background: white;"
-              >
-              </div>
+              <crud :indexName="currentIndexName" v-if="refreshTab" ></crud>
             </template>
             <template slot="paneR">
               <div
                 style="height: 95%;width: 100px;display: inline-block; height: 100%;vertical-align: top;width: 100%;background: white;"
               >
-
                 <el-tabs v-loading="tabLoading" type="border-card" v-model="activeName" >
-
                   <el-tab-pane label="索引设置" name="settings">
                     <json-editor
 
@@ -80,7 +72,6 @@
                   </el-tab-pane>
                   <el-tab-pane label="映射结构" name="mappings">
                     <json-editor
-
                       v-if="refreshTab"
                       v-model="JSON.stringify(currentMappings,null, '\t')"
                       styles="width: 100%"
@@ -104,11 +95,14 @@
   import {filterData} from '@/utils/table'
   import {DeleteAction} from '@/api/es-index'
   import { ListAction } from '@/api/es-map'
-  import {  GetSettingsAction } from '@/api/es-index'
+  import { GetSettingsAction } from '@/api/es-index'
+
   export default {
     name: 'navicat',
     components: {
+
       'JsonEditor': () => import('@/components/JsonEditor/index'),
+      'Crud': () => import('@/views/navicat/crud'),
     },
     computed: {
       getIndexList() {
@@ -120,6 +114,7 @@
     },
     data() {
       return {
+
         tabLoading:false,
         refreshTab:true,
         activeName:'settings',
@@ -129,6 +124,7 @@
         currentIndexName:'',
         currentSettings:{},
         currentMappings:{},
+
       }
     },
     async beforeMount() {
