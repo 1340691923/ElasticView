@@ -18,7 +18,7 @@
 
         <el-tag class="filter-item">请输入关键词</el-tag>
 
-        <el-input id="index-keyword" v-model="input" class="filter-item width300" clearable @input="search" />
+        <el-input id="index-keyword" v-model="input" class="filter-item width300" clearable />
         <el-button id="index-search" type="primary" class="filter-item" icon="el-icon-search" @click="search">搜索
         </el-button>
         <el-button-group>

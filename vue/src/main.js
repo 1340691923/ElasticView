@@ -15,9 +15,14 @@ import 'intro.js/introjs.css'
 import VueClipboard from 'vue-clipboard2'
 Vue.use(VueClipboard)
 
+
+
 // excel导出
 import JsonExcel from 'vue-json-excel'
 Vue.component('downloadExcel', JsonExcel)
+
+import splitPane from 'vue-splitpane'
+Vue.component('split-pane', splitPane)
 
 import App from './App'
 import store from './store'
