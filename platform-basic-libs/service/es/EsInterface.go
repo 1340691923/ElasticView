@@ -38,6 +38,7 @@ type EsInterface interface {
 	UpdateMapping(ctx *fiber.Ctx, mapping *es.UpdateMapping) (err error)
 	TaskList(ctx *fiber.Ctx) (err error)
 	Cancel(ctx *fiber.Ctx, task *es.CancelTask) (err error)
+	CrudGetList(ctx *fiber.Ctx, task *es.CrudFilter) (err error)
 }
 
 var VerError = errors.New("ES版本暂只支持6,7")

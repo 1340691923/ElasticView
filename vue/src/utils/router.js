@@ -185,7 +185,7 @@ export const asyncRoutes = [
     redirect: '/navicat/index',
     alwaysShow: false,
     meta: {
-      title: '数据管理',
+      title: 'Navicat',
       icon: 'el-icon-copy-document'
     },
     children: [
@@ -194,7 +194,7 @@ export const asyncRoutes = [
         component: 'views/navicat/index',
         name: 'index',
         meta: {
-          title: '数据管理',
+          title: 'Navicat',
           icon: 'el-icon-first-aid-kit'
         }
       }

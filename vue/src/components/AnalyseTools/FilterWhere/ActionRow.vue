@@ -32,11 +32,11 @@
 
       <template v-if="noValueSymbolArr.indexOf(v.comparator)!==-1" />
       <template v-else-if="rangeSymbolArr.indexOf(v.comparator)!==-1">
-        <el-input v-model="v.ftv[0]" clearable size="mini" type="number" style="width: 300px" />~
-        <el-input v-model="v.ftv[1]" clearable size="mini" type="number" style="width: 300px" />
+        <el-input v-model="v.ftv[0]" clearable size="mini" type="number" style="width: 150px" />~
+        <el-input v-model="v.ftv[1]" clearable size="mini" type="number" style="width: 150px" />
       </template>
 
-      <el-input v-else-if="inputSymbolArr.indexOf(v.comparator)!==-1" v-model="v.ftv" clearable size="mini" style="width: 300px" />
+      <el-input v-else-if="inputSymbolArr.indexOf(v.comparator)!==-1 " v-model="v.ftv" clearable size="mini" style="width: 300px" />
       <template v-else-if="rangeTimeSymbolArr.indexOf(v.comparator)!==-1">
         <el-date-picker
           v-model="v.ftv"
@@ -54,7 +54,7 @@
           :picker-options="pickerOptions"
         />
       </template>
-
+      <el-input v-else-if="v.comparator == 'match' " v-model="v.ftv" clearable size="mini" style="width: 300px" />
       <template v-else>
         <keep-alive>
           <select-values ref="values" v-model="v.ftv" :table-typ="tableTyp" style="width: 300px" :data="v.columnName" />
@@ -124,7 +124,7 @@ export default {
   methods: {
     getDataTypeCalcuSymbol(data) {
       let typ = 0
-
+      console.log("this.dataTypeMap",this.dataTypeMap,this.tableTyp)
       if (this.dataTypeMap.hasOwnProperty(this.tableTyp.toString())) {
         for (const v of this.dataTypeMap[this.tableTyp.toString()]) {
           if (data == v.attribute_name) {

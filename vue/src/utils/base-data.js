@@ -1218,12 +1218,11 @@ export const dataTypeCalcuSymbol = {
     '>=': '大于等于'
   },
   3: {
-    '=': '等于',
-    '!=': '不等于',
+    '=': '包含',
+    '!=': '不包含',
     'isNotNull': '有值',
     'isNull': '无值',
-    'match': '正则匹配',
-    'notmatch': '正则不匹配'
+    'match': '模糊查询',
   },
   4: {
     'rangeTime': '时间区间'
@@ -1235,7 +1234,7 @@ export const dataTypeCalcuSymbol = {
   9: {}
 }
 
-export const inputSymbolArr = ['>', '<', '<=', '>=', 'match', 'notmatch']
+export const inputSymbolArr = ['>', '<', '<=', '>=', 'match']
 export const noValueSymbolArr = ['isNotNull', 'isNull']
 export const rangeSymbolArr = ['range']
 export const rangeTimeSymbolArr = ['rangeTime']

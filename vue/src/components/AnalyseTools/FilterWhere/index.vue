@@ -21,7 +21,7 @@
 
               <div v-if="v.filterType == 'SIMPLE'" class="action-row row___xwl">
 
-                <action-row :key="index" v-model="user_filter.filts[index]" :options="options" :table-typ="tableTyp" :data-type-map="dataTypeMap" class="action-left" />
+                <action-row :key="index" v-model="user_filter.filts[index]" v-if="changeActionRow" :options="options" :table-typ="tableTyp" :data-type-map="dataTypeMap" class="action-left" />
                 <div class="action-right">
                   <a-button-group>
 
@@ -37,6 +37,7 @@
                       icon="close-circle"
                       @click="deleteRelationSimple(index)"
                     />
+
                   </a-button-group>
                 </div>
               </div>
@@ -126,10 +127,17 @@ export default {
   },
   data() {
     return {
+      changeActionRow:true,
       user_filter: this.value
     }
   },
   methods: {
+    refreshChangeActionRow() {
+      this.changeActionRow = false
+      this.$nextTick(() => {
+        this.changeActionRow = true
+      })
+    },
     addRelationSimple(index) {
       const obj = this.user_filter.filts[index]
       const COMPOUNDObj = {
@@ -195,8 +203,11 @@ export default {
       this.$emit('input', this.user_filter)
     },
     deleteRelationSimple(i) {
+
       this.user_filter.filts.splice(i, 1)
+
       this.$emit('input', this.user_filter)
+      this.refreshChangeActionRow()
     },
 
     changeRelationLine() {
