@@ -19,6 +19,8 @@ ElasticView
  * 可将查询内容下载为excel文件
  * 可进行索引创建，映射创建，别名创建，索引删除等操作
  * 支持版本 6.X , 7.X
+ * 支持Navicat界面 （需要前往权限-角色界面 重新分配界面权限后刷新页面就可以看到）
+ 
  
 ## ElasticView 部分截图
 
@@ -57,3 +59,4 @@ ElasticView
  ## 其他开源项目
  * 铸龙用户行为分析系统     https://github.com/1340691923/xwl_bi
  * 软考成绩快查工具               https://github.com/1340691923/SoftTestMonitor
+ 
