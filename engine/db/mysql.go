@@ -16,6 +16,14 @@ var Sqlx *sqlx.DB
 // 用squirrel生成sql语句
 var SqlBuilder = squirrel.StatementBuilder
 
+type And = squirrel.And
+
+type NotEq = squirrel.NotEq
+type Gt = squirrel.Gt
+type Lt = squirrel.Lt
+type GtOrEq = squirrel.GtOrEq
+type LtOrEq = squirrel.LtOrEq
+
 type Eq = squirrel.Eq
 type Or = squirrel.Or
 type Like = squirrel.Like

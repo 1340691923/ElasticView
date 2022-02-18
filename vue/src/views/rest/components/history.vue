@@ -152,7 +152,7 @@ export default {
       this.$emit('close', false)
     },
     async searchHistory(page) {
-      console.log(page)
+
       !page ? this.input.page = 1 : this.input.page = page
       const { data, code, msg } = await ListAction(this.input)
       console.log(data)

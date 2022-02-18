@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/1340691923/ElasticView/engine/db"
 	"github.com/1340691923/ElasticView/engine/es"
 	"github.com/1340691923/ElasticView/engine/logs"
 	"github.com/1340691923/ElasticView/model"
@@ -11,6 +12,7 @@ import (
 	"github.com/1340691923/ElasticView/platform-basic-libs/my_error"
 	"github.com/1340691923/ElasticView/platform-basic-libs/request"
 	"github.com/1340691923/ElasticView/platform-basic-libs/response"
+	"github.com/1340691923/ElasticView/platform-basic-libs/service/es/es6_utils"
 	"github.com/1340691923/ElasticView/platform-basic-libs/service/es_optimize"
 	"github.com/1340691923/ElasticView/platform-basic-libs/service/es_settings"
 	"github.com/gofiber/fiber/v2"
@@ -686,4 +688,27 @@ func NewEsServiceV6(connect *es.EsConnect) (service EsInterface, err error) {
 	}
 
 	return &EsServiceV6{esClient: esClinet}, nil
+}
+
+func (this EsServiceV6) CrudGetList(ctx *fiber.Ctx, crudFilter *es.CrudFilter) (err error) {
+	q, err := es6_utils.GetWhereSql(crudFilter.Relation)
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+	search := this.esClient.Search(crudFilter.IndexName)
+	q2 := search.Query(q)
+	for _, tmp := range crudFilter.SortList {
+		switch tmp.SortRule {
+		case "desc":
+			q2 = q2.Sort(tmp.Col, false)
+		case "asc":
+			q2 = q2.Sort(tmp.Col, true)
+		}
+	}
+
+	res, err := q2.From(int(db.CreatePage(crudFilter.Page, crudFilter.Limit))).Size(crudFilter.Limit).Do(context.Background())
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+	return this.Success(ctx, response.SearchSuccess, map[string]interface{}{"list": res, "count": res.Hits.TotalHits})
 }

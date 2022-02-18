@@ -18,7 +18,7 @@ func Run(driverName string, datasource string) (err error) {
 [policy_effect]
         e = some(where (p.eft == allow))
 
-[matchers]
+[ctx context.Contexters]
         m = r.sub == p.sub && keyMatch(r.obj, p.obj) && (r.act == p.act || p.act == "*") || r.sub == "1"
 	`
 	policy := casbin.NewModel(text)

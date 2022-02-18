@@ -52,18 +52,7 @@ export default {
       this.$emit('input', this.selectVal)
     },
     initValue(data) {
-      GetValues({ 'appid': this.$store.state.baseData.EsConnectID, table: this.tableTyp.toString(), col: data }).then(res => {
-        const opt = []
-        if (res.data.length > 0) {
-          for (const v of res.data) {
-            const obj = { label: v.value, value: v.value }
-            opt.push(obj)
-          }
-        }
-        this.options = opt
-      }).catch(e => {
-        console.warn(e)
-      })
+      this.options = []
     }
   }
 }
