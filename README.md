@@ -56,6 +56,12 @@ ElasticView
  * 第三步：npm run build:stage （打前端正式包）
  * 第五步：windows: go build -o ElasticView.exe`|| linux : 双击build_linux.bat // 编译go可执行程序 ``
  
+ ## docker部署
+ >docker部署
+* docker pull 1340691923/elastic_view:v1.0.0
+* docker run -d -p 8090:8090 1340691923/elastic_view:v1.0.0
+* 浏览器访问对应ip:8090，初始用户名：admin，初始密码：admin
+ 
  ## 其他开源项目
  * 铸龙用户行为分析系统     https://github.com/1340691923/xwl_bi
  * 软考成绩快查工具               https://github.com/1340691923/SoftTestMonitor
