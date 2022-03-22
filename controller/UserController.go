@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"errors"
 	"github.com/1340691923/ElasticView/engine/logs"
 	"github.com/1340691923/ElasticView/model"
 	"github.com/1340691923/ElasticView/platform-basic-libs/jwt"
@@ -9,6 +10,7 @@ import (
 	"github.com/1340691923/ElasticView/platform-basic-libs/service/gm_user"
 	"github.com/1340691923/ElasticView/platform-basic-libs/util"
 	. "github.com/gofiber/fiber/v2"
+	"strings"
 )
 
 //GM用户控制器
@@ -129,6 +131,10 @@ func (this UserController) UserAddAction(ctx *Ctx) error {
 	userModel.RoleId = int32(this.FormIntDefault(ctx, "role_id", 0))
 	userModel.Password = ctx.FormValue("password")
 	userModel.Username = ctx.FormValue("username")
+
+	if strings.TrimSpace(userModel.Password) == "" {
+		return this.Error(ctx, errors.New("密码不能为空"))
+	}
 
 	id, err := userModel.Insert()
 	if err != nil {

@@ -4,6 +4,7 @@ import (
 	"github.com/1340691923/ElasticView/engine/db"
 	"github.com/1340691923/ElasticView/engine/logs"
 	"github.com/1340691923/ElasticView/platform-basic-libs/util"
+	"strings"
 
 	"go.uber.org/zap"
 )
@@ -57,6 +58,10 @@ func (this GmUserModel) Insert() (id int64, err error) {
 
 // Update
 func (this GmUserModel) Update() (err error) {
+	if strings.TrimSpace(this.Password) == "" {
+		_, err = db.Sqlx.Exec("update gm_user set username = ?,role_id=?,realname=? where id = ? ;", this.Username, this.RoleId, this.Realname, this.ID)
+		return
+	}
 	_, err = db.Sqlx.Exec("update gm_user set username = ?,password=?,role_id=?,realname=? where id = ? ;", this.Username, this.GetPassword(), this.RoleId, this.Realname, this.ID)
 	return
 }
