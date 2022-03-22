@@ -59,8 +59,8 @@ ElasticView
  
  ## docker部署
  >docker部署
-* docker pull 1340691923/elastic_view:v1.0.0
-* docker run -d -p 8090:8090 1340691923/elastic_view:v1.0.0
+* docker pull 1340691923/elastic_view:latest
+* docker run -d -p 8090:8090 1340691923/elastic_view:latest
 * 浏览器访问对应ip:8090，初始用户名：admin，初始密码：admin
  
  ## 其他开源项目
