@@ -54,7 +54,7 @@ ElasticView
  >手动编译
  * 第一步：git clone git@github.com:1340691923/ElasticView.git
  * 第二步：cd vue && cnpm install (安装前端依赖)
- * 第三步：npm run build:stage （打前端正式包）
+ * 第三步：npm run build:prod （打前端正式包）
  * 第五步：windows: go build -o ElasticView.exe`|| linux : 双击build_linux.bat // 编译go可执行程序 ``
  
  ## docker部署
