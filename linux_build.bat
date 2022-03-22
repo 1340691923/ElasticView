@@ -1,2 +1,2 @@
-cd vue && npm run build:stage && cd .. &&set goos=linux&& go build  -ldflags="-w -s" -o ElasticViewLinux
+cd vue && npm run build:prod && cd .. &&set goos=linux&& go build  -ldflags="-w -s" -o ElasticViewLinux
 
