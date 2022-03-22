@@ -29,11 +29,6 @@
             {{ scope.row.username }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="密码" width="220">
-          <template slot-scope="scope">
-            {{ scope.row.password }}
-          </template>
-        </el-table-column>
         <el-table-column align="center" label="所属角色" width="220">
           <template slot-scope="scope">
             {{ scope.row.role_name }}
@@ -117,15 +112,14 @@ export default {
   computed: {
 
   },
-  created() {
+  async created() {
     // Mock: get all routes and roles list from server
-    this.getRoleOpt()
+    await this.getRoleOpt()
     this.getUserList()
   },
   methods: {
     async getRoleOpt() {
       const res = await roleOption()
-      console.log(1)
       for (var v of res.data) {
         this.chanCfgList.push(v)
         this.chanCfgMap[v['id']] = v['name']
@@ -134,7 +128,6 @@ export default {
 
     async getUserList() {
       const res = await userList()
-      console.log(2)
       for (var k in res.data) {
         res.data[k]['role_name'] = this.chanCfgMap[res.data[k]['role_id']]
       }
@@ -152,7 +145,7 @@ export default {
       this.dialogVisible = true
       this.checkStrictly = true
       this.role = deepClone(scope.row)
-      console.log('this.role', this.role)
+      this.role.password = ''
     },
     handleDelete({ $index, row }) {
       this.$confirm('确定删除该用户吗?', '警告', {
@@ -172,13 +165,22 @@ export default {
     },
     async confirmRole() {
       const isEdit = this.dialogType === 'edit'
-      if (this.role.password.length < 5) {
+      if (this.role.password.length < 5 && this.role.password.trim()!="") {
         this.$message({
           message: '密码长度必须大于5',
           type: 'error'
         })
         return false
       }
+
+      if (this.role.role_id=="" || this.role.role_id==0) {
+        this.$message({
+          message: '角色不能为空',
+          type: 'error'
+        })
+        return false
+      }
+
       if (isEdit) {
         await UpdateUser(this.role)
         this.getUserList()

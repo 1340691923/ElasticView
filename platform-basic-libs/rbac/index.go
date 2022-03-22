@@ -18,7 +18,7 @@ func Run(driverName string, datasource string) (err error) {
 [policy_effect]
         e = some(where (p.eft == allow))
 
-[ctx context.Contexters]
+[matchers]
         m = r.sub == p.sub && keyMatch(r.obj, p.obj) && (r.act == p.act || p.act == "*") || r.sub == "1"
 	`
 	policy := casbin.NewModel(text)
@@ -26,8 +26,5 @@ func Run(driverName string, datasource string) (err error) {
 	model := xormadapter.NewAdapter(driverName, datasource, true)
 	Enforcer = casbin.NewEnforcer(policy, model)
 	err = Enforcer.LoadPolicy()
-	if err != nil {
-		return
-	}
 	return
 }
