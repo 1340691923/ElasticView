@@ -40,7 +40,7 @@ ElasticView
 
 
 ## 应用程序下载
-[下载地址]( https://github.com/1340691923/ElasticView/releases/) 支持操作系统：windows，linux，mac
+[下载地址]( https://gitee.com/cynthia520/elastic-view/releases/) 支持操作系统：windows，linux，mac
 
 ## 安装教程
 >安装教程
