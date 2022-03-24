@@ -11,16 +11,14 @@ require (
 	github.com/garyburd/redigo v1.6.2
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/go-xorm/xorm v0.7.9 // indirect
-	github.com/gofiber/fiber/v2 v2.27.0 // indirect
+	github.com/gofiber/fiber/v2 v2.27.0
 	github.com/golang-jwt/jwt v3.2.2+incompatible
-	github.com/golang/snappy v0.0.3 // indirect
 	github.com/jmoiron/sqlx v1.3.4
 	github.com/json-iterator/go v1.1.11
 	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible
 	github.com/lestrrat-go/strftime v1.0.4 // indirect
 	github.com/olivere/elastic v6.2.35+incompatible
 	github.com/olivere/elastic/v7 v7.0.24
-	github.com/spf13/afero v1.1.2 // indirect
 	github.com/spf13/viper v1.7.1
 	github.com/valyala/fasthttp v1.33.0
 	go.uber.org/zap v1.17.0
