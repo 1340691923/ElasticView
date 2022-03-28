@@ -54,20 +54,18 @@ ElasticView
  4. windows：双击ElasticView.exe  linux：chmod +x ElasticView && nohup ./ElasticView > ElasticView.log &
  5. 浏览器访问对应ip:端口，初始用户名：admin，初始密码：admin
  
- ## docker部署
- >docker部署
+## docker部署
  1. docker pull 1340691923/elastic_view:latest
  2. docker run -d -p 8090:8090 1340691923/elastic_view:latest
  3. 浏览器访问对应ip:8090，初始用户名：admin，初始密码：admin
 
 ## 手动编译
->手动编译
  1. git clone git@github.com:1340691923/ElasticView.git
  2. cd vue && cnpm install (安装前端依赖)
  3. npm run build:prod （打前端正式包）
  4. windows: go build -o ElasticView.exe  linux : 双击build_linux.bat // 编译go可执行程序
  
- ## 其他开源项目
+## 其他开源项目
  * 铸龙用户行为分析系统     https://github.com/1340691923/xwl_bi
  * 软考成绩快查工具               https://github.com/1340691923/SoftTestMonitor
  
