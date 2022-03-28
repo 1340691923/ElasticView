@@ -182,6 +182,9 @@ export default {
         case 7:
           propertiesObj = this.currentMappings[this.currentIndexName].mappings.properties
           break
+        case 8:
+          propertiesObj = this.currentMappings[this.currentIndexName].mappings.properties
+          break
       }
       const Int = 1
       const Float = 2

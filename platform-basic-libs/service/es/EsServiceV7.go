@@ -722,3 +722,4 @@ func NewEsServiceV7(connect *es.EsConnect) (service EsInterface, err error) {
 
 	return &EsServiceV7{esClient: esClinet}, nil
 }
+
