@@ -46,6 +46,7 @@ var VerError = errors.New("ES版本暂只支持6,7")
 var EsServiceMap = map[int]func(conn *es.EsConnect) (EsInterface, error){
 	6: NewEsServiceV6,
 	7: NewEsServiceV7,
+	8:NewEsServiceV8,
 }
 
 func NewEsService(conn *es.EsConnect) (EsInterface, error) {

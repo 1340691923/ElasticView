@@ -44,11 +44,21 @@ func (this EsController) PingAction(ctx *Ctx) error {
 			return this.Error(ctx, err)
 		}
 		return this.Success(ctx, response.OperateSuccess, data)
+	case 8:
+		esClient, err := es.NewEsClientV8(esConnect)
+		if err != nil {
+			return this.Error(ctx, err)
+		}
+		data, _, err := esClient.Ping(esConnect.Ip).Do(context.Background())
+		if err != nil {
+			return this.Error(ctx, err)
+		}
+		return this.Success(ctx, response.OperateSuccess, data)
 	default:
 
 	}
 
-	return this.Error(ctx, errors.New("版本暂时只支持6或者7"))
+	return this.Error(ctx, errors.New("版本暂时只支持6.x,7.x,8.x"))
 
 }
 

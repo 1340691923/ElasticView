@@ -89,6 +89,7 @@
             <el-select v-model="link.version" placeholder="请选择版本" filterable>
               <el-option label="6" :value="Number(6)" />
               <el-option label="7" :value="Number(7)" />
+              <el-option label="8" :value="Number(8)" />
             </el-select>
           </el-form-item>
         </el-form>
