@@ -10,7 +10,6 @@ import (
 	jsoniter "github.com/json-iterator/go"
 )
 
-//fiber 没有将fasthttp的
 func OperaterLog(ctx *fiber.Ctx) error {
 	var err error
 	token := util.GetToken(ctx)
