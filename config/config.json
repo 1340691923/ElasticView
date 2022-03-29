@@ -6,8 +6,8 @@
   "port":8090,
   "mysql":{
     "username":"root",
-    "pwd":"123456",
-    "ip":"127.0.0.1",
+    "pwd":"Xwl@Ww1314!",
+    "ip":"110.42.167.155",
     "port":"3306",
     "dbName":"es_view",
     "maxOpenConns":10,
