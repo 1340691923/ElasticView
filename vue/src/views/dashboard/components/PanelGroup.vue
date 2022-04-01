@@ -9,7 +9,9 @@
           <div class="card-panel-text">
             总分片数
           </div>
-          <count-to :start-val="0" :end-val="count.allShared" :duration="2600" class="card-panel-num" />
+          <span class="card-panel-num">
+            {{ count.allShared }}
+          </span>
         </div>
       </div>
     </el-col>
@@ -22,7 +24,9 @@
           <div class="card-panel-text">
             成功的分片数
           </div>
-          <count-to :start-val="0" :end-val="count.successfulShared" :duration="2600" class="card-panel-num" />
+          <span class="card-panel-num">
+            {{ count.successfulShared }}
+          </span>
         </div>
       </div>
     </el-col>
@@ -35,7 +39,9 @@
           <div class="card-panel-text">
             失败的分片数
           </div>
-          <count-to :start-val="0" :end-val="count.failedShared" :duration="2600" class="card-panel-num" />
+          <span class="card-panel-num">
+            {{ count.failedShared }}
+          </span>
         </div>
       </div>
     </el-col>
@@ -48,7 +54,9 @@
           <div class="card-panel-text">
             索引数
           </div>
-          <count-to :start-val="0" :end-val="count.index" :duration="2600" class="card-panel-num" />
+          <span class="card-panel-num">
+            {{ count.index }}
+          </span>
         </div>
 
       </div>
@@ -63,7 +71,9 @@
           <div class="card-panel-text">
             文档数
           </div>
-          <count-to :start-val="0" :end-val="count.document" :duration="2600" class="card-panel-num" />
+          <span class="card-panel-num">
+            {{ count.document }}
+          </span>
         </div>
       </div>
     </el-col>
@@ -76,7 +86,10 @@
           <div class="card-panel-text">
             索引所占空间大小
           </div>
-          <count-to :start-val="0" :end-val="count.size" :duration="2600" class="card-panel-num" />GB
+          <span class="card-panel-num">
+            {{ count.size }}
+          </span>
+
         </div>
       </div>
     </el-col>
@@ -132,7 +145,7 @@ export default {
       }
       const { data, code, msg } = await CatAction(form)
       if (code == 0) {
-        this.count.size = parseFloat(data[0]['disk.indices'])
+        this.count.size = data[0]['disk.indices']
       }
     },
     async catStats() {
