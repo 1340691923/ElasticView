@@ -25,18 +25,18 @@ ElasticView
  
 ## ElasticView 部分截图
 
-![image](https://raw.githubusercontent.com/1340691923/ElasticView/main/show_img/1.png)
-![image](https://raw.githubusercontent.com/1340691923/ElasticView/main/show_img/2.png)
-![image](https://raw.githubusercontent.com/1340691923/ElasticView/main/show_img/3.png)
-![image](https://raw.githubusercontent.com/1340691923/ElasticView/main/show_img/4.png)
-![image](https://raw.githubusercontent.com/1340691923/ElasticView/main/show_img/5.png)
-![image](https://raw.githubusercontent.com/1340691923/ElasticView/main/show_img/6.png)
-![image](https://raw.githubusercontent.com/1340691923/ElasticView/main/show_img/7.png)
-![image](https://raw.githubusercontent.com/1340691923/ElasticView/main/show_img/8.png)
-![image](https://raw.githubusercontent.com/1340691923/ElasticView/main/show_img/9.png)
-![image](https://raw.githubusercontent.com/1340691923/ElasticView/main/show_img/10.png)
-![image](https://raw.githubusercontent.com/1340691923/ElasticView/main/show_img/11.png)
-![image](https://raw.githubusercontent.com/1340691923/ElasticView/main/show_img/12.png)
+![image](https://gitee.com/cynthia520/elastic-view/raw/main/show_img/1.png)
+![image](https://gitee.com/cynthia520/elastic-view/raw/main/show_img/2.png)
+![image](https://gitee.com/cynthia520/elastic-view/raw/main/show_img/3.png)
+![image](https://gitee.com/cynthia520/elastic-view/raw/main/show_img/4.png)
+![image](https://gitee.com/cynthia520/elastic-view/raw/main/show_img/5.png)
+![image](https://gitee.com/cynthia520/elastic-view/raw/main/show_img/6.png)
+![image](https://gitee.com/cynthia520/elastic-view/raw/main/show_img/7.png)
+![image](https://gitee.com/cynthia520/elastic-view/raw/main/show_img/8.png)
+![image](https://gitee.com/cynthia520/elastic-view/raw/main/show_img/9.png)
+![image](https://gitee.com/cynthia520/elastic-view/raw/main/show_img/10.png)
+![image](https://gitee.com/cynthia520/elastic-view/raw/main/show_img/11.png)
+![image](https://gitee.com/cynthia520/elastic-view/raw/main/show_img/12.png)
 
 
 ## 应用程序下载
