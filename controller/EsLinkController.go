@@ -70,7 +70,7 @@ func (this EsLinkController) InsertAction(ctx *Ctx) error {
 
 	delete(insertMap, "created")
 	delete(insertMap, "updated")
-
+	delete(insertMap, "id")
 	_, err = db.SqlBuilder.
 		Insert("es_link").
 		SetMap(insertMap).
