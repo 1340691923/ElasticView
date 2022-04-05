@@ -4,10 +4,14 @@
     "logDir":"logs"
   },
   "port":8090,
+  "dbType": "sqlite3",
+  "sqlite":{
+    "dbPath":"es_view.db"
+  },
   "mysql":{
     "username":"root",
-    "pwd":"Xwl@Ww1314!",
-    "ip":"110.42.167.155",
+    "pwd":"",
+    "ip":"110.42.11.1",
     "port":"3306",
     "dbName":"es_view",
     "maxOpenConns":10,

@@ -12,7 +12,7 @@ import (
 	"syscall"
 
 	_ "github.com/go-sql-driver/mysql"
-
+	_ "github.com/logoove/sqlite"
 	"go.uber.org/zap"
 )
 
@@ -39,7 +39,8 @@ func main() {
 		application.WithConfigFileName(configFileName),
 		application.WithConfigFileExt(configFileExt),
 		application.RegisterInitFnObserver(application.InitLogs),
-		application.RegisterInitFnObserver(application.InitMysql),
+		application.RegisterInitFnObserver(application.InitSqlx),
+		application.RegisterInitFnObserver(application.InitSqliteData),
 		application.RegisterInitFnObserver(application.InitTask),
 		application.RegisterInitFnObserver(application.InitRbac),
 		application.RegisterInitFnObserver(application.InitOpenWinBrowser),

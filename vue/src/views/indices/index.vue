@@ -238,7 +238,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column align="center" label="操作" fixed="right" width="400">
+        <el-table-column align="center" label="操作" fixed="right" width="380">
           <template slot-scope="scope">
 
             <el-button-group>

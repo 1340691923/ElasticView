@@ -34,7 +34,7 @@ func (this GuidController) Finish(ctx *Ctx) error {
 			"guid_name": gmGuidModel.GuidName,
 		}).RunWith(db.Sqlx).Exec()
 
-	if err != nil && strings.Contains(err.Error(), "Error 1062") {
+	if err != nil && (strings.Contains(err.Error(), "Error 1062") || strings.Contains(err.Error(), "UNIQUE") )  {
 		return this.Error(ctx, err)
 	}
 	return this.Success(ctx, response.OperateSuccess, nil)

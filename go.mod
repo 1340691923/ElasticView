@@ -17,10 +17,12 @@ require (
 	github.com/json-iterator/go v1.1.11
 	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible
 	github.com/lestrrat-go/strftime v1.0.4 // indirect
+	github.com/logoove/sqlite v1.15.3
 	github.com/olivere/elastic v6.2.35+incompatible
 	github.com/olivere/elastic/v7 v7.0.24
 	github.com/spf13/viper v1.7.1
 	github.com/valyala/fasthttp v1.33.0
 	go.uber.org/zap v1.17.0
 	golang.org/x/text v0.3.7
+	modernc.org/sqlite v1.16.0 // indirect
 )
