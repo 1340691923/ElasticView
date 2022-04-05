@@ -2,6 +2,8 @@ package controller
 
 import (
 	"encoding/json"
+	"github.com/1340691923/ElasticView/platform-basic-libs/util"
+	"time"
 
 	"github.com/1340691923/ElasticView/engine/db"
 	"github.com/1340691923/ElasticView/engine/es"
@@ -106,7 +108,7 @@ func (this EsLinkController) UpdateAction(ctx *Ctx) error {
 	delete(insertMap, "id")
 	delete(insertMap, "created")
 	delete(insertMap, "updated")
-
+	insertMap["updated"] = time.Now().Format(util.TimeFormat)
 	_, err = db.SqlBuilder.
 		Update("es_link").
 		SetMap(insertMap).

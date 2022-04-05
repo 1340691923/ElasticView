@@ -10,6 +10,10 @@ type Config struct {
 		LogDir      string `json:"logDir"`
 	} `json:"log"`
 	Port  int `json:"port"`
+	DbType string `json:"dbType"`
+	Sqlite struct{
+		DbPath string `json:"dbPath"`
+	} `json:"sqlite"`
 	Mysql struct {
 		Username     string `json:"username"`
 		Pwd          string `json:"pwd"`
@@ -20,18 +24,20 @@ type Config struct {
 		MaxIdleConns int    `json:"maxIdleConns"`
 	} `json:"mysql"`
 	AppSecret string `json:"appSecret"`
-	Esconfig struct{
-		Addresses []string `json:"addresses"`
-		Username string `json:"username"`
-		Password string `json:"password"`
-	} `json:"esconfig"`
-	RedisPool struct{
-		Addr string `json:"addr"`
-		Passwd string `json:"passwd"`
-		Db int `json:"db"`
-		MaxIdle int `json:"maxIdle"`
-		MaxActive int `json:"maxActive"`
-	} `json:"redisPool"`
 	DeBug bool `json:"deBug"`
 }
+
+const (
+	MysqlDbTyp = "mysql"
+	SqliteDbTyp = "sqlite3"
+)
+
+func(this *Config) GetDbType()string{
+	if this.DbType == "mysql"{
+		return MysqlDbTyp
+	}
+	return SqliteDbTyp
+}
+
+
 

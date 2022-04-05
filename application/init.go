@@ -7,6 +7,7 @@ import (
 	"github.com/1340691923/ElasticView/model"
 	"github.com/1340691923/ElasticView/platform-basic-libs/rbac"
 	"github.com/1340691923/ElasticView/platform-basic-libs/util"
+	sql2 "github.com/1340691923/ElasticView/sqlite"
 	"log"
 	"strconv"
 )
@@ -27,16 +28,26 @@ func  InitLogs() (err error) {
 }
 
 // 初始化mysql连接
-func InitMysql() (err error) {
+func InitSqlx() (err error) {
+
 	config := GlobConfig.Mysql
-	dbSource := fmt.Sprintf(
-		"%s:%s@tcp(%s:%s)/%s",
-		config.Username,
-		config.Pwd,
-		config.IP,
-		config.Port,
-		config.DbName)
+	driverType := GlobConfig.DbType
+	var dbSource string
+	if driverType == SqliteDbTyp {
+		dbSource = GlobConfig.Sqlite.DbPath
+	}else{
+		dbSource = fmt.Sprintf(
+			"%s:%s@tcp(%s:%s)/%s",
+			config.Username,
+			config.Pwd,
+			config.IP,
+			config.Port,
+			config.DbName)
+	}
+
+
 	db.Sqlx, err = db.NewSQLX(
+		driverType,
 		dbSource,
 		config.MaxOpenConns,
 		config.MaxIdleConns,
@@ -44,11 +55,18 @@ func InitMysql() (err error) {
 	if err!=nil{
 		return
 	}
-	log.Println(fmt.Sprintf("Mysql组件初始化成功！连接：%v，最大打开连接数：%v，最大等待连接数:%v",
+	log.Println(fmt.Sprintf("%v组件初始化成功！连接：%v，最大打开连接数：%v，最大等待连接数:%v",
+		driverType,
 		dbSource,
 		config.MaxOpenConns,
 		config.MaxIdleConns,
 		))
+	return
+}
+
+// 初始化mysql连接
+func InitSqliteData() (err error) {
+	sql2.Init()
 	return
 }
 
@@ -63,15 +81,23 @@ func InitTask() (err error) {
 
 // 初始化项目启动任务
 func  InitRbac() (err error) {
+
 	config := GlobConfig.Mysql
-	dbSource := fmt.Sprintf(
-		"%s:%s@tcp(%s:%s)/%s",
-		config.Username,
-		config.Pwd,
-		config.IP,
-		config.Port,
-		config.DbName)
-	err = rbac.Run("mysql",dbSource)
+	driverType := GlobConfig.DbType
+	var dbSource string
+	if driverType == SqliteDbTyp {
+		dbSource = GlobConfig.Sqlite.DbPath
+	}else{
+		dbSource = fmt.Sprintf(
+			"%s:%s@tcp(%s:%s)/%s",
+			config.Username,
+			config.Pwd,
+			config.IP,
+			config.Port,
+			config.DbName)
+	}
+
+	err = rbac.Run(driverType,dbSource)
 	if err!=nil{
 		return
 	}

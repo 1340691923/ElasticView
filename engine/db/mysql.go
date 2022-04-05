@@ -34,8 +34,8 @@ type InsertBuilder = squirrel.InsertBuilder
 type UpdateBuilder = squirrel.UpdateBuilder
 
 // NewMySQL 创建一个连接MySQL的实体池
-func NewSQLX(dbSource string, maxOpenConns, maxIdleConns int) (db *sqlx.DB, err error) {
-	db, err = sqlx.Open("mysql", dbSource)
+func NewSQLX(driverName,dbSource string, maxOpenConns, maxIdleConns int) (db *sqlx.DB, err error) {
+	db, err = sqlx.Open(driverName, dbSource)
 	if err != nil {
 		return
 	}
