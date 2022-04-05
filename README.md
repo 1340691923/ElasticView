@@ -49,9 +49,9 @@ ElasticView
 3. mac
 
 ## 安装教程
- 1. 下载release里面的对应压缩包（windows用户下载ElasticView_windows.zip，linux用户下载ElasticView_linux.zip，mac用户下载 ElasticView_mac.zip）
- 2. 解压后，修改config.json文件中的 数据库连接信息，日志存放目录和应用启动端口等配置信息
- 3. 数据存储 若config.json下的dbType为sqlite3则指定sqlite配置下的dbPath即可（无需安装gcc）
+ 1. 下载release里面的对应压缩包后解压（windows用户下载ElasticView_windows.zip，linux用户下载ElasticView_linux.zip，mac用户下载 ElasticView_mac.zip）
+ 2. （若无需mysql存储数据则跳过该步骤）修改config.json文件中的 数据库连接信息，日志存放目录和应用启动端口等配置信息
+ 3. （若无需mysql存储数据则跳过该步骤）数据存储 若config.json下的dbType为sqlite3则指定sqlite配置下的dbPath即可（无需安装gcc）
     为mysql则需新建mysql数据库 es_view，导入es_view.sql并修改mysql配置
  4. windows：双击ElasticView.exe  linux：chmod +x ElasticView && nohup ./ElasticView > ElasticView.log &
  5. 浏览器访问对应ip:端口，初始用户名：admin，初始密码：admin
