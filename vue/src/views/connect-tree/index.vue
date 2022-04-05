@@ -71,7 +71,7 @@
         </el-table-column>
       </el-table>
 
-      <el-dialog :close-on-click-modal="false" :visible.sync="dialogVisible" :title="dialogType==='edit'?'编辑用户信息':'新建用户信息'">
+      <el-dialog :close-on-click-modal="false" :visible.sync="dialogVisible" :title="dialogType==='edit'?'编辑连接信息':'新建连接信息'">
         <el-form :model="link" label-width="100px" label-position="left">
           <el-form-item label="IP">
             <el-input v-model="link.ip" placeholder="例如:http://127.0.0.1:9200" />
