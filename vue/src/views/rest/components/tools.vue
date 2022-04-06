@@ -39,7 +39,7 @@
         class="filter-item go"
         style="display: inline;"
         :loading="loading"
-        type="success"
+        type="primary"
         icon="el-icon-right"
         @click="go"
       >GO
