@@ -1,8 +1,19 @@
-﻿  
-
-技术栈主要用： Vue + golang 
+﻿技术栈主要用： Vue + golang
 
 欢迎大家提出自己的issue。
+
+## Quick Start
+1. 下载release里面的对应压缩包后解压（windows用户下载ElasticView_windows.zip，linux用户下载ElasticView_linux.zip，mac用户下载 ElasticView_mac.zip）
+2. （若无需mysql存储数据则跳过该步骤）修改config.json文件中的 数据库连接信息，日志存放目录和应用启动端口等配置信息
+3. （若无需mysql存储数据则跳过该步骤）数据存储 若config.json下的dbType为sqlite3则指定sqlite配置下的dbPath即可（无需安装gcc）
+   为mysql则需新建mysql数据库 es_view，导入es_view.sql并修改mysql配置
+4. windows：双击ElasticView.exe  linux：chmod +x ElasticView && nohup ./ElasticView > ElasticView.log &
+5. 浏览器访问对应ip:端口，初始用户名：admin，初始密码：admin
+
+## docker部署
+1. docker pull 1340691923/elastic_view:latest
+2. docker run -d -p 8090:8090 1340691923/elastic_view:latest
+3. 浏览器访问对应ip:8090，初始用户名：admin，初始密码：admin
 
 ElasticView
 -----------
@@ -26,18 +37,18 @@ ElasticView
  
 ## ElasticView 部分截图
 
-![image](https://gitee.com/cynthia520/elastic-view/raw/main/show_img/1.png)
-![image](https://gitee.com/cynthia520/elastic-view/raw/main/show_img/2.png)
-![image](https://gitee.com/cynthia520/elastic-view/raw/main/show_img/3.png)
-![image](https://gitee.com/cynthia520/elastic-view/raw/main/show_img/4.png)
-![image](https://gitee.com/cynthia520/elastic-view/raw/main/show_img/5.png)
-![image](https://gitee.com/cynthia520/elastic-view/raw/main/show_img/6.png)
-![image](https://gitee.com/cynthia520/elastic-view/raw/main/show_img/7.png)
-![image](https://gitee.com/cynthia520/elastic-view/raw/main/show_img/8.png)
-![image](https://gitee.com/cynthia520/elastic-view/raw/main/show_img/9.png)
-![image](https://gitee.com/cynthia520/elastic-view/raw/main/show_img/10.png)
-![image](https://gitee.com/cynthia520/elastic-view/raw/main/show_img/11.png)
-![image](https://gitee.com/cynthia520/elastic-view/raw/main/show_img/12.png)
+![image](https://gitee.com/cynthia520/elastic-view/raw/main/static/show_img/1.png)
+![image](https://gitee.com/cynthia520/elastic-view/raw/main/static/show_img/2.png)
+![image](https://gitee.com/cynthia520/elastic-view/raw/main/static/show_img/3.png)
+![image](https://gitee.com/cynthia520/elastic-view/raw/main/static/show_img/4.png)
+![image](https://gitee.com/cynthia520/elastic-view/raw/main/static/show_img/5.png)
+![image](https://gitee.com/cynthia520/elastic-view/raw/main/static/show_img/6.png)
+![image](https://gitee.com/cynthia520/elastic-view/raw/main/static/show_img/7.png)
+![image](https://gitee.com/cynthia520/elastic-view/raw/main/static/show_img/8.png)
+![image](https://gitee.com/cynthia520/elastic-view/raw/main/static/show_img/9.png)
+![image](https://gitee.com/cynthia520/elastic-view/raw/main/static/show_img/10.png)
+![image](https://gitee.com/cynthia520/elastic-view/raw/main/static/show_img/11.png)
+![image](https://gitee.com/cynthia520/elastic-view/raw/main/static/show_img/12.png)
 
 
 ## 应用程序下载
@@ -48,26 +59,12 @@ ElasticView
 2. linux
 3. mac
 
-## 安装教程
- 1. 下载release里面的对应压缩包后解压（windows用户下载ElasticView_windows.zip，linux用户下载ElasticView_linux.zip，mac用户下载 ElasticView_mac.zip）
- 2. （若无需mysql存储数据则跳过该步骤）修改config.json文件中的 数据库连接信息，日志存放目录和应用启动端口等配置信息
- 3. （若无需mysql存储数据则跳过该步骤）数据存储 若config.json下的dbType为sqlite3则指定sqlite配置下的dbPath即可（无需安装gcc）
-    为mysql则需新建mysql数据库 es_view，导入es_view.sql并修改mysql配置
- 4. windows：双击ElasticView.exe  linux：chmod +x ElasticView && nohup ./ElasticView > ElasticView.log &
- 5. 浏览器访问对应ip:端口，初始用户名：admin，初始密码：admin
- 
-## docker部署
- 1. docker pull 1340691923/elastic_view:latest
- 2. docker run -d -p 8090:8090 1340691923/elastic_view:latest
- 3. 浏览器访问对应ip:8090，初始用户名：admin，初始密码：admin
-
 ## 手动编译
  1. git clone git@github.com:1340691923/ElasticView.git
  2. cd vue && cnpm install (安装前端依赖)
- 3. npm run build:prod （打前端正式包）
- 4. windows: go build -o ElasticView.exe  linux : 双击build_linux.bat // 编译go可执行程序
+ 3. 执行static/build 下的vue_build.bat （打前端正式包）
+ 4. 执行static/build 下的win_build.bat(linux则为linux_build.bat)  (编译二进制可执行程序)
  
 ## 其他开源项目
  * 铸龙用户行为分析系统     https://github.com/1340691923/xwl_bi
- * 软考成绩快查工具               https://github.com/1340691923/SoftTestMonitor
- 
+ * 软考成绩快查工具        https://github.com/1340691923/SoftTestMonitor
