@@ -5,15 +5,16 @@ import (
 	"github.com/1340691923/ElasticView/application"
 	"github.com/1340691923/ElasticView/engine/logs"
 	"github.com/1340691923/ElasticView/router"
+	_ "github.com/ClickHouse/clickhouse-go"
+	_ "github.com/denisenkom/go-mssqldb"
+	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/logoove/sqlite"
+	"go.uber.org/zap"
 	"log"
 	"os"
 	"os/signal"
 	"strconv"
 	"syscall"
-
-	_ "github.com/go-sql-driver/mysql"
-	_ "github.com/logoove/sqlite"
-	"go.uber.org/zap"
 )
 
 var (

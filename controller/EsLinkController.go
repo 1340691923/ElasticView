@@ -71,6 +71,8 @@ func (this EsLinkController) InsertAction(ctx *Ctx) error {
 	delete(insertMap, "created")
 	delete(insertMap, "updated")
 	delete(insertMap, "id")
+	insertMap["created"] = time.Now().Format(util.TimeFormat)
+	insertMap["updated"] = time.Now().Format(util.TimeFormat)
 	_, err = db.SqlBuilder.
 		Insert("es_link").
 		SetMap(insertMap).

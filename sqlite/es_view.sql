@@ -43,7 +43,34 @@ CREATE TABLE `gm_user`  (
                             `password` TEXT   DEFAULT NULL,
                             `role_id` INTEGER DEFAULT NULL ,
                             `realname` TEXT   DEFAULT ''
-
 );
 CREATE UNIQUE INDEX gm_user_username on gm_user ( `username`);
 INSERT INTO `gm_user` VALUES (1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 1, '肖文龙');
+DROP TABLE IF EXISTS `gm_timed_list`;
+CREATE TABLE `gm_timed_list`  (
+                            `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                            `action` TEXT   DEFAULT NULL,
+                            `exec_time` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                            `exec_time_format` TEXT NOT NULL DEFAULT '' ,
+                            `status` INTEGER NOT NULL DEFAULT '0',
+                            `task_id` TEXT NOT NULL DEFAULT '' ,
+                            `msg` TEXT NOT NULL DEFAULT '' ,
+                            `extra` TEXT NOT NULL DEFAULT '' ,
+                            `updated` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                            `created` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                            `data` TEXT  NOT NULL   DEFAULT ''
+);
+DROP TABLE IF EXISTS `datax_link_info`;
+CREATE TABLE `datax_link_info`  (
+                                  `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                                  `ip` TEXT   DEFAULT NULL,
+                                  `port` INTEGER NOT NULL DEFAULT '0',
+                                  `db_name` TEXT NOT NULL DEFAULT '' ,
+                                  `username` TEXT NOT NULL DEFAULT '' ,
+                                  `pwd` TEXT NOT NULL DEFAULT '' ,
+                                  `remark` TEXT NOT NULL DEFAULT '' ,
+                                  `typ`  TEXT NOT NULL DEFAULT '' ,
+                                  `updated` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                                  `created` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+CREATE UNIQUE INDEX link_remark_uniq on datax_link_info ( `remark`,`typ`);

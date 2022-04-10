@@ -93,7 +93,7 @@ func (this RoleController) RolesAddAction(ctx *Ctx) error {
 		}
 	}()
 
-	return this.Success(ctx, response.OperateSuccess, map[string]interface{}{"id": id})
+	return this.Success(ctx, response.OperateSuccess, util.Map{"id": id})
 }
 
 // 修改GM角色

@@ -25,6 +25,7 @@ export function SnapshotCreateRepositoryAction(data) {
     data
   })
 }
+
 export function SnapshotDeleteRepositoryAction(data) {
   return request({
     url: api + 'SnapshotDeleteRepositoryAction',
@@ -56,6 +57,7 @@ export function SnapshotDeleteAction(data) {
     data
   })
 }
+
 export function SnapshotDetailAction(data) {
   return request({
     url: api + 'SnapshotDetailAction',
@@ -63,6 +65,7 @@ export function SnapshotDetailAction(data) {
     data
   })
 }
+
 export function SnapshotRestoreAction(data) {
   return request({
     url: api + 'SnapshotRestoreAction',

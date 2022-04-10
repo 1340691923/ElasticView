@@ -9,6 +9,7 @@ export function ListAction(data) {
     data
   })
 }
+
 export function UpdateMappingAction(data) {
   return request({
     url: api + 'UpdateMappingAction',

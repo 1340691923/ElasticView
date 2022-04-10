@@ -36,6 +36,7 @@ const (
 	DeleteSuccess  = "删除成功"
 	OperateSuccess = "操作成功"
 	LogoutSuccess  = "注销成功"
+	LinkSuccess    = "连接成功"
 )
 
 func (this *Response) JsonDealErr(err error) string {
