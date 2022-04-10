@@ -6,6 +6,7 @@ import (
 	"github.com/1340691923/ElasticView/engine/es"
 	"github.com/1340691923/ElasticView/platform-basic-libs/response"
 	es2 "github.com/1340691923/ElasticView/platform-basic-libs/service/es"
+	"github.com/1340691923/ElasticView/platform-basic-libs/util"
 	"github.com/cch123/elasticsql"
 	. "github.com/gofiber/fiber/v2"
 )
@@ -110,7 +111,7 @@ func (this EsController) SqlToDslAction(ctx *Ctx) error {
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	return this.Success(ctx, "转换成功!", map[string]interface{}{
+	return this.Success(ctx, "转换成功!", util.Map{
 		"dsl":       dsl,
 		"tableName": table,
 	})

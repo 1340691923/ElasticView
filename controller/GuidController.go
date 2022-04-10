@@ -8,6 +8,7 @@ import (
 	"github.com/1340691923/ElasticView/platform-basic-libs/util"
 	. "github.com/gofiber/fiber/v2"
 	"strings"
+	"time"
 )
 
 // 引导控制器
@@ -29,12 +30,13 @@ func (this GuidController) Finish(ctx *Ctx) error {
 	}
 	_, err = db.SqlBuilder.
 		Insert(gmGuidModel.TableName()).
-		SetMap(map[string]interface{}{
+		SetMap(util.Map{
 			"uid":       c.ID,
 			"guid_name": gmGuidModel.GuidName,
+			"created":   time.Now().Format(util.TimeFormat),
 		}).RunWith(db.Sqlx).Exec()
 
-	if err != nil && (strings.Contains(err.Error(), "Error 1062") || strings.Contains(err.Error(), "UNIQUE") )  {
+	if err != nil && (strings.Contains(err.Error(), "Error 1062") || strings.Contains(err.Error(), "UNIQUE")) {
 		return this.Error(ctx, err)
 	}
 	return this.Success(ctx, response.OperateSuccess, nil)

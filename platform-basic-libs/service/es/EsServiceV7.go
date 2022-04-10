@@ -15,6 +15,7 @@ import (
 	"github.com/1340691923/ElasticView/platform-basic-libs/service/es/es6_utils"
 	"github.com/1340691923/ElasticView/platform-basic-libs/service/es_optimize"
 	"github.com/1340691923/ElasticView/platform-basic-libs/service/es_settings"
+	"github.com/1340691923/ElasticView/platform-basic-libs/util"
 	"github.com/gofiber/fiber/v2"
 	jsoniter "github.com/json-iterator/go"
 	"github.com/olivere/elastic/v7"
@@ -50,7 +51,7 @@ func (this EsServiceV7) CrudGetList(ctx *fiber.Ctx, crudFilter *es.CrudFilter) (
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	return this.Success(ctx, response.SearchSuccess, map[string]interface{}{"list": res, "count": res.Hits.TotalHits.Value})
+	return this.Success(ctx, response.SearchSuccess, util.Map{"list": res, "count": res.Hits.TotalHits.Value})
 }
 
 func (this EsServiceV7) CreateSnapshot(ctx *fiber.Ctx, createSnapshot *es.CreateSnapshot) (err error) {
@@ -255,7 +256,7 @@ func (this EsServiceV7) RunDsl(ctx *fiber.Ctx, esRest *es.EsRest) (err error) {
 	}
 
 	if res.StatusCode != 200 && res.StatusCode != 201 {
-		return this.Output(ctx, map[string]interface{}{
+		return this.Output(ctx, util.Map{
 			"code": res.StatusCode,
 			"msg":  fmt.Sprintf("请求异常! 错误码 :" + strconv.Itoa(res.StatusCode)),
 			"data": res.Body,
@@ -287,9 +288,9 @@ func (this EsServiceV7) RecoverCanWrite(ctx *fiber.Ctx) (err error) {
 	res, err := this.esClient.PerformRequest(ctx.Context(), elasticV7.PerformRequestOptions{
 		Method: "PUT",
 		Path:   "/_settings",
-		Body: map[string]interface{}{
-			"index": map[string]interface{}{
-				"blocks": map[string]interface{}{
+		Body: util.Map{
+			"index": util.Map{
+				"blocks": util.Map{
 					"read_only_allow_delete": "false",
 				},
 			},
@@ -297,7 +298,7 @@ func (this EsServiceV7) RecoverCanWrite(ctx *fiber.Ctx) (err error) {
 	})
 
 	if res.StatusCode != 200 && res.StatusCode != 201 {
-		return this.Output(ctx, map[string]interface{}{
+		return this.Output(ctx, util.Map{
 			"code": res.StatusCode,
 			"msg":  fmt.Sprintf("请求异常! 错误码 :" + strconv.Itoa(res.StatusCode)),
 			"data": res.Body,
@@ -348,7 +349,7 @@ func (this EsServiceV7) EsIndexCreate(ctx *fiber.Ctx, esIndexInfo *es.EsIndexInf
 		}
 
 	} else {
-		res, err = this.esClient.CreateIndex(esIndexInfo.IndexName).BodyJson(map[string]interface{}{
+		res, err = this.esClient.CreateIndex(esIndexInfo.IndexName).BodyJson(util.Map{
 			"settings": esIndexInfo.Settings,
 		}).Do(ctx.Context())
 		if err != nil {
@@ -533,14 +534,14 @@ func (this EsServiceV7) EsMappingList(ctx *fiber.Ctx, esConnect *es.EsMapGetProp
 			return this.Error(ctx, err)
 		}
 
-		return this.Success(ctx, response.SearchSuccess, map[string]interface{}{"list": res, "ver": 7})
+		return this.Success(ctx, response.SearchSuccess, util.Map{"list": res, "ver": 7})
 	} else {
 		res, err := this.esClient.GetMapping().Index(esConnect.IndexName).Do(ctx.Context())
 		if err != nil {
 			return this.Error(ctx, err)
 		}
 
-		return this.Success(ctx, response.SearchSuccess, map[string]interface{}{"list": res, "ver": 7})
+		return this.Success(ctx, response.SearchSuccess, util.Map{"list": res, "ver": 7})
 	}
 }
 
@@ -628,7 +629,7 @@ func (this EsServiceV7) SnapshotRepositoryList(ctx *fiber.Ctx, esSnapshotInfo *e
 		list = append(list, t)
 	}
 
-	return this.Success(ctx, response.SearchSuccess, map[string]interface{}{
+	return this.Success(ctx, response.SearchSuccess, util.Map{
 		"list":     list,
 		"res":      res,
 		"pathRepo": pathRepo,
@@ -644,7 +645,7 @@ func (this EsServiceV7) SnapshotCreateRepository(ctx *fiber.Ctx, snapshotCreateR
 	pathRepo := clusterSettings.GetPathRepo()
 	getAllowedUrls := clusterSettings.GetAllowedUrls()
 
-	settings := map[string]interface{}{}
+	settings := util.Map{}
 
 	if snapshotCreateRepository.Compress != "" {
 		compress := snapshotCreateRepository.Compress
@@ -722,4 +723,3 @@ func NewEsServiceV7(connect *es.EsConnect) (service EsInterface, err error) {
 
 	return &EsServiceV7{esClient: esClinet}, nil
 }
-

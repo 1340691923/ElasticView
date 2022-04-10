@@ -9,9 +9,9 @@ type Config struct {
 		StorageDays int    `json:"storageDays"`
 		LogDir      string `json:"logDir"`
 	} `json:"log"`
-	Port  int `json:"port"`
+	Port   int    `json:"port"`
 	DbType string `json:"dbType"`
-	Sqlite struct{
+	Sqlite struct {
 		DbPath string `json:"dbPath"`
 	} `json:"sqlite"`
 	Mysql struct {
@@ -24,20 +24,17 @@ type Config struct {
 		MaxIdleConns int    `json:"maxIdleConns"`
 	} `json:"mysql"`
 	AppSecret string `json:"appSecret"`
-	DeBug bool `json:"deBug"`
+	DeBug     bool   `json:"deBug"`
 }
 
 const (
-	MysqlDbTyp = "mysql"
+	MysqlDbTyp  = "mysql"
 	SqliteDbTyp = "sqlite3"
 )
 
-func(this *Config) GetDbType()string{
-	if this.DbType == "mysql"{
+func (this *Config) GetDbType() string {
+	if this.DbType == "mysql" {
 		return MysqlDbTyp
 	}
 	return SqliteDbTyp
 }
-
-
-

@@ -6,10 +6,12 @@
           <div class="main_xwl">
             <span class="title_xwl" style="color: #202d3f">&nbsp;&nbsp;数据管理</span>
           </div>
-          <div class="actions_xwl" />
+          <div class="actions_xwl" >
+            <el-button type="primary" @click.native="showIndexSettings = true">显示该索引结构</el-button>
+          </div>
         </div>
       </div>
-      <split-pane :min-percent="4" :default-percent="20" split="vertical">
+      <split-pane :min-percent="4" :default-percent="15" split="vertical">
         <template slot="paneL">
           <div
             id="scollL"
@@ -52,45 +54,60 @@
             </div>
           </div>
         </template>
-        <template slot="paneR">
-          <split-pane :default-percent="80" :min-percent="3" split="vertical">
-            <template slot="paneL">
-              <div
-                style="width: 100%;height: calc(100% - 80px); overflow-x: hidden; overflow-y: auto;padding: 10px"
-              >
+        <template  slot="paneR">
+          <div
+            style="width: 100%;height: calc(100% - 80px); overflow-x: hidden; overflow-y: auto;padding: 10px"
+          >
 
-                <crud v-if="refreshTab" :attr-map-prop="attrMap" :event-attr-options-prop="eventAttrOptions" :index-name="currentIndexName" />
-              </div>
+            <crud v-if="refreshTab" :attr-map-prop="attrMap" :event-attr-options-prop="eventAttrOptions" :index-name="currentIndexName" />
+          </div>
+          <el-drawer
+            ref="drawer"
+            title="索引结构"
+            :before-close="drawerHandleClose"
+            :visible.sync="showIndexSettings"
+
+            direction="rtl"
+            close-on-press-escape
+            destroy-on-close
+            size="50%"
+          >
+            <div
+                 style="height: 95%;width: 100px;display: inline-block; height: 100%;vertical-align: top;width: 100%;background: white;"
+            >
+              <el-tabs v-model="activeName" v-loading="tabLoading" type="border-card">
+                <el-tab-pane label="索引设置" name="settings">
+                  <json-editor
+                    v-if="refreshTab"
+                    v-model="JSON.stringify(currentSettings,null, '\t')"
+                    height="720"
+                    styles="width: 100%"
+                    :read="true"
+                    :title="currentIndexName"
+                  />
+                </el-tab-pane>
+                <el-tab-pane label="映射结构" name="mappings">
+                  <json-editor
+                    v-if="refreshTab"
+                    v-model="JSON.stringify(currentMappings,null, '\t')"
+                    height="720"
+                    styles="width: 100%"
+                    :read="true"
+                    :title="currentIndexName"
+                  />
+                </el-tab-pane>
+              </el-tabs>
+            </div>
+
+          </el-drawer>
+<!--          <split-pane :default-percent="98" :min-percent="2" split="vertical">
+            <template slot="paneL">
+
             </template>
             <template slot="paneR">
-              <div
-                style="height: 95%;width: 100px;display: inline-block; height: 100%;vertical-align: top;width: 100%;background: white;"
-              >
-                <el-tabs v-model="activeName" v-loading="tabLoading" type="border-card">
-                  <el-tab-pane label="索引设置" name="settings">
-                    <json-editor
-                      v-if="refreshTab"
-                      v-model="JSON.stringify(currentSettings,null, '\t')"
-                      height="720"
-                      styles="width: 100%"
-                      :read="true"
-                      :title="currentIndexName"
-                    />
-                  </el-tab-pane>
-                  <el-tab-pane label="映射结构" name="mappings">
-                    <json-editor
-                      v-if="refreshTab"
-                      v-model="JSON.stringify(currentMappings,null, '\t')"
-                      height="720"
-                      styles="width: 100%"
-                      :read="true"
-                      :title="currentIndexName"
-                    />
-                  </el-tab-pane>
-                </el-tabs>
-              </div>
+
             </template>
-          </split-pane>
+          </split-pane>-->
         </template>
       </split-pane>
     </div>
@@ -123,6 +140,7 @@ export default {
       currentIndexName: '',
       currentSettings: {},
       eventAttrOptions: [],
+      showIndexSettings:false,
       attrMap: []
     }
   },

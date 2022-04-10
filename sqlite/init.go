@@ -17,7 +17,7 @@ var SqlByte []byte
 //初始化sqlite数据
 func Init() {
 
-	if util.CheckFileIsExist("lock"){
+	if util.CheckFileIsExist("lock") {
 		return
 	}
 

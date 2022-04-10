@@ -4,6 +4,7 @@ import (
 	"github.com/1340691923/ElasticView/model"
 	"github.com/1340691923/ElasticView/platform-basic-libs/jwt"
 	"github.com/1340691923/ElasticView/platform-basic-libs/response"
+	"github.com/1340691923/ElasticView/platform-basic-libs/util"
 	. "github.com/gofiber/fiber/v2"
 )
 
@@ -33,7 +34,7 @@ func (this DslHistoryController) ListAction(ctx *Ctx) error {
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	return this.Success(ctx, response.SearchSuccess, map[string]interface{}{"list": list, "count": count})
+	return this.Success(ctx, response.SearchSuccess, util.Map{"list": list, "count": count})
 }
 
 // 清空DSL查询记录

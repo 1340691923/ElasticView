@@ -6,24 +6,24 @@ import (
 	"github.com/1340691923/ElasticView/engine/logs"
 	"github.com/1340691923/ElasticView/model"
 	"github.com/1340691923/ElasticView/platform-basic-libs/rbac"
+	"github.com/1340691923/ElasticView/platform-basic-libs/service/timing"
 	"github.com/1340691923/ElasticView/platform-basic-libs/util"
 	sql2 "github.com/1340691923/ElasticView/sqlite"
 	"log"
 	"strconv"
 )
 
-
 // 初始化日志
-func  InitLogs() (err error) {
+func InitLogs() (err error) {
 	logger := logs.NewLog(
 		logs.WithLogPath(GlobConfig.Log.LogDir),
 		logs.WithStorageDays(GlobConfig.Log.StorageDays),
 	)
 	logs.Logger, err = logger.InitLog()
-	if err!=nil{
+	if err != nil {
 		return
 	}
-	log.Println(fmt.Sprintf("日志组件初始化成功！日志所在目录：%v，保存天数为：%v",GlobConfig.Log.LogDir,GlobConfig.Log.StorageDays))
+	log.Println(fmt.Sprintf("日志组件初始化成功！日志所在目录：%v，保存天数为：%v", GlobConfig.Log.LogDir, GlobConfig.Log.StorageDays))
 	return
 }
 
@@ -34,8 +34,8 @@ func InitSqlx() (err error) {
 	driverType := GlobConfig.DbType
 	var dbSource string
 	if driverType == SqliteDbTyp {
-		dbSource = GlobConfig.Sqlite.DbPath
-	}else{
+		dbSource = GlobConfig.Sqlite.DbPath + "?_loc=Local"
+	} else {
 		dbSource = fmt.Sprintf(
 			"%s:%s@tcp(%s:%s)/%s",
 			config.Username,
@@ -45,14 +45,13 @@ func InitSqlx() (err error) {
 			config.DbName)
 	}
 
-
 	db.Sqlx, err = db.NewSQLX(
 		driverType,
 		dbSource,
 		config.MaxOpenConns,
 		config.MaxIdleConns,
 	)
-	if err!=nil{
+	if err != nil {
 		return
 	}
 	log.Println(fmt.Sprintf("%v组件初始化成功！连接：%v，最大打开连接数：%v，最大等待连接数:%v",
@@ -60,7 +59,7 @@ func InitSqlx() (err error) {
 		dbSource,
 		config.MaxOpenConns,
 		config.MaxIdleConns,
-		))
+	))
 	return
 }
 
@@ -76,18 +75,32 @@ func InitTask() (err error) {
 	if err = esLinkModel.FlushEsLinkList(); err != nil {
 		return err
 	}
+
+	//计划任务
+	scheduler := timing.GetTaskSchedulerInstance()
+	go scheduler.Start()
+	gmTimedList := model.GmTimedList{}
+	timedList, err := gmTimedList.GetTaskList()
+	if err != nil {
+		logs.Logger.Sugar().Errorf("err", err)
+		return
+	}
+	for _, timed := range timedList {
+		timing.AddTask(timed.Action, timed.Data, timed.TaskId, timed.ExecTime)
+	}
+
 	return err
 }
 
 // 初始化项目启动任务
-func  InitRbac() (err error) {
+func InitRbac() (err error) {
 
 	config := GlobConfig.Mysql
 	driverType := GlobConfig.DbType
 	var dbSource string
 	if driverType == SqliteDbTyp {
-		dbSource = GlobConfig.Sqlite.DbPath
-	}else{
+		dbSource = GlobConfig.Sqlite.DbPath + "?_loc=Local"
+	} else {
 		dbSource = fmt.Sprintf(
 			"%s:%s@tcp(%s:%s)/%s",
 			config.Username,
@@ -97,8 +110,8 @@ func  InitRbac() (err error) {
 			config.DbName)
 	}
 
-	err = rbac.Run(driverType,dbSource)
-	if err!=nil{
+	err = rbac.Run(driverType, dbSource)
+	if err != nil {
 		return
 	}
 	log.Println(fmt.Sprintf("Rbac组件初始化成功！连接：%v",
@@ -107,9 +120,9 @@ func  InitRbac() (err error) {
 	return
 }
 
-func InitOpenWinBrowser()(err error){
+func InitOpenWinBrowser() (err error) {
 	config := GlobConfig
-	if !config.DeBug{
+	if !config.DeBug {
 		port := ":" + strconv.Itoa(config.Port)
 		uri := fmt.Sprintf("%s%s", "http://127.0.0.1", port)
 		util.OpenWinBrowser(uri)

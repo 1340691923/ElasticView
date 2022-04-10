@@ -29,7 +29,6 @@ export const asyncRoutes = [
         name: 'user',
         meta: {
           title: '用户管理',
-
           icon: 'el-icon-user'
         }
       }
@@ -199,7 +198,46 @@ export const asyncRoutes = [
         }
       }
     ]
-  }
+  },
+  {
+    path: '/tools',
+    component: 'layout',
+    redirect: '/datax/index',
+    alwaysShow: true,
+    meta: {
+      title: '数据抽取',
+      icon: 'el-icon-copy-document'
+    },
+    children: [
+     /* {
+        path: 'crontab',
+        component: 'views/crontab/index',
+        name: 'crontab',
+        meta: {
+          title: '计划任务',
+          icon: 'el-icon-first-aid-kit'
+        }
+      },*/
+      {
+        path: 'list',
+        component: 'views/datax/list',
+        name: 'list',
+        meta: {
+          title: '操作列表',
+          icon: 'el-icon-shopping-bag-2'
+        }
+      },
+      {
+        path: 'link',
+        component: 'views/datax/link',
+        name: 'link',
+        meta: {
+          title: '数据源',
+          icon: 'el-icon-shopping-bag-2'
+        }
+      }
+    ]
+  },
 ]
 // todo ...    映射增删改查    查询可视化   监控数据可视化
 
@@ -217,6 +255,9 @@ export const RoutesComponentmaps = {
   'views/task/index': () => import('@/views/task/index'),
   'views/back-up/index': () => import('@/views/back-up/index'),
   'views/back-up/snapshot': () => import('@/views/back-up/snapshot'),
-  'views/navicat/index': () => import('@/views/navicat/index')
+  'views/navicat/index': () => import('@/views/navicat/index'),
+  'views/crontab/index': () => import('@/views/crontab/index'),
+  'views/datax/link': () => import('@/views/datax/link'),
+  'views/datax/list': () => import('@/views/datax/list'),
 }
 

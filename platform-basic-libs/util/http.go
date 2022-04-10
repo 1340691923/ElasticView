@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"github.com/gofiber/fiber/v2"
 	"io"
 	"io/ioutil"
 	"net"
@@ -13,7 +14,6 @@ import (
 	"strconv"
 	"strings"
 
-	. "github.com/gofiber/fiber/v2"
 	jsoniter "github.com/json-iterator/go"
 	"github.com/valyala/fasthttp"
 )
@@ -389,7 +389,7 @@ func FormIntDefault(r *http.Request, key string, def int) int {
 }
 
 // FormIntDefault 获取Form参数 如果出错则返回默认值
-func CtxFormIntDefault(ctx *Ctx, key string, def int) int {
+func CtxFormIntDefault(ctx *fiber.Ctx, key string, def int) int {
 	i, err := strconv.Atoi(ctx.FormValue(key))
 	if err != nil {
 		return def
@@ -461,6 +461,6 @@ func FormFileValues(r *http.Request, key string) ([]string, error) {
 	return nil, http.ErrMissingFile
 }
 
-func GetToken(ctx *Ctx) (token string) {
+func GetToken(ctx *fiber.Ctx) (token string) {
 	return ctx.Get("X-Token")
 }

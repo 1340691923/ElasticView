@@ -21,7 +21,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- Table structure for es_link
 -- ----------------------------
 DROP TABLE IF EXISTS `es_link`;
-CREATE TABLE `es_link`  (
+CREATE TABLE `es_link`  ( 
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `ip` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `user` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
@@ -101,5 +101,20 @@ CREATE TABLE `gm_user`  (
 -- Records of gm_user
 -- ----------------------------
 INSERT INTO `gm_user` VALUES (1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 1, '肖文龙');
+
+CREATE TABLE `gm_timed_list` (
+                                `task_id` varchar(128) NOT NULL COMMENT '执行命令',
+                                 `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+                                 `action` varchar(128) NOT NULL COMMENT '执行命令',
+                                 `exec_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '执行时间',
+                                 `exec_time_format` varchar(256) NOT NULL DEFAULT '' COMMENT '执行时间',
+                                 `status` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '0等待直行1正在执行2成功3失败4取消',
+                                 `msg` varchar(256) NOT NULL DEFAULT '' COMMENT '执行状态说明',
+                                 `extra` varchar(128) NOT NULL DEFAULT '' COMMENT '动作的额外字段，不用于数据存储',
+                                 `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                                 `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                                 `data` text NOT NULL COMMENT '储存执行命令的数据',
+                                 PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC
 
 SET FOREIGN_KEY_CHECKS = 1;

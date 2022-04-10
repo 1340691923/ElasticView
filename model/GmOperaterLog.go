@@ -26,7 +26,7 @@ func (this *GmOperaterLog) Insert() (err error) {
 	if err != nil {
 		return
 	}
-	_, err = db.SqlBuilder.Insert(this.TableName()).SetMap(map[string]interface{}{
+	_, err = db.SqlBuilder.Insert(this.TableName()).SetMap(util.Map{
 		"operater_name":    this.OperaterName,
 		"operater_id":      this.OperaterId,
 		"operater_action":  this.OperaterAction,

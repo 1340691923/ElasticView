@@ -4,7 +4,7 @@ export function login(data) {
   return request({
     url: '/api/gm_user/login',
     method: 'post',
-     data
+    data
   })
 }
 

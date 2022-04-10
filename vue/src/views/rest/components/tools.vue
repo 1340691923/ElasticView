@@ -104,7 +104,7 @@
     <json-editor
       v-model="input.body"
       font-size="15"
-      height="720"
+      height="1200"
       class="req-body"
       styles="width: 30%"
       :point-out="pointOut"
@@ -115,7 +115,7 @@
     <json-editor
       v-model="resData"
       font-size="15"
-      height="720"
+      height="1200"
       class="res-body"
       styles="width: 70%"
       :read="true"

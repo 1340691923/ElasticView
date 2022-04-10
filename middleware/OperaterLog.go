@@ -20,8 +20,8 @@ func OperaterLog(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	parmasMap := map[string]interface{}{}
-	bodyMap := map[string]interface{}{}
+	parmasMap := util.Map{}
+	bodyMap := util.Map{}
 
 	err = ctx.BodyParser(bodyMap)
 	if err != nil {
