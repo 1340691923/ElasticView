@@ -449,7 +449,7 @@
               }
             }
             this.tableHeader = tmpTableHeader
-          } else if (data.ver == 7) {
+          } else if (data.ver == 7 || data.ver == 8) {
             const tableHeader = Object.keys(data.list[input['index_name']].mappings.properties)
             this.properties = data.list[input['index_name']].mappings.properties
             console.log("properties",data.list[input['index_name']])

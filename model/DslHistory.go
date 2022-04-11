@@ -3,6 +3,8 @@ package model
 
 import (
 	"github.com/1340691923/ElasticView/engine/db"
+	"github.com/1340691923/ElasticView/platform-basic-libs/util"
+	"time"
 )
 
 /* http://sql2struct.atotoa.com 根据表结构生成 go结构体
@@ -29,11 +31,12 @@ func (this *GmDslHistoryModel) TableName() string {
 func (this *GmDslHistoryModel) Insert() (err error) {
 	_, err = db.SqlBuilder.
 		Insert(this.TableName()).
-		SetMap(map[string]interface{}{
-			"uid":    this.Uid,
-			"method": this.Method,
-			"path":   this.Path,
-			"body":   this.Body,
+		SetMap(util.Map{
+			"uid":     this.Uid,
+			"method":  this.Method,
+			"path":    this.Path,
+			"body":    this.Body,
+			"created": time.Now().Format(util.TimeFormat),
 		}).RunWith(db.Sqlx).Exec()
 	return
 }

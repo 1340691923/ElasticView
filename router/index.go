@@ -30,7 +30,7 @@ func Init() *App {
 	app.All("/api/gm_user/login", UserController{}.Login)
 
 	app.Use(Timer)
-	//app.Use(JwtMiddleware)
+	app.Use(JwtMiddleware)
 	app.Use(Rbac)
 
 	return runRouterGroupFn(
@@ -46,6 +46,8 @@ func Init() *App {
 		runEsBackUp,
 		runEsDoc,
 		runEsCrud,
+		runTiming,
+		runDatax,
 	)
 }
 

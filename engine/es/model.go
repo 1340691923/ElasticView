@@ -1,5 +1,7 @@
 package es
 
+import "github.com/1340691923/ElasticView/platform-basic-libs/util"
+
 //一些需要用到的结构
 
 type Json map[string]interface{}
@@ -235,5 +237,5 @@ type EsReIndexInfo struct {
 		Refresh             string `json:"refresh"`
 		WaitForCompletion   *bool  `json:"wait_for_completion"`
 	} `json:"url_values"`
-	Body map[string]interface{} `json:"body"`
+	Body util.Map `json:"body"`
 }

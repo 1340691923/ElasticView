@@ -21,7 +21,7 @@ func Rbac(ctx *fiber.Ctx) error {
 	claims, err = jwt.ParseToken(token)
 	if err != nil {
 		logs.Logger.Sugar().Errorf("jwt err:%s", err.Error())
-		return err
+		return res.Error(ctx, err)
 	}
 	obj := ctx.Path()
 

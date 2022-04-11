@@ -3,7 +3,7 @@
     <div class="filter-container">
       <el-button
         class="filter-item"
-
+        type="small"
         @click="addTab()"
       >
         添加查询窗口

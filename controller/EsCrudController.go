@@ -4,7 +4,6 @@ import (
 	"github.com/1340691923/ElasticView/engine/es"
 	es2 "github.com/1340691923/ElasticView/platform-basic-libs/service/es"
 	"github.com/gofiber/fiber/v2"
-	"log"
 )
 
 // ES CRUD操作
@@ -28,7 +27,6 @@ func (this EsCrudController) GetList(ctx *fiber.Ctx) error {
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	log.Println(crudFilter)
 
 	return esService.CrudGetList(ctx, crudFilter)
 }

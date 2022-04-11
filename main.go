@@ -5,15 +5,16 @@ import (
 	"github.com/1340691923/ElasticView/application"
 	"github.com/1340691923/ElasticView/engine/logs"
 	"github.com/1340691923/ElasticView/router"
+	_ "github.com/ClickHouse/clickhouse-go"
+	_ "github.com/denisenkom/go-mssqldb"
+	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/logoove/sqlite"
+	"go.uber.org/zap"
 	"log"
 	"os"
 	"os/signal"
 	"strconv"
 	"syscall"
-
-	_ "github.com/go-sql-driver/mysql"
-
-	"go.uber.org/zap"
 )
 
 var (
@@ -39,7 +40,8 @@ func main() {
 		application.WithConfigFileName(configFileName),
 		application.WithConfigFileExt(configFileExt),
 		application.RegisterInitFnObserver(application.InitLogs),
-		application.RegisterInitFnObserver(application.InitMysql),
+		application.RegisterInitFnObserver(application.InitSqlx),
+		application.RegisterInitFnObserver(application.InitSqliteData),
 		application.RegisterInitFnObserver(application.InitTask),
 		application.RegisterInitFnObserver(application.InitRbac),
 		application.RegisterInitFnObserver(application.InitOpenWinBrowser),

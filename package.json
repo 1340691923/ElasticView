@@ -1,6 +1,0 @@
-{
-  "dependencies": {
-    "ant-design-vue": "^1.7.8",
-    "vue-splitpane": "^1.0.6"
-  }
-}
