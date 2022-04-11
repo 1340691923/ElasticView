@@ -8,20 +8,22 @@ import (
 
 type Datasource interface {
 	Ping() error
+	GetTables() ([]string, error)
+	GetTableColumns(tableName string) (interface{}, error)
 }
 
 const (
 	MysqlSource = "mysql"
-	MssqlSource = "sqlserver"
-	CkSource    = "clickhouse"
-	MongoSource = "mongodb"
+	//MssqlSource = "sqlserver"
+	CkSource = "clickhouse"
+	//MongoSource = "mongodb"
 )
 
 var DataSourceMap = map[string]func(data request.DataxInfoTestLinkReq) Datasource{
 	MysqlSource: NewMysql,
-	MssqlSource: NewMssql,
-	CkSource:    NewClickhouse,
-	MongoSource: NewMongoDb,
+	//MssqlSource: NewMssql,
+	CkSource: NewClickhouse,
+	//MongoSource: NewMongoDb,
 }
 
 func NewDataSource(data request.DataxInfoTestLinkReq) (i Datasource, err error) {
