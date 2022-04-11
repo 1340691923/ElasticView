@@ -41,7 +41,7 @@ func (this UserController) Login(ctx *Ctx) error {
 		err = my_error.NewBusiness(gm_user.AUTH_ERROR, gm_user.ERROR_AUTH)
 		return this.Error(ctx, err)
 	}
-	return this.Success(ctx, "登录成功", map[string]interface{}{"token": token})
+	return this.Success(ctx, "登录成功", util.Map{"token": token})
 }
 
 // 用户详细信息
@@ -56,7 +56,7 @@ func (this UserController) UserInfo(ctx *Ctx) error {
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	return this.Success(ctx, "登录成功", map[string]interface{}{"roles": []string{"admin"}, "introduction": info.Description, "name": info.RoleName, "list": info.RoleList, "avatar": ""})
+	return this.Success(ctx, "登录成功", util.Map{"roles": []string{"admin"}, "introduction": info.Description, "name": info.RoleName, "list": info.RoleList, "avatar": ""})
 }
 
 //退出登录

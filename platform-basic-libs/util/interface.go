@@ -31,4 +31,3 @@ func isSlice(arg interface{}) (val reflect.Value, ok bool) {
 
 	return
 }
-

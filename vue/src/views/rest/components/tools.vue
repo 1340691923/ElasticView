@@ -39,7 +39,7 @@
         class="filter-item go"
         style="display: inline;"
         :loading="loading"
-        type="success"
+        type="primary"
         icon="el-icon-right"
         @click="go"
       >GO
@@ -104,7 +104,7 @@
     <json-editor
       v-model="input.body"
       font-size="15"
-      height="720"
+      height="1200"
       class="req-body"
       styles="width: 30%"
       :point-out="pointOut"
@@ -115,7 +115,7 @@
     <json-editor
       v-model="resData"
       font-size="15"
-      height="720"
+      height="1200"
       class="res-body"
       styles="width: 70%"
       :read="true"

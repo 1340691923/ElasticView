@@ -238,7 +238,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column align="center" label="操作" fixed="right" width="400">
+        <el-table-column align="center" label="操作" fixed="right" width="380">
           <template slot-scope="scope">
 
             <el-button-group>
@@ -637,8 +637,14 @@ export default {
       const input = {}
       input['es_connect'] = this.$store.state.baseData.EsConnectID
       input['index_name'] = this.indexName
-      input['type_name'] = activeDataKeys[0]
-      input['properties'] = activeData[activeDataKeys[0]]
+
+      if(activeData[activeDataKeys[0]].toString() != "false"){
+        input['properties'] = activeData[activeDataKeys[0]]
+        input['type_name'] = activeDataKeys[0]
+      }else{
+        input['properties'] = activeData
+      }
+
       this.loadingGroup['saveMappinng'] = true
       const { data, code, msg } = await UpdateMappingAction(input)
       this.loadingGroup['saveMappinng'] = false
