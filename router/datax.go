@@ -37,6 +37,29 @@ func runDatax(app *App) {
 			AbsolutePath: AbsolutePath,
 			RelativePath: "TestLink",
 		}, es.(*Group), true, DataxController{}.TestLink)
-
+		apiRouterConfig.MountApi(api_config.MountApiBasePramas{
+			Remark:       "数据抽取源数据库下拉选",
+			Method:       api_config.MethodPost,
+			AbsolutePath: AbsolutePath,
+			RelativePath: "LinkSelectOpt",
+		}, es.(*Group), true, DataxController{}.LinkSelectOpt)
+		apiRouterConfig.MountApi(api_config.MountApiBasePramas{
+			Remark:       "获取数据抽取源数据表名",
+			Method:       api_config.MethodPost,
+			AbsolutePath: AbsolutePath,
+			RelativePath: "Tables",
+		}, es.(*Group), true, DataxController{}.Tables)
+		apiRouterConfig.MountApi(api_config.MountApiBasePramas{
+			Remark:       "获取数据抽取源数据表字段",
+			Method:       api_config.MethodPost,
+			AbsolutePath: AbsolutePath,
+			RelativePath: "GetTableColumns",
+		}, es.(*Group), true, DataxController{}.GetTableColumns)
+		apiRouterConfig.MountApi(api_config.MountApiBasePramas{
+			Remark:       "开始数据抽取任务",
+			Method:       api_config.MethodPost,
+			AbsolutePath: AbsolutePath,
+			RelativePath: "Transfer",
+		}, es.(*Group), true, DataxController{}.Transfer)
 	}
 }

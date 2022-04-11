@@ -35,6 +35,29 @@ export function TestLink(data) {
   })
 }
 
+export function LinkSelectOpt(data) {
+  return request({
+    url: api + 'LinkSelectOpt',
+    method: 'post',
+    data
+  })
+}
+
+export function Tables(data) {
+  return request({
+    url: api + 'Tables',
+    method: 'post',
+    data
+  })
+}
+
+export function GetTableColumns(data) {
+  return request({
+    url: api + 'GetTableColumns',
+    method: 'post',
+    data
+  })
+}
 
 
 

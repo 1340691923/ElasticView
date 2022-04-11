@@ -76,6 +76,90 @@ func (this DataxController) LinkInfoList(ctx *fiber.Ctx) error {
 	})
 }
 
+func (this DataxController) LinkSelectOpt(ctx *fiber.Ctx) error {
+	type D struct {
+		Id     int    `json:"id" db:"id"`
+		Remark string `json:"remark" db:"remark"`
+		Typ    string `json:"typ" db:"typ"`
+	}
+	list := []D{}
+	err := db.Sqlx.Select(&list, "select id,remark,typ from datax_link_info")
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+
+	return this.Success(ctx, response.SearchSuccess, list)
+}
+
+func (this DataxController) Tables(ctx *fiber.Ctx) error {
+	var reqData struct {
+		Id int `json:"id" db:"id"`
+	}
+	if err := ctx.BodyParser(&reqData); err != nil {
+		return this.Error(ctx, err)
+	}
+
+	var obj model.DataxLinkInfoModel
+	err := db.Sqlx.Get(&obj, "select * from datax_link_info where id = ?", reqData.Id)
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+	dataSource, err := data_conversion.NewDataSource(request.DataxInfoTestLinkReq{
+		IP:       obj.Ip,
+		Port:     obj.Port,
+		DbName:   obj.DbName,
+		Username: obj.Username,
+		Pwd:      obj.Pwd,
+		Remark:   obj.Remark,
+		Typ:      obj.Typ,
+	})
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+	tables, err := dataSource.GetTables()
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+	return this.Success(ctx, response.SearchSuccess, tables)
+}
+
+func (this DataxController) GetTableColumns(ctx *fiber.Ctx) error {
+	var reqData struct {
+		Id        int    `json:"id" db:"id"`
+		TableName string `json:"table_name"`
+	}
+	if err := ctx.BodyParser(&reqData); err != nil {
+		return this.Error(ctx, err)
+	}
+
+	var obj model.DataxLinkInfoModel
+	err := db.Sqlx.Get(&obj, "select * from datax_link_info where id = ?", reqData.Id)
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+	dataSource, err := data_conversion.NewDataSource(request.DataxInfoTestLinkReq{
+		IP:       obj.Ip,
+		Port:     obj.Port,
+		DbName:   obj.DbName,
+		Username: obj.Username,
+		Pwd:      obj.Pwd,
+		Remark:   obj.Remark,
+		Typ:      obj.Typ,
+	})
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+	res, err := dataSource.GetTableColumns(reqData.TableName)
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+	return this.Success(ctx, response.SearchSuccess, res)
+}
+
+func (this DataxController) Transfer(ctx *fiber.Ctx) error {
+	return nil
+}
+
 func (this DataxController) InsertLink(ctx *fiber.Ctx) error {
 	var reqData request.DataxInfoInsertReq
 	if err := ctx.BodyParser(&reqData); err != nil {
