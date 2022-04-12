@@ -1,6 +1,13 @@
-﻿技术栈主要用： Vue + golang
+﻿### 求职中，个人微信二维码
+
+![image](http://cdn.ycvod.net/image/weixin.jpg)  
+
+技术栈主要用： Vue + golang
 
 欢迎大家提出自己的issue。
+
+ElasticView
+-----------
 
 ## Quick Start
 1. [应用程序下载地址]( https://gitee.com/cynthia520/elastic-view/releases/)
@@ -16,8 +23,7 @@
 2. docker run -d -p 8090:8090 1340691923/elastic_view:latest
 3. 浏览器访问对应ip:8090，初始用户名：admin，初始密码：admin
 
-ElasticView
------------
+
 [![Go Documentation](http://img.shields.io/badge/go-documentation-blue.svg?style=flat-square)](https://godoc.org/github.com/1340691923/ElasticView)
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)](https://github.com/1340691923/ElasticView/blob/main/LICENSE)
 [![Release](https://img.shields.io/github/release/1340691923/ElasticView.svg?label=Release)](https://gitee.com/cynthia520/elastic-view/releases)
