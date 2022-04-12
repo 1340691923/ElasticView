@@ -101,26 +101,36 @@
         </el-button>
       </download-excel>
     </div>
-    <json-editor
-      v-model="input.body"
-      font-size="15"
-      height="1200"
-      class="req-body"
-      styles="width: 30%"
-      :point-out="pointOut"
-      :read="false"
-      title="请求Body"
-      @getValue="getBody"
-    />
-    <json-editor
-      v-model="resData"
-      font-size="15"
-      height="1200"
-      class="res-body"
-      styles="width: 70%"
-      :read="true"
-      title="返回信息"
-    />
+
+    <split-pane :min-percent="4" style="height: 1300px" :default-percent="50" split="vertical">
+      <template slot="paneL">
+        <json-editor
+          v-model="input.body"
+          font-size="15"
+          height="1200"
+          class="req-body"
+          styles="width: 100%"
+          :point-out="pointOut"
+          :read="false"
+          title="请求Body"
+          @getValue="getBody"
+        />
+      </template>
+      <template slot="paneR">
+        <json-editor
+          v-model="resData"
+          font-size="15"
+          height="1200"
+          class="res-body"
+          styles="width: 100%"
+          :read="true"
+          title="返回信息"
+        />
+      </template>
+    </split-pane>
+
+
+
 
     <el-drawer
       ref="drawer"

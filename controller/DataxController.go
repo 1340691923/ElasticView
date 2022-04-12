@@ -157,6 +157,7 @@ func (this DataxController) GetTableColumns(ctx *fiber.Ctx) error {
 }
 
 func (this DataxController) Transfer(ctx *fiber.Ctx) error {
+
 	return nil
 }
 
