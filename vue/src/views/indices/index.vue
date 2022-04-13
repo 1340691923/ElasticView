@@ -257,7 +257,14 @@
                 @click="openSettingDialog(scope.row.index,'update')"
               >修改配置
               </el-button>
+              <el-button
 
+                type="primary"
+                size="small"
+                icon="el-icon-circle-plus-outline"
+                @click="openMappingEditDialog(scope.row.index,false)"
+              >修改映射
+              </el-button>
               <el-button
                 icon="el-icon-more"
                 type="primary"
@@ -334,6 +341,7 @@
               @getValue="getMapping"
             />
           </el-tab-pane>
+
           <el-tab-pane label="Stats" name="Stats">
             <json-editor
               v-if="activeName == 'Stats'"
@@ -471,7 +479,6 @@
       <mappings
         v-if="openMappings"
         :index-name="indexName"
-        :mappings="mappingInfo"
         :title="mappingTitle"
         :open="openMappings"
         @close="closeMappings"
@@ -545,7 +552,9 @@ export default {
       status: '',
       mappingInfo: {},
       mappings: {},
-      selectIndexList: []
+      selectIndexList: [],
+      openMappings:false,
+      allList:[],
     }
   },
   destroyed() {
@@ -561,6 +570,10 @@ export default {
     this.searchData()
   },
   methods: {
+    openMappingDialog(index){
+      this.indexName = index
+      this.openMappings = true
+    },
     async finishGuid() {
       const { data, code, msg } = await Finish({ 'guid_name': this.modName })
     },
@@ -913,13 +926,18 @@ export default {
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`)
       this.limit = val
-      this.searchData()
+      this.pageLimit()
     },
     // 当当前页改变
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`)
       this.page = val
-      this.searchData()
+      this.pageLimit()
+    },
+    pageLimit(){
+      this.list = this.allList.filter((item, index) =>
+        index < this.page * this.limit && index >= this.limit * (this.page - 1)
+      )
     },
     searchData() {
       this.connectLoading = true
@@ -954,10 +972,9 @@ export default {
             tmpList = list
           }
           tmpList = filterData(tmpList, this.input.trim())
-          this.list = tmpList.filter((item, index) =>
-            index < this.page * this.limit && index >= this.limit * (this.page - 1)
-          )
+          this.allList = tmpList
           this.total = tmpList.length
+          this.pageLimit()
         } else {
           this.$message({
             type: 'error',

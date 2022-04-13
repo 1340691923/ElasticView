@@ -128,10 +128,6 @@
         />
       </template>
     </split-pane>
-
-
-
-
     <el-drawer
       ref="drawer"
       title="Edit SQL"
