@@ -15,7 +15,7 @@
 
             <el-button v-loading="loading" icon="el-icon-check" type="success" size="small" @click="saveMappinng" class="filter-item">保存/修改映射</el-button>
           </div>
-          <VueJsonHelper
+          <vue-json-helper
             v-if="showVueJsonHelper"
             :size="size"
             :names="names"
@@ -37,7 +37,9 @@
 
   export default {
     name: 'Mapping',
-
+    components:{
+     "VueJsonHelper":()=>import("@/views/indices/components/Helper")
+    },
     props: {
       indexName: {
         type: String,
@@ -151,7 +153,6 @@
         }
       },
       refreshVueJsonHelper() {
-        console.log("234")
         this.showVueJsonHelper = false
         this.$nextTick(() => {
           this.showVueJsonHelper = true
