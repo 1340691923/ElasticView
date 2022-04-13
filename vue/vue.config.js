@@ -187,15 +187,15 @@ module.exports = {
         .add('./src/main.js')
 
       // 通过externals加载外部CDN资源----1
-      config.set('externals', {
+     /* config.set('externals', {
         vue: 'Vue',
-        'vue-router': 'VueRouter',
-        axios: 'axios',
-        echarts: 'echarts',
-        nprogress: 'NProgress',
-        vuex:'Vuex',
-        'element-ui': 'ELEMENT',
-      })
+        //'vue-router': 'VueRouter',
+        //axios: 'axios',
+        //echarts: 'echarts',
+        //nprogress: 'NProgress',
+        //vuex:'Vuex',
+        //'element-ui': 'ELEMENT',
+      })*/
     })
 
 

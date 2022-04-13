@@ -6,8 +6,6 @@ import 'normalize.css/normalize.css' // a modern alternative to CSS resets
 
 import '@/styles/index.scss' // global css
 
-import echarts from 'echarts'
-
 import VueIntro from 'vue-introjs'
 Vue.use(VueIntro)
 import 'intro.js/introjs.css'
@@ -17,6 +15,8 @@ Vue.use(VueClipboard)
 
 Vue.config.productionTip = false
 
+import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css'
 
 import Antd from 'ant-design-vue'
 import 'ant-design-vue/dist/antd.css'
@@ -44,7 +44,7 @@ Vue.component('editor', Editor)
 
 import * as filters from './filters' // global filters
 
-Vue.use(ELEMENT, {
+Vue.use(ElementUI, {
   size: Cookies.get('size') || 'medium' // set element-ui default size
 })
 

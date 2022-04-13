@@ -47,6 +47,7 @@ import Screenfull from '@/components/Screenfull'
 import SizeSelect from '@/components/SizeSelect'
 import Search from '@/components/HeaderSearch'
 import SelectLink from '@/components/SelectLink'
+import { mapGetters  } from 'vuex'
 
 export default {
   components: {
@@ -64,7 +65,7 @@ export default {
     }
   },
   computed: {
-    ...Vuex.mapGetters([
+    ...mapGetters ([
       'sidebar',
       'avatar',
       'device',

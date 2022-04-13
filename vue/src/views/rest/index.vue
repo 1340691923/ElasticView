@@ -10,7 +10,6 @@
       </el-button>
     </div>
     <el-card class="box-card">
-
       <el-tabs v-model="editableTabsValue" type="card" closable @tab-remove="removeTab">
         <el-tab-pane
           v-for="(item, index) in editableTabs"

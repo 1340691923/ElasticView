@@ -1,11 +1,14 @@
 // axios 拦截器
 import store from '@/store'
 
+import axios from 'axios'
+
 import { getToken } from '@/utils/auth'
 
 import { message } from '@/utils/singleMsg.js'
 
 const CancelMsg = '用户已经取消请求'
+import ElementUI from 'element-ui';
 
 // create an axios instance
 const service = axios.create({
@@ -72,7 +75,7 @@ service.interceptors.response.use(
 
       if (res.code === 40002 || res.code === 40003) {
         // to re-login
-        ELEMENT.MessageBox.confirm('未登录或登录超时，您可以取消以停留在此页，或重新登录', '确认注销', {
+        ElementUI.MessageBox.confirm('未登录或登录超时，您可以取消以停留在此页，或重新登录', '确认注销', {
           confirmButtonText: '重新登录',
           cancelButtonText: '取消',
           type: 'warning'
