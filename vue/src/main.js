@@ -18,10 +18,6 @@ Vue.use(VueClipboard)
 Vue.config.productionTip = false
 
 
-import VueJsonHelper from 'vue-json-helper'
-import 'vue-json-helper/vue-json-helper.css';
-Vue.use(VueJsonHelper)
-
 import Antd from 'ant-design-vue'
 import 'ant-design-vue/dist/antd.css'
 
