@@ -13,19 +13,20 @@ func runTiming(app *App) {
 	const AbsolutePath = "/api/TimingController"
 	gmUser := app.Group(AbsolutePath)
 	{
+		timingController := &TimingController{}
 		apiRouterConfig.MountApi(api_config.MountApiBasePramas{
 			Remark:       "计划任务列表",
 			Method:       api_config.MethodAny,
 			AbsolutePath: AbsolutePath,
 			RelativePath: "ListAction",
-		}, gmUser.(*Group), true, TimingController{}.ListAction)
+		}, gmUser.(*Group), true, timingController.ListAction)
 
 		apiRouterConfig.MountApi(api_config.MountApiBasePramas{
 			Remark:       "取消计划任务",
 			Method:       api_config.MethodAny,
 			AbsolutePath: AbsolutePath,
 			RelativePath: "CancelAction",
-		}, gmUser.(*Group), true, TimingController{}.CancelAction)
+		}, gmUser.(*Group), true, timingController.CancelAction)
 
 	}
 }

@@ -12,26 +12,27 @@ func runEsDoc(app *App) {
 	const AbsolutePath = "/api/es_doc"
 	esDoc := app.Group(AbsolutePath)
 	{
+		esDocController := &EsDocController{}
 		apiRouterConfig.MountApi(api_config.MountApiBasePramas{
 			Remark:       "删除文档",
 			Method:       api_config.MethodPost,
 			AbsolutePath: AbsolutePath,
 			RelativePath: "DeleteRowByIDAction",
-		}, esDoc.(*Group), true, EsDocController{}.DeleteRowByIDAction)
+		}, esDoc.(*Group), true, esDocController.DeleteRowByIDAction)
 
 		apiRouterConfig.MountApi(api_config.MountApiBasePramas{
 			Remark:       "修改文档",
 			Method:       api_config.MethodPost,
 			AbsolutePath: AbsolutePath,
 			RelativePath: "UpdateByIDAction",
-		}, esDoc.(*Group), true, EsDocController{}.UpdateByIDAction)
+		}, esDoc.(*Group), true, esDocController.UpdateByIDAction)
 
 		apiRouterConfig.MountApi(api_config.MountApiBasePramas{
 			Remark:       "新增文档",
 			Method:       api_config.MethodPost,
 			AbsolutePath: AbsolutePath,
 			RelativePath: "InsertAction",
-		}, esDoc.(*Group), true, EsDocController{}.InsertAction)
+		}, esDoc.(*Group), true, esDocController.InsertAction)
 
 	}
 }

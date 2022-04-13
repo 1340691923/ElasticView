@@ -12,19 +12,20 @@ func runEsMap(app *App) {
 	const AbsolutePath = "/api/es_map"
 	esMap := app.Group("/api/es_map")
 	{
+		esMappingController := &EsMappingController{}
 		apiRouterConfig.MountApi(api_config.MountApiBasePramas{
 			Remark:       "查看mapping列表",
 			Method:       api_config.MethodPost,
 			AbsolutePath: AbsolutePath,
 			RelativePath: "ListAction",
-		}, esMap.(*Group), true, EsMappingController{}.ListAction)
+		}, esMap.(*Group), true, esMappingController.ListAction)
 
 		apiRouterConfig.MountApi(api_config.MountApiBasePramas{
 			Remark:       "修改mapping",
 			Method:       api_config.MethodPost,
 			AbsolutePath: AbsolutePath,
 			RelativePath: "UpdateMappingAction",
-		}, esMap.(*Group), true, EsMappingController{}.UpdateMappingAction)
+		}, esMap.(*Group), true, esMappingController.UpdateMappingAction)
 
 	}
 }

@@ -12,18 +12,19 @@ func runEsTask(app *App) {
 	const AbsolutePath = "/api/es_task"
 	task := app.Group(AbsolutePath)
 	{
+		taskController := &TaskController{}
 		apiRouterConfig.MountApi(api_config.MountApiBasePramas{
 			Remark:       "查看任务列表",
 			Method:       api_config.MethodPost,
 			AbsolutePath: AbsolutePath,
 			RelativePath: "ListAction",
-		}, task.(*Group), true, TaskController{}.ListAction)
+		}, task.(*Group), true, taskController.ListAction)
 
 		apiRouterConfig.MountApi(api_config.MountApiBasePramas{
 			Remark:       "取消任务",
 			Method:       api_config.MethodPost,
 			AbsolutePath: AbsolutePath,
 			RelativePath: "CancelAction",
-		}, task.(*Group), true, TaskController{}.CancelAction)
+		}, task.(*Group), true, taskController.CancelAction)
 	}
 }

@@ -12,19 +12,20 @@ func runDslHistory(app *App) {
 	const AbsolutePath = "/api/dslHistory"
 	dslHistory := app.Group(AbsolutePath)
 	{
+		dslHistoryController := &DslHistoryController{}
 		apiRouterConfig.MountApi(api_config.MountApiBasePramas{
 			Remark:       "清空DSL查询历史记录",
 			Method:       api_config.MethodPost,
 			AbsolutePath: AbsolutePath,
 			RelativePath: "CleanAction",
-		}, dslHistory.(*Group), true, DslHistoryController{}.CleanAction)
+		}, dslHistory.(*Group), true, dslHistoryController.CleanAction)
 
 		apiRouterConfig.MountApi(api_config.MountApiBasePramas{
 			Remark:       "查看DSL查询历史记录",
 			Method:       api_config.MethodPost,
 			AbsolutePath: AbsolutePath,
 			RelativePath: "ListAction",
-		}, dslHistory.(*Group), true, DslHistoryController{}.ListAction)
+		}, dslHistory.(*Group), true, dslHistoryController.ListAction)
 
 	}
 }
