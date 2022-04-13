@@ -321,8 +321,9 @@
     },
     methods: {
       querySearch(queryString, cb) {
-        let queryData = JSON.parse(JSON.stringify(this.queryData))
 
+        let queryData = JSON.parse(JSON.stringify(this.queryData))
+        if(queryString == undefined)queryString = ""
         if (queryString.trim() == '') {
           if (queryData.length > this.max) {
             cb(queryData.slice(0, this.max))
@@ -343,6 +344,7 @@
       },
       querySearch2(queryString, cb) {
         let queryData = JSON.parse(JSON.stringify(this.queryData2))
+        if(queryString == undefined)queryString = ""
         if (queryString.trim() == '') {
           if (queryData.length > this.max) {
             cb(queryData.slice(0, this.max))

@@ -33,7 +33,7 @@
                 <div v-for="(v,index2) in getIndexList" :key="index2" :index="index2">
 
                   <el-menu-item
-                    :index="index2"
+                    :index="index2.toString()"
                     @click.native="clickItem(v['index'])"
                   >
                     <el-dropdown>
@@ -64,7 +64,7 @@
           <el-drawer
             ref="drawer"
             title="索引结构"
-            :before-close="drawerHandleClose"
+
             :visible.sync="showIndexSettings"
 
             direction="rtl"
@@ -120,6 +120,7 @@ import { CatAction } from '@/api/es'
 import { filterData } from '@/utils/table'
 import { DeleteAction, GetSettingsAction } from '@/api/es-index'
 import { ListAction } from '@/api/es-map'
+import ElementUI from 'element-ui';
 
 export default {
   name: 'Navicat',
@@ -129,6 +130,7 @@ export default {
   },
   data() {
     return {
+      currentMappings:{},
       tabLoading: false,
       refreshTab: true,
       activeName: 'settings',
@@ -261,7 +263,7 @@ export default {
         type: 'warning'
       })
         .then(async() => {
-          const $message = ELEMENT.Message({
+          const $message = ElementUI.Message({
             message: '  索引删除中...',
             customClass: 'theme-message',
             type: 'success',

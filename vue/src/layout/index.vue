@@ -19,7 +19,7 @@
 import RightPanel from '@/components/RightPanel'
 import { AppMain, Navbar, Settings, Sidebar, TagsView } from './components'
 import ResizeMixin from './mixin/ResizeHandler'
-// import { mapState } from 'vuex'
+import { mapState } from 'vuex'
 
 export default {
   name: 'Layout',
@@ -33,7 +33,7 @@ export default {
   },
   mixins: [ResizeMixin],
   computed: {
-    ...Vuex.mapState({
+    ...mapState({
       sidebar: state => state.app.sidebar,
       device: state => state.app.device,
       showSettings: state => state.settings.showSettings,
