@@ -6,7 +6,6 @@ import (
 	"github.com/1340691923/ElasticView/engine/logs"
 	"github.com/1340691923/ElasticView/model"
 	"github.com/1340691923/ElasticView/platform-basic-libs/rbac"
-	"github.com/1340691923/ElasticView/platform-basic-libs/service/timing"
 	"github.com/1340691923/ElasticView/platform-basic-libs/util"
 	sql2 "github.com/1340691923/ElasticView/sqlite"
 	"log"
@@ -77,7 +76,7 @@ func InitTask() (err error) {
 	}
 
 	//计划任务
-	scheduler := timing.GetTaskSchedulerInstance()
+	/*scheduler := timing.GetTaskSchedulerInstance()
 	go scheduler.Start()
 	gmTimedList := model.GmTimedList{}
 	timedList, err := gmTimedList.GetTaskList()
@@ -87,7 +86,7 @@ func InitTask() (err error) {
 	}
 	for _, timed := range timedList {
 		timing.AddTask(timed.Action, timed.Data, timed.TaskId, timed.ExecTime)
-	}
+	}*/
 
 	return err
 }
