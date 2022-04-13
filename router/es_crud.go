@@ -12,12 +12,13 @@ func runEsCrud(app *App) {
 	const AbsolutePath = "/api/es_crud"
 	es := app.Group(AbsolutePath)
 	{
+		esCrudController := EsCrudController{}
 		apiRouterConfig.MountApi(api_config.MountApiBasePramas{
 			Remark:       "Navicat（数据筛选）",
 			Method:       api_config.MethodPost,
 			AbsolutePath: AbsolutePath,
 			RelativePath: "GetList",
-		}, es.(*Group), true, EsCrudController{}.GetList)
+		}, es.(*Group), true, esCrudController.GetList)
 
 	}
 }
