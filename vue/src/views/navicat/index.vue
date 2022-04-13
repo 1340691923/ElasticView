@@ -124,13 +124,11 @@ import { ListAction } from '@/api/es-map'
 export default {
   name: 'Navicat',
   components: {
-
     'JsonEditor': () => import('@/components/JsonEditor/index'),
     'Crud': () => import('@/views/navicat/crud')
   },
   data() {
     return {
-
       tabLoading: false,
       refreshTab: true,
       activeName: 'settings',
@@ -156,9 +154,12 @@ export default {
     await this.init()
   },
   async mounted() {
-
+    this.toggleSideBar()
   },
   methods: {
+    toggleSideBar() {
+      this.$store.dispatch('app/toggleSideBar')
+    },
     reloadTab() {
       this.refreshTab = false // 先关闭，
       this.$nextTick(() => {

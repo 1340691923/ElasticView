@@ -98,12 +98,10 @@
               min-width="100"
             >
               <template slot-scope="scope">
-                <template v-if="ISDoc">
+                <template>
                   {{ scope.row["_id"] }}
                 </template>
-                <template v-else>
-                  {{ scope.$index+1 }}
-                </template>
+
               </template>
             </el-table-column>
             <el-table-column
@@ -422,6 +420,7 @@
             }
           }
         }
+        console.log("this.tableData",this.tableData)
 
 
 
