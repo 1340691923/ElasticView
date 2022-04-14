@@ -199,7 +199,7 @@ export const asyncRoutes = [
       }
     ]
   },
-  {
+  /*{
     path: '/tools',
     component: 'layout',
     redirect: '/datax/index',
@@ -209,7 +209,7 @@ export const asyncRoutes = [
       icon: 'el-icon-copy-document'
     },
     children: [
-     /* {
+      {
         path: 'crontab',
         component: 'views/crontab/index',
         name: 'crontab',
@@ -217,7 +217,7 @@ export const asyncRoutes = [
           title: '计划任务',
           icon: 'el-icon-first-aid-kit'
         }
-      },*/
+      },
       {
         path: 'list',
         component: 'views/datax/list',
@@ -237,7 +237,7 @@ export const asyncRoutes = [
         }
       }
     ]
-  },
+  },*/
 ]
 // todo ...    映射增删改查    查询可视化   监控数据可视化
 
