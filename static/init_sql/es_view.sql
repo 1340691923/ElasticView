@@ -81,8 +81,7 @@ CREATE TABLE `gm_role`  (
 -- ----------------------------
 -- Records of gm_role
 -- ----------------------------
-INSERT INTO `gm_role` VALUES (1, 'admin', '超级管理员', '[{\"path\":\"/permission\",\"component\":\"layout\",\"redirect\":\"/permission/index\",\"alwaysShow\":true,\"meta\":{\"title\":\"权限\",\"icon\":\"el-icon-user-solid\"},\"children\":[{\"path\":\"role\",\"component\":\"views/permission/role\",\"name\":\"RolePermission\",\"meta\":{\"title\":\"角色管理\",\"icon\":\"el-icon-s-check\"}},{\"path\":\"user\",\"component\":\"views/permission/user\",\"name\":\"user\",\"meta\":{\"title\":\"用户管理\",\"icon\":\"el-icon-user\"}}]},{\"path\":\"/connect-tree\",\"component\":\"layout\",\"redirect\":\"/connect-tree/index\",\"alwaysShow\":false,\"meta\":{\"title\":\"连接树管理\",\"icon\":\"el-icon-link\"},\"children\":[{\"path\":\"/connect-tree/index\",\"component\":\"views/connect-tree/index\",\"name\":\"index\",\"meta\":{\"title\":\"连接树管理\",\"icon\":\"el-icon-link\"}}]},{\"path\":\"/cat\",\"component\":\"layout\",\"redirect\":\"/cat/index\",\"alwaysShow\":false,\"meta\":{\"title\":\"ES状态\",\"icon\":\"el-icon-pie-chart\"},\"children\":[{\"path\":\"/cat/index\",\"component\":\"views/cat/index\",\"name\":\"index\",\"meta\":{\"title\":\"ES状态\",\"icon\":\"el-icon-pie-chart\"}}]},{\"path\":\"/rest\",\"component\":\"layout\",\"redirect\":\"/rest/index\",\"alwaysShow\":false,\"meta\":{\"title\":\"开发工具\",\"icon\":\"el-icon-edit\"},\"children\":[{\"path\":\"/rest/index\",\"component\":\"views/rest/index\",\"name\":\"index\",\"meta\":{\"title\":\"开发工具\",\"icon\":\"el-icon-search\"}}]},{\"path\":\"/indices\",\"component\":\"layout\",\"redirect\":\"/indices/index\",\"alwaysShow\":true,\"meta\":{\"title\":\"索引管理\",\"icon\":\"el-icon-coin\"},\"children\":[{\"path\":\"index\",\"component\":\"views/indices/index\",\"name\":\"index\",\"meta\":{\"title\":\"索引管理\",\"icon\":\"el-icon-coin\"}},{\"path\":\"reindex\",\"component\":\"views/indices/reindex\",\"name\":\"reindex\",\"meta\":{\"title\":\"重建索引\",\"icon\":\"el-icon-document-copy\"}}]},{\"path\":\"/task\",\"component\":\"layout\",\"redirect\":\"/task/index\",\"alwaysShow\":false,\"meta\":{\"title\":\"任务\",\"icon\":\"el-icon-notebook-2\"},\"children\":[{\"path\":\"/task/index\",\"component\":\"views/task/index\",\"name\":\"index\",\"meta\":{\"title\":\"任务\",\"icon\":\"el-icon-notebook-2\"}}]},{\"path\":\"/back-up\",\"component\":\"layout\",\"redirect\":\"/back-up/index\",\"alwaysShow\":true,\"meta\":{\"title\":\"备份\",\"icon\":\"el-icon-copy-document\"},\"children\":[{\"path\":\"index\",\"component\":\"views/back-up/index\",\"name\":\"index\",\"meta\":{\"title\":\"快照存储库\",\"icon\":\"el-icon-first-aid-kit\"}},{\"path\":\"snapshot\",\"component\":\"views/back-up/snapshot\",\"name\":\"index\",\"meta\":{\"title\":\"快照管理\",\"icon\":\"el-icon-shopping-bag-2\"}}]}]');
-
+INSERT INTO `gm_role` VALUES (1, 'admin', '超级管理员', '[{\"path\":\"/permission\",\"component\":\"layout\",\"redirect\":\"/permission/role\",\"alwaysShow\":true,\"meta\":{\"title\":\"权限\",\"icon\":\"el-icon-user-solid\"},\"children\":[{\"path\":\"role\",\"component\":\"views/permission/role\",\"name\":\"RolePermission\",\"meta\":{\"title\":\"角色管理\",\"icon\":\"el-icon-s-check\"}},{\"path\":\"user\",\"component\":\"views/permission/user\",\"name\":\"user\",\"meta\":{\"title\":\"用户管理\",\"icon\":\"el-icon-user\"}}]},{\"path\":\"/connect-tree\",\"component\":\"layout\",\"redirect\":\"/connect-tree/index\",\"alwaysShow\":false,\"meta\":{\"title\":\"连接树管理\",\"icon\":\"el-icon-link\"},\"children\":[{\"path\":\"/connect-tree/index\",\"component\":\"views/connect-tree/index\",\"name\":\"index\",\"meta\":{\"title\":\"连接树管理\",\"icon\":\"el-icon-link\"}}]},{\"path\":\"/cat\",\"component\":\"layout\",\"redirect\":\"/cat/index\",\"alwaysShow\":false,\"meta\":{\"title\":\"ES状态\",\"icon\":\"el-icon-pie-chart\"},\"children\":[{\"path\":\"/cat/index\",\"component\":\"views/cat/index\",\"name\":\"index\",\"meta\":{\"title\":\"ES状态\",\"icon\":\"el-icon-pie-chart\"}}]},{\"path\":\"/rest\",\"component\":\"layout\",\"redirect\":\"/rest/index\",\"alwaysShow\":false,\"meta\":{\"title\":\"开发工具\",\"icon\":\"el-icon-edit\"},\"children\":[{\"path\":\"/rest/index\",\"component\":\"views/rest/index\",\"name\":\"index\",\"meta\":{\"title\":\"开发工具\",\"icon\":\"el-icon-search\"}}]},{\"path\":\"/indices\",\"component\":\"layout\",\"redirect\":\"/indices/index\",\"alwaysShow\":true,\"meta\":{\"title\":\"索引管理\",\"icon\":\"el-icon-coin\"},\"children\":[{\"path\":\"index\",\"component\":\"views/indices/index\",\"name\":\"index\",\"meta\":{\"title\":\"索引管理\",\"icon\":\"el-icon-coin\"}},{\"path\":\"reindex\",\"component\":\"views/indices/reindex\",\"name\":\"reindex\",\"meta\":{\"title\":\"重建索引\",\"icon\":\"el-icon-document-copy\"}}]},{\"path\":\"/task\",\"component\":\"layout\",\"redirect\":\"/task/index\",\"alwaysShow\":false,\"meta\":{\"title\":\"任务\",\"icon\":\"el-icon-notebook-2\"},\"children\":[{\"path\":\"/task/index\",\"component\":\"views/task/index\",\"name\":\"index\",\"meta\":{\"title\":\"任务\",\"icon\":\"el-icon-notebook-2\"}}]},{\"path\":\"/back-up\",\"component\":\"layout\",\"redirect\":\"/back-up/index\",\"alwaysShow\":true,\"meta\":{\"title\":\"备份\",\"icon\":\"el-icon-copy-document\"},\"children\":[{\"path\":\"index\",\"component\":\"views/back-up/index\",\"name\":\"index\",\"meta\":{\"title\":\"快照存储库\",\"icon\":\"el-icon-first-aid-kit\"}},{\"path\":\"snapshot\",\"component\":\"views/back-up/snapshot\",\"name\":\"index\",\"meta\":{\"title\":\"快照管理\",\"icon\":\"el-icon-shopping-bag-2\"}}]},{\"path\":\"/navicat\",\"component\":\"layout\",\"redirect\":\"/navicat/index\",\"alwaysShow\":false,\"meta\":{\"title\":\"Navicat\",\"icon\":\"el-icon-copy-document\"},\"children\":[{\"path\":\"/navicat/index\",\"component\":\"views/navicat/index\",\"name\":\"index\",\"meta\":{\"title\":\"Navicat\",\"icon\":\"el-icon-first-aid-kit\"}}]}]');
 -- ----------------------------
 -- Table structure for gm_user
 -- ----------------------------
@@ -101,20 +100,20 @@ CREATE TABLE `gm_user`  (
 -- Records of gm_user
 -- ----------------------------
 INSERT INTO `gm_user` VALUES (1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 1, '肖文龙');
-
-CREATE TABLE `gm_timed_list` (
-                                `task_id` varchar(128) NOT NULL COMMENT '执行命令',
-                                 `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-                                 `action` varchar(128) NOT NULL COMMENT '执行命令',
-                                 `exec_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '执行时间',
-                                 `exec_time_format` varchar(256) NOT NULL DEFAULT '' COMMENT '执行时间',
-                                 `status` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '0等待直行1正在执行2成功3失败4取消',
-                                 `msg` varchar(256) NOT NULL DEFAULT '' COMMENT '执行状态说明',
-                                 `extra` varchar(128) NOT NULL DEFAULT '' COMMENT '动作的额外字段，不用于数据存储',
-                                 `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                                 `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                                 `data` text NOT NULL COMMENT '储存执行命令的数据',
-                                 PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC
+DROP TABLE IF EXISTS `datax_link_info`;
+CREATE TABLE `datax_link_info` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `ip` varchar(255) DEFAULT '',
+  `port` int(11) DEFAULT '0',
+  `db_name` varchar(255) DEFAULT '',
+  `username` varchar(255) DEFAULT '',
+  `pwd` varchar(255) DEFAULT '',
+  `remark` varchar(255) DEFAULT '',
+  `typ` varchar(255) DEFAULT '',
+  `updated` timestamp NULL DEFAULT NULL,
+  `created` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `link_remark_uniq` (`remark`,`typ`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 SET FOREIGN_KEY_CHECKS = 1;

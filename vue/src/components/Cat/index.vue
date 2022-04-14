@@ -68,13 +68,19 @@ export default {
       limit: 10,
       pageshow: true,
       list: [],
-      input: ''
+      input: '',
+      allList:[]
     }
   },
   mounted() {
     this.searchData()
   },
   methods: {
+    pageLimit(){
+      this.list = this.allList.filter((item, index) =>
+        index < this.page * this.limit && index >= this.limit * (this.page - 1)
+      )
+    },
     search() {
       this.page = 1
       this.pageshow = false
@@ -88,15 +94,13 @@ export default {
     },
     // 当每页数量改变
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`)
       this.limit = val
-      this.searchData()
+      this.pageLimit()
     },
     // 当当前页改变
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`)
       this.page = val
-      this.searchData()
+      this.pageLimit()
     },
     searchData() {
       this.connectLoading = true
@@ -123,11 +127,10 @@ export default {
           }
 
           list = filterData(list, this.input.trim())
-
-          this.list = list.filter((item, index) =>
-            index < this.page * this.limit && index >= this.limit * (this.page - 1)
-          )
+          this.allList = list
           this.total = list.length
+          this.pageLimit()
+
         } else {
           this.$message({
             type: 'error',

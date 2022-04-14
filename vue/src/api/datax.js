@@ -43,7 +43,7 @@ export function LinkSelectOpt(data) {
   })
 }
 
-export function Tables(data) {
+export function GetTables(data) {
   return request({
     url: api + 'Tables',
     method: 'post',
