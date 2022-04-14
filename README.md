@@ -1,10 +1,18 @@
-﻿ElasticView
+﻿<h1 align="center">
+   <br>
+   <img src="https://gitee.com/cynthia520/elastic-view/raw/main/static/show_img/2.png"/>
+   <br>
+   ElasticView
+   <br>
+</h1>
+
 -----------
 [![Go Documentation](http://img.shields.io/badge/go-documentation-blue.svg?style=flat-square)](https://godoc.org/github.com/1340691923/ElasticView)
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)](https://github.com/1340691923/ElasticView/blob/main/LICENSE)
 [![Release](https://img.shields.io/github/release/1340691923/ElasticView.svg?label=Release)](https://gitee.com/cynthia520/elastic-view/releases)
-> ElasticView 是一款用来监控elasticsearch状态和操作elasticsearch索引的web可视化工具。它由golang开发而成，具有部署方便，占用内存小等优点
-* es连接树管理（更方便的切换测试/生产环境）
+
+> ElasticView 是一款用来监控ElasticSearch状态和操作ElasticSearch索引的web可视化工具。它由golang开发而成，具有部署方便，占用内存小等优点
+* ElasticSearch连接树管理（更方便的切换测试/生产环境）
 * 支持页面级别的权限管理（未来将完善）
 * 支持sql转换成dsl语法
 * 更方便的重建索引
@@ -12,7 +20,7 @@
 * 备份管理
 * 可将查询内容下载为excel文件
 * 可进行索引创建，映射创建，别名创建，索引删除等操作
-* 支持版本 6.x, 7.x,8.x
+* 支持版本 `6.x`,`7.x`,`8.x`
 * 支持Navicat界面 （需要前往权限-角色界面 重新分配界面权限后刷新页面就可以看到）
 * docker部署
 * 支持sqlite3（免安装gcc版）
@@ -26,19 +34,9 @@
 5. windows：双击ElasticView.exe  linux：chmod +x ElasticView && nohup ./ElasticView > ElasticView.log &
 6. 浏览器访问对应ip:端口，初始用户名：admin，初始密码：admin
 
-## docker部署
-1. `docker pull 1340691923/elastic_view:latest`
-2. `docker run -d -p 8090:8090 1340691923/elastic_view:latest`
-3. `浏览器访问对应ip:8090，初始用户名：admin，初始密码：admin`
-
-
-
- 
- 
 ## ElasticView 部分截图
 
 ![image](https://gitee.com/cynthia520/elastic-view/raw/main/static/show_img/1.png)
-![image](https://gitee.com/cynthia520/elastic-view/raw/main/static/show_img/2.png)
 ![image](https://gitee.com/cynthia520/elastic-view/raw/main/static/show_img/3.png)
 ![image](https://gitee.com/cynthia520/elastic-view/raw/main/static/show_img/4.png)
 ![image](https://gitee.com/cynthia520/elastic-view/raw/main/static/show_img/5.png)
@@ -52,20 +50,52 @@
 
 
 ##支持操作系统：
-1. windows
-2. linux
-3. mac
+ -  Windows
+ -  Linux
+ -  MacOs
 
-## 手动编译
+<!-- ## 手动编译
  1. `git clone git@github.com:1340691923/ElasticView.git`
  2. `cd vue && cnpm install (安装前端依赖)`
  3. `执行static/build 下的vue_build.bat （打前端正式包）`
  4. `执行static/build 下的win_build.bat(linux则为linux_build.bat)  (编译二进制可执行程序)`
- 
-## 其他开源项目
+  -->
+
+## ☁docker部署
+1. `docker pull 1340691923/elastic_view:latest`
+2. `docker run -d -p 8090:8090 1340691923/elastic_view:latest`
+3. `浏览器访问对应ip:8090，初始用户名：admin，初始密码：admin`
+   
+```shell
+# 拉取docker镜像
+sudo docker pull 1340691923/elastic_view:latest
+
+# 启动程序
+docker run -d -p 8090:8090 1340691923/elastic_view:latest
+
+# 成功后, 访问Host:8090即可
+# 默认用户名与密码均为 admin
+```
+## 🛠️手动构建
+```shell
+# 拉取项目源代码
+git clone https://github.com/1340691923/ElasticView
+
+# 同步前端项目依赖
+cd vue && npm install
+
+# 构建前端包
+static/build/vue_build.bat
+
+# 构建项目二进制程序
+static/build/(根据你的系统选择构建脚本).bat
+```
+
+## 更多
  * 铸龙用户行为分析系统     https://github.com/1340691923/xwl_bi
  * 软考成绩快查工具        https://github.com/1340691923/SoftTestMonitor
 
 ### 求职中，个人微信二维码
 
-![image](https://gitee.com/cynthia520/elastic-view/raw/main/static/show_img/weixin.jpg)  
+<!-- ![image](https://gitee.com/cynthia520/elastic-view/raw/main/static/show_img/weixin.jpg)   -->
+<img src="https://gitee.com/cynthia520/elastic-view/raw/main/static/show_img/weixin.jpg" style="width: 220px">
