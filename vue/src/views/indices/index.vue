@@ -553,8 +553,8 @@ export default {
       mappingInfo: {},
       mappings: {},
       selectIndexList: [],
-      openMappings:false,
-      allList:[],
+      openMappings: false,
+      allList: []
     }
   },
   destroyed() {
@@ -570,7 +570,7 @@ export default {
     this.searchData()
   },
   methods: {
-    openMappingDialog(index){
+    openMappingDialog(index) {
       this.indexName = index
       this.openMappings = true
     },
@@ -651,10 +651,10 @@ export default {
       input['es_connect'] = this.$store.state.baseData.EsConnectID
       input['index_name'] = this.indexName
 
-      if(activeData[activeDataKeys[0]].toString() != "false"){
+      if (activeData[activeDataKeys[0]].toString() != 'false') {
         input['properties'] = activeData[activeDataKeys[0]]
         input['type_name'] = activeDataKeys[0]
-      }else{
+      } else {
         input['properties'] = activeData
       }
 
@@ -934,7 +934,7 @@ export default {
       this.page = val
       this.pageLimit()
     },
-    pageLimit(){
+    pageLimit() {
       this.list = this.allList.filter((item, index) =>
         index < this.page * this.limit && index >= this.limit * (this.page - 1)
       )
