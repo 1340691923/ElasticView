@@ -15,13 +15,15 @@ Vue.use(VueClipboard)
 
 Vue.config.productionTip = false
 
-import ElementUI from 'element-ui';
+import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 
 import Antd from 'ant-design-vue'
 import 'ant-design-vue/dist/antd.css'
 
 Vue.use(Antd)
+
+import { i18n } from '@/utils/lang'
 
 // excel导出
 import JsonExcel from 'vue-json-excel'
@@ -62,6 +64,7 @@ Vue.prototype.$message = message
 new Vue({
   el: '#app',
   router,
+  i18n,
   store,
   render: h => h(App)
 })
