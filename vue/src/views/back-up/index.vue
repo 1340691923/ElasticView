@@ -65,7 +65,7 @@
                 size="small"
                 icon="el-icon-delete"
                 @click="SnapshotDeleteRepositoryAction(scope.row.name)"
-              >删除
+              >{{$t('删除')}}
               </el-button>
               <el-button
                 type="warning"

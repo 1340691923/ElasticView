@@ -32,7 +32,7 @@
           @click="submitForm(index)"
         >提交
         </el-button>
-        <el-button icon="el-icon-delete" type="danger" @click="removeAlias(index)">删除</el-button>
+        <el-button icon="el-icon-delete" type="danger" @click="removeAlias(index)">{{$t('删除')}}</el-button>
 
       </el-form-item>
     </el-form>

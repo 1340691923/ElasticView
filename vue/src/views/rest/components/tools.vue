@@ -22,7 +22,7 @@
         >
           <el-option label="PUT【更新或创建】" value="PUT" />
           <el-option label="GET【查询】" value="GET" />
-          <el-option label="DELETE【删除】" value="DELETE" />
+          <el-option :label="'DELETE【'+$t('删除')+'】'" value="DELETE" />
           <el-option label="POST【创建】" value="POST" />
           <el-option label="HEAD【是否存在】" value="HEAD" />
         </el-select>

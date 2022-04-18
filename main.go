@@ -8,6 +8,7 @@ import (
 	_ "github.com/ClickHouse/clickhouse-go"
 	_ "github.com/denisenkom/go-mssqldb"
 	_ "github.com/go-sql-driver/mysql"
+
 	_ "github.com/logoove/sqlite"
 	"go.uber.org/zap"
 	"log"

@@ -7,7 +7,7 @@
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
-            总分片数
+              {{$t('总分片数')}}
           </div>
           <span class="card-panel-num">
             {{ count.allShared }}
@@ -22,7 +22,7 @@
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
-            成功的分片数
+             {{$t('成功的分片数')}}
           </div>
           <span class="card-panel-num">
             {{ count.successfulShared }}
@@ -37,7 +37,7 @@
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
-            失败的分片数
+             {{$t('失败的分片数')}}
           </div>
           <span class="card-panel-num">
             {{ count.failedShared }}
@@ -52,7 +52,7 @@
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
-            索引数
+              {{$t('索引数')}}
           </div>
           <span class="card-panel-num">
             {{ count.index }}
@@ -69,7 +69,7 @@
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
-            文档数
+               {{$t('文档数')}}
           </div>
           <span class="card-panel-num">
             {{ count.document }}
@@ -84,7 +84,7 @@
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
-            索引所占空间大小
+             {{$t('索引所占空间大小')}}
           </div>
           <span class="card-panel-num">
             {{ count.size }}

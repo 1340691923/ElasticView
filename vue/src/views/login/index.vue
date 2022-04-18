@@ -52,7 +52,7 @@
         filterable
         @change="links"
       />-->
-      <el-button icon="el-icon-switch-button" :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">登录</el-button>
+      <el-button icon="el-icon-switch-button" :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">{{$t('登录')}}</el-button>
 
       <div style="position:relative">
         <div class="tips">
@@ -62,7 +62,7 @@
               class="rememberme"
               @change="changeRemember"
             >
-              记住密码
+               {{$t('记住密码')}}
             </el-checkbox>
           </span>
         </div>

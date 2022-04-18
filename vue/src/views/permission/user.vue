@@ -41,8 +41,8 @@
         </el-table-column>
         <el-table-column align="center" label="操作" fixed="right" width="200">
           <template slot-scope="scope">
-            <el-button type="primary" size="small" icon="el-icon-edit" @click="handleEdit(scope)">编辑</el-button>
-            <el-button type="danger" size="small" icon="el-icon-delete" @click="handleDelete(scope)">删除</el-button>
+            <el-button type="primary" size="small" icon="el-icon-edit" @click="handleEdit(scope)">{{$t('编辑')}}</el-button>
+            <el-button type="danger" size="small" icon="el-icon-delete" @click="handleDelete(scope)">{{$t('删除')}}</el-button>
           </template>
         </el-table-column>
       </el-table>

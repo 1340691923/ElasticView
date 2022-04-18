@@ -78,7 +78,7 @@
                 size="small"
                 icon="el-icon-delete"
                 @click="SnapshotDeleteAction(scope.row.id)"
-              >删除
+              >{{$t('删除')}}
               </el-button>
               <el-button
                 type="warning"

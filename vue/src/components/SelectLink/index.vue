@@ -1,6 +1,18 @@
 <template>
   <div class="header-search">
     <el-select
+      v-model="Esi18n"
+      filterable
+      default-first-option
+      placeholder="I18N"
+      @change="changeI18n"
+    >
+      <el-option value="zh" label="I18N-Chinese" />
+      <el-option value="en" label="I18N-English" />
+    </el-select>
+
+    <el-select
+      style="margin-left: 10px"
       v-model="linkID"
       filterable
       default-first-option
@@ -10,12 +22,13 @@
       <el-option :value="Number(0)" label="请选择ES连接" />
       <el-option v-for="item in opt" :key="item.id" :value="Number(item.id)" :label="item.remark" />
     </el-select>
-    <el-button @click="refresh">刷新</el-button>
+    <el-button style="margin-left: 10px" @click="refresh"> {{$t('刷新')}}</el-button>
   </div>
 </template>
 
 <script>
 import { OptAction } from '@/api/es-link'
+import {setI18nLanguage} from "../../utils/lang";
 
 export default {
   inject: ['reload'],
@@ -24,6 +37,7 @@ export default {
     return {
       opt: [],
       linkID: '',
+      Esi18n: localStorage.getItem('lang') || "zh",
       time: null,
       timeSecend: 60
     }
@@ -62,6 +76,10 @@ export default {
     },
     change(link) {
       this.$store.dispatch('baseData/SetEsConnect', link)
+      this.reload()
+    },
+    changeI18n(i18n) {
+      setI18nLanguage(i18n)
       this.reload()
     }
   }
