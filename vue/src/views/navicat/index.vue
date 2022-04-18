@@ -43,7 +43,7 @@
                         <i v-if="v.health == 'yellow'" style="color: #ffba00" class="el-icon-s-grid" />
                       </span>
                       <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item icon="el-icon-delete" @click.native="deleteIndex(getIndexList[index2].k,getIndexList[index2].index)">删除
+                        <el-dropdown-item icon="el-icon-delete" @click.native="deleteIndex(getIndexList[index2].k,getIndexList[index2].index)">{{$t('删除')}}
                         </el-dropdown-item>
                       </el-dropdown-menu>
                     </el-dropdown>

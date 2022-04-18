@@ -32,12 +32,32 @@ const (
 )
 
 const (
-	SearchSuccess  = "查询成功"
-	DeleteSuccess  = "删除成功"
-	OperateSuccess = "操作成功"
-	LogoutSuccess  = "注销成功"
-	LinkSuccess    = "连接成功"
+	SearchSuccess  = "SearchSuccess"
+	DeleteSuccess  = "DeleteSuccess"
+	OperateSuccess = "OperateSuccess"
+	LogoutSuccess  = "LogoutSuccess"
+	LinkSuccess    = "LinkSuccess"
+	LoginSuccess   = "LoginSuccess"
 )
+
+var resMap = map[string]map[string]string{
+	"en": {
+		SearchSuccess:  "query was successful",
+		DeleteSuccess:  "Deleted successfully",
+		OperateSuccess: "Operation successful",
+		LogoutSuccess:  "Logout successful",
+		LinkSuccess:    "Connection successful",
+		LoginSuccess:   "Login successful",
+	},
+	"zh": {
+		SearchSuccess:  "查询成功",
+		DeleteSuccess:  "删除成功",
+		OperateSuccess: "操作成功",
+		LogoutSuccess:  "注销成功",
+		LinkSuccess:    "连接成功",
+		LoginSuccess:   "登录成功",
+	},
+}
 
 func (this *Response) JsonDealErr(err error) string {
 	var json = jsoniter.ConfigCompatibleWithStandardLibrary
@@ -86,7 +106,14 @@ func (this *Response) Error(ctx *fiber.Ctx, err error) error {
 func (this *Response) send(ctx *fiber.Ctx, msg string, code int, data interface{}) error {
 	var res Response
 	res.Code = code
-	res.Msg = msg
+	_, ok := resMap[ctx.Get("Current-Language", "zh")][msg]
+
+	if ok {
+		res.Msg = resMap[ctx.Get("Current-Language", "zh")][msg]
+	} else {
+		res.Msg = msg
+	}
+
 	res.Data = data
 	ctx.Status(http.StatusOK).JSON(res)
 	return nil

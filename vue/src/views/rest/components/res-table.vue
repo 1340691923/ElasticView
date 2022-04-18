@@ -62,7 +62,7 @@
                 icon="el-icon-edit"
                 @click="look(scope.$index)"
               >
-                编辑
+                {{$t('编辑')}}
               </el-button>
               <el-button v-else type="success" size="small" icon="el-icon-search" @click="look(scope.$index)">
                 查看
@@ -73,7 +73,7 @@
                 size="small"
                 icon="el-icon-delete"
                 @click="deleteByID(scope.row,scope.$index)"
-              >删除
+              >{{$t('删除')}}
               </el-button>
             </el-button-group>
           </template>

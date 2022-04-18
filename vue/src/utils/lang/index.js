@@ -9,25 +9,18 @@ import store from '@/store'
 Vue.use(VueI18n)
 
 export const i18n = new VueI18n({
-  locale: localStorage.getItem('lang') || 'en', // 设置语言环境
-  fallbackLocale: localStorage.getItem('lang') || 'en',
+  locale: localStorage.getItem('lang') || 'zh', // 设置语言环境
+  fallbackLocale: localStorage.getItem('lang') || 'zh',
   messages: {
     en,
     zh
   } // 设置语言环境信息
 })
 
-const loadedLanguages = ['en', 'zh'] // 我们的预装默认语言
-
 export function setI18nLanguage(lang) {
   i18n.locale = lang
   localStorage.setItem('lang', lang)
 
-  const langMap = {
-    zh: 'cn',
-    en: 'en'
-  }
-  axios.defaults.headers.common['Accept-Language'] = langMap[lang]
   document.querySelector('html').setAttribute('lang', lang)
   return lang
 }

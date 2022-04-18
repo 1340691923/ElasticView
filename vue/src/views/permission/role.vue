@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-card class="box-card">
       <div class="filter-container">
-        <el-button type="primary" class="filter-item" icon="el-icon-plus" @click="handleAddRole">新建角色</el-button>
+        <el-button type="primary" class="filter-item" icon="el-icon-plus" @click="handleAddRole">{{$t('新建角色')}}</el-button>
       </div>
       <el-table
         :data="rolesList"
@@ -35,14 +35,14 @@
         </el-table-column>
         <el-table-column align="center" label="操作" width="220" fixed="right">
           <template slot-scope="scope">
-            <el-button type="primary" size="small" icon="el-icon-edit" @click.stop="handleEdit(scope.row)">编辑
+            <el-button type="primary" size="small" icon="el-icon-edit" @click.stop="handleEdit(scope.row)">{{$t('编辑')}}
             </el-button>
-            <el-button type="danger" size="small" icon="el-icon-delete" @click.stop="handleDelete(scope)">删除</el-button>
+            <el-button type="danger" size="small" icon="el-icon-delete" @click.stop="handleDelete(scope)">{{$t('删除')}}</el-button>
           </template>
         </el-table-column>
       </el-table>
 
-      <el-dialog :close-on-click-modal="false" width="70%" :visible.sync="dialogVisible" :title="dialogType==='edit'?'修改角色':'新建角色'">
+      <el-dialog :close-on-click-modal="false" width="70%" :visible.sync="dialogVisible" :title="dialogType==='edit'?$t('修改角色'): $t('新建角色')">
         <el-form :model="role" label-width="120px" label-position="left">
           <el-form-item label="角色名">
             <el-input v-model="role.name" placeholder="角色名" />

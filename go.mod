@@ -11,7 +11,6 @@ require (
 	github.com/denisenkom/go-mssqldb v0.0.0-20190707035753-2be1aa521ff4
 	github.com/fsnotify/fsnotify v1.4.9
 	github.com/garyburd/redigo v1.6.2
-	github.com/globalsign/mgo v0.0.0-20181015135952-eeefdecb41b8
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/go-xorm/xorm v0.7.9 // indirect
 	github.com/gofiber/fiber/v2 v2.27.0
@@ -22,6 +21,7 @@ require (
 	github.com/lestrrat-go/strftime v1.0.4 // indirect
 	github.com/logoove/sqlite v1.15.3
 	github.com/lwl1989/timing v2.1.1+incompatible
+	github.com/nicksnyder/go-i18n/v2 v2.2.0
 	github.com/olivere/elastic v6.2.35+incompatible
 	github.com/olivere/elastic/v7 v7.0.24
 	github.com/sony/sonyflake v1.0.0

@@ -14,7 +14,7 @@
 
         <screenfull id="screenfull" class="right-menu-item hover-effect" />
 
-        <el-tooltip content="全局字体大小" effect="dark" placement="bottom">
+        <el-tooltip :content="$t('全局字体大小')" effect="dark" placement="bottom">
           <size-select id="size-select" class="right-menu-item hover-effect" />
         </el-tooltip>
 
