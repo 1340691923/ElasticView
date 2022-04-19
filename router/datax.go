@@ -57,10 +57,17 @@ func runDatax(app *App) {
 			RelativePath: "GetTableColumns",
 		}, es.(*Group), true, dataxController.GetTableColumns)
 		apiRouterConfig.MountApi(api_config.MountApiBasePramas{
-			Remark:       "开始数据抽取任务",
+			Remark:       "建立数据抽取任务",
 			Method:       api_config.MethodPost,
 			AbsolutePath: AbsolutePath,
 			RelativePath: "Transfer",
 		}, es.(*Group), true, dataxController.Transfer)
+		apiRouterConfig.MountApi(api_config.MountApiBasePramas{
+			Remark:       "查询数据抽取任务列表",
+			Method:       api_config.MethodPost,
+			AbsolutePath: AbsolutePath,
+			RelativePath: "TransferLogList",
+		}, es.(*Group), true, dataxController.TransferLogList)
+
 	}
 }

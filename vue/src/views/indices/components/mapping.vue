@@ -170,7 +170,7 @@
         if (code != 0) {
           this.$message({
             type: 'error',
-            message: res.msg
+            message: msg
           })
           return
         }

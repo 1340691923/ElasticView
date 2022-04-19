@@ -59,6 +59,24 @@ export function GetTableColumns(data) {
   })
 }
 
+export function Transfer(data) {
+  return request({
+    url: api + 'Transfer',
+    method: 'post',
+    data
+  })
+}
+
+export function TransferLogList(data) {
+  return request({
+    url: api + 'TransferLogList',
+    method: 'post',
+    data
+  })
+}
+
+
+
 
 
 
