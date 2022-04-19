@@ -9,7 +9,7 @@
         @row-dblclick="handleEdit"
       >
         <el-table-column
-          label="序号"
+          :label="$t('序号')"
           align="center"
           fixed
           width="50"
@@ -18,22 +18,22 @@
             {{ scope.$index+1 }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="角色id" width="220">
+        <el-table-column align="center" :label="$t('角色id')" width="220">
           <template slot-scope="scope">
             {{ scope.row.id }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="角色名" width="220">
+        <el-table-column align="center" :label="$t('角色名')" width="220">
           <template slot-scope="scope">
             {{ scope.row.name }}
           </template>
         </el-table-column>
-        <el-table-column align="header-center" label="角色详细信息">
+        <el-table-column align="header-center" :label="$t('角色详细信息')">
           <template slot-scope="scope">
             {{ scope.row.description }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="操作" width="220" fixed="right">
+        <el-table-column align="center" :label="$t('操作')" width="220" fixed="right">
           <template slot-scope="scope">
             <el-button type="primary" size="small" icon="el-icon-edit" @click.stop="handleEdit(scope.row)">{{$t('编辑')}}
             </el-button>
@@ -44,20 +44,20 @@
 
       <el-dialog :close-on-click-modal="false" width="70%" :visible.sync="dialogVisible" :title="dialogType==='edit'?$t('修改角色'): $t('新建角色')">
         <el-form :model="role" label-width="120px" label-position="left">
-          <el-form-item label="角色名">
-            <el-input v-model="role.name" placeholder="角色名" />
+          <el-form-item :label="$t('角色名')">
+            <el-input v-model="role.name" :placeholder="$t('角色名')" />
           </el-form-item>
-          <el-form-item label="角色详情信息">
+          <el-form-item :label="$t('角色详情信息')">
             <el-input
               v-model="role.description"
               :autosize="{ minRows: 2, maxRows: 4}"
               type="textarea"
-              placeholder="角色详情信息"
+              :placeholder="$t('角色详情信息')"
             />
           </el-form-item>
-          <el-form-item label="菜单栏">
-            <el-input v-model="filterText" placeholder="输入关键字进行过滤" style="width: 300px" />
-            <el-button icon="el-icon-check" @click="quanxuan">全选</el-button>
+          <el-form-item :label="$t('菜单栏')">
+            <el-input v-model="filterText" :placeholder="$t('输入关键字进行过滤')" style="width: 300px" />
+            <el-button icon="el-icon-check" @click="quanxuan">{{$t('全选')}}</el-button>
             <el-tree
               ref="tree"
               :filter-node-method="filterNode"
@@ -69,22 +69,22 @@
               class="permission-tree"
             />
           </el-form-item>
-          <el-form-item v-if="role.id != 1" label="接口权限设置">
+          <el-form-item v-if="role.id != 1" :label="$t('接口权限设置')">
             <el-transfer
               v-if="dialogVisible"
               v-model="role.api"
-              :titles="['全部接口权限', '角色拥有权限']"
-              :button-texts="['移除权限', '添加权限']"
+              :titles="[$t('全部接口权限'), $t('角色拥有权限')]"
+              :button-texts="[$t('移除权限'), $t('添加权限')]"
               filterable
               :filter-method="filterMethod"
-              filter-placeholder="请选择接口名"
+              :filter-placeholder="$t('请选择接口名')"
               :data="allApiConfig"
             />
           </el-form-item>
         </el-form>
         <div style="text-align:right;">
-          <el-button type="danger" icon="el-icon-close" @click="dialogVisible=false">取消</el-button>
-          <el-button type="primary" icon="el-icon-check" @click="confirmRole">确定</el-button>
+          <el-button type="danger" icon="el-icon-close" @click="dialogVisible=false">{{$t('取消')}}</el-button>
+          <el-button type="primary" icon="el-icon-check" @click="confirmRole">{{$t('确定')}}</el-button>
         </div>
       </el-dialog>
     </el-card>
@@ -246,9 +246,9 @@ export default {
       })
     },
     handleDelete({ $index, row }) {
-      this.$confirm('确定删除这个角色吗?', '警告', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm(this.$t('确定删除这个角色吗?'), this.$t('警告'), {
+        confirmButtonText:  this.$t('确定'),
+        cancelButtonText:  this.$t('取消'),
         type: 'warning'
       })
         .then(async() => {
