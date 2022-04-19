@@ -1,6 +1,9 @@
 package request
 
-import "errors"
+import (
+	"errors"
+	jsoniter "github.com/json-iterator/go"
+)
 
 // GmRoleModel
 type GmRoleModel struct {
@@ -54,4 +57,37 @@ func (this DataxInfoInsertReq) Validate() (err error) {
 		err = errors.New("ip 不能为空")
 	}
 	return
+}
+
+type TransferReq struct {
+	SelectType  string `json:"selectType"`
+	Remark      string `json:"remark"`
+	SelectTable string `json:"selectTable"`
+	Cols        struct {
+		TableCols []string `json:"tableCols"`
+		EsCols    []struct {
+			Col   string `json:"col"`
+			TbCol string `json:"tbCol"`
+		} `json:"esCols"`
+	} `json:"cols"`
+	IndexName     string `json:"indexName"`
+	Reset         bool   `json:"reset"`
+	BufferSize    int    `json:"bufferSize"`
+	FlushInterval int    `json:"flushInterval"`
+}
+
+type SelectType struct {
+	ID     int    `json:"id"`
+	Remark string `json:"remark"`
+	Typ    string `json:"typ"`
+}
+
+func (this *TransferReq) ParseSelectType() (*SelectType, error) {
+	selectType := new(SelectType)
+	var json = jsoniter.ConfigCompatibleWithStandardLibrary
+	err := json.Unmarshal([]byte(this.SelectType), selectType)
+	if err != nil {
+		return nil, err
+	}
+	return selectType, nil
 }

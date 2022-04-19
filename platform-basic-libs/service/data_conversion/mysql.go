@@ -11,6 +11,10 @@ type Mysql struct {
 	request.DataxInfoTestLinkReq
 }
 
+func (this *Mysql) Transfer(id int, transferReq request.TransferReq) {
+	panic("implement me")
+}
+
 func (this *Mysql) GetTableColumns(tableName string) (interface{}, error) {
 	conn, err := this.getConn()
 	if err != nil {

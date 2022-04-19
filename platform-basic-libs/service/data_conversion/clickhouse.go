@@ -11,6 +11,10 @@ type Clickhouse struct {
 	request.DataxInfoTestLinkReq
 }
 
+func (this *Clickhouse) Transfer(id int, transferReq request.TransferReq) {
+	panic("implement me")
+}
+
 func (this *Clickhouse) GetTableColumns(tableName string) (interface{}, error) {
 	conn, err := this.getConn()
 	if err != nil {

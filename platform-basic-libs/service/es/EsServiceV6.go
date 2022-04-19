@@ -696,6 +696,7 @@ func (this EsServiceV6) CrudGetList(ctx *fiber.Ctx, crudFilter *es.CrudFilter) (
 	if err != nil {
 		return this.Error(ctx, err)
 	}
+
 	search := this.esClient.Search(crudFilter.IndexName)
 	q2 := search.Query(q)
 	for _, tmp := range crudFilter.SortList {
