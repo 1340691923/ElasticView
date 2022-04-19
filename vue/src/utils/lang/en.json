@@ -2,6 +2,7 @@
   "登录":"Login",
   "记住密码":"Remember the password",
   "首页":"home page",
+  "注销":"cancellation",
   "权限":"jurisdiction",
   "总分片数":"Total number of segments",
   "成功的分片数":"Number of successful slices",
@@ -35,15 +36,17 @@
   "数据抽取":"Data extraction",
   "快照存储库":"Snapshot repository",
 
-  "序号": "序号",
-  "序号": "序号",
-  "序号": "序号",
-  "序号": "序号",
-  "序号": "序号",
-  "序号": "序号",
-  "序号": "序号",
-  "序号": "序号",
-  "序号": "序号",
-  "序号": "序号",
-  "序号": "序号"
+  "请选择ES连接": "Please select es connection" ,
+  "搜索路由": "Search routing" ,
+  "确定删除这个角色吗?":"Are you sure to delete this role?",
+  "警告": "warning",
+  "确定": "confirm",
+  "取消": "cancel",
+  "序号": "Serial number",
+  "角色详情信息": "Role details",
+  "菜单栏": "menu bar",
+  "全选": "Select all",
+  "输入关键字进行过滤": "Enter keywords to filter",
+  "接口权限设置": "Interface permission setting"
+
 }

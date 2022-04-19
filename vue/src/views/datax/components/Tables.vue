@@ -1,12 +1,13 @@
 <template>
   <div>
+    {{currentIndex}}
    <el-form-item :label="isOne?'主表':'副表'">
       <el-select @change="GetTableColumns" filterable v-model="form.selectTable">
         <el-option v-for="(v,k,index) in tables" :key="index" :value="v" :label="v"/>
       </el-select>
      <el-button  icon="el-icon-delete" type="danger" @click="deleteTable" >删除该表{{isOne}}{{currentIndex}}</el-button>
     </el-form-item>
-    <el-form-item label="设置表间联系">
+    <el-form-item  label="设置表间联系">
       hello.
       <el-select @change="GetTableColumns" filterable v-model="form.selectTable">
         <el-option v-for="(v,k,index) in tables" :key="index" :value="v" :label="v"/>
@@ -63,11 +64,12 @@
       }
     },
     computed:{
-      isOne(){
-        return this.currentIndex == 0
-      }
+
     },
     methods: {
+      isOne(){
+        return this.currentIndex == 0
+      },
       deleteTable(){
         this.$emit("deleteTable",this.currentIndex)
       },

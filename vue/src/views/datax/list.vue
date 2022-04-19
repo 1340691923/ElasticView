@@ -17,10 +17,10 @@
               </el-select>
               <el-button icon="el-icon-plus" type="primary" @click="addTable">添加表</el-button>
             </el-form-item>
-            <template v-for="(v,k,index) in form.tables">
+            <div v-for="(v,k,index) in form.tables">
              --- {{index}}{{k}}{{v}}
               <tables :tables="tables" :currentIndex="index" :selectType="selectType" @deleteTable="deleteTable" :key="index"></tables>
-            </template>
+            </div>
 
             <el-form-item label="索引名:">
               <el-input v-model="form.indexName" style="width: 300px"></el-input>
