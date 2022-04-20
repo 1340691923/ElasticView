@@ -10,7 +10,7 @@ type Datasource interface {
 	Ping() error
 	GetTables() ([]string, error)
 	GetTableColumns(tableName string) (interface{}, error)
-	Transfer(id int, transferReq request.TransferReq)
+	Transfer(id int, transferReq request.TransferReq) (err error)
 }
 
 const (

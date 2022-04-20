@@ -2,17 +2,70 @@ package data_conversion
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
+	"github.com/1340691923/ElasticView/engine/db"
 	"github.com/1340691923/ElasticView/platform-basic-libs/request"
 	"github.com/jmoiron/sqlx"
+	"log"
+	"strings"
 )
 
 type Clickhouse struct {
 	request.DataxInfoTestLinkReq
 }
 
-func (this *Clickhouse) Transfer(id int, transferReq request.TransferReq) {
-	panic("implement me")
+func (this *Clickhouse) Transfer(id int, transferReq request.TransferReq) (err error) {
+	var (
+		page  = 1
+		limit = 20
+	)
+	conn, err := this.getConn()
+	if err != nil {
+		return err
+	}
+	sql, args, err := db.SqlBuilder.Select(strings.Join(transferReq.Cols.TableCols, ",")).
+		From(transferReq.SelectTable).
+		Limit(uint64(limit)).
+		Offset(db.CreatePage(page, limit)).ToSql()
+	log.Println(sql, args)
+	if err != nil {
+		return err
+	}
+
+	rows, err := conn.Query(sql, args...)
+	if err != nil {
+		return err
+	}
+	defer rows.Close()
+	columns, err := rows.Columns()
+	if err != nil {
+		return err
+	}
+	columnLength := len(columns)
+	cache := make([]interface{}, columnLength)
+	for index, _ := range cache {
+		var a interface{}
+		cache[index] = &a
+	}
+	var list []map[string]interface{}
+
+	for rows.Next() {
+		err := rows.Scan(cache...)
+		if err != nil {
+			return err
+		}
+		item := make(map[string]interface{})
+		for i, data := range cache {
+			item[columns[i]] = *data.(*interface{})
+		}
+		list = append(list, item)
+	}
+	log.Println(list)
+
+	/*ll, _ := json.Marshal(list)
+	log.Println("list", string(ll))*/
+	return errors.New("stop")
 }
 
 func (this *Clickhouse) GetTableColumns(tableName string) (interface{}, error) {

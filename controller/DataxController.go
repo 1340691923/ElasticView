@@ -218,7 +218,7 @@ func (this DataxController) Transfer(ctx *fiber.Ctx) error {
 	formData, _ := json.MarshalToString(reqData)
 	now := time.Now().Format(util.TimeFormat)
 
-	_, err = db.SqlBuilder.
+	rlt, err := db.SqlBuilder.
 		Insert("datax_transfer_list").
 		Columns("form_data", "remark", "table_name", "index_name", "error_msg", "status", "updated", "created").
 		Values(formData, reqData.Remark, reqData.SelectTable, reqData.IndexName, "无", "正在运行中...", now, now).RunWith(db.Sqlx).Exec()
@@ -234,8 +234,8 @@ func (this DataxController) Transfer(ctx *fiber.Ctx) error {
 		Remark:   obj.Remark,
 		Typ:      obj.Typ,
 	})
-
-	err = dataSource.Ping()
+	id, _ := rlt.LastInsertId()
+	err = dataSource.Transfer(int(id), reqData)
 	if err != nil {
 		return this.Error(ctx, err)
 	}

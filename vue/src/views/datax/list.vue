@@ -61,7 +61,7 @@
         </el-table-column>
         <el-table-column align="center" label="操作" fixed="right" width="300">
           <template slot-scope="scope">
-           <el-button type="danger" size="small" icon="el-icon-close" @click="handleEdit(scope)">{{$t('取消')}}</el-button>
+           <el-button type="danger" size="small" icon="el-icon-close" @click="cancel(scope.row.id)">{{$t('取消')}}</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -207,7 +207,9 @@
       },
     },
     methods: {
-
+      cancel(id){
+        alert(id)
+      },
       async getList(){
         const res = await TransferLogList()
         if (res.code != 0) {
