@@ -74,14 +74,17 @@ CREATE TABLE `datax_link_info`  (
                                   `created` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 CREATE UNIQUE INDEX link_remark_uniq on datax_link_info ( `remark`,`typ`);
+DROP TABLE IF EXISTS `datax_transfer_list`;
 CREATE TABLE `datax_transfer_list`  (
                                   `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
                                   `form_data` TEXT   DEFAULT NULL,
                                   `remark` TEXT NOT NULL DEFAULT '' ,
                                   `table_name` INTEGER NOT NULL DEFAULT '0',
                                   `index_name` TEXT NOT NULL DEFAULT '' ,
-                                  `error_msg` TEXT NOT NULL DEFAULT '' ,
-                                  `status` TEXT NOT NULL DEFAULT '' ,
+                                  `error_msg` TEXT NOT NULL DEFAULT '无报错' ,
+                                 `dbcount` INTEGER NOT NULL DEFAULT '0',
+                                  `escount` INTEGER NOT NULL DEFAULT '0',
+                                  `status` TEXT NOT NULL DEFAULT '任务运行中...' ,
                                   `updated` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,
                                   `created` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP
 );

@@ -4,15 +4,15 @@ import (
 	"context"
 	"encoding/json"
 	"github.com/1340691923/ElasticView/engine/logs"
-	elasticV6 "github.com/olivere/elastic"
+	elasticV7 "github.com/olivere/elastic/v7"
 	"sync"
 	"time"
 )
 
-type RealTimeWarehousingV6 struct {
-	buffer        []*elasticV6.BulkIndexRequest
+type RealTimeWarehousingV7 struct {
+	buffer        []*elasticV7.BulkIndexRequest
 	bufferMutex   *sync.RWMutex
-	conn          *elasticV6.Client
+	conn          *elasticV7.Client
 	taskId        int
 	batchSize     int
 	flushInterval int
@@ -21,11 +21,11 @@ type RealTimeWarehousingV6 struct {
 	completeLen   int
 }
 
-func NewRealTimeWarehousingV6(batchSize, flushInterval int, conn *elasticV6.Client, ctx context.Context, taskId int, expectLen int) *RealTimeWarehousingV6 {
+func NewRealTimeWarehousingV7(batchSize, flushInterval int, conn *elasticV7.Client, ctx context.Context, taskId int, expectLen int) *RealTimeWarehousingV7 {
 	logs.Logger.Sugar().Infof("NewRealTimeWarehousing batchSize:%v,flushInterval:%v", batchSize, flushInterval)
 
-	return &RealTimeWarehousingV6{
-		buffer:        make([]*elasticV6.BulkIndexRequest, 0, batchSize),
+	return &RealTimeWarehousingV7{
+		buffer:        make([]*elasticV7.BulkIndexRequest, 0, batchSize),
 		bufferMutex:   new(sync.RWMutex),
 		batchSize:     batchSize,
 		flushInterval: flushInterval,
@@ -36,7 +36,7 @@ func NewRealTimeWarehousingV6(batchSize, flushInterval int, conn *elasticV6.Clie
 	}
 }
 
-func (this *RealTimeWarehousingV6) Flush() (err error) {
+func (this *RealTimeWarehousingV7) Flush() (err error) {
 
 	this.bufferMutex.Lock()
 
@@ -74,14 +74,14 @@ func (this *RealTimeWarehousingV6) Flush() (err error) {
 			}
 			logs.Logger.Sugar().Infof("插入成功，继续插入！")
 		}
-		this.buffer = make([]*elasticV6.BulkIndexRequest, 0, this.batchSize)
+		this.buffer = make([]*elasticV7.BulkIndexRequest, 0, this.batchSize)
 
 	}
 	this.bufferMutex.Unlock()
 	return nil
 }
 
-func (this *RealTimeWarehousingV6) Add(data *elasticV6.BulkIndexRequest) (err error) {
+func (this *RealTimeWarehousingV7) Add(data *elasticV7.BulkIndexRequest) (err error) {
 	this.bufferMutex.Lock()
 	this.buffer = append(this.buffer, data)
 	this.bufferMutex.Unlock()
@@ -93,13 +93,13 @@ func (this *RealTimeWarehousingV6) Add(data *elasticV6.BulkIndexRequest) (err er
 	return nil
 }
 
-func (this *RealTimeWarehousingV6) getBufferLength() int {
+func (this *RealTimeWarehousingV7) getBufferLength() int {
 	this.bufferMutex.RLock()
 	defer this.bufferMutex.RUnlock()
 	return len(this.buffer)
 }
 
-func (this *RealTimeWarehousingV6) FlushAll() error {
+func (this *RealTimeWarehousingV7) FlushAll() error {
 	for this.getBufferLength() > 0 {
 		if err := this.Flush(); err != nil {
 			return err
@@ -108,7 +108,7 @@ func (this *RealTimeWarehousingV6) FlushAll() error {
 	return nil
 }
 
-func (this *RealTimeWarehousingV6) RegularFlushing() {
+func (this *RealTimeWarehousingV7) RegularFlushing() {
 	go func() {
 		ticker := time.NewTicker(time.Duration(this.flushInterval) * time.Second)
 		defer ticker.Stop()
