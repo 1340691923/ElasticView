@@ -2,7 +2,8 @@
   <div class="app-container">
     <el-card class="box-card">
       <div class="filter-container">
-        <el-button class="filter-item" @click="initForm" type="primary">新建数据抽取任务</el-button>
+        <el-button @click="getList" class="filter-item"   icon="el-icon-refresh"  type="primary">刷新</el-button>
+        <el-button v-loading="openTaskLoading" class="filter-item"   icon="el-icon-plus" @click="initForm" type="warning">新建数据抽取任务</el-button>
       </div>
 
       <el-table
@@ -120,12 +121,13 @@
               <el-radio v-model="form.reset" class="filter-item" :label="Boolean(true)">是</el-radio>
               <el-radio v-model="form.reset" class="filter-item" :label="Boolean(false)">否</el-radio>
             </el-form-item>
-            <el-form-item label="入库批次数量:">
-              <el-input type="number" v-model="form.bufferSize" style="width: 300px"></el-input>
+            <el-form-item label="协程数:">
+              <el-input type="number" v-model.number="form.goNum" style="width: 300px"></el-input>
             </el-form-item>
-            <el-form-item label="入库轮循间隔时间(单位秒):">
-              <el-input type="number" v-model="form.flushInterval" style="width: 300px"></el-input>
+            <el-form-item label="每次limit条数:">
+              <el-input type="number" v-model.number="form.bufferSize" style="width: 300px"></el-input>
             </el-form-item>
+
           </el-form>
           <div style="text-align:right;">
             <el-button type="danger" icon="el-icon-close" @click="closeDialog">取消</el-button>
@@ -151,14 +153,17 @@
     },
     indexName: "",
     reset: true,
-    bufferSize: 5000,
-    flushInterval: 5000
+    bufferSize: 100,
+    flushInterval: 5000,
+    goNum:30,
+    type_name:""
   }
 
   export default {
     name: "list",
     data() {
       return {
+        openTaskLoading:false,
         connectLoading:false,
         test:"",
         showMapping:false,
@@ -211,7 +216,9 @@
         alert(id)
       },
       async getList(){
+        this.connectLoading = true
         const res = await TransferLogList()
+        this.connectLoading = false
         if (res.code != 0) {
           this.$message({
             type: 'error',
@@ -231,7 +238,6 @@
         })
       },
       async changeIndex() {
-
         const input = {}
         input['es_connect'] = this.$store.state.baseData.EsConnectID
 
@@ -254,8 +260,8 @@
             case 6:
               const mappings = Object.keys(data.list[this.form.indexName].mappings)
               if (mappings.length > 0) {
-                let type_name = mappings[0]
-                this.esCols = Object.keys(data.list[this.form.indexName].mappings[type_name].properties)
+                this.form.type_name = mappings[0]
+                this.esCols = Object.keys(data.list[this.form.indexName].mappings[this.form.type_name].properties)
               }
               break
             case 7:
@@ -270,10 +276,13 @@
 
       },
       async getIndexList() {
+
         const input = {}
         input['es_connect'] = this.$store.state.baseData.EsConnectID
         this.indexSelectLoading = true
+
         const res = await IndexNamesAction(input)
+
         this.indexSelectLoading = false
         if (res.code != 0) {
           this.$message({
@@ -286,7 +295,7 @@
       },
       async add() {
         let form = this.form
-        console.log("this.form",this.form)
+
         form['es_connect'] = this.$store.state.baseData.EsConnectID
         const res =  await Transfer(form)
         if (res.code != 0) {
@@ -359,6 +368,7 @@
       },
       async initForm() {
         this.form.remark = ""
+        this.openTaskLoading = true
         const res = await LinkSelectOpt()
         if (res.code != 0) {
           return
@@ -371,8 +381,8 @@
           await this.getTables()
           await this.GetTableColumns()
         }
+        this.openTaskLoading = false
         this.open = true
-
       }
     }
   }

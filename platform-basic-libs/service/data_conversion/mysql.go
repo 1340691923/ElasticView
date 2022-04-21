@@ -1,48 +1,124 @@
 package data_conversion
 
 import (
+	"context"
 	"database/sql"
 	"errors"
 	"fmt"
 	"github.com/1340691923/ElasticView/engine/db"
+	"github.com/1340691923/ElasticView/engine/es"
 	"github.com/1340691923/ElasticView/platform-basic-libs/request"
 	"github.com/jmoiron/sqlx"
-	"log"
+	"math"
 	"strings"
-	"time"
 )
 
 type Mysql struct {
 	request.DataxInfoTestLinkReq
 }
 
-func (this *Mysql) Transfer(id int, transferReq request.TransferReq) (err error) {
+func (this *Mysql) Transfer(id int, transferReq *request.TransferReq) (err error) {
 	var (
 		page  = 1
-		limit = 20
+		limit = transferReq.BufferSize
 	)
+
 	conn, err := this.getConn()
 	if err != nil {
-		return err
-	}
-	sql, args, err := db.SqlBuilder.Select(strings.Join(transferReq.Cols.TableCols, ",")).
-		From(transferReq.SelectTable).
-		Limit(uint64(limit)).
-		Offset(db.CreatePage(page, limit)).ToSql()
-	log.Println(sql, args)
-	if err != nil {
+		updateDataXListStatus(id, 0, 0, Error, err.Error())
 		return err
 	}
 
-	list, err := queryRows(conn, sql, args...)
+	count := 0
+	err = db.SqlBuilder.Select("count(1)").From(transferReq.SelectTable).RunWith(conn).Scan(&count)
 	if err != nil {
-		panic(err)
+		updateDataXListStatus(id, 0, 0, Error, err.Error())
+		return err
 	}
-	log.Println(list)
 
-	/*ll, _ := json.Marshal(list)
-	log.Println("list", string(ll))*/
-	return errors.New("stop")
+	if count == 0 {
+		updateDataXListStatus(id, 0, 0, Error, fmt.Sprintf("该表【%s】没有数据", transferReq.SelectTable))
+		return errors.New(fmt.Sprintf("该表【%s】没有数据", transferReq.SelectTable))
+	}
+
+	if transferReq.GoNum == 0 {
+		transferReq.GoNum = 30
+	}
+
+	ctx, cancel := context.WithCancel(context.Background())
+
+	ts := GetTaskInstance()
+
+	ts.SetCancelFunc(id, cancel)
+
+	length := int(math.Ceil(float64(float64(count) / float64(limit))))
+	lastLimit := count % limit
+
+	esConnect, err := es.GetEsClientByID(transferReq.EsConnect)
+
+	if err != nil {
+		updateDataXListStatus(id, 0, 0, Error, err.Error())
+		return err
+	}
+
+	_ = func(offset uint64, limit int) string {
+		sql := fmt.Sprintf(`SELECT %s FROM %s WHERE id >= (select id from %s limit %v, 1) limit %v`,
+			strings.Join(transferReq.Cols.TableCols, ","),
+			transferReq.SelectTable,
+			transferReq.SelectTable,
+			offset,
+			limit,
+		)
+		return sql
+	}
+
+	sqlFn := func(offset uint64, limit int) string {
+		sql := fmt.Sprintf(`SELECT %s FROM %s limit %v,%v`,
+			strings.Join(transferReq.Cols.TableCols, ","),
+			transferReq.SelectTable,
+			offset,
+			limit,
+		)
+		return sql
+	}
+
+	switch esConnect.Version {
+	case 6:
+		esConn, err := es.NewEsClientV6(esConnect)
+		if err != nil {
+			updateDataXListStatus(id, 0, 0, Error, err.Error())
+			return err
+		}
+
+		err = transferEsV6(
+			id, transferReq, page, limit, lastLimit,
+			length, count, sqlFn, ctx, conn, esConn,
+		)
+		if err != nil {
+			updateDataXListStatus(id, 0, 0, Error, err.Error())
+			return err
+		}
+	case 7:
+		fallthrough
+	case 8:
+		esConn, err := es.NewEsClientV7(esConnect)
+		if err != nil {
+			updateDataXListStatus(id, 0, 0, Error, err.Error())
+			return err
+		}
+
+		err = transferEsV7(
+			id, transferReq, page, limit, lastLimit,
+			length, count, sqlFn, ctx, conn, esConn,
+		)
+		if err != nil {
+			updateDataXListStatus(id, 0, 0, Error, err.Error())
+			return err
+		}
+
+	}
+
+	return nil
 }
 
 func (this *Mysql) GetTableColumns(tableName string) (interface{}, error) {
@@ -122,71 +198,6 @@ func (this *Mysql) getConn() (*sqlx.DB, error) {
 		return nil, err
 	}
 	return db, nil
-}
-
-func queryRows(db *sqlx.DB, sqlStr string, val ...interface{}) (list []map[string]interface{}, err error) {
-	var rows *sql.Rows
-	rows, err = db.Query(sqlStr, val...)
-	if err != nil {
-		return
-	}
-	defer rows.Close()
-	var columns []string
-	columns, err = rows.Columns()
-	if err != nil {
-		return
-	}
-	values := make([]interface{}, len(columns))
-	scanArgs := make([]interface{}, len(values))
-	for i := range values {
-		scanArgs[i] = &values[i]
-	}
-	// 这里需要初始化为空数组，否则在查询结果为空的时候，返回的会是一个未初始化的指针
-	for rows.Next() {
-		err = rows.Scan(scanArgs...)
-		if err != nil {
-			return
-		}
-
-		ret := make(map[string]interface{})
-		for i, col := range values {
-			if col == nil {
-				ret[columns[i]] = nil
-			} else {
-				switch val := (*scanArgs[i].(*interface{})).(type) {
-				case byte:
-					ret[columns[i]] = val
-					break
-				case []byte:
-					v := string(val)
-					switch v {
-					case "\x00": // 处理数据类型为bit的情况
-						ret[columns[i]] = 0
-					case "\x01": // 处理数据类型为bit的情况
-						ret[columns[i]] = 1
-					default:
-						ret[columns[i]] = v
-						break
-					}
-					break
-				case time.Time:
-					if val.IsZero() {
-						ret[columns[i]] = nil
-					} else {
-						ret[columns[i]] = val.Format("2006-01-02 15:04:05")
-					}
-					break
-				default:
-					ret[columns[i]] = val
-				}
-			}
-		}
-		list = append(list, ret)
-	}
-	if err = rows.Err(); err != nil {
-		return
-	}
-	return
 }
 
 func (this *Mysql) Ping() error {

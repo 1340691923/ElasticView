@@ -199,7 +199,7 @@
                   this.deleteCookie()
                 }
                 //this.$websocket.dispatch('WEBSOCKET_INIT',"ws://127.0.0.1:11122/api/Chat?token="+getToken())
-                this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
+                this.$router.push({ path: this.redirect || '/', query: this.otherQuery },()=>{},()=>{})
                 this.loading = false
               })
               .catch(() => {

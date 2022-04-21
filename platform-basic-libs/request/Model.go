@@ -60,9 +60,11 @@ func (this DataxInfoInsertReq) Validate() (err error) {
 }
 
 type TransferReq struct {
+	EsConnect   int    `json:"es_connect"`
 	SelectType  string `json:"selectType"`
 	Remark      string `json:"remark"`
 	SelectTable string `json:"selectTable"`
+	TypeName    string `json:"type_name"`
 	Cols        struct {
 		TableCols []string `json:"tableCols"`
 		EsCols    []struct {
@@ -70,10 +72,10 @@ type TransferReq struct {
 			TbCol string `json:"tbCol"`
 		} `json:"esCols"`
 	} `json:"cols"`
-	IndexName     string `json:"indexName"`
-	Reset         bool   `json:"reset"`
-	BufferSize    int    `json:"bufferSize"`
-	FlushInterval int    `json:"flushInterval"`
+	IndexName  string `json:"indexName"`
+	Reset      bool   `json:"reset"`
+	BufferSize int    `json:"bufferSize"`
+	GoNum      int    `json:"goNum"`
 }
 
 type SelectType struct {

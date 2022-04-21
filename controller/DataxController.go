@@ -181,12 +181,7 @@ func (this DataxController) Transfer(ctx *fiber.Ctx) error {
 	if reqData.Remark == "" {
 		return this.Error(ctx, errors.New("备注不能为空"))
 	}
-	if reqData.FlushInterval == 0 {
-		return this.Error(ctx, errors.New("入库轮循间隔时间不能为空"))
-	}
-	if reqData.BufferSize == 0 {
-		return this.Error(ctx, errors.New("入库批次数量不能为空"))
-	}
+
 	if reqData.BufferSize == 0 {
 		return this.Error(ctx, errors.New("入库批次数量不能为空"))
 	}
@@ -235,7 +230,7 @@ func (this DataxController) Transfer(ctx *fiber.Ctx) error {
 		Typ:      obj.Typ,
 	})
 	id, _ := rlt.LastInsertId()
-	err = dataSource.Transfer(int(id), reqData)
+	err = dataSource.Transfer(int(id), &reqData)
 	if err != nil {
 		return this.Error(ctx, err)
 	}

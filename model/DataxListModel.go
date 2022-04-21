@@ -8,6 +8,8 @@ type DataxListModel struct {
 	Index_name string `json:"index_name" db:"index_name"`
 	Error_msg  string `json:"error_msg" db:"error_msg"`
 	Status     string `json:"status" db:"status"`
+	Dbcount    int    `json:"dbcount" db:"dbcount"  `
+	Escount    int    `json:"escount" db:"escount"  `
 	Updated    string `json:"updated" db:"updated"`
 	Created    string `json:"created" db:"created"`
 }

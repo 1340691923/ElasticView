@@ -6,7 +6,7 @@
         <el-radio @change="search" v-model="input.typ" class="filter-item" label="">全部</el-radio>
         <el-radio @change="search" v-model="input.typ" class="filter-item" label="mysql">mysql</el-radio>
         <!--<el-radio @change="search" v-model="input.typ" class="filter-item" label="sqlserver">sqlserver</el-radio>-->
-        <el-radio @change="search" v-model="input.typ" class="filter-item" label="clickhouse">clickhouse</el-radio>
+        <!--<el-radio @change="search" v-model="input.typ" class="filter-item" label="clickhouse">clickhouse</el-radio>-->
         <!--<el-radio @change="search" v-model="input.typ" class="filter-item" label="mongodb">mongodb</el-radio>-->
         <el-input style="width: 300px" class="filter-item" v-model="input.remark" clearable
                   placeholder="备注名"></el-input>
@@ -23,9 +23,9 @@
         </el-table-column>
         <el-table-column  width="100"  align="center" label="类型">
           <template slot-scope="scope">
-            <el-tag v-if="scope.row.typ == 'clickhouse'" type="primary">
+            <!--<el-tag v-if="scope.row.typ == 'clickhouse'" type="primary">
               {{ scope.row.typ }}
-            </el-tag>
+            </el-tag>-->
             <el-tag v-if="scope.row.typ == 'mysql'" type="success">
               {{ scope.row.typ }}
             </el-tag>
@@ -144,7 +144,7 @@
             <el-form-item label="数据源类型">
               <el-radio v-model="form.typ" label="mysql">mysql</el-radio>
               <!--<el-radio v-model="form.typ" label="sqlserver">sqlserver</el-radio>-->
-              <el-radio v-model="form.typ" label="clickhouse">clickhouse</el-radio>
+              <!--<el-radio v-model="form.typ" label="clickhouse">clickhouse</el-radio>-->
               <!--<el-radio v-model="form.typ" label="mongodb">mongodb</el-radio>-->
             </el-form-item>
           </el-form>
