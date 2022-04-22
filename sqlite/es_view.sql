@@ -82,6 +82,7 @@ CREATE TABLE `datax_transfer_list`  (
                                   `table_name` INTEGER NOT NULL DEFAULT '0',
                                   `index_name` TEXT NOT NULL DEFAULT '' ,
                                   `error_msg` TEXT NOT NULL DEFAULT '无报错' ,
+                                    `crontab_spec` TEXT NOT NULL DEFAULT '' ,
                                  `dbcount` INTEGER NOT NULL DEFAULT '0',
                                   `escount` INTEGER NOT NULL DEFAULT '0',
                                   `status` TEXT NOT NULL DEFAULT '任务运行中...' ,

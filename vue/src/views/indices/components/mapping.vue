@@ -13,7 +13,7 @@
               <el-option label="严格映射" value="strict" />
             </el-select>
 
-            <el-button v-loading="loading" icon="el-icon-check" type="success" size="small" @click="saveMappinng" class="filter-item">保存/修改映射</el-button>
+            <el-button :disabled="loading" v-loading="loading" icon="el-icon-check" type="success" size="small" @click="saveMappinng" class="filter-item">保存/修改映射</el-button>
           </div>
           <vue-json-helper
             v-if="showVueJsonHelper"
@@ -139,12 +139,14 @@
 
         this.loading = true
         const { data, code, msg } = await UpdateMappingAction(input)
+
         this.loading = false
         if (code == 0) {
           this.$message({
             type: 'success',
             message: msg
           })
+          this.$emit('finished')
         } else {
           this.$message({
             type: 'error',

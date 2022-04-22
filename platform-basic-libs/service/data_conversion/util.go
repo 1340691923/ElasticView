@@ -11,7 +11,7 @@ import (
 	elasticV6 "github.com/olivere/elastic"
 	elasticV7 "github.com/olivere/elastic/v7"
 	"go.uber.org/zap"
-	"log"
+	"sync"
 	"time"
 )
 
@@ -90,7 +90,6 @@ func queryRows(table2EsMap map[string]string, db *sqlx.DB, sqlStr string, val ..
 	if err = rows.Err(); err != nil {
 		return
 	}
-	log.Println("sqlStr", sqlStr, len(list))
 	return
 }
 
@@ -127,43 +126,7 @@ func transferEsV6(
 
 	goNumControl := make(chan struct{}, transferReq.GoNum)
 
-	for ; page <= length; page++ {
-
-		goNumControl <- struct{}{}
-
-		if page == length {
-			limitTmp = lastLimit
-		}
-
-		go func(page, limit, lastLimit, limitTmp int) {
-
-			select {
-			case <-ctx.Done():
-				logs.Logger.Sugar().Infof("任务结束", id)
-				return
-			default:
-
-			}
-
-			sql := createSqlFn(db.CreatePage(page, limit), limitTmp)
-
-			list, err := queryRows(table2EsColMap, conn, sql)
-			if err != nil {
-				updateDataXListStatus(id, 0, 0, Error, err.Error())
-				<-goNumControl
-				logs.Logger.Error("err", zap.String("sql", sql), zap.Error(err))
-				return
-			}
-
-			for _, data := range list {
-				InputC <- data
-			}
-
-			<-goNumControl
-		}(page, limit, lastLimit, limitTmp)
-	}
-
-	realTimeWarehousing := NewRealTimeWarehousingV6(3000, 2, esConn, ctx, id, count)
+	realTimeWarehousing := NewRealTimeWarehousingV6(transferReq.EsBufferSize, transferReq.EsFlushInterval, esConn, ctx, id, count)
 	realTimeWarehousing.RegularFlushing()
 
 	go func() {
@@ -180,9 +143,48 @@ func transferEsV6(
 					logs.Logger.Sugar().Errorf("上报失败 重新上报err", err)
 				}
 			default:
+
 			}
 		}
 	}()
+
+	go func(page, length, limitTmp, lastLimit int) {
+		for ; page <= length; page++ {
+
+			goNumControl <- struct{}{}
+
+			if page == length {
+				limitTmp = lastLimit
+			}
+
+			go func(page, limit, lastLimit, limitTmp int) {
+
+				select {
+				case <-ctx.Done():
+					logs.Logger.Sugar().Infof("任务结束", id)
+					return
+				default:
+
+				}
+
+				sql := createSqlFn(db.CreatePage(page, limit), limitTmp)
+
+				list, err := queryRows(table2EsColMap, conn, sql)
+				if err != nil {
+					updateDataXListStatus(id, 0, 0, Error, err.Error())
+					<-goNumControl
+					logs.Logger.Error("err", zap.String("sql", sql), zap.Error(err))
+					return
+				}
+
+				for _, data := range list {
+					InputC <- data
+				}
+
+				<-goNumControl
+			}(page, limit, lastLimit, limitTmp)
+		}
+	}(page, length, limitTmp, lastLimit)
 
 	return nil
 }
@@ -220,43 +222,7 @@ func transferEsV7(
 
 	goNumControl := make(chan struct{}, transferReq.GoNum)
 
-	for ; page <= length; page++ {
-
-		goNumControl <- struct{}{}
-
-		if page == length {
-			limitTmp = lastLimit
-		}
-
-		go func(page, limit, lastLimit, limitTmp int) {
-
-			select {
-			case <-ctx.Done():
-				logs.Logger.Sugar().Infof("任务结束", id)
-				return
-			default:
-
-			}
-
-			sql := createSqlFn(db.CreatePage(page, limit), limitTmp)
-
-			list, err := queryRows(table2EsColMap, conn, sql)
-			if err != nil {
-				updateDataXListStatus(id, 0, 0, Error, err.Error())
-				<-goNumControl
-				logs.Logger.Error("err", zap.String("sql", sql), zap.Error(err))
-				return
-			}
-
-			for _, data := range list {
-				InputC <- data
-			}
-
-			<-goNumControl
-		}(page, limit, lastLimit, limitTmp)
-	}
-
-	realTimeWarehousing := NewRealTimeWarehousingV7(3000, 2, esConn, ctx, id, count)
+	realTimeWarehousing := NewRealTimeWarehousingV7(transferReq.EsBufferSize, transferReq.EsFlushInterval, esConn, ctx, id, count)
 	realTimeWarehousing.RegularFlushing()
 
 	go func() {
@@ -273,21 +239,69 @@ func transferEsV7(
 					logs.Logger.Sugar().Errorf("上报失败 重新上报err", err)
 				}
 			default:
+
 			}
 		}
 	}()
 
+	go func(page, length, limitTmp, lastLimit int) {
+		for ; page <= length; page++ {
+
+			goNumControl <- struct{}{}
+
+			if page == length {
+				limitTmp = lastLimit
+			}
+
+			go func(page, limit, lastLimit, limitTmp int) {
+
+				select {
+				case <-ctx.Done():
+					logs.Logger.Sugar().Infof("任务结束", id)
+					return
+				default:
+
+				}
+
+				sql := createSqlFn(db.CreatePage(page, limit), limitTmp)
+
+				list, err := queryRows(table2EsColMap, conn, sql)
+				if err != nil {
+					updateDataXListStatus(id, 0, 0, Error, err.Error())
+					<-goNumControl
+					logs.Logger.Error("err", zap.String("sql", sql), zap.Error(err))
+					return
+				}
+
+				for _, data := range list {
+					InputC <- data
+				}
+
+				<-goNumControl
+			}(page, limit, lastLimit, limitTmp)
+		}
+	}(page, length, limitTmp, lastLimit)
+
 	return nil
 }
 
+var lock *sync.RWMutex
+
+func init() {
+	lock = new(sync.RWMutex)
+}
+
 func updateDataXListStatus(id, dbcount, escount int, status, msg string) (err error) {
-	_, err = db.SqlBuilder.Update("datax_transfer_list").SetMap(map[string]interface{}{
-		"status":    status,
-		"error_msg": msg,
-		"dbcount":   dbcount,
-		"escount":   escount,
-		"updated":   time.Now().Format(util.TimeFormat),
-	}).Where(db.Eq{"id": id}).RunWith(db.Sqlx).Exec()
-	log.Println("err", err)
+	lock.Lock()
+	defer lock.Unlock()
+	_, err = db.SqlBuilder.Update("datax_transfer_list").
+		SetMap(map[string]interface{}{
+			"status":    status,
+			"error_msg": msg,
+			"dbcount":   dbcount,
+			"escount":   escount,
+			"updated":   time.Now().Format(util.TimeFormat),
+		}).Where(db.Eq{"id": id}).RunWith(db.Sqlx).Exec()
+
 	return
 }

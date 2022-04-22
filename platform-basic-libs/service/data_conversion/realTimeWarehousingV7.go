@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"github.com/1340691923/ElasticView/engine/logs"
 	elasticV7 "github.com/olivere/elastic/v7"
+	"log"
 	"sync"
 	"time"
 )
@@ -67,6 +68,8 @@ func (this *RealTimeWarehousingV7) Flush() (err error) {
 			logs.Logger.Sugar().Infof("插入失败！", err)
 		} else {
 			if this.expectLen == this.completeLen {
+				ts := GetTaskInstance()
+				ts.CancelById(this.taskId)
 				updateDataXListStatus(this.taskId, this.expectLen, this.completeLen, Success, "数据已全部导入完毕！")
 				logs.Logger.Sugar().Infof("所有数据都插入完成！")
 			} else {
@@ -96,6 +99,7 @@ func (this *RealTimeWarehousingV7) Add(data *elasticV7.BulkIndexRequest) (err er
 func (this *RealTimeWarehousingV7) getBufferLength() int {
 	this.bufferMutex.RLock()
 	defer this.bufferMutex.RUnlock()
+	log.Println("this.buffer", this.buffer)
 	return len(this.buffer)
 }
 

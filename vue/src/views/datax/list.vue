@@ -2,8 +2,11 @@
   <div class="app-container">
     <el-card class="box-card">
       <div class="filter-container">
-        <el-button @click="getList" class="filter-item"   icon="el-icon-refresh"  type="primary">刷新</el-button>
-        <el-button v-loading="openTaskLoading" class="filter-item"   icon="el-icon-plus" @click="initForm" type="warning">新建数据抽取任务</el-button>
+        <el-button @click="getList" class="filter-item" icon="el-icon-refresh" type="primary">刷新</el-button>
+        <el-button v-loading="openTaskLoading" :disabled="openTaskLoading" class="filter-item" icon="el-icon-plus"
+                   @click="initForm" type="warning">
+          新建数据抽取任务
+        </el-button>
       </div>
 
       <el-table
@@ -21,7 +24,7 @@
           align="center"
           prop="id"
           label="备注"
-          width="150">
+          width="100">
         </el-table-column>
         <el-table-column
           align="center"
@@ -33,8 +36,28 @@
           align="center"
           prop="index_name"
           label="索引名"
-          width="250">
+          width="200">
         </el-table-column>
+
+        <el-table-column
+          align="center"
+          prop="dbcount"
+          label="源数据条数"
+          width="100">
+        </el-table-column>
+        <el-table-column
+          align="center"
+          prop="escount"
+          label="已导入数据条数"
+          width="100">
+        </el-table-column>
+        <el-table-column
+          align="center"
+          prop="crontab_spec"
+          label="定时任务"
+          width="200">
+        </el-table-column>
+
         <el-table-column
           align="center"
           prop="status"
@@ -45,7 +68,7 @@
           align="center"
           prop="error_msg"
           label="错误信息"
-          width="300">
+          width="200">
         </el-table-column>
 
         <el-table-column
@@ -62,11 +85,18 @@
         </el-table-column>
         <el-table-column align="center" label="操作" fixed="right" width="300">
           <template slot-scope="scope">
-           <el-button type="danger" size="small" icon="el-icon-close" @click="cancel(scope.row.id)">{{$t('取消')}}</el-button>
+
+            <el-button :disabled="scope.row.status != '正在运行中...' && scope.row.status != '数据正在导入中...'" type="danger"
+                       size="small" icon="el-icon-close"
+                       @click="cancel(scope.row.id)">{{$t('取消')}}
+            </el-button>
+            <el-button type="danger" size="small" icon="el-icon-delete" @click="deleteById(scope.row.id)">{{$t('删除')}}
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
-      <el-dialog width="95%" :close-on-click-modal="false" @close="closeDialog" :visible.sync="open" title="新建数据抽取任务">
+      <el-dialog width="95%" :close-on-click-modal="false" @close="closeDialog" :visible.sync="open"
+                 :title="$t('新建数据抽取任务')">
         <el-card class="box-card">
           <el-form label-width="200px" label-position="left">
             <el-form-item label="任务备注:">
@@ -98,11 +128,35 @@
               </div>
             </el-form-item>
             <el-form-item label="索引名:">
-
-              <el-select @change="changeIndex" v-loading="indexSelectLoading" class="filter-item" filterable v-model="form.indexName"
+              <el-select @change="changeIndex" v-loading="indexSelectLoading" class="filter-item" filterable
+                         v-model="form.indexName"
                          style="width: 350px">
                 <el-option v-for="(v,k,index) in indexList" :key="index" :lable="v" :value="v"></el-option>
               </el-select>
+              <el-button
+                id="new-index"
+                type="success"
+                class="filter-item"
+                icon="el-icon-plus"
+                @click="openSettingDialog('','add')"
+              >新建索引
+              </el-button>
+              <el-button
+                v-if="form.indexName != ''"
+                type="primary"
+                size="small"
+                icon="el-icon-setting"
+                @click="openSettingDialog(form.indexName,'update')"
+              >修改配置
+              </el-button>
+              <el-button
+                v-if="form.indexName != ''"
+                type="primary"
+                size="small"
+                icon="el-icon-circle-plus-outline"
+                @click="openMappingEditDialog(form.indexName,false)"
+              >修改映射
+              </el-button>
             </el-form-item>
 
             <el-form-item v-if="showMapping" label="字段映射:">
@@ -110,10 +164,10 @@
                 <el-alert
                   title="请先选择表字段"
                   type="warning"
-                  ></el-alert>
+                ></el-alert>
               </div>
               <div class="el-row" v-for="(v,k,index) in form.cols.tableCols">
-                <mapping  v-model="form.cols.esCols[k].col" :esMappingCol="esCols" :mysqlCol="v"></mapping>
+                <mapping v-model="form.cols.esCols[k].col" :esMappingCol="esCols" :mysqlCol="v"></mapping>
               </div>
             </el-form-item>
 
@@ -124,49 +178,88 @@
             <el-form-item label="协程数:">
               <el-input type="number" v-model.number="form.goNum" style="width: 300px"></el-input>
             </el-form-item>
-            <el-form-item label="每次limit条数:">
+            <el-form-item label="源数据库每次limit条数:">
               <el-input type="number" v-model.number="form.bufferSize" style="width: 300px"></el-input>
+            </el-form-item>
+            <el-form-item label="es入库批次数量:">
+              <el-input type="number" v-model.number="form.esBufferSize" style="width: 300px"></el-input>
+            </el-form-item>
+            <el-form-item label="es入库轮循间隔时间:">
+              <el-input type="number" v-model.number="form.esFlushInterval" style="width: 300px"></el-input>
+            </el-form-item>
+            <el-form-item label="计划任务表达式:">
+              <el-input  v-model="form.crontab_spec" style="width: 300px" placeholder="计划任务表达式（若无需定时跑，则不填）" ></el-input>
             </el-form-item>
 
           </el-form>
           <div style="text-align:right;">
             <el-button type="danger" icon="el-icon-close" @click="closeDialog">取消</el-button>
-            <el-button type="primary" icon="el-icon-check" @click="add">确认</el-button>
+            <el-button :disabled="addLoading" type="primary" icon="el-icon-check" v-loading="addLoading" @click="add">
+              确认
+            </el-button>
           </div>
         </el-card>
       </el-dialog>
     </el-card>
+    <settings
+      style="z-index: 99999"
+      v-if="openSettings"
+      :index-name="form.indexName"
+      :settings-type="settingsType"
+      @finished="getIndexList"
+      :open="openSettings"
+      @close="closeSettings"
+    />
+    <mappings
+      @finished="changeIndex"
+      style="z-index: 99999"
+      v-if="openMappings"
+      :index-name="form.indexName"
+      :title="mappingTitle"
+      :open="openMappings"
+      @close="closeMappings"
+    />
   </div>
 </template>
 
 <script>
-  import {GetTableColumns, GetTables, LinkSelectOpt,Transfer,TransferLogList} from "@/api/datax"
+  import {CancelTaskById, GetTableColumns, GetTables, LinkSelectOpt, Transfer, TransferLogList} from "@/api/datax"
   import {IndexNamesAction} from "@/api/es-index"
   import {ListAction} from '@/api/es-map'
+  import {DeleteTaskById} from "../../api/datax";
+
   const defaultForm = {
-    selectType:"{}",
+    crontab_spec:"",
+    selectType: "{}",
     remark: "",
     selectTable: "",
     cols: {
-      tableCols:[],
-      esCols:[]
+      tableCols: [],
+      esCols: []
     },
     indexName: "",
     reset: true,
-    bufferSize: 100,
-    flushInterval: 5000,
-    goNum:30,
-    type_name:""
+    bufferSize: 50,
+    esFlushInterval: 2,
+    esBufferSize: 5000,
+    goNum: 30,
+    type_name: ""
   }
 
   export default {
     name: "list",
     data() {
       return {
-        openTaskLoading:false,
-        connectLoading:false,
-        test:"",
-        showMapping:false,
+        openSettings:false,
+        openMappings:false,
+        settingsType: 'add',
+        mappingTitle: '',
+
+        addLoading: false,
+        openTaskLoading: false,
+        connectLoading: false,
+        test: "",
+        showMapping: false,
         indexSelectLoading: false,
         open: false,
         form: Object.assign({}, defaultForm),
@@ -174,14 +267,24 @@
         allCols: [],
         tables: [],
         indexList: [],
-        esCols:[],
-        ver:6,
-        tableList:[],
+        esCols: [],
+        ver: 6,
+        tableList: [],
+        indexName:""
       }
     },
-    async mounted() {
+    created() {
       this.getIndexList()
       this.getList()
+    },
+    components: {
+       Mapping: () => import("@/views/datax/components/mapping"),
+      'Settings': () => import('@/views/indices/components/settings'),
+      'Mappings': () => import('@/views/indices/components/mapping'),
+      'BackToTop': () => import('@/components/BackToTop/index'),
+      'JsonEditor': () => import('@/components/JsonEditor/index'),
+      'Alias': () => import('@/views/indices/components/alias'),
+      'IndexSelect': () => import('@/components/index/select')
     },
     computed: {
       getLabelName() {
@@ -198,24 +301,74 @@
         }
       }
     },
-    components:{
-      Mapping:()=>import("@/views/datax/components/mapping")
-    },
+
     watch: {
       'form.cols.tableCols'(val, oldVal) {
-        if(val !=undefined){
-          this.form.cols.esCols=[]
-          for(let i in  val){
-            this.form.cols.esCols.push({col:"",tbCol:val[i]})
+        if (val != undefined) {
+          this.form.cols.esCols = []
+          for (let i in val) {
+            this.form.cols.esCols.push({col: "", tbCol: val[i]})
           }
         }
       },
     },
     methods: {
-      cancel(id){
-        alert(id)
+      openSettingDialog(indexName, settingsType) {
+        this.form.indexName = indexName
+        this.settingsType = settingsType
+        this.openSettings = true
       },
-      async getList(){
+      closeSettings() {
+        this.settingsType = 'add'
+        this.openSettings = false
+      },
+      closeMappings() {
+        this.mappingTitle = 'add'
+        this.openMappings = false
+      },
+      openMappingEditDialog(indexName, haveMapping) {
+        if (haveMapping) {
+          this.mappingTitle = '新增字段'
+        } else {
+          this.mappingTitle = '新增映射结构'
+        }
+        this.form.indexName = indexName
+
+        this.openMappings = true
+      },
+      async cancel(id) {
+        const {code, msg} = await CancelTaskById({id: id})
+        if (code != 0) {
+          this.$message({
+            type: 'error',
+            message: msg
+          })
+          return
+        }
+        this.$message({
+          type: 'success',
+          message: msg
+        })
+        this.getList()
+        return
+      },
+      async deleteById(id) {
+        const {code, msg} = await DeleteTaskById({id: id})
+        if (code != 0) {
+          this.$message({
+            type: 'error',
+            message: msg
+          })
+          return
+        }
+        this.$message({
+          type: 'success',
+          message: msg
+        })
+        this.getList()
+        return
+      },
+      async getList() {
         this.connectLoading = true
         const res = await TransferLogList()
         this.connectLoading = false
@@ -228,7 +381,7 @@
         }
         this.tableList = res.data
       },
-      changeTbCols(v){
+      changeTbCols(v) {
         this.refreshshowMapping()
       },
       refreshshowMapping() {
@@ -238,7 +391,9 @@
         })
       },
       async changeIndex() {
+
         const input = {}
+
         input['es_connect'] = this.$store.state.baseData.EsConnectID
 
         input['index_name'] = this.form.indexName
@@ -269,14 +424,13 @@
               this.esCols = Object.keys(data.list[this.form.indexName].mappings.properties)
               break
           }
-        }catch (e) {
+        } catch (e) {
           this.esCols = []
         }
         this.refreshshowMapping()
-
       },
       async getIndexList() {
-
+        console.log("test")
         const input = {}
         input['es_connect'] = this.$store.state.baseData.EsConnectID
         this.indexSelectLoading = true
@@ -297,7 +451,9 @@
         let form = this.form
 
         form['es_connect'] = this.$store.state.baseData.EsConnectID
-        const res =  await Transfer(form)
+        this.addLoading = true
+        const res = await Transfer(form)
+        this.addLoading = false
         if (res.code != 0) {
           this.$message({
             type: 'error',
@@ -319,7 +475,6 @@
       async changeTable() {
         await this.getTables()
         await this.GetTableColumns()
-
       },
       async GetTableColumns() {
         const res = await GetTableColumns({id: this.getSelectTypeObj()['id'], table_name: this.form.selectTable})
@@ -335,7 +490,7 @@
         for (let v of res.data) {
           const obj = {
             key: v.Field,
-            label: v.Comment == '' ? v.Field : `${v.Field}【${v.Comment}】`,
+            label: v.Comment == '' ? `${v.Field}【${v.Type}】` : `${v.Field}【${v.Type}】【${v.Comment}】`,
             disabled: false
           }
           this.allCols.push(obj)
@@ -369,6 +524,7 @@
       async initForm() {
         this.form.remark = ""
         this.openTaskLoading = true
+
         const res = await LinkSelectOpt()
         if (res.code != 0) {
           return
@@ -383,6 +539,8 @@
         }
         this.openTaskLoading = false
         this.open = true
+        this.addLoading = false
+
       }
     }
   }
@@ -402,7 +560,6 @@
   }
 
   }
-
 
 
 </style>

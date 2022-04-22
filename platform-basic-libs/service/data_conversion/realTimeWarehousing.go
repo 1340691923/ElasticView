@@ -67,6 +67,8 @@ func (this *RealTimeWarehousingV6) Flush() (err error) {
 			logs.Logger.Sugar().Infof("插入失败！", err)
 		} else {
 			if this.expectLen == this.completeLen {
+				ts := GetTaskInstance()
+				ts.CancelById(this.taskId)
 				updateDataXListStatus(this.taskId, this.expectLen, this.completeLen, Success, "数据已全部导入完毕！")
 				logs.Logger.Sugar().Infof("所有数据都插入完成！")
 			} else {

@@ -3,6 +3,7 @@ package controller
 import (
 	"errors"
 	"fmt"
+	"github.com/1340691923/ElasticView/engine/crontab"
 	"github.com/1340691923/ElasticView/engine/db"
 	"github.com/1340691923/ElasticView/model"
 	"github.com/1340691923/ElasticView/platform-basic-libs/request"
@@ -127,6 +128,56 @@ func (this DataxController) Tables(ctx *fiber.Ctx) error {
 	return this.Success(ctx, response.SearchSuccess, tables)
 }
 
+func (this DataxController) CancelTaskById(ctx *fiber.Ctx) error {
+	var reqData struct {
+		Id int `json:"id" db:"id"`
+	}
+	if err := ctx.BodyParser(&reqData); err != nil {
+		return this.Error(ctx, err)
+	}
+
+	tk := data_conversion.GetTaskInstance()
+	if err := tk.CancelById(reqData.Id); err != nil {
+		return this.Error(ctx, err)
+	}
+
+	if _, err := db.SqlBuilder.
+		Update("datax_transfer_list").
+		SetMap(map[string]interface{}{
+			"status":    data_conversion.Cancel,
+			"error_msg": "已手动取消该任务",
+			"updated":   time.Now().Format(util.TimeFormat),
+		}).Where(db.Eq{"id": reqData.Id}).
+		RunWith(db.Sqlx).
+		Exec(); err != nil {
+		return this.Error(ctx, err)
+	}
+
+	return this.Success(ctx, response.OperateSuccess, nil)
+}
+
+func (this DataxController) DeleteTaskById(ctx *fiber.Ctx) error {
+	var reqData struct {
+		Id int `json:"id" db:"id"`
+	}
+	if err := ctx.BodyParser(&reqData); err != nil {
+		return this.Error(ctx, err)
+	}
+
+	tk := data_conversion.GetTaskInstance()
+	tk.CancelById(reqData.Id)
+
+	if _, err := db.SqlBuilder.
+		Delete("datax_transfer_list").
+		Where(db.Eq{"id": reqData.Id}).
+		RunWith(db.Sqlx).
+		Exec(); err != nil {
+		return this.Error(ctx, err)
+	}
+
+	return this.Success(ctx, response.OperateSuccess, nil)
+}
+
 func (this DataxController) GetTableColumns(ctx *fiber.Ctx) error {
 	var reqData struct {
 		Id        int    `json:"id" db:"id"`
@@ -161,7 +212,10 @@ func (this DataxController) GetTableColumns(ctx *fiber.Ctx) error {
 }
 
 func (this DataxController) TransferLogList(ctx *fiber.Ctx) error {
-	sql, args, err := db.SqlBuilder.Select("*").From("datax_transfer_list").ToSql()
+	sql, args, err := db.SqlBuilder.
+		Select("*").
+		From("datax_transfer_list").
+		ToSql()
 	if err != nil {
 		return this.Error(ctx, err)
 	}
@@ -183,7 +237,7 @@ func (this DataxController) Transfer(ctx *fiber.Ctx) error {
 	}
 
 	if reqData.BufferSize == 0 {
-		return this.Error(ctx, errors.New("入库批次数量不能为空"))
+		return this.Error(ctx, errors.New("源数据库每次limit条数不能为空"))
 	}
 	if reqData.IndexName == "" {
 		return this.Error(ctx, errors.New("索引名不能为空"))
@@ -193,6 +247,12 @@ func (this DataxController) Transfer(ctx *fiber.Ctx) error {
 	}
 	if len(reqData.Cols.TableCols) == 0 {
 		return this.Error(ctx, errors.New("表字段不能为空"))
+	}
+	if reqData.EsBufferSize == 0 {
+		return this.Error(ctx, errors.New("es入库批次数量"))
+	}
+	if reqData.EsFlushInterval == 0 {
+		return this.Error(ctx, errors.New("es入库轮循间隔时间"))
 	}
 	for _, col := range reqData.Cols.EsCols {
 		if col.Col == "" {
@@ -215,8 +275,8 @@ func (this DataxController) Transfer(ctx *fiber.Ctx) error {
 
 	rlt, err := db.SqlBuilder.
 		Insert("datax_transfer_list").
-		Columns("form_data", "remark", "table_name", "index_name", "error_msg", "status", "updated", "created").
-		Values(formData, reqData.Remark, reqData.SelectTable, reqData.IndexName, "无", "正在运行中...", now, now).RunWith(db.Sqlx).Exec()
+		Columns("form_data", "remark", "table_name", "index_name", "error_msg", "status", "updated", "created", "crontab_spec").
+		Values(formData, reqData.Remark, reqData.SelectTable, reqData.IndexName, "无", "正在运行中...", now, now, reqData.CrontabSpec).RunWith(db.Sqlx).Exec()
 	if err != nil {
 		return this.Error(ctx, err)
 	}
@@ -233,6 +293,11 @@ func (this DataxController) Transfer(ctx *fiber.Ctx) error {
 	err = dataSource.Transfer(int(id), &reqData)
 	if err != nil {
 		return this.Error(ctx, err)
+	}
+	if reqData.CrontabSpec != "" {
+		crontab.Crontab.AddFunc(reqData.CrontabSpec, func() {
+			crontab.CrontabFn(reqData, int(id))
+		})
 	}
 
 	return this.Success(ctx, response.OperateSuccess, nil)

@@ -72,10 +72,13 @@ type TransferReq struct {
 			TbCol string `json:"tbCol"`
 		} `json:"esCols"`
 	} `json:"cols"`
-	IndexName  string `json:"indexName"`
-	Reset      bool   `json:"reset"`
-	BufferSize int    `json:"bufferSize"`
-	GoNum      int    `json:"goNum"`
+	IndexName       string `json:"indexName"`
+	Reset           bool   `json:"reset"`
+	BufferSize      int    `json:"bufferSize"`
+	GoNum           int    `json:"goNum"`
+	EsFlushInterval int    `json:"esFlushInterval"`
+	EsBufferSize    int    `json:"esBufferSize"`
+	CrontabSpec     string `json:"crontab_spec"`
 }
 
 type SelectType struct {

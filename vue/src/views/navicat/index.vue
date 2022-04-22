@@ -22,7 +22,25 @@
                 style="width: 100%;height:90px;margin-bottom: 0px;z-index: 80;position: absolute;top:0px;left: 0px;padding: 20px;
                 ;border-bottom: 1px solid #f0f2f5;background: white;display: flex;align-items: center;justify-content: center"
               >
-                <el-input v-model="filterStr" placeholder="请输入索引名" clearable />
+                <el-autocomplete
+                  style="width: 90%"
+                  clearable
+                  :fetch-suggestions="querySearch"
+
+                  v-model="filterStr"
+                  placeholder="请输入索引名"
+                >
+                  <i
+                    class="el-icon-edit el-input__icon"
+                    slot="suffix"
+                  >
+                  </i>
+                  <template slot-scope="{ item }">
+                    <span>{{ item.value }}</span>
+                  </template>
+
+                </el-autocomplete>
+
               </div>
 
               <el-menu
@@ -130,6 +148,7 @@ export default {
   },
   data() {
     return {
+      indexTishiList:[],
       currentMappings:{},
       tabLoading: false,
       refreshTab: true,
@@ -303,6 +322,28 @@ export default {
         return value1 - value2
       }
     },
+    querySearch(queryString, cb) {
+
+      let queryData = JSON.parse(JSON.stringify(this.indexTishiList))
+      if(queryString == undefined)queryString = ""
+      if (queryString.trim() == '') {
+        if (queryData.length > this.max) {
+          cb(queryData.slice(0, this.max))
+        } else {
+          cb(queryData)
+        }
+        return;
+      }
+
+
+      queryData = filterData(queryData, queryString.trim())
+
+      if (queryData.length > this.max) {
+        cb(queryData.slice(0, this.max))
+      } else {
+        cb(queryData)
+      }
+    },
     async init() {
       const form = {
         cat: 'CatIndices',
@@ -310,6 +351,7 @@ export default {
       }
       this.indexList = []
       this.loadingMenu = true
+      this.indexTishiList = []
       const res = await CatAction(form)
 
       if (res.code != 0) {
@@ -324,6 +366,7 @@ export default {
         const v = res.data[k]
         const obj = { health: v.health, index: v.index, k: k, storeSize: v['store.size'], docsCount: v['docs.count'] }
         this.indexList.push(obj)
+        this.indexTishiList.push( {'value': v.index, 'data': v.index})
       }
       this.loadingMenu = false
     }

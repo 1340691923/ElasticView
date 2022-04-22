@@ -2,6 +2,7 @@ package data_conversion
 
 import (
 	"context"
+	"errors"
 	"sync"
 )
 
@@ -17,6 +18,17 @@ func (this *Task) SetCancelFunc(id int, cancel context.CancelFunc) {
 	this.lock.Lock()
 	defer this.lock.Unlock()
 	this.cancelMap[id] = cancel
+}
+
+func (this *Task) CancelById(id int) (err error) {
+	this.lock.Lock()
+	defer this.lock.Unlock()
+	_, ok := this.cancelMap[id]
+	if !ok {
+		return errors.New("没有找到该任务id")
+	}
+	this.cancelMap[id]()
+	return nil
 }
 
 func newTask() *Task {
