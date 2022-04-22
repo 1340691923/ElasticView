@@ -16,14 +16,14 @@ type Datasource interface {
 const (
 	MysqlSource = "mysql"
 	//MssqlSource = "sqlserver"
-	//CkSource = "clickhouse"
+	CkSource = "clickhouse"
 	//MongoSource = "mongodb"
 )
 
 var DataSourceMap = map[string]func(data request.DataxInfoTestLinkReq) Datasource{
 	MysqlSource: NewMysql,
 	//MssqlSource: NewMssql,
-	//CkSource: NewClickhouse,
+	CkSource: NewClickhouse,
 	//MongoSource: NewMongoDb,
 }
 

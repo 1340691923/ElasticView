@@ -202,7 +202,6 @@ func transferEsV7(
 	if transferReq.Reset {
 		_, err = esConn.DeleteByQuery().
 			Index(transferReq.IndexName).
-			Type(transferReq.TypeName).
 			Body(`
 					{
 					  "query": {

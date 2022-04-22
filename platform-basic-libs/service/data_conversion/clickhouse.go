@@ -1,13 +1,16 @@
 package data_conversion
 
 import (
+	"context"
 	"database/sql"
 	"errors"
 	"fmt"
 	"github.com/1340691923/ElasticView/engine/db"
+	"github.com/1340691923/ElasticView/engine/es"
 	"github.com/1340691923/ElasticView/platform-basic-libs/request"
 	"github.com/jmoiron/sqlx"
-	"log"
+	"math"
+
 	"strings"
 )
 
@@ -15,56 +18,108 @@ type Clickhouse struct {
 	request.DataxInfoTestLinkReq
 }
 
-func (this *Clickhouse) Transfer(id int, transferReq request.TransferReq) (err error) {
+func (this *Clickhouse) Transfer(id int, transferReq *request.TransferReq) (err error) {
 	var (
 		page  = 1
-		limit = 20
+		limit = transferReq.BufferSize
 	)
+
 	conn, err := this.getConn()
+
 	if err != nil {
-		return err
-	}
-	sql, args, err := db.SqlBuilder.Select(strings.Join(transferReq.Cols.TableCols, ",")).
-		From(transferReq.SelectTable).
-		Limit(uint64(limit)).
-		Offset(db.CreatePage(page, limit)).ToSql()
-	if err != nil {
+		updateDataXListStatus(id, 0, 0, Error, err.Error())
 		return err
 	}
 
-	rows, err := conn.Query(sql, args...)
+	count := 0
+	err = db.SqlBuilder.Select("count(1)").From(transferReq.SelectTable).RunWith(conn).Scan(&count)
 	if err != nil {
+		updateDataXListStatus(id, 0, 0, Error, err.Error())
 		return err
 	}
-	defer rows.Close()
-	columns, err := rows.Columns()
-	if err != nil {
-		return err
-	}
-	columnLength := len(columns)
-	cache := make([]interface{}, columnLength)
-	for index, _ := range cache {
-		var a interface{}
-		cache[index] = &a
-	}
-	var list []map[string]interface{}
 
-	for rows.Next() {
-		err := rows.Scan(cache...)
+	if count == 0 {
+		updateDataXListStatus(id, 0, 0, Error, fmt.Sprintf("该表【%s】没有数据", transferReq.SelectTable))
+		return errors.New(fmt.Sprintf("该表【%s】没有数据", transferReq.SelectTable))
+	}
+
+	if transferReq.GoNum == 0 {
+		transferReq.GoNum = 30
+	}
+
+	ctx, cancel := context.WithCancel(context.Background())
+
+	ts := GetTaskInstance()
+
+	ts.SetCancelFunc(id, cancel)
+
+	length := int(math.Ceil(float64(float64(count) / float64(limit))))
+	lastLimit := count % limit
+
+	esConnect, err := es.GetEsClientByID(transferReq.EsConnect)
+
+	if err != nil {
+		updateDataXListStatus(id, 0, 0, Error, err.Error())
+		return err
+	}
+
+	_ = func(offset uint64, limit int) string {
+		sql := fmt.Sprintf(`SELECT %s FROM %s WHERE id >= (select id from %s limit %v, 1) limit %v`,
+			strings.Join(transferReq.Cols.TableCols, ","),
+			transferReq.SelectTable,
+			transferReq.SelectTable,
+			offset,
+			limit,
+		)
+		return sql
+	}
+
+	sqlFn := func(offset uint64, limit int) string {
+		sql := fmt.Sprintf(`SELECT %s FROM %s limit %v,%v`,
+			strings.Join(transferReq.Cols.TableCols, ","),
+			transferReq.SelectTable,
+			offset,
+			limit,
+		)
+		return sql
+	}
+
+	switch esConnect.Version {
+	case 6:
+		esConn, err := es.NewEsClientV6(esConnect)
 		if err != nil {
+			updateDataXListStatus(id, 0, 0, Error, err.Error())
 			return err
 		}
-		item := make(map[string]interface{})
-		for i, data := range cache {
-			item[columns[i]] = *data.(*interface{})
-		}
-		list = append(list, item)
-	}
-	log.Println(list)
 
-	/*ll, _ := json.Marshal(list)
-	log.Println("list", string(ll))*/
-	return errors.New("stop")
+		err = transferEsV6(
+			id, transferReq, page, limit, lastLimit,
+			length, count, sqlFn, ctx, conn, esConn,
+		)
+		if err != nil {
+			updateDataXListStatus(id, 0, 0, Error, err.Error())
+			return err
+		}
+	case 7:
+		fallthrough
+	case 8:
+		esConn, err := es.NewEsClientV7(esConnect)
+		if err != nil {
+			updateDataXListStatus(id, 0, 0, Error, err.Error())
+			return err
+		}
+
+		err = transferEsV7(
+			id, transferReq, page, limit, lastLimit,
+			length, count, sqlFn, ctx, conn, esConn,
+		)
+		if err != nil {
+			updateDataXListStatus(id, 0, 0, Error, err.Error())
+			return err
+		}
+	}
+
+	return nil
 }
 
 func (this *Clickhouse) GetTableColumns(tableName string) (interface{}, error) {
