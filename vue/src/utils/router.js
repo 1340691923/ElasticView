@@ -209,15 +209,6 @@ export const asyncRoutes = [
       icon: 'el-icon-copy-document'
     },
     children: [
-    /*  {
-        path: 'crontab',
-        component: 'views/crontab/index',
-        name: 'crontab',
-        meta: {
-          title: '计划任务',
-          icon: 'el-icon-first-aid-kit'
-        }
-      },*/
       {
         path: 'list',
         component: 'views/datax/list',
@@ -256,7 +247,6 @@ export const RoutesComponentmaps = {
   'views/back-up/index': () => import('@/views/back-up/index'),
   'views/back-up/snapshot': () => import('@/views/back-up/snapshot'),
   'views/navicat/index': () => import('@/views/navicat/index'),
-  'views/crontab/index': () => import('@/views/crontab/index'),
   'views/datax/link': () => import('@/views/datax/link'),
   'views/datax/list': () => import('@/views/datax/list'),
 }

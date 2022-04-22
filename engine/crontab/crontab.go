@@ -79,14 +79,4 @@ func InitCrontab() (crontab *cron.Cron, err error) {
 	return crontab, err
 }
 
-/*scheduler := timing.GetTaskSchedulerInstance()
-go scheduler.Start()
-gmTimedList := model.GmTimedList{}
-timedList, err := gmTimedList.GetTaskList()
-if err != nil {
-	logs.Logger.Sugar().Errorf("err", err)
-	return
-}
-for _, timed := range timedList {
-	timing.AddTask(timed.Action, timed.Data, timed.TaskId, timed.ExecTime)
-}*/
+

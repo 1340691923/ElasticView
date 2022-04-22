@@ -7,7 +7,7 @@ CREATE TABLE `es_link`  (
                             `created` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,
                             `updated` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,
                             `remark` TEXT   DEFAULT '默认连接',
-                            `version` tinyINTEGER NOT NULL DEFAULT 6
+                            `version` INTEGER NOT NULL DEFAULT 6
 );
 CREATE UNIQUE INDEX es_remark on es_link ( `remark`);
 INSERT INTO `es_link` VALUES (10, 'http://127.0.0.1:9200', '', '', '2021-04-10 22:33:03', '2021-04-10 22:33:03', '测试', 6);
@@ -46,20 +46,6 @@ CREATE TABLE `gm_user`  (
 );
 CREATE UNIQUE INDEX gm_user_username on gm_user ( `username`);
 INSERT INTO `gm_user` VALUES (1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 1, '肖文龙');
-DROP TABLE IF EXISTS `gm_timed_list`;
-CREATE TABLE `gm_timed_list`  (
-                            `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-                            `action` TEXT   DEFAULT NULL,
-                            `exec_time` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                            `exec_time_format` TEXT NOT NULL DEFAULT '' ,
-                            `status` INTEGER NOT NULL DEFAULT '0',
-                            `task_id` TEXT NOT NULL DEFAULT '' ,
-                            `msg` TEXT NOT NULL DEFAULT '' ,
-                            `extra` TEXT NOT NULL DEFAULT '' ,
-                            `updated` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                            `created` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                            `data` TEXT  NOT NULL   DEFAULT ''
-);
 DROP TABLE IF EXISTS `datax_link_info`;
 CREATE TABLE `datax_link_info`  (
                                   `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
