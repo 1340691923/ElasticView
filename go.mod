@@ -21,7 +21,6 @@ require (
 	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible
 	github.com/lestrrat-go/strftime v1.0.4 // indirect
 	github.com/logoove/sqlite v1.15.3
-	github.com/lwl1989/timing v2.1.1+incompatible
 	github.com/olivere/elastic v6.2.35+incompatible
 	github.com/olivere/elastic/v7 v7.0.24
 	github.com/robfig/cron v1.2.0

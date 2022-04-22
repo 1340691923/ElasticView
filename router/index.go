@@ -46,7 +46,6 @@ func Init() *App {
 		runEsBackUp,
 		runEsDoc,
 		runEsCrud,
-		runTiming,
 		runDatax,
 	)
 }
