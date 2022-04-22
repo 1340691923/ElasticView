@@ -2,18 +2,23 @@ package application
 
 import (
 	"fmt"
+	"github.com/1340691923/ElasticView/engine/crontab"
 	"github.com/1340691923/ElasticView/engine/db"
 	"github.com/1340691923/ElasticView/engine/logs"
 	"github.com/1340691923/ElasticView/model"
+
 	"github.com/1340691923/ElasticView/platform-basic-libs/rbac"
+
 	"github.com/1340691923/ElasticView/platform-basic-libs/util"
 	sql2 "github.com/1340691923/ElasticView/sqlite"
+
 	"log"
 	"strconv"
 )
 
 // 初始化日志
-func InitLogs() (err error) {
+func InitLogs() (fn func(), err error) {
+	fn = func() {}
 	logger := logs.NewLog(
 		logs.WithLogPath(GlobConfig.Log.LogDir),
 		logs.WithStorageDays(GlobConfig.Log.StorageDays),
@@ -27,13 +32,13 @@ func InitLogs() (err error) {
 }
 
 // 初始化mysql连接
-func InitSqlx() (err error) {
-
+func InitSqlx() (fn func(), err error) {
+	fn = func() {}
 	config := GlobConfig.Mysql
 	driverType := GlobConfig.DbType
 	var dbSource string
 	if driverType == SqliteDbTyp {
-		dbSource = GlobConfig.Sqlite.DbPath + "?_loc=Local"
+		dbSource = GlobConfig.Sqlite.DbPath + "?_loc=Local&_busy_timeout=9999999"
 	} else {
 		dbSource = fmt.Sprintf(
 			"%s:%s@tcp(%s:%s)/%s",
@@ -63,42 +68,39 @@ func InitSqlx() (err error) {
 }
 
 // 初始化mysql连接
-func InitSqliteData() (err error) {
+func InitSqliteData() (fn func(), err error) {
+	fn = func() {}
 	sql2.Init()
 	return
 }
 
 // 初始化项目启动任务
-func InitTask() (err error) {
+func InitTask() (fn func(), err error) {
+	fn = func() {}
+
 	esLinkModel := model.EsLinkModel{}
 	if err = esLinkModel.FlushEsLinkList(); err != nil {
-		return err
+		return fn, err
 	}
 
-	//计划任务
-	/*scheduler := timing.GetTaskSchedulerInstance()
-	go scheduler.Start()
-	gmTimedList := model.GmTimedList{}
-	timedList, err := gmTimedList.GetTaskList()
+	crontab.Crontab, err = crontab.InitCrontab()
 	if err != nil {
-		logs.Logger.Sugar().Errorf("err", err)
-		return
+		return fn, err
 	}
-	for _, timed := range timedList {
-		timing.AddTask(timed.Action, timed.Data, timed.TaskId, timed.ExecTime)
-	}*/
-
-	return err
+	fn = func() {
+		crontab.Crontab.Stop()
+	}
+	return fn, err
 }
 
 // 初始化项目启动任务
-func InitRbac() (err error) {
-
+func InitRbac() (fn func(), err error) {
+	fn = func() {}
 	config := GlobConfig.Mysql
 	driverType := GlobConfig.DbType
 	var dbSource string
 	if driverType == SqliteDbTyp {
-		dbSource = GlobConfig.Sqlite.DbPath + "?_loc=Local"
+		dbSource = GlobConfig.Sqlite.DbPath + "?_loc=Local&_busy_timeout=9999999"
 	} else {
 		dbSource = fmt.Sprintf(
 			"%s:%s@tcp(%s:%s)/%s",
@@ -119,7 +121,8 @@ func InitRbac() (err error) {
 	return
 }
 
-func InitOpenWinBrowser() (err error) {
+func InitOpenWinBrowser() (fn func(), err error) {
+	fn = func() {}
 	config := GlobConfig
 	if !config.DeBug {
 		port := ":" + strconv.Itoa(config.Port)

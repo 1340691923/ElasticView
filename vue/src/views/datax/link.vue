@@ -16,7 +16,7 @@
 
       <el-table v-loading="tableLoading" :data="tableData">
         <el-table-column
-          width="30"
+          width="80"
           align="center"
           prop="id"
           label="id">
@@ -197,7 +197,7 @@
         open: false,
       }
     },
-    mounted() {
+    created() {
       this.search()
     },
     methods: {

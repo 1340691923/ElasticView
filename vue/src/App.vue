@@ -37,7 +37,6 @@ export default {
   },
   methods: {
     reload() {
-      console.log('reload')
       this.isRouterAlive = false // 先关闭，
       this.$nextTick(() => {
         this.isRouterAlive = true

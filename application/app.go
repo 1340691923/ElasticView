@@ -10,7 +10,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-type InitFnObserver func() (err error)
+type InitFnObserver func() (deferFn func(), err error)
 
 // Options方法
 type NewAppOptions func(app *App)
@@ -23,6 +23,7 @@ type App struct {
 	appName string
 	InitFnObservers []InitFnObserver
 	err             error
+	deferFuncs      []func()
 }
 
 // 设置配置文件格式   例如:json,conf 等等
@@ -111,13 +112,26 @@ func (this *App) InitConfig() *App {
 }
 
 func (this *App) NotifyInitFnObservers() *App {
+	this.deferFuncs = []func(){}
+
 	for _, fnObserver := range this.InitFnObservers {
-		this.err = fnObserver()
+		var fn func()
+		fn, this.err = fnObserver()
 		if this.err != nil {
 			return this
 		}
+		this.deferFuncs = append(this.deferFuncs, fn)
 	}
 	return this
+
+	return this
+}
+
+//关闭app
+func (this *App) Close() {
+	for _, fn := range this.deferFuncs {
+		fn()
+	}
 }
 
 // 获取配置文件夹

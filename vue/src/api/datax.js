@@ -75,7 +75,21 @@ export function TransferLogList(data) {
   })
 }
 
+export function CancelTaskById(data) {
+  return request({
+    url: api + 'CancelTaskById',
+    method: 'post',
+    data
+  })
+}
 
+export function DeleteTaskById(data) {
+  return request({
+    url: api + 'DeleteTaskById',
+    method: 'post',
+    data
+  })
+}
 
 
 

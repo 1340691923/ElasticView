@@ -96,7 +96,7 @@
         :before-generate="startDownload"
         :before-finish="endDownload"
       >
-        <el-button v-loading="downloadLoading" type="primary" icon="el-icon-download" class="filter-item download">
+        <el-button   :disabled="downloadLoading" v-loading="downloadLoading" type="primary" icon="el-icon-download" class="filter-item download">
           下载
         </el-button>
       </download-excel>

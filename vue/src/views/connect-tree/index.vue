@@ -58,6 +58,7 @@
         <el-table-column align="center" label="操作" fixed="right" width="300">
           <template slot-scope="scope">
             <el-button
+              :disabled="scope.row.connectLoading"
               v-loading="scope.row.connectLoading"
               type="success"
               size="small"
@@ -95,6 +96,7 @@
         </el-form>
         <div style="text-align:right;">
           <el-button
+            :disabled="testConnectLoading"
             v-loading="testConnectLoading"
             type="success"
             icon="el-icon-link"

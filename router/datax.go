@@ -68,6 +68,17 @@ func runDatax(app *App) {
 			AbsolutePath: AbsolutePath,
 			RelativePath: "TransferLogList",
 		}, es.(*Group), true, dataxController.TransferLogList)
-
+		apiRouterConfig.MountApi(api_config.MountApiBasePramas{
+			Remark:       "取消数据抽取任务",
+			Method:       api_config.MethodPost,
+			AbsolutePath: AbsolutePath,
+			RelativePath: "CancelTaskById",
+		}, es.(*Group), true, dataxController.CancelTaskById)
+		apiRouterConfig.MountApi(api_config.MountApiBasePramas{
+			Remark:       "删除数据抽取任务",
+			Method:       api_config.MethodPost,
+			AbsolutePath: AbsolutePath,
+			RelativePath: "DeleteTaskById",
+		}, es.(*Group), true, dataxController.DeleteTaskById)
 	}
 }

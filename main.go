@@ -55,6 +55,8 @@ func main() {
 		panic(err)
 	}
 
+	defer app.Close()
+
 	port := ":" + strconv.Itoa(application.GlobConfig.Port)
 	appServer := router.Init()
 

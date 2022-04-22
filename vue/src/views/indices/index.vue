@@ -18,7 +18,26 @@
 
         <el-tag class="filter-item">请输入关键词</el-tag>
 
-        <el-input id="index-keyword" v-model="input" class="filter-item width300" clearable />
+        <el-autocomplete
+          class="filter-item width300"
+          id="index-keyword"
+          clearable
+          :fetch-suggestions="querySearch"
+
+          v-model="input"
+          placeholder="请输入索引名"
+        >
+          <i
+            class="el-icon-edit el-input__icon"
+            slot="suffix"
+          >
+          </i>
+          <template slot-scope="{ item }">
+            <span>{{ item.value }}</span>
+          </template>
+
+        </el-autocomplete>
+
         <el-button id="index-search" type="primary" class="filter-item" icon="el-icon-search" @click="search">搜索
         </el-button>
         <el-button-group>
@@ -33,6 +52,7 @@
           </el-button>
 
           <el-button
+            :disabled="readOnlyAllowDeleteLoading"
             id="readOnlyAllowDelete"
             v-loading="readOnlyAllowDeleteLoading"
             type="warning"
@@ -44,6 +64,7 @@
           </el-button>
 
           <el-button
+            :disabled="loadingGroup['_flush']"
             id="flushIndex"
             v-loading="loadingGroup['_flush']"
             type="info"
@@ -58,6 +79,7 @@
       <div id="patch-operate" class="filter-container">
         <el-button-group>
           <el-button
+            :disabled="loadingGroup['close']"
             id="patchCloseIndex"
             v-loading="loadingGroup['close']"
             type="danger"
@@ -70,6 +92,7 @@
           <el-button
             id="patchOpenIndex"
             v-loading="loadingGroup['open']"
+            :disabled="loadingGroup['open']"
             type="success"
 
             icon="el-icon-success"
@@ -80,6 +103,7 @@
           <el-button
             id="patchForcemergeIndex"
             v-loading="loadingGroup['_forcemerge']"
+            :disabled="loadingGroup['_forcemerge']"
             icon="el-icon-connection"
             class="filter-item"
             @click="runCommandByIndex('_forcemerge',selectIndexList.join(','))"
@@ -97,6 +121,7 @@
               id="patchRefreshIndex"
               slot="reference"
               v-loading="loadingGroup['_refresh']"
+              :disabled="loadingGroup['_refresh']"
               class="filter-item"
 
               type="primary"
@@ -117,7 +142,7 @@
               id="patchFlushIndex"
               slot="reference"
               v-loading="loadingGroup['_flush']"
-
+              :disabled="loadingGroup['_flush']"
               type="info"
               icon="el-icon-s-open"
               class="filter-item"
@@ -129,6 +154,7 @@
           <el-button
             id="patchCacheClear"
             v-loading="loadingGroup['_cache/clear']"
+            :disabled="loadingGroup['_cache/clear']"
             class="filter-item"
 
             type="warning"
@@ -140,6 +166,7 @@
           <el-button
             id="patchDeleteIndex"
             v-loading="loadingGroup['deleteIndex']"
+            :disabled="loadingGroup['deleteIndex']"
             class="filter-item"
             type="danger"
             icon="el-icon-delete"
@@ -322,6 +349,7 @@
               />
               <el-tag type="primary" class="filter-item">操作</el-tag>
               <el-button
+                :disabled="loadingGroup['saveMappinng']"
                 v-loading="loadingGroup['saveMappinng']"
                 class="filter-item"
                 size="small"
@@ -378,6 +406,7 @@
           <div class="filter-container operate">
             <el-tag class="filter-item">操作</el-tag>
             <el-button
+              :disabled="loadingGroup['close']"
               v-loading="loadingGroup['close']"
               type="danger"
               size="small"
@@ -388,6 +417,7 @@
             </el-button>
 
             <el-button
+              :disabled="loadingGroup['open']"
               v-loading="loadingGroup['open']"
               type="success"
               size="small"
@@ -397,6 +427,7 @@
             >打开
             </el-button>
             <el-button
+              :disabled="loadingGroup['_forcemerge']"
               v-loading="loadingGroup['_forcemerge']"
               size="small"
               icon="el-icon-connection"
@@ -414,6 +445,7 @@
             >
               <el-button
                 slot="reference"
+                :disabled="loadingGroup['_refresh']"
                 v-loading="loadingGroup['_refresh']"
                 class="filter-item"
                 size="small"
@@ -434,6 +466,7 @@
               <el-button
 
                 slot="reference"
+                :disabled="loadingGroup['_flush']"
                 v-loading="loadingGroup['_flush']"
                 size="small"
                 type="info"
@@ -445,6 +478,7 @@
             </el-popover>
 
             <el-button
+              :disabled="loadingGroup['_cache/clear']"
               v-loading="loadingGroup['_cache/clear']"
               class="filter-item"
               size="small"
@@ -455,6 +489,7 @@
             </el-button>
 
             <el-button
+              :disabled="loadingGroup['deleteIndex']"
               v-loading="loadingGroup['deleteIndex']"
               class="filter-item"
               type="danger"
@@ -472,7 +507,7 @@
         v-if="openSettings"
         :index-name="indexName"
         :settings-type="settingsType"
-        :finished="search"
+        @finished="search"
         :open="openSettings"
         @close="closeSettings"
       />
@@ -502,7 +537,7 @@ import { esSettingsWords } from '@/utils/base-data'
 import { ListAction, UpdateMappingAction } from '@/api/es-map'
 
 export default {
-  name: 'CatIndices',
+  name: 'indices',
 
   components: {
     'Settings': () => import('@/views/indices/components/settings'),
@@ -515,6 +550,7 @@ export default {
 
   data() {
     return {
+      indexTishiList:[],
       modName: '索引管理',
       aliasList: [],
       pointOut: esSettingsWords,
@@ -541,7 +577,6 @@ export default {
       mappingTitle: '',
       indexName: '',
       openSettings: false,
-      openMappings: false,
       total: 0,
       connectLoading: false,
       page: 1,
@@ -550,11 +585,11 @@ export default {
       list: [],
       input: '',
       status: '',
-      mappingInfo: {},
       mappings: {},
       selectIndexList: [],
       openMappings: false,
-      allList: []
+      allList: [],
+      max: 8,
     }
   },
   destroyed() {
@@ -672,11 +707,9 @@ export default {
           message: msg
         })
       }
-      console.log('saveMappinng')
     },
     openMappingEditDialog(indexName, haveMapping) {
       if (haveMapping) {
-        this.mappingInfo = this.mappings[indexName].mappings
         this.mappingTitle = '新增字段'
       } else {
         this.mappingTitle = '新增映射结构'
@@ -866,6 +899,28 @@ export default {
         this.readOnlyAllowDeleteLoading = false
       })
     },
+    querySearch(queryString, cb) {
+
+      let queryData = JSON.parse(JSON.stringify(this.indexTishiList))
+      if(queryString == undefined)queryString = ""
+      if (queryString.trim() == '') {
+        if (queryData.length > this.max) {
+          cb(queryData.slice(0, this.max))
+        } else {
+          cb(queryData)
+        }
+        return;
+      }
+
+
+      queryData = filterData(queryData, queryString.trim())
+
+      if (queryData.length > this.max) {
+        cb(queryData.slice(0, this.max))
+      } else {
+        cb(queryData)
+      }
+    },
     deleteIndex(indexName, loadingType) {
       this.$confirm('确定删除该索引吗?', '警告', {
         confirmButtonText: '确认',
@@ -909,7 +964,6 @@ export default {
       this.indexName = ''
       this.mappingTitle = 'add'
       this.openMappings = false
-      this.mappingInfo = {}
     },
     search() {
       this.page = 1
@@ -945,6 +999,7 @@ export default {
         cat: 'CatIndices',
         es_connect: this.$store.state.baseData.EsConnectID
       }
+      this.indexTishiList = []
       CatAction(form).then(res => {
         if (res.code == 0) {
           const list = res.data
@@ -959,6 +1014,7 @@ export default {
               }
               list[index][key.split('.').join('->')] = value
             }
+            this.indexTishiList.push( {'value': obj["index"], 'data': obj["index"]})
           }
 
           let tmpList = []
