@@ -28,7 +28,6 @@ func (this *Clickhouse) Transfer(id int, transferReq request.TransferReq) (err e
 		From(transferReq.SelectTable).
 		Limit(uint64(limit)).
 		Offset(db.CreatePage(page, limit)).ToSql()
-	log.Println(sql, args)
 	if err != nil {
 		return err
 	}

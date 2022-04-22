@@ -13,7 +13,6 @@ import (
 var Crontab *cron.Cron
 
 func CrontabFn(reqData request.TransferReq, taskId int) {
-	log.Println("ji", reqData, taskId)
 	selectType, err := reqData.ParseSelectType()
 	if err != nil {
 		log.Println("计划任务运行异常：", err)

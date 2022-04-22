@@ -4,7 +4,6 @@ import (
 	"github.com/1340691923/ElasticView/engine/logs"
 	"github.com/1340691923/ElasticView/model"
 	"github.com/1340691923/ElasticView/platform-basic-libs/util"
-	"log"
 	"sync"
 	"time"
 
@@ -41,7 +40,6 @@ func AddTask(taskTyp int, taskData string, taskID string, runtime int64) (err er
 	task := &timing2.Task{
 		Job: timing2.GetJob(func() {
 			fn := TimingFnMap[taskTyp]
-			log.Println("fn", fn)
 			if err := fn(taskData); err != nil {
 				panic(err)
 			}

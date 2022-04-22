@@ -2,7 +2,6 @@
 package middleware
 
 import (
-	"log"
 	"time"
 
 	"github.com/1340691923/ElasticView/platform-basic-libs/jwt"
@@ -36,11 +35,9 @@ func JwtMiddleware(c *fiber.Ctx) error {
 			err = my_error.NewBusiness(TOKEN_ERROR, ERROR_AUTH_CHECK_TOKEN_FAIL)
 			return res.Error(c, err)
 		} else if time.Now().Unix() > claims.ExpiresAt {
-			log.Println("claims1")
 			err = my_error.NewBusiness(TOKEN_ERROR, ERROR_AUTH_CHECK_TOKEN_TIMEOUT)
 			return res.Error(c, err)
 		} else if !service.IsExitUser(claims) {
-			log.Println("claims2")
 			err = my_error.NewBusiness(TOKEN_ERROR, ERROR_AUTH_CHECK_TOKEN_TIMEOUT)
 			return res.Error(c, err)
 		}
