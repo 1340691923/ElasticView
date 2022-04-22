@@ -21,9 +21,10 @@
 * 可将查询内容下载为excel文件
 * 可进行索引创建，映射创建，别名创建，索引删除等操作
 * 支持版本 `6.x`,`7.x`,`8.x`
-* 支持Navicat界面 （需要前往权限-角色界面 重新分配界面权限后刷新页面就可以看到）
+* 支持类似Navicat功能
 * docker部署
 * 支持sqlite3（免安装gcc版）
+* 数据抽取功能
 
 ## Quick Start
 1. [应用程序下载地址]( https://gitee.com/cynthia520/elastic-view/releases/)
