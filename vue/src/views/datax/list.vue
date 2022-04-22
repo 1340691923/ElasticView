@@ -88,9 +88,9 @@
 
             <el-button :disabled="scope.row.status != '正在运行中...' && scope.row.status != '数据正在导入中...'" type="danger"
                        size="small" icon="el-icon-close"
-                       @click="cancel(scope.row.id)">{{$t('取消')}}
+                       @click="cancel(scope.row.id)">{{ $t('取消') }}
             </el-button>
-            <el-button type="danger" size="small" icon="el-icon-delete" @click="deleteById(scope.row.id)">{{$t('删除')}}
+            <el-button type="danger" size="small" icon="el-icon-delete" @click="deleteById(scope.row.id)">{{ $t('删除') }}
             </el-button>
           </template>
         </el-table-column>
@@ -114,7 +114,7 @@
               </el-select>
             </el-form-item>
             <el-form-item label="表字段：">
-              <div class="col-transfer">
+              <div v-loading="transferLoading" class="col-transfer">
                 <el-transfer
                   @change="changeTbCols"
                   v-model="form.cols.tableCols"
@@ -188,7 +188,25 @@
               <el-input type="number" v-model.number="form.esFlushInterval" style="width: 300px"></el-input>
             </el-form-item>
             <el-form-item label="计划任务表达式:">
-              <el-input  v-model="form.crontab_spec" style="width: 300px" placeholder="计划任务表达式（若无需定时跑，则不填）" ></el-input>
+              <el-autocomplete
+                style="width: 300px"
+                placeholder="计划任务表达式（若无需定时跑，则不填）"
+                clearable
+                :fetch-suggestions="querySearch"
+
+                v-model="form.crontab_spec"
+              >
+                <i
+                  class="el-icon-edit el-input__icon"
+                  slot="suffix"
+                >
+                </i>
+                <template slot-scope="{ item }">
+                  <span>{{ item.value }}-{{ item.data }}</span>
+                </template>
+
+              </el-autocomplete>
+
             </el-form-item>
 
           </el-form>
@@ -223,343 +241,372 @@
 </template>
 
 <script>
-  import {CancelTaskById, GetTableColumns, GetTables, LinkSelectOpt, Transfer, TransferLogList} from "@/api/datax"
-  import {IndexNamesAction} from "@/api/es-index"
-  import {ListAction} from '@/api/es-map'
-  import {DeleteTaskById} from "../../api/datax";
+import {CancelTaskById, GetTableColumns, GetTables, LinkSelectOpt, Transfer, TransferLogList} from "@/api/datax"
+import {IndexNamesAction} from "@/api/es-index"
+import {ListAction} from '@/api/es-map'
+import {DeleteTaskById} from "../../api/datax";
+import {filterData} from "@/utils/table";
 
-  const defaultForm = {
-    crontab_spec:"",
-    selectType: "{}",
-    remark: "",
-    selectTable: "",
-    cols: {
-      tableCols: [],
-      esCols: []
-    },
-    indexName: "",
-    reset: true,
-    bufferSize: 50,
-    esFlushInterval: 2,
-    esBufferSize: 5000,
-    goNum: 30,
-    type_name: ""
-  }
+const defaultForm = {
+  crontab_spec: "",
+  selectType: "{}",
+  remark: "",
+  selectTable: "",
+  cols: {
+    tableCols: [],
+    esCols: []
+  },
+  indexName: "",
+  reset: true,
+  bufferSize: 50,
+  esFlushInterval: 2,
+  esBufferSize: 5000,
+  goNum: 30,
+  type_name: ""
+}
 
-  export default {
-    name: "list",
-    data() {
-      return {
-        openSettings:false,
-        openMappings:false,
-        settingsType: 'add',
-        mappingTitle: '',
+export default {
+  name: "list",
+  data() {
+    return {
+      openSettings: false,
+      openMappings: false,
+      settingsType: 'add',
+      mappingTitle: '',
 
-        addLoading: false,
-        openTaskLoading: false,
-        connectLoading: false,
-        test: "",
-        showMapping: false,
-        indexSelectLoading: false,
-        open: false,
-        form: Object.assign({}, defaultForm),
-        linkSelectOpt: {},
-        allCols: [],
-        tables: [],
-        indexList: [],
-        esCols: [],
-        ver: 6,
-        tableList: [],
-        indexName:""
-      }
-    },
-    created() {
-      this.getIndexList()
-      this.getList()
-    },
-    components: {
-       Mapping: () => import("@/views/datax/components/mapping"),
-      'Settings': () => import('@/views/indices/components/settings'),
-      'Mappings': () => import('@/views/indices/components/mapping'),
-      'BackToTop': () => import('@/components/BackToTop/index'),
-      'JsonEditor': () => import('@/components/JsonEditor/index'),
-      'Alias': () => import('@/views/indices/components/alias'),
-      'IndexSelect': () => import('@/components/index/select')
-    },
-    computed: {
-      getLabelName() {
-        switch (this.getSelectTypeObj()["typ"]) {
-          case "mysql":
-          case "clickhouse":
-            return "表名:"
-            break
-          /*case "mongodb":
-            return "集合名:"
-            break*/
-          default:
-            return "未知:"
-        }
-      }
-    },
-
-    watch: {
-      'form.cols.tableCols'(val, oldVal) {
-        if (val != undefined) {
-          this.form.cols.esCols = []
-          for (let i in val) {
-            this.form.cols.esCols.push({col: "", tbCol: val[i]})
-          }
-        }
-      },
-    },
-    methods: {
-      openSettingDialog(indexName, settingsType) {
-        this.form.indexName = indexName
-        this.settingsType = settingsType
-        this.openSettings = true
-      },
-      closeSettings() {
-        this.settingsType = 'add'
-        this.openSettings = false
-      },
-      closeMappings() {
-        this.mappingTitle = 'add'
-        this.openMappings = false
-      },
-      openMappingEditDialog(indexName, haveMapping) {
-        if (haveMapping) {
-          this.mappingTitle = '新增字段'
-        } else {
-          this.mappingTitle = '新增映射结构'
-        }
-        this.form.indexName = indexName
-
-        this.openMappings = true
-      },
-      async cancel(id) {
-        const {code, msg} = await CancelTaskById({id: id})
-        if (code != 0) {
-          this.$message({
-            type: 'error',
-            message: msg
-          })
-          return
-        }
-        this.$message({
-          type: 'success',
-          message: msg
-        })
-        this.getList()
-        return
-      },
-      async deleteById(id) {
-        const {code, msg} = await DeleteTaskById({id: id})
-        if (code != 0) {
-          this.$message({
-            type: 'error',
-            message: msg
-          })
-          return
-        }
-        this.$message({
-          type: 'success',
-          message: msg
-        })
-        this.getList()
-        return
-      },
-      async getList() {
-        this.connectLoading = true
-        const res = await TransferLogList()
-        this.connectLoading = false
-        if (res.code != 0) {
-          this.$message({
-            type: 'error',
-            message: res.msg
-          })
-          return
-        }
-        this.tableList = res.data
-      },
-      changeTbCols(v) {
-        this.refreshshowMapping()
-      },
-      refreshshowMapping() {
-        this.showMapping = false
-        this.$nextTick(() => {
-          this.showMapping = true
-        })
-      },
-      async changeIndex() {
-
-        const input = {}
-
-        input['es_connect'] = this.$store.state.baseData.EsConnectID
-
-        input['index_name'] = this.form.indexName
-
-        const {data, code, msg} = await ListAction(input)
-
-        if (code != 0) {
-          this.$message({
-            type: 'error',
-            message: msg
-          })
-          return
-        }
-
-        this.ver = data.ver
-
-        try {
-          switch (this.ver) {
-            case 6:
-              const mappings = Object.keys(data.list[this.form.indexName].mappings)
-              if (mappings.length > 0) {
-                this.form.type_name = mappings[0]
-                this.esCols = Object.keys(data.list[this.form.indexName].mappings[this.form.type_name].properties)
-              }
-              break
-            case 7:
-            case 8:
-              this.esCols = Object.keys(data.list[this.form.indexName].mappings.properties)
-              break
-          }
-        } catch (e) {
-          this.esCols = []
-        }
-        this.refreshshowMapping()
-      },
-      async getIndexList() {
-        console.log("test")
-        const input = {}
-        input['es_connect'] = this.$store.state.baseData.EsConnectID
-        this.indexSelectLoading = true
-
-        const res = await IndexNamesAction(input)
-
-        this.indexSelectLoading = false
-        if (res.code != 0) {
-          this.$message({
-            type: 'error',
-            message: res.msg
-          })
-          return
-        }
-        this.indexList = res.data
-      },
-      async add() {
-        let form = this.form
-
-        form['es_connect'] = this.$store.state.baseData.EsConnectID
-        this.addLoading = true
-        const res = await Transfer(form)
-        this.addLoading = false
-        if (res.code != 0) {
-          this.$message({
-            type: 'error',
-            message: res.msg
-          })
-          return
-        }
-        this.$message({
-          type: 'success',
-          message: res.msg
-        })
-        this.form = Object.assign({}, defaultForm)
-        this.getList()
-        this.closeDialog()
-      },
-      filterMethod(query, item) {
-        return item.label.indexOf(query) > -1
-      },
-      async changeTable() {
-        await this.getTables()
-        await this.GetTableColumns()
-      },
-      async GetTableColumns() {
-        const res = await GetTableColumns({id: this.getSelectTypeObj()['id'], table_name: this.form.selectTable})
-        if (res.code != 0) {
-          this.$message({
-            type: 'error',
-            message: res.msg
-          })
-          return
-        }
-        if (res.data == null) res.data = []
-        this.allCols = []
-        for (let v of res.data) {
-          const obj = {
-            key: v.Field,
-            label: v.Comment == '' ? `${v.Field}【${v.Type}】` : `${v.Field}【${v.Type}】【${v.Comment}】`,
-            disabled: false
-          }
-          this.allCols.push(obj)
-        }
-        this.form.cols.tableCols = []
-        this.form.cols.esCols = []
-      },
-      async getTables() {
-        const res = await GetTables({id: this.getSelectTypeObj()['id']})
-        if (res.code != 0) {
-          this.$message({
-            type: 'error',
-            message: res.msg
-          })
-          return
-        }
-        this.tables = res.data
-
-        if (this.tables == null) this.tables = []
-        if (this.tables.length > 0) {
-          this.form.selectTable = this.tables[0]
-        }
-
-      },
-      getSelectTypeObj() {
-        return JSON.parse(this.form.selectType)
-      },
-      closeDialog() {
-        this.open = false
-      },
-      async initForm() {
-        this.form.remark = ""
-        this.openTaskLoading = true
-
-        const res = await LinkSelectOpt()
-        if (res.code != 0) {
-          return
-        }
-        if (res.data == null) res.data = []
-        this.linkSelectOpt = res.data
-
-        if (this.linkSelectOpt.length > 0) {
-          this.form.selectType = JSON.stringify(this.linkSelectOpt[0])
-          await this.getTables()
-          await this.GetTableColumns()
-        }
-        this.openTaskLoading = false
-        this.open = true
-        this.addLoading = false
-
+      addLoading: false,
+      openTaskLoading: false,
+      connectLoading: false,
+      test: "",
+      showMapping: false,
+      indexSelectLoading: false,
+      open: false,
+      form: Object.assign({}, defaultForm),
+      linkSelectOpt: {},
+      allCols: [],
+      tables: [],
+      indexList: [],
+      esCols: [],
+      ver: 6,
+      tableList: [],
+      indexName: "",
+      crontabTishiList:[
+        {'value': "0 30 2 * * *", 'data': "每天凌晨2：30跑一次"},
+        {'value': "0 */5 * * * *", 'data': "每5分钟跑一次"},
+      ],
+      transferLoading:false,
+      max:20
+    }
+  },
+  created() {
+    this.getIndexList()
+    this.getList()
+  },
+  components: {
+    'Mapping': () => import("@/views/datax/components/mapping"),
+    'Settings': () => import('@/views/indices/components/settings'),
+    'Mappings': () => import('@/views/indices/components/mapping'),
+    'BackToTop': () => import('@/components/BackToTop/index'),
+    'JsonEditor': () => import('@/components/JsonEditor/index'),
+    'Alias': () => import('@/views/indices/components/alias'),
+    'IndexSelect': () => import('@/components/index/select')
+  },
+  computed: {
+    getLabelName() {
+      switch (this.getSelectTypeObj()["typ"]) {
+        case "mysql":
+        case "clickhouse":
+          return "表名:"
+        /*case "mongodb":
+          return "集合名:"
+          break*/
+        default:
+          return "未知:"
       }
     }
+  },
+
+  watch: {
+    'form.cols.tableCols'(val, oldVal) {
+      if (val != undefined) {
+        this.form.cols.esCols = []
+        for (let i in val) {
+          this.form.cols.esCols.push({col: "", tbCol: val[i]})
+        }
+      }
+    },
+  },
+  methods: {
+    querySearch(queryString, cb) {
+
+      let queryData = JSON.parse(JSON.stringify(this.crontabTishiList))
+      if(queryString == undefined)queryString = ""
+      if (queryString.trim() == '') {
+        if (queryData.length > this.max) {
+          cb(queryData.slice(0, this.max))
+        } else {
+          cb(queryData)
+        }
+        return;
+      }
+
+      queryData = filterData(queryData, queryString.trim())
+
+      if (queryData.length > this.max) {
+        cb(queryData.slice(0, this.max))
+      } else {
+        cb(queryData)
+      }
+    },
+    openSettingDialog(indexName, settingsType) {
+      this.form.indexName = indexName
+      this.settingsType = settingsType
+      this.openSettings = true
+    },
+    closeSettings() {
+      this.settingsType = 'add'
+      this.openSettings = false
+    },
+    closeMappings() {
+      this.mappingTitle = 'add'
+      this.openMappings = false
+    },
+    openMappingEditDialog(indexName, haveMapping) {
+      if (haveMapping) {
+        this.mappingTitle = '新增字段'
+      } else {
+        this.mappingTitle = '新增映射结构'
+      }
+      this.form.indexName = indexName
+
+      this.openMappings = true
+    },
+    async cancel(id) {
+      const {code, msg} = await CancelTaskById({id: id})
+      if (code != 0) {
+        this.$message({
+          type: 'error',
+          message: msg
+        })
+        return
+      }
+      this.$message({
+        type: 'success',
+        message: msg
+      })
+      this.getList()
+      return
+    },
+    async deleteById(id) {
+      const {code, msg} = await DeleteTaskById({id: id})
+      if (code != 0) {
+        this.$message({
+          type: 'error',
+          message: msg
+        })
+        return
+      }
+      this.$message({
+        type: 'success',
+        message: msg
+      })
+      this.getList()
+      return
+    },
+    async getList() {
+      this.connectLoading = true
+      const res = await TransferLogList()
+      this.connectLoading = false
+      if (res.code != 0) {
+        this.$message({
+          type: 'error',
+          message: res.msg
+        })
+        return
+      }
+      this.tableList = res.data
+    },
+    changeTbCols(v) {
+      this.refreshshowMapping()
+    },
+    refreshshowMapping() {
+      this.showMapping = false
+      this.$nextTick(() => {
+        this.showMapping = true
+      })
+    },
+    async changeIndex() {
+
+      const input = {}
+
+      input['es_connect'] = this.$store.state.baseData.EsConnectID
+
+      input['index_name'] = this.form.indexName
+
+      const {data, code, msg} = await ListAction(input)
+
+      if (code != 0) {
+        this.$message({
+          type: 'error',
+          message: msg
+        })
+        return
+      }
+
+      this.ver = data.ver
+
+      try {
+        switch (this.ver) {
+          case 6:
+            const mappings = Object.keys(data.list[this.form.indexName].mappings)
+            if (mappings.length > 0) {
+              this.form.type_name = mappings[0]
+              this.esCols = Object.keys(data.list[this.form.indexName].mappings[this.form.type_name].properties)
+            }
+            break
+          case 7:
+          case 8:
+            this.esCols = Object.keys(data.list[this.form.indexName].mappings.properties)
+            break
+        }
+      } catch (e) {
+        this.esCols = []
+      }
+      this.refreshshowMapping()
+    },
+    async getIndexList() {
+      console.log("test")
+      const input = {}
+      input['es_connect'] = this.$store.state.baseData.EsConnectID
+      this.indexSelectLoading = true
+
+      const res = await IndexNamesAction(input)
+
+      this.indexSelectLoading = false
+      if (res.code != 0) {
+        this.$message({
+          type: 'error',
+          message: res.msg
+        })
+        return
+      }
+      this.indexList = res.data
+    },
+    async add() {
+      let form = this.form
+
+      form['es_connect'] = this.$store.state.baseData.EsConnectID
+      this.addLoading = true
+      const res = await Transfer(form)
+      this.addLoading = false
+      if (res.code != 0) {
+        this.$message({
+          type: 'error',
+          message: res.msg
+        })
+        return
+      }
+      this.$message({
+        type: 'success',
+        message: res.msg
+      })
+      this.form = Object.assign({}, defaultForm)
+      this.getList()
+      this.closeDialog()
+    },
+    filterMethod(query, item) {
+      return item.label.indexOf(query) > -1
+    },
+    async changeTable() {
+      await this.getTables()
+      await this.GetTableColumns()
+    },
+    async GetTableColumns() {
+      this.transferLoading = true
+      const res = await GetTableColumns({id: this.getSelectTypeObj()['id'], table_name: this.form.selectTable})
+      this.transferLoading = false
+      if (res.code != 0) {
+        this.$message({
+          type: 'error',
+          message: res.msg
+        })
+        return
+      }
+      if (res.data == null) res.data = []
+      this.allCols = []
+      for (let v of res.data) {
+        const obj = {
+          key: v.Field,
+          label: v.Comment == '' ? `${v.Field}【${v.Type}】` : `${v.Field}【${v.Type}】【${v.Comment}】`,
+          disabled: false
+        }
+        this.allCols.push(obj)
+      }
+      this.form.cols.tableCols = []
+      this.form.cols.esCols = []
+    },
+    async getTables() {
+      const res = await GetTables({id: this.getSelectTypeObj()['id']})
+      if (res.code != 0) {
+        this.$message({
+          type: 'error',
+          message: res.msg
+        })
+        return
+      }
+      this.tables = res.data
+
+      if (this.tables == null) this.tables = []
+      if (this.tables.length > 0) {
+        this.form.selectTable = this.tables[0]
+      }
+
+    },
+    getSelectTypeObj() {
+      return JSON.parse(this.form.selectType)
+    },
+    closeDialog() {
+      this.open = false
+    },
+    async initForm() {
+      this.form.remark = ""
+      this.openTaskLoading = true
+
+      const res = await LinkSelectOpt()
+      if (res.code != 0) {
+        return
+      }
+      if (res.data == null) res.data = []
+      this.linkSelectOpt = res.data
+
+      if (this.linkSelectOpt.length > 0) {
+        this.form.selectType = JSON.stringify(this.linkSelectOpt[0])
+        await this.getTables()
+        await this.GetTableColumns()
+      }
+      this.openTaskLoading = false
+      this.open = true
+      this.addLoading = false
+
+    }
   }
+}
 </script>
 
 <style scoped>
-  .col-transfer >>> .el-transfer-panel {
-    width: 35%;
-  }
+.col-transfer >>> .el-transfer-panel {
+  width: 35%;
+}
 
-  .el-row {
-    margin-bottom: 20px;
+.el-row {
+  margin-bottom: 20px;
 
-  &
-  :last-child {
-    margin-bottom: 0;
-  }
+&
+:last-child {
+  margin-bottom: 0;
+}
 
-  }
+}
 
 
 </style>
