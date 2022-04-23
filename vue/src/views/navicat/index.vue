@@ -4,10 +4,10 @@
       <div class="header_xwl" style="background: white">
         <div class="root_xwl">
           <div class="main_xwl">
-            <span class="title_xwl" style="color: #202d3f">&nbsp;&nbsp;数据管理</span>
+            <span class="title_xwl" style="color: #202d3f">&nbsp;&nbsp;{{$t('数据管理')}}</span>
           </div>
           <div class="actions_xwl" >
-            <el-button type="primary" @click.native="showIndexSettings = true">显示该索引结构</el-button>
+            <el-button type="primary" @click.native="showIndexSettings = true">{{$t('显示该索引结构')}}</el-button>
           </div>
         </div>
       </div>
@@ -28,7 +28,7 @@
                   :fetch-suggestions="querySearch"
 
                   v-model="filterStr"
-                  placeholder="请输入索引名"
+                  :placeholder="$t('请输入索引名')"
                 >
                   <i
                     class="el-icon-edit el-input__icon"
@@ -81,7 +81,7 @@
           </div>
           <el-drawer
             ref="drawer"
-            title="索引结构"
+            :title="$t('索引结构')"
 
             :visible.sync="showIndexSettings"
 
@@ -94,7 +94,7 @@
                  style="height: 95%;width: 100px;display: inline-block; height: 100%;vertical-align: top;width: 100%;background: white;"
             >
               <el-tabs v-model="activeName" v-loading="tabLoading" type="border-card">
-                <el-tab-pane label="索引设置" name="settings">
+                <el-tab-pane :label="$t('索引设置')" name="settings">
                   <json-editor
                     v-if="refreshTab"
                     v-model="JSON.stringify(currentSettings,null, '\t')"
@@ -104,7 +104,7 @@
                     :title="currentIndexName"
                   />
                 </el-tab-pane>
-                <el-tab-pane label="映射结构" name="mappings">
+                <el-tab-pane :label="$t('映射结构')" name="mappings">
                   <json-editor
                     v-if="refreshTab"
                     v-model="JSON.stringify(currentMappings,null, '\t')"

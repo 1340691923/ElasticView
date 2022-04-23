@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="filter-container operate">
-      <el-tag class="filter-item">操作</el-tag>
+      <el-tag class="filter-item">{{$t('操作')}}</el-tag>
       <el-button
         v-loading="loadingGroup['saveMappinng']"
         class="filter-item"
@@ -9,16 +9,16 @@
         type="warning"
         icon="el-icon-toilet-paper"
         @click="saveMappinng"
-      >保存/修改映射
+      >{{$t('保存/修改映射')}}
       </el-button>
-      <index-select :multiple="true" :clearable="true" placeholder="迁移别名到多个索引上" @change="changeAnotherIndex" />
+      <index-select :multiple="true" :clearable="true" :placeholder="$t('迁移别名到多个索引上')" @change="changeAnotherIndex" />
     </div>
     <json-editor
       v-model="mapping"
       v-loading="tabLoading"
       styles="width: 100%"
       :read="true"
-      title="映射"
+      :title="$t('映射')"
       @getValue="getMapping"
     />
 

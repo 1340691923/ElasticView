@@ -3,15 +3,15 @@
     <el-card class="box-card">
       <div class="filter-container">
 
-        <el-radio @change="search" v-model="input.typ" class="filter-item" label="">全部</el-radio>
-        <el-radio @change="search" v-model="input.typ" class="filter-item" label="mysql">mysql</el-radio>
+        <el-radio @change="search" v-model="input.typ" class="filter-item" label="">{{$t('全部')}}</el-radio>
+        <el-radio @change="search" v-model="input.typ" class="filter-item" label="mysql">{{$t('mysql')}}</el-radio>
         <!--<el-radio @change="search" v-model="input.typ" class="filter-item" label="sqlserver">sqlserver</el-radio>-->
-        <el-radio @change="search" v-model="input.typ" class="filter-item" label="clickhouse">clickhouse</el-radio>
+        <el-radio @change="search" v-model="input.typ" class="filter-item" label="clickhouse">{{$t('clickhouse')}}</el-radio>
         <!--<el-radio @change="search" v-model="input.typ" class="filter-item" label="mongodb">mongodb</el-radio>-->
         <el-input style="width: 300px" class="filter-item" v-model="input.remark" clearable
-                  placeholder="备注名"></el-input>
-        <el-button @click="search" type="success" class="filter-item">查询</el-button>
-        <el-button @click.native="open = true" type="primary" class="filter-item">新增</el-button>
+                  :placeholder="$t('备注')"></el-input>
+        <el-button @click="search" type="success" class="filter-item">{{$t('查询')}}</el-button>
+        <el-button @click.native="open = true" type="primary" class="filter-item">{{$t('新增')}}</el-button>
       </div>
 
       <el-table v-loading="tableLoading" :data="tableData">
@@ -21,7 +21,7 @@
           prop="id"
           label="id">
         </el-table-column>
-        <el-table-column  width="100"  align="center" label="类型">
+        <el-table-column  width="100"  align="center" :label="$t('类型')">
           <template slot-scope="scope">
             <el-tag v-if="scope.row.typ == 'clickhouse'" type="primary">
               {{ scope.row.typ }}
@@ -44,7 +44,7 @@
         <el-table-column
           align="center"
           prop="port"
-          label="端口"
+          :label="$t('端口')"
           width="80">
         </el-table-column>
 
@@ -52,39 +52,39 @@
           width="100"
           align="center"
           prop="username"
-          label="用户名">
+          :label="$t('用户名')">
 
         </el-table-column>
         <el-table-column
           width="100"
           align="center"
           prop="pwd"
-          label="密码">
+          :label="$t('密码')">
         </el-table-column>
         <el-table-column
           width="100"
           prop="db_name"
-          label="数据库名">
+          :label="$t('数据库名')">
         </el-table-column>
         <el-table-column
           align="center"
           width="100"
           prop="remark"
-          label="备注">
+          :label="$t('备注')">
         </el-table-column>
         <el-table-column
           width="200"
           align="center"
           prop="created"
-          label="创建时间">
+          :label="$t('创建时间')">
         </el-table-column>
         <el-table-column
           width="200"
           align="center"
           prop="updated"
-          label="修改时间">
+          :label="$t('修改时间')">
         </el-table-column>
-        <el-table-column align="center" label="操作" fixed="right" width="300">
+        <el-table-column align="center" :label="$t('操作')" fixed="right" width="300">
           <template slot-scope="scope">
             <el-button
               icon="el-icon-link"
@@ -95,7 +95,7 @@
               @click="link({typ:scope.row.typ,db_name:scope.row.db_name,ip:scope.row.ip,
                 port:scope.row.port,username:scope.row.username,pwd:scope.row.pwd,
                 },scope.$index)"
-            >测试连接
+            >{{$t('测试连接')}}
             </el-button>
             <el-button
               icon="el-icon-delete"
@@ -120,28 +120,28 @@
         />
       </div>
 
-      <el-dialog :close-on-click-modal="false" @close="closeDialog" :visible.sync="open" title="新增数据源">
+      <el-dialog :close-on-click-modal="false" @close="closeDialog" :visible.sync="open" :title="$t('新增数据源')">
         <el-card class="box-card">
           <el-form label-width="300px" label-position="left">
             <el-form-item label="IP">
               <el-input v-model="form.ip" placeholder="127.0.0.1"/>
             </el-form-item>
-            <el-form-item label="端口">
+            <el-form-item :label="$t('端口')">
               <el-input v-model="form.port" placeholder="3306"/>
             </el-form-item>
-            <el-form-item label="用户名">
+            <el-form-item :label="$t('用户名')">
               <el-input v-model="form.username" placeholder="mysql"/>
             </el-form-item>
-            <el-form-item label="密码">
+            <el-form-item :label="$t('密码')">
               <el-input v-model="form.pwd" placeholder="root"/>
             </el-form-item>
-            <el-form-item label="数据库名">
+            <el-form-item :label="$t('数据库名')">
               <el-input v-model="form.db_name" placeholder="mysql"/>
             </el-form-item>
-            <el-form-item label="备注">
+            <el-form-item :label="$t('备注')">
               <el-input v-model="form.remark" placeholder="测试"/>
             </el-form-item>
-            <el-form-item label="数据源类型">
+            <el-form-item :label="$t('数据源类型')">
               <el-radio v-model="form.typ" label="mysql">mysql</el-radio>
               <!--<el-radio v-model="form.typ" label="sqlserver">sqlserver</el-radio>-->
               <el-radio v-model="form.typ" label="clickhouse">clickhouse</el-radio>
@@ -149,12 +149,12 @@
             </el-form-item>
           </el-form>
           <div style="text-align:right;">
-            <el-button type="danger" icon="el-icon-close" @click="closeDialog">取消</el-button>
-            <el-button type="primary" icon="el-icon-check" @click="add">确认</el-button>
+            <el-button type="danger" icon="el-icon-close" @click="closeDialog">{{$t('取消')}}</el-button>
+            <el-button type="primary" icon="el-icon-check" @click="add">{{$t('确认')}}</el-button>
             <el-button :disabled="formLinkLoading" v-loading="formLinkLoading" type="success" icon="el-icon-link"
                        @click="link({typ:form.typ,db_name:form.db_name,ip:form.ip,
                 port:form.port,username:form.username,pwd:form.pwd,
-                })">测试连接
+                })">{{$t('测试连接')}}
             </el-button>
           </div>
         </el-card>

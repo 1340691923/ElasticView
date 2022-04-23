@@ -3,8 +3,8 @@
     <el-dialog width="90%" :close-on-click-modal="false" :visible.sync="open" :title="title" @close="closeDialog">
       <el-card class="box-card">
         <el-form label-width="500px" label-position="left">
-          <el-form-item label="索引名称：">
-            <el-input v-model="indexName" placeholder="索引名称" :disabled="settingsType != 'add'" />
+          <el-form-item :label="$t('索引名称：')">
+            <el-input v-model="indexName" :placeholder="$t('索引名称')" :disabled="settingsType != 'add'" />
           </el-form-item>
           <el-form-item label="number_of_shards (分片数)：">
             <el-input v-model.number="form.number_of_shards" type="number" style="width: 300px" :disabled="isOpen" />
@@ -13,7 +13,7 @@
             <el-input v-model.number="form.number_of_replicas" type="number" style="width: 300px" />
           </el-form-item>
           <el-form-item label="refresh_interval (索引的刷新时间间隔)：">
-            <el-input v-model="form.refresh_interval" placeholder="索引的刷新时间间隔" />
+            <el-input v-model="form.refresh_interval" :placeholder="$t('索引的刷新时间间隔')" />
           </el-form-item>
           <el-form-item label="translog.sync_interval (translog同步到磁盘的时间间隔)：">
             <el-input v-model="form['index.translog.sync_interval']" :disabled="isOpen" />
@@ -80,32 +80,32 @@
           </el-form-item>
           <el-form-item label="blocks.read_only (允许写入和元数据更改)：">
             <el-select v-model="form['index.blocks.read_only']" clearable filterable>
-              <el-option label="是" value="true" />
-              <el-option label="否" value="false" />
+              <el-option :label="$t('是')" value="true" />
+              <el-option :label="$t('否')" value="false" />
             </el-select>
           </el-form-item>
           <el-form-item label="blocks.read_only_allow_delete (只允许读和删数据，不允许增和改数据)：">
             <el-select v-model="form['index.blocks.read_only_allow_delete']" clearable filterable>
-              <el-option label="是" value="true" />
-              <el-option label="否" value="false" />
+              <el-option  :label="$t('是')"  value="true" />
+              <el-option :label="$t('否')" value="false" />
             </el-select>
           </el-form-item>
           <el-form-item label="blocks.read (禁用对索引的读取操作)：">
             <el-select v-model="form['index.blocks.read']" clearable filterable>
-              <el-option label="是" value="true" />
-              <el-option label="否" value="false" />
+              <el-option  :label="$t('是')"  value="true" />
+              <el-option :label="$t('否')" value="false" />
             </el-select>
           </el-form-item>
           <el-form-item label="blocks.write (禁用对索引的写入操作)：">
             <el-select v-model="form['index.blocks.write']" clearable filterable>
-              <el-option label="是" value="true" />
-              <el-option label="否" value="false" />
+              <el-option  :label="$t('是')" value="true" />
+              <el-option :label="$t('否')" value="false" />
             </el-select>
           </el-form-item>
           <el-form-item label="blocks.metadata (禁用索引元数据的读取和写入)：">
             <el-select v-model="form['index.blocks.metadata']" clearable filterable>
-              <el-option label="是" value="true" />
-              <el-option label="否" value="false" />
+              <el-option  :label="$t('是')"  value="true" />
+              <el-option :label="$t('否')" value="false" />
             </el-select>
           </el-form-item>
           <el-form-item label="max_refresh_listeners (索引的每个分片上可用的最大刷新侦听器数)：">
@@ -113,8 +113,8 @@
           </el-form-item>
         </el-form>
         <div style="text-align:right;">
-          <el-button type="danger" icon="el-icon-close" @click="closeDialog">取消</el-button>
-          <el-button type="primary" icon="el-icon-check" @click="confirmSettings">确认</el-button>
+          <el-button type="danger" icon="el-icon-close" @click="closeDialog">{{$t('取消')}}</el-button>
+          <el-button type="primary" icon="el-icon-check" @click="confirmSettings">{{$t('确认')}}</el-button>
         </div>
       </el-card>
     </el-dialog>
@@ -185,9 +185,9 @@ export default {
     },
     title() {
       if (this.settingsType == 'add') {
-        return '新增索引配置'
+        return this.$t('新增索引配置')
       } else {
-        return '修改索引配置'
+        return this.$t('修改索引配置')
       }
     }
   },

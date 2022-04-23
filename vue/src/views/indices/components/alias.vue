@@ -2,16 +2,16 @@
   <div>
     <el-form>
       <el-form-item>
-        <el-button type="success" icon="el-icon-plus" @click="addAlias">新增别名</el-button>
-        <el-button type="primary" icon="el-icon-check" @click="batchAdd">批量提交</el-button>
-        <el-button type="info" icon="el-icon-delete" @click="getAlias">重置</el-button>
-        <index-select :multiple="true" :clearable="true" placeholder="迁移别名到多个索引上" @change="changeAnotherIndex" />
+        <el-button type="success" icon="el-icon-plus" @click="addAlias">{{$t('新增别名')}}</el-button>
+        <el-button type="primary" icon="el-icon-check" @click="batchAdd">{{$t('批量提交')}}</el-button>
+        <el-button type="info" icon="el-icon-delete" @click="getAlias">{{$t('重置')}}</el-button>
+        <index-select :multiple="true" :clearable="true" :placeholder="$t('迁移别名到多个索引上')" @change="changeAnotherIndex" />
 
       </el-form-item>
       <el-form-item
         v-for="(alias, index) in aliasList"
         :key="index"
-        :label="'别名' + Number(index+1)"
+        :label="$t('别名') + Number(index+1)"
       >
         <el-input v-model="aliasList[index].name" :readonly="aliasList[index].types !='new'" style="width:300px" />
 
@@ -23,14 +23,14 @@
           v-clipboard:error="onError"
           icon="el-icon-copy"
           type="success"
-        >复制
+        >{{$t('复制')}}
         </el-button>
         <el-button
           v-show="aliasList[index].types =='new'"
           type="primary"
           icon="el-icon-check"
           @click="submitForm(index)"
-        >提交
+        >{{$t('提交')}}
         </el-button>
         <el-button icon="el-icon-delete" type="danger" @click="removeAlias(index)">{{$t('删除')}}</el-button>
 

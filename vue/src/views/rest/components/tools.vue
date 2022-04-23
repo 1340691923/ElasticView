@@ -7,7 +7,7 @@
         v-model="input.path"
         clearable
         class="filter-item select-path autocomplete"
-        placeholder="请输入内容"
+        :placeholder="$t('请输入内容')"
         :fetch-suggestions="querySearch"
         @clear="clear"
         @keyup.enter.native="go"
@@ -17,14 +17,14 @@
           slot="prepend"
           v-model="input.method"
           class="filter-item select-method"
-          placeholder="请选择Http Method"
+          :placeholder="$t('请选择Http Method')"
           filterable
         >
-          <el-option label="PUT【更新或创建】" value="PUT" />
-          <el-option label="GET【查询】" value="GET" />
+          <el-option :label="$t('PUT【更新或创建】')" value="PUT" />
+          <el-option :label="$t('GET【查询】')" value="GET" />
           <el-option :label="'DELETE【'+$t('删除')+'】'" value="DELETE" />
-          <el-option label="POST【创建】" value="POST" />
-          <el-option label="HEAD【是否存在】" value="HEAD" />
+          <el-option :label="$t('POST【创建】')" value="POST" />
+          <el-option :label="$t('HEAD【是否存在】')" value="HEAD" />
         </el-select>
       </el-autocomplete>
       <el-button
@@ -33,7 +33,7 @@
         icon="el-icon-search"
         type="text"
       >
-        <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/index.html" target="_blank">官方文档</a>
+        <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/index.html" target="_blank">{{$t('官方文档')}}</a>
       </el-button>
       <el-button
         class="filter-item go"
@@ -64,7 +64,7 @@
           type="warning"
           icon="el-icon-refresh"
           @click="openDrag"
-        >SQL转换
+        >{{$t('SQL转换')}}
         </el-button>
         <el-button
           class="filter-item search-history"
@@ -73,7 +73,7 @@
           icon="el-icon-search"
           @click.native="dialogVisible = true"
         >
-          搜索历史
+          {{$t('搜索历史')}}
         </el-button>
         <el-button
           v-if="canExport && input.path.trim() != '_search'"
@@ -83,7 +83,7 @@
           icon="el-icon-refresh"
           @click.native="tableDialogVisible = true"
         >
-          返回结果转表格
+          {{$t('返回结果转表格')}}
         </el-button>
       </el-button-group>
       <download-excel
@@ -97,7 +97,7 @@
         :before-finish="endDownload"
       >
         <el-button   :disabled="downloadLoading" v-loading="downloadLoading" type="primary" icon="el-icon-download" class="filter-item download">
-          下载
+          {{$t('下载')}}
         </el-button>
       </download-excel>
     </div>
@@ -112,7 +112,7 @@
           styles="width: 100%"
           :point-out="pointOut"
           :read="false"
-          title="请求Body"
+          :title="$t('请求Body')"
           @getValue="getBody"
         />
       </template>
@@ -124,7 +124,7 @@
           class="res-body"
           styles="width: 100%"
           :read="true"
-          title="返回信息"
+          :title="$t('返回信息')"
         />
       </template>
     </split-pane>
@@ -138,8 +138,8 @@
       destroy-on-close
       size="50%"
     >
-      <el-button style="margin: 20px" type="warning" icon="el-icon-refresh" @click="sqlToDsl">开始转换为DSL</el-button>
-      <el-link type="success" disabled>表名可用索引名代替</el-link>
+      <el-button style="margin: 20px" type="warning" icon="el-icon-refresh" @click="sqlToDsl">{{$t('开始转换为DSL')}}</el-button>
+      <el-link type="success" disabled>{{$t('表名可用索引名代替')}}</el-link>
       <sql-editor
         v-model="sqlStr"
         styles="width: 100%"

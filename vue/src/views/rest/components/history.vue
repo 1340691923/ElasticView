@@ -1,17 +1,17 @@
 <template>
   <div>
-    <el-dialog :close-on-click-modal="false" width="80%" :visible.sync="dialogVisible" title="历史记录" @close="close">
+    <el-dialog :close-on-click-modal="false" width="80%" :visible.sync="dialogVisible" :title="$t('历史记录')" @close="close">
       <div class="filter-container">
-        <el-tag class="filter-item">请选择索引名</el-tag>
-        <index-select class="filter-item" :clearable="true" placeholder="请选择索引名" @change="changeIndex" />
-        <el-tag class="filter-item">请筛选搜索时间</el-tag>
+        <el-tag class="filter-item">{{$t('请选择索引名')}}</el-tag>
+        <index-select class="filter-item" :clearable="true" :placeholder="$t('请选择索引名')" @change="changeIndex" />
+        <el-tag class="filter-item">{{$t('请筛选搜索时间')}}</el-tag>
         <date class="filter-item" :dates="input.date" @changeDate="changeDate" />
       </div>
       <el-table
         :data="list"
       >
         <el-table-column
-          label="序号"
+          :label="$t('序号')"
           align="center"
           fixed
           width="50"
@@ -35,32 +35,32 @@
           <template slot-scope="scope">
 
             <el-popover
-                          placement="top-start"
-                          title="sdk配置"
-                          width="600"
-                          trigger="hover"
+              placement="top-start"
+              title="sdk配置"
+              width="600"
+              trigger="hover"
             >
 
-              <div>{{ scope.row.body }}</div>
-                          <span slot="reference">{{ scope.row.body.substr(0, 50) + "..." }}</span>
+              <div>{{scope.row.body}}</div>
+              <span slot="reference">{{ scope.row.body.substr(0,50)+"..." }}</span>
 
-              </span slot="reference">
+              </span slot="reference">
             </el-popover>
           </template>
         </el-table-column>
 
-        <el-table-column align="center" label="创建时间" width="220">
+        <el-table-column align="center" :label="$t('创建时间')" width="220">
           <template slot-scope="scope">
             {{ scope.row.created }}
           </template>
         </el-table-column>
 
-        <el-table-column align="center" label="操作" fixed="right" width="300">
+        <el-table-column align="center" :label="$t('操作')" fixed="right" width="300">
           <template slot="header" slot-scope="scope">
-            <el-button type="danger" size="small" icon="el-icon-delete" @click="clean">清空</el-button>
+            <el-button type="danger" size="small" icon="el-icon-delete" @click="clean">{{$t('清空')}}</el-button>
           </template>
           <template slot-scope="scope">
-            <el-button type="success" size="small" icon="el-icon-search" @click="getHistoryData(scope)">搜索</el-button>
+            <el-button type="success" size="small" icon="el-icon-search" @click="getHistoryData(scope)">{{$t('搜索')}}</el-button>
           </template>
         </el-table-column>
       </el-table>

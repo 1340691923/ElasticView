@@ -3,7 +3,7 @@
     <span style="text-align: center;display:block;" class="font1">
 
       <el-tag v-if="title != ''" type="primary"> {{ title }}</el-tag>
-      <el-button icon="el-icon-refresh" size="small" type="success" @click="format">美化</el-button>
+      <el-button icon="el-icon-refresh" size="small" type="success" @click="format">{{$t('美化')}}</el-button>
       <el-button
         v-clipboard:copy="value"
         v-clipboard:success="onCopy"
@@ -11,7 +11,7 @@
         size="small"
         type="success"
         icon="el-icon-document-copy"
-      >点击复制</el-button>
+      >{{$t('点击复制')}}</el-button>
     </span>
     <editor
       v-model="value"

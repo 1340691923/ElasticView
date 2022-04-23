@@ -10,13 +10,13 @@
           filterable
           @change="search"
         >
-          <el-option label="索引健康状态" value="" />
+          <el-option :label="$t('索引健康状态')" value="" />
           <el-option label="green" value="green" />
           <el-option label="yellow" value="yellow" />
           <el-option label="red" value="red" />
         </el-select>
 
-        <el-tag class="filter-item">请输入关键词</el-tag>
+        <el-tag class="filter-item">{{$t('请输入关键词')}}</el-tag>
 
         <el-autocomplete
           class="filter-item width300"
@@ -25,7 +25,7 @@
           :fetch-suggestions="querySearch"
 
           v-model="input"
-          placeholder="请输入索引名"
+          :placeholder="$t('请输入索引名')"
         >
           <i
             class="el-icon-edit el-input__icon"
@@ -38,7 +38,7 @@
 
         </el-autocomplete>
 
-        <el-button id="index-search" type="primary" class="filter-item" icon="el-icon-search" @click="search">搜索
+        <el-button id="index-search" type="primary" class="filter-item" icon="el-icon-search" @click="search">{{$t('搜索')}}
         </el-button>
         <el-button-group>
 
@@ -48,7 +48,7 @@
             class="filter-item"
             icon="el-icon-plus"
             @click="openSettingDialog('','add')"
-          >新建索引
+          >{{$t('新建索引')}}
           </el-button>
 
           <el-button
@@ -60,7 +60,7 @@
             icon="el-icon-sort"
             @click="readOnlyAllowDelete()"
           >
-            将节点切换为可读写状态
+            {{$t('将节点切换为可读写状态')}}
           </el-button>
 
           <el-button
@@ -71,7 +71,7 @@
             class="filter-item"
             icon="el-icon-s-open"
             @click="runCommandByIndex('_flush','')"
-          >将所有索引刷新到磁盘
+          >{{$t('将所有索引刷新到磁盘')}}
           </el-button>
         </el-button-group>
 
@@ -86,7 +86,7 @@
             icon="el-icon-circle-close"
             class="filter-item"
             @click="runCommandByIndex('close',selectIndexList.join(','))"
-          >关闭
+          >{{$t('关闭')}}
           </el-button>
 
           <el-button
@@ -98,7 +98,7 @@
             icon="el-icon-success"
             class="filter-item"
             @click="runCommandByIndex('open',selectIndexList.join(','))"
-          >打开
+          >{{$t('打开')}}
           </el-button>
           <el-button
             id="patchForcemergeIndex"
@@ -107,15 +107,15 @@
             icon="el-icon-connection"
             class="filter-item"
             @click="runCommandByIndex('_forcemerge',selectIndexList.join(','))"
-          >强制合并索引
+          >{{$t('强制合并索引')}}
           </el-button>
 
           <el-popover
             placement="top-start"
-            title="提示"
+            :title="$t('提示')"
             width="200"
             trigger="hover"
-            content="为了让最新的数据可以立即被搜索到"
+            :content="$t('为了让最新的数据可以立即被搜索到')"
           >
             <el-button
               id="patchRefreshIndex"
@@ -127,16 +127,16 @@
               type="primary"
               icon="el-icon-refresh"
               @click="runCommandByIndex('_refresh',selectIndexList.join(','))"
-            >刷新索引
+            >{{$t('刷新索引')}}
             </el-button>
           </el-popover>
 
           <el-popover
             placement="top-start"
-            title="提示"
+            :title="$t('提示')"
             width="200"
             trigger="hover"
-            content="让数据持久化到磁盘中"
+            :content="$t('让数据持久化到磁盘中')"
           >
             <el-button
               id="patchFlushIndex"
@@ -147,7 +147,7 @@
               icon="el-icon-s-open"
               class="filter-item"
               @click="runCommandByIndex('_flush',selectIndexList.join(','))"
-            >将索引刷新到磁盘
+            >{{$t('将索引刷新到磁盘')}}
             </el-button>
           </el-popover>
 
@@ -160,7 +160,7 @@
             type="warning"
             icon="el-icon-toilet-paper"
             @click="runCommandByIndex('_cache/clear',selectIndexList.join(','))"
-          >清理缓存
+          >{{$t('清理缓存')}}
           </el-button>
 
           <el-button
@@ -171,7 +171,7 @@
             type="danger"
             icon="el-icon-delete"
             @click="deleteIndex(selectIndexList.join(','),'deleteIndex')"
-          >删除索引
+          >{{$t('删除索引')}}
           </el-button>
         </el-button-group>
       </div>
@@ -187,7 +187,7 @@
           width="55"
         />
         <el-table-column
-          label="序号"
+          :label="$t('序号')"
           align="center"
           fixed
           width="50"
@@ -197,14 +197,14 @@
           </template>
         </el-table-column>
 
-        <el-table-column align="center" label="索引健康状态" width="100">
+        <el-table-column align="center" :label="$t('索引健康状态')" width="100">
           <template slot-scope="scope">
             <el-button v-if="scope.row.health == 'green'" type="success" circle />
             <el-button v-if="scope.row.health == 'yellow'" type="warning" circle />
             <el-button v-if="scope.row.health == 'red'" type="danger" circle />
           </template>
         </el-table-column>
-        <el-table-column align="center" label="索引的开启状态" width="100">
+        <el-table-column align="center" :label="$t('索引的开启状态')" width="100">
           <template slot-scope="scope">
             <el-button
               v-show="scope.row.status == 'open'"
@@ -212,7 +212,7 @@
               size="small"
               icon="el-icon-success"
               @click="runCommandByIndex('close',scope.row.index)"
-            >开启
+            >{{$t('开启')}}
             </el-button>
             <el-button
               v-show="scope.row.status == 'close'"
@@ -220,52 +220,52 @@
               size="small"
               icon="el-icon-circle-close"
               @click="runCommandByIndex('open',scope.row.index)"
-            >关闭
+            >{{$t('关闭')}}
             </el-button>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="索引名称" width="180">
+        <el-table-column align="center" :label="$t('索引名称')" width="180">
           <template slot-scope="scope">
             {{ scope.row.index }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="索引uuid" width="220">
+        <el-table-column align="center" :label="$t('索引uuid')" width="220">
           <template slot-scope="scope">
             {{ scope.row.uuid }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="索引主分片数" width="80" prop="pri" sortable>
+        <el-table-column align="center" :label="$t('索引主分片数')" width="80" prop="pri" sortable>
           <template slot-scope="scope">
             {{ scope.row.pri }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="索引副本分片数量" width="80" prop="rep" sortable>
+        <el-table-column align="center" :label="$t('索引副本分片数量')" width="80" prop="rep" sortable>
           <template slot-scope="scope">
             {{ scope.row.rep }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="索引文档总数" width="80" prop="docs->count" sortable>
+        <el-table-column align="center" :label="$t('索引文档总数')" width="80" prop="docs->count" sortable>
           <template slot-scope="scope">
             {{ bigNumberTransform(scope.row["docs.count"]) }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="索引中删除状态的文档" width="80" prop="docs->deleted" sortable>
+        <el-table-column align="center" :label="$t('索引中删除状态的文档')" width="80" prop="docs->deleted" sortable>
           <template slot-scope="scope">
             {{ scope.row["docs.deleted"] }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="主分片+副本分分片的大小" width="120" prop="store->size" sortable>
+        <el-table-column align="center" :label="$t('主分片+副本分分片的大小')" width="120" prop="store->size" sortable>
           <template slot-scope="scope">
             {{ scope.row["store.size"] }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="主分片的大小" width="150" prop="pri->store->size" sortable>
+        <el-table-column align="center" :label="$t('主分片的大小')" width="150" prop="pri->store->size" sortable>
           <template slot-scope="scope">
             {{ scope.row["pri.store.size"] }}
           </template>
         </el-table-column>
 
-        <el-table-column align="center" label="操作" fixed="right" width="380">
+        <el-table-column align="center" :label="$t('操作')" fixed="right" width="380">
           <template slot-scope="scope">
 
             <el-button-group>
@@ -282,7 +282,7 @@
                 size="small"
                 icon="el-icon-setting"
                 @click="openSettingDialog(scope.row.index,'update')"
-              >修改配置
+              >{{$t('修改配置')}}
               </el-button>
               <el-button
 
@@ -290,14 +290,14 @@
                 size="small"
                 icon="el-icon-circle-plus-outline"
                 @click="openMappingEditDialog(scope.row.index,false)"
-              >修改映射
+              >{{$t('修改映射')}}
               </el-button>
               <el-button
                 icon="el-icon-more"
                 type="primary"
                 size="small"
                 @click="openDrawer(scope.row.index)"
-              >更多
+              >{{$t('更多')}}
               </el-button>
             </el-button-group>
           </template>
@@ -326,28 +326,28 @@
         size="50%"
       >
         <el-tabs v-model="activeName" class="margin-left-10" @tab-click="changeTab">
-          <el-tab-pane label="设置" name="Settings">
+          <el-tab-pane :label="$t('设置')" name="Settings">
             <json-editor
               v-if="activeName == 'Settings'"
               v-model="activeData"
               styles="width: 100%"
               :read="true"
-              title="设置"
+              :title="$t('设置')"
             />
 
           </el-tab-pane>
-          <el-tab-pane label="映射" name="Mapping">
+          <el-tab-pane :label="$t('映射')" name="Mapping">
             <div class="filter-container operate">
 
-              <el-tag type="warning" class="filter-item">切换为其它索引的映射</el-tag>
+              <el-tag type="warning" class="filter-item">{{$t('切换为其它索引的映射')}}</el-tag>
 
               <index-select
                 class="filter-item"
                 :clearable="true"
-                placeholder="请选择索引名"
+                :placeholder="$t('请选择索引名')"
                 @change="changeMapToAnotherIndex"
               />
-              <el-tag type="primary" class="filter-item">操作</el-tag>
+              <el-tag type="primary" class="filter-item">{{$t('操作')}}</el-tag>
               <el-button
                 :disabled="loadingGroup['saveMappinng']"
                 v-loading="loadingGroup['saveMappinng']"
@@ -356,16 +356,16 @@
                 type="primary"
                 icon="el-icon-check"
                 @click="saveMappinng"
-              >修改
+              >{{$t('修改')}}
               </el-button>
-              <el-link type="danger">【注意：只能新增映射字段不可修改映射字段类型】</el-link>
+              <el-link type="danger">{{$t('【注意：只能新增映射字段不可修改映射字段类型】')}}</el-link>
             </div>
             <json-editor
               v-if="activeName == 'Mapping'"
               v-model="activeData"
               styles="width: 100%"
               :read="false"
-              title="映射"
+              :title="$t('映射')"
               @getValue="getMapping"
             />
           </el-tab-pane>
@@ -380,31 +380,30 @@
               title="Stats"
             />
           </el-tab-pane>
-          <el-tab-pane label="编辑索引配置" name="editSettings">
+          <el-tab-pane :label="$t('编辑索引配置')" name="editSettings">
             <el-form>
-              <el-form-item label="编辑索引配置">
-                <el-button type="primary" icon="el-icon-edit-outline" @click="submitSettings()">提交</el-button>
-                <el-button icon="refresh" @click="resetSettings">重置</el-button>
+              <el-form-item :label="$t('编辑索引配置')">
+                <el-button type="primary" icon="el-icon-edit-outline" @click="submitSettings()">{{$t('提交')}}</el-button>
+                <el-button icon="refresh" @click="resetSettings">{{$t('重置')}}</el-button>
               </el-form-item>
               <el-form-item>
                 <json-editor
                   v-if="activeName == 'editSettings'"
                   v-model="activeData"
-
                   :point-out="pointOut"
                   styles="width: 100%;"
                   :read="false"
-                  title="编辑配置"
+                  :title="$t('编辑配置')"
                   @getValue="getSettings"
                 />
               </el-form-item>
             </el-form>
           </el-tab-pane>
-          <el-tab-pane label="修改别名" name="alias">
+          <el-tab-pane :label="$t('修改别名')" name="alias">
             <alias v-if="activeName == 'alias'" :index-name="indexName" />
           </el-tab-pane>
           <div class="filter-container operate">
-            <el-tag class="filter-item">操作</el-tag>
+            <el-tag class="filter-item">{{$t('操作')}}</el-tag>
             <el-button
               :disabled="loadingGroup['close']"
               v-loading="loadingGroup['close']"
@@ -413,7 +412,7 @@
               icon="el-icon-circle-close"
               class="filter-item"
               @click="runCommandByIndex('close',indexName)"
-            >关闭
+            >{{$t('关闭')}}
             </el-button>
 
             <el-button
@@ -424,7 +423,7 @@
               icon="el-icon-success"
               class="filter-item"
               @click="runCommandByIndex('open',indexName)"
-            >打开
+            >{{$t('打开')}}
             </el-button>
             <el-button
               :disabled="loadingGroup['_forcemerge']"
@@ -433,15 +432,15 @@
               icon="el-icon-connection"
               class="filter-item"
               @click="runCommandByIndex('_forcemerge',indexName)"
-            >强制合并索引
+            >{{$t('强制合并索引')}}
             </el-button>
-            <el-link type="danger">【forcemerge操作,手动释放磁盘空间】</el-link>
+            <el-link type="danger">{{$t('【forcemerge操作,手动释放磁盘空间】')}}</el-link>
             <el-popover
               placement="top-start"
-              title="提示"
+              :title="$t('提示')"
               width="200"
               trigger="hover"
-              content="为了让最新的数据可以立即被搜索到"
+              :content="$t('为了让最新的数据可以立即被搜索到')"
             >
               <el-button
                 slot="reference"
@@ -452,19 +451,18 @@
                 type="primary"
                 icon="el-icon-refresh"
                 @click="runCommandByIndex('_refresh',indexName)"
-              >刷新索引
+              >{{$t('刷新索引')}}
               </el-button>
             </el-popover>
 
             <el-popover
               placement="top-start"
-              title="提示"
+              :title="$t('提示')"
               width="200"
               trigger="hover"
-              content="让数据持久化到磁盘中"
+              :content="$t('让数据持久化到磁盘中')"
             >
               <el-button
-
                 slot="reference"
                 :disabled="loadingGroup['_flush']"
                 v-loading="loadingGroup['_flush']"
@@ -473,7 +471,7 @@
                 icon="el-icon-s-open"
                 class="filter-item"
                 @click="runCommandByIndex('_flush',indexName)"
-              >将索引刷新到磁盘
+              >{{$t('将索引刷新到磁盘')}}
               </el-button>
             </el-popover>
 
@@ -485,7 +483,7 @@
               type="warning"
               icon="el-icon-toilet-paper"
               @click="runCommandByIndex('_cache/clear',indexName)"
-            >清理缓存
+            >{{$t('清理缓存')}}
             </el-button>
 
             <el-button
@@ -496,7 +494,7 @@
               size="small"
               icon="el-icon-delete"
               @click="deleteIndex(indexName,'deleteIndex')"
-            >删除索引
+            >{{$t('删除索引')}}
             </el-button>
 
           </div>
@@ -710,9 +708,9 @@ export default {
     },
     openMappingEditDialog(indexName, haveMapping) {
       if (haveMapping) {
-        this.mappingTitle = '新增字段'
+        this.mappingTitle = this.$t('新增字段')
       } else {
-        this.mappingTitle = '新增映射结构'
+        this.mappingTitle = this.$t('新增映射结构')
       }
       this.indexName = indexName
 

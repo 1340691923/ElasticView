@@ -52,7 +52,7 @@
             :fetch-suggestions="querySearch"
 
             v-model="item.key"
-            :placeholder="parent.type == 'Array' ? '' : '请输入键'"
+            :placeholder="parent.type == 'Array' ? '' : $t('请输入键')"
             :size="size"
             :disabled="item.isRoot || parent.type == 'Array' ? true : false"
             :style="'width: ' + (290 - (newdeep - 1) * 15) + 'px'"
@@ -72,7 +72,7 @@
           <el-select
             v-model="item.type"
             :size="size"
-            placeholder="请选择"
+            :placeholder="$t('请选择')"
             @change="changeSelect"
             class="select-body"
           >
@@ -93,7 +93,7 @@
             v-model="item.value"
             v-if="item.type != 'Number' && item.type != 'Boolean'"
             :placeholder="
-              item.type == 'Array' || item.type == 'Object' ? '' : '请输入值'
+              item.type == 'Array' || item.type == 'Object' ? '' : $t('请输入值')
             "
             :disabled="
               item.type == 'Array' || item.type == 'Object' ? true : false
@@ -163,7 +163,7 @@
             ></el-link>
           </el-tooltip>
           <el-popconfirm
-            title="确定删除当前节点吗？"
+            :title="$t('确定删除当前节点吗？')"
             @confirm="delItem"
             v-if="!item.isRoot"
           >

@@ -4,6 +4,10 @@
     "logDir":"logs"
   },
   "port":8090,
+  "dbType": "mysql",
+  "sqlite":{
+    "dbPath":"es_view.db"
+  },
   "mysql":{
     "username":"worker",
     "pwd":"1340691923",
@@ -14,5 +18,5 @@
     "maxIdleConns":10
   },
   "appSecret": "1340691923@qq.com",
-  "deBug": false
+  "deBug": true
 }

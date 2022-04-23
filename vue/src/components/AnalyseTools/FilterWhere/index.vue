@@ -86,7 +86,7 @@
     <div style="padding: 0 12px;">
       <span :style="{color:fontColor}" class="footadd___2D4YB" @click="addRelation1">
         <a-icon type="filter" />
-        增加条件
+        {{$t('增加条件')}}
       </span>
     </div>
   </div>

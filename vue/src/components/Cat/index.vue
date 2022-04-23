@@ -2,9 +2,9 @@
   <div class="app-container">
     <el-card class="box-card">
       <div class="filter-container">
-        <el-tag class="filter-item">请输入关键词</el-tag>
+        <el-tag class="filter-item">{{$t('请输入关键词')}}</el-tag>
         <el-input v-model="input" class="filter-item" style="width: 300px" clearable @input="search" />
-        <el-button type="primary"  class="filter-item"  @click="search">搜索</el-button>
+        <el-button type="primary"  class="filter-item"  @click="search">{{$t('搜索')}}</el-button>
       </div>
 
       <el-table
@@ -12,7 +12,7 @@
         :data="list"
       >
         <el-table-column
-          label="序号"
+          :label="$t('序号')"
           align="center"
           fixed
           width="50"
