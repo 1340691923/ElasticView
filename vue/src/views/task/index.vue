@@ -6,7 +6,7 @@
           v-model="input.actions"
           reserve-keyword
           collapse-tags
-          placeholder="行为"
+          :placeholder="$t('行为')"
           clearable
           multiple
           clearable
@@ -19,7 +19,7 @@
           v-model="input.task_id"
           reserve-keyword
           collapse-tags
-          placeholder="任务ID"
+          :placeholder="$t('任务ID')"
           clearable
           multiple
           clearable
@@ -32,7 +32,7 @@
           v-model="input.node_id"
           reserve-keyword
           collapse-tags
-          placeholder="节点ID"
+          :placeholder="$t('节点ID')"
           clearable
           multiple
           clearable
@@ -43,7 +43,7 @@
         </el-select>
         <el-select
           v-model="input.parent_task_id"
-          placeholder="父任务ID"
+          :placeholder="$t('父任务ID')"
           clearable
           clearable
           filterable
@@ -51,14 +51,14 @@
         >
           <el-option v-for="(taskID, index) in parentTaskIdList" :key="index" :label="taskID" :value="taskID" />
         </el-select>
-        <el-button type="primary" icon="el-icon-search" @click="search(true)">搜索</el-button>
-        <el-button type="success" icon="el-icon-refresh" @click="refresh">刷新</el-button>
+        <el-button type="primary" icon="el-icon-search" @click="search(true)">{{$t('搜索')}}</el-button>
+        <el-button type="success" icon="el-icon-refresh" @click="refresh">{{$t('刷新')}}</el-button>
       </div>
       <el-table
         :data="tableData"
       >
         <el-table-column
-          label="序号"
+          :label="$t('序号')"
           align="center"
           fixed
           width="50"
@@ -67,83 +67,83 @@
             {{ scope.$index+1 }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="行为" prop="action" width="200" />
-        <el-table-column align="center" label="任务详细ID" prop="taskID" width="300" />
-        <el-table-column align="center" label="任务ID" prop="id" width="100" />
+        <el-table-column align="center" :label="$t('行为')" prop="action" width="200" />
+        <el-table-column align="center" :label="$t('任务详细ID')" prop="taskID" width="300" />
+        <el-table-column align="center" :label="$t('任务ID')" prop="id" width="100" />
 
-        <el-table-column align="center" label="节点" prop="node" width="200" />
+        <el-table-column align="center" :label="$t('节点')" prop="node" width="200" />
 
-        <el-table-column align="center" label="父任务id" prop="parent_task_id" width="300">
+        <el-table-column align="center" :label="$t('父任务ID')" prop="parent_task_id" width="300">
           <template slot-scope="scope">
             <div>{{ scope.row.parent_task_id }}</div>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="开始详细时间" width="180">
+        <el-table-column align="center" :label="$t('开始详细时间')" width="180">
           <template slot-scope="scope">
             <div>{{ timestampToTime(scope.row.start_time_in_millis) }}</div>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="状态" width="300">
+        <el-table-column align="center" :label="$t('状态')" width="300">
           <template slot-scope="scope">
 
             <el-popover
-                          placement="top-start"
-                          title="描述"
-                          width="600"
-                          trigger="hover"
+              placement="top-start"
+              :title="$t('描述')"
+              width="600"
+              trigger="hover"
             >
 
-              <div>{{ JSON.stringify(scope.row.status) }}</div>
-                          <span slot="reference">{{ JSON.stringify(scope.row.status).substr(0, 50) + "..." }}</span>
+              <div>{{ JSON.stringify(scope.row.status) }}</div>
+              <span  slot="reference">{{ JSON.stringify(scope.row.status).substr(0,50)+"..." }}</span>
 
-              </span slot="reference">
+              </span slot="reference">
             </el-popover>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="运行时间（秒）" width="180">
+        <el-table-column align="center" :label="$t('运行时间（秒）')" width="180">
           <template slot-scope="scope">
             <div>{{ Number(scope.row.running_time_in_nanos/1000000000) }}</div>
           </template>
         </el-table-column>
 
-        <el-table-column align="center" label="是否可撤销" prop="cancellable" width="100">
+        <el-table-column align="center" :label="$t('是否可撤销')" prop="cancellable" width="100">
           <template slot-scope="scope">
             <div>{{ scope.row.cancellable }}</div>
           </template>
         </el-table-column>
 
-        <el-table-column align="center" label="描述" prop="description" width="300">
+        <el-table-column align="center" :label="$t('描述')" prop="description" width="300">
           <template slot-scope="scope">
 
             <el-popover
-                          placement="top-start"
-                          title="描述"
-                          width="600"
-                          trigger="hover"
+              placement="top-start"
+              :title="$t('描述')"
+              width="600"
+              trigger="hover"
             >
 
-              <div>{{ scope.row.description }}</div>
-                          <span slot="reference">{{ scope.row.description.substr(0, 50) + "..." }}</span>
-              </span slot="reference">
+              <div>{{scope.row.description}}</div>
+              <span slot="reference">{{ scope.row.description.substr(0,50)+"..." }}</span>
+              </span slot="reference">
             </el-popover>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="开始时间" prop="start_time" width="100" />
-        <el-table-column align="center" label="开始时间（毫秒）" prop="start_time_in_millis" width="150" />
+        <el-table-column align="center" :label="$t('开始时间')" prop="start_time" width="100" />
+        <el-table-column align="center" :label="$t('开始时间（毫秒）')" prop="start_time_in_millis" width="150" />
 
-        <el-table-column align="center" label="类型" prop="type" width="100" />
+        <el-table-column align="center" :label="$t('类型')" prop="type" width="100" />
 
-        <el-table-column align="center" label="操作" fixed="right" width="350">
+        <el-table-column align="center" :label="$t('操作')" fixed="right" width="350">
           <template slot-scope="scope">
             <el-button-group>
-              <el-button type="success" size="small" icon="el-icon-search" @click="look(scope.row)">查看</el-button>
+              <el-button type="success" size="small" icon="el-icon-search" @click="look(scope.row)">{{$t('查看')}}</el-button>
 
               <el-button
                 type="danger"
                 size="small"
                 icon="el-icon-delete"
                 @click="CancelAction(scope.row.taskID)"
-              >取消
+              >{{$t('取消')}}
               </el-button>
 
             </el-button-group>
@@ -154,7 +154,7 @@
 
       <el-drawer
         ref="drawer"
-        title="任务详细信息"
+        :title="$t('任务详细信息')"
         :before-close="drawerHandleClose"
         :visible.sync="drawerShow"
         direction="rtl"
@@ -167,7 +167,7 @@
           v-model="taskDetail"
           styles="width: 100%"
           :read="true"
-          title="任务详细信息"
+          :title="$t('任务详细信息')"
         />
       </el-drawer>
 

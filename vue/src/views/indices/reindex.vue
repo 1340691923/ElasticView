@@ -3,18 +3,18 @@
     <el-card class="box-card">
       <div class="filter-container">
         <div class="margin-left30">
-          <el-button type="success" class="filter-item" icon="el-icon-refresh" @click="refresh">清空表单</el-button>
-          <el-button class="filter-item" icon="el-icon-check" @click="commit">确认重建索引</el-button>
+          <el-button type="success" class="filter-item" icon="el-icon-refresh" @click="refresh">{{$t('清空表单')}}</el-button>
+          <el-button class="filter-item" icon="el-icon-check" @click="commit">{{$t('确认重建索引')}}</el-button>
         </div>
       </div>
       <back-to-top />
       <el-tabs tab-position="right">
-        <el-tab-pane label="url参数">
+        <el-tab-pane :label="$t('url参数')">
           <el-card class="box-card card">
-            <el-tag effect="dark" type="success">url参数</el-tag>
+            <el-tag effect="dark" type="success">{{$t('url参数')}}</el-tag>
             <div class="margin-20" />
             <el-form label-position="right">
-              <el-form-item label="配置">
+              <el-form-item :label="$t('配置')">
                 <el-checkbox-group v-model="urlParmasConfig">
                   <el-checkbox v-for="(v,k,index) in form.urlParmas" :key="index" :label="k" />
                 </el-checkbox-group>
@@ -55,32 +55,32 @@
                 label="wait_for_completion (是否将请求阻塞，直到操作完成为止)"
               >
                 <el-select v-model="form.urlParmas.wait_for_completion" filterable>
-                  <el-option label="是" :value="true" />
-                  <el-option label="否" :value="false" />
+                  <el-option :label="是" :value="true" />
+                  <el-option :label="否" :value="false" />
                 </el-select>
               </el-form-item>
 
             </el-form>
           </el-card>
         </el-tab-pane>
-        <el-tab-pane label="索引">
+        <el-tab-pane :label="$t('索引')">
           <el-card class="box-card card" style="width: 45%;">
-            <el-tag effect="dark">源索引</el-tag>
+            <el-tag effect="dark">{{$t('源索引')}}</el-tag>
             <div class="margin-20" />
             <el-form>
-              <el-form-item label="配置">
+              <el-form-item :label="$t('配置')">
                 <el-checkbox-group v-model="sourceConfig">
                   <el-checkbox v-for="(v,k,index) in form.source" v-if="k != 'index'" :key="index" :label="k" />
                 </el-checkbox-group>
               </el-form-item>
               <el-form-item v-if="sourceConfig.indexOf('remote') != -1">
                 <el-form>
-                  <el-form-item label="从连接树中连接">
+                  <el-form-item :label="$t('从连接树中连接')">
                     <el-select
                       v-model="form.source.remote.link"
                       filterable
                       default-first-option
-                      placeholder="请选择ES连接"
+                      :placeholder="$t('请选择ES连接')"
                       @change="changeLink"
                     >
                       <el-option v-for="item in linkOpt" :key="item.id" :value="item.remark" :label="item.remark" />
@@ -107,10 +107,10 @@
                   </el-form-item>
                 </el-form>
               </el-form-item>
-              <el-form-item label="索引名">
+              <el-form-item :label="$t('索引名')">
                 <el-select
                   v-model="form.source.index"
-                  placeholder="请选择索引名"
+                  :placeholder="$t('请选择索引名')"
                   filterable
                   allow-create
                   multiple
@@ -127,7 +127,7 @@
                 </el-select>
               </el-form-item>
               <el-form-item v-if="sourceConfig.indexOf('type') != -1" label="type (类型名)">
-                <el-select v-model="form.source.type" placeholder="请选择类型名" filterable allow-create multiple clearable>
+                <el-select v-model="form.source.type" :placeholder="$t('请选择类型名')" filterable allow-create multiple clearable>
                   <el-option
                     v-for="(item,index) of mappingConfig"
                     :key="index"
@@ -139,7 +139,7 @@
               <el-form-item v-if="sourceConfig.indexOf('_source') != -1" label="_source (字段列表)">
                 <el-select
                   v-model="form.source._source.excludes"
-                  placeholder="排除字段"
+                  :placeholder="$t('排除字段')"
                   filterable
                   allow-create
                   multiple
@@ -147,37 +147,37 @@
                 />
                 <el-select
                   v-model="form.source._source.includes"
-                  placeholder="包含字段"
+                  :placeholder="$t('包含字段')"
                   filterable
                   allow-create
                   multiple
                   clearable
                 />
               </el-form-item>
-              <el-form-item v-if="sourceConfig.indexOf('sort') != -1" label="sort (排序)">
-                <el-tag effect="dark">字段</el-tag>
+              <el-form-item v-if="sourceConfig.indexOf('sort') != -1" :label="$t('sort (排序)')">
+                <el-tag effect="dark">{{$t('字段')}}</el-tag>
                 <el-input v-model="form.source.sort.key" class="sort-key" />
-                <el-tag effect="dark">是否正序</el-tag>
+                <el-tag effect="dark">{{$t('是否正序')}}</el-tag>
                 <el-select
                   v-model="form.source.sort.sortType"
                   class="sort-key"
-                  placeholder="是否正序"
+                  :placeholder="$t('是否正序')"
                   filterable
                   filterable
                 >
                   <el-option
                     key="index"
-                    label="是"
+                    :label="$t('是')"
                     value="asc"
                   />
                   <el-option
                     key="index"
-                    label="否"
+                    :label="$t('否')"
                     value="desc"
                   />
                 </el-select>
               </el-form-item>
-              <el-form-item v-if="sourceConfig.indexOf('size') != -1" label="批次大小配置">
+              <el-form-item v-if="sourceConfig.indexOf('size') != -1" :label="$t('批次大小配置')">
                 <el-input v-model="form.source.size" type="number" class="width30" />
               </el-form-item>
               <el-form-item v-if="sourceConfig.indexOf('query') != -1" label="QUERY DSL">
@@ -193,17 +193,17 @@
             </el-form>
           </el-card>
           <el-card class="box-card card" style="width: 45%;">
-            <el-tag effect="dark" type="danger">目标索引</el-tag>
+            <el-tag effect="dark" type="danger">{{$t('目标索引')}}</el-tag>
             <div class="margin-20" />
             <el-form>
-              <el-form-item label="配置">
+              <el-form-item :label="$t('配置')">
                 <el-checkbox-group v-model="destConfig">
                   <el-checkbox v-for="(v,k,index) in form.dest" v-if="k != 'index'" :key="index" :label="k" />
                 </el-checkbox-group>
               </el-form-item>
 
-              <el-form-item label="索引名">
-                <el-select v-model="form.dest.index" placeholder="请选择索引名" clearable filterable>
+              <el-form-item :label="$t('索引名')">
+                <el-select v-model="form.dest.index" :placeholder="$t('请选择索引名')" clearable filterable>
                   <el-option
                     v-for="(item,index) of indexNameList"
                     :key="index"
@@ -212,16 +212,16 @@
                   />
                 </el-select>
               </el-form-item>
-              <el-form-item v-if="destConfig.indexOf('version_type') != -1" label="version_type(用于索引操作的版本控制)">
-                <el-select v-model="form.dest.version_type" placeholder="请选择version_type" filterable>
+              <el-form-item v-if="destConfig.indexOf('version_type') != -1" :label="$t('version_type(用于索引操作的版本控制)')">
+                <el-select v-model="form.dest.version_type" :placeholder="$t('请选择version_type')" filterable>
                   <el-option label="external" value="external" />
                   <el-option label="internal" value="internal" />
                   <el-option label="external_gt" value="external_gt" />
                   <el-option label="external_gte" value="external_gte" />
                 </el-select>
               </el-form-item>
-              <el-form-item v-if="destConfig.indexOf('op_type') != -1" label="op_type(仅创建不存在的索引文档)">
-                <el-select v-model="form.dest.op_type" placeholder="op_type(仅创建不存在的索引文档)" filterable>
+              <el-form-item v-if="destConfig.indexOf('op_type') != -1" :label="$t('op_type(仅创建不存在的索引文档)')">
+                <el-select v-model="form.dest.op_type" :placeholder="$t('op_type(仅创建不存在的索引文档)')" filterable>
                   <el-option
                     label="create"
                     value="create"
@@ -232,50 +232,50 @@
                   />
                 </el-select>
               </el-form-item>
-              <el-form-item v-if="destConfig.indexOf('routing') != -1" label="routing">
+              <el-form-item v-if="destConfig.indexOf('routing') != -1" :label="$t('routing')">
                 <el-input v-model="form.dest.routing" class="width30" clearable />
               </el-form-item>
-              <el-form-item v-if="destConfig.indexOf('pipeline') != -1" label="pipeline">
+              <el-form-item v-if="destConfig.indexOf('pipeline') != -1" :label="$t('pipeline')">
                 <el-input v-model="form.dest.pipeline" class="width30" clearable />
               </el-form-item>
             </el-form>
           </el-card>
         </el-tab-pane>
-        <el-tab-pane label="脚本">
+        <el-tab-pane :label="$t('脚本')">
           <el-card class="box-card card">
-            <el-tag effect="dark" type="warning">脚本</el-tag>
+            <el-tag effect="dark" type="warning">{{$t('脚本')}}</el-tag>
             <div class="margin-20" />
             <el-form>
-              <el-form-item label="配置">
+              <el-form-item :label="$t('配置')">
                 <el-checkbox-group v-model="scriptConfig">
                   <el-checkbox v-for="(v,k,index) in form.script" v-if="k != 'index'" :key="index" :label="k" />
                 </el-checkbox-group>
               </el-form-item>
-              <el-form-item v-if="scriptConfig.indexOf('source') != -1" label="script.source 定义脚本语言">
+              <el-form-item v-if="scriptConfig.indexOf('source') != -1" :label="$t('script.source 定义脚本语言')">
                 <el-input v-model="form.script.source" clearable />
               </el-form-item>
-              <el-form-item v-if="scriptConfig.indexOf('lang') != -1" label="script.lang 定义脚本实现的代码">
+              <el-form-item v-if="scriptConfig.indexOf('lang') != -1" :label="$t('script.lang 定义脚本实现的代码')">
                 <el-input v-model="form.script.lang" clearable />
               </el-form-item>
-              <el-form-item v-if="scriptConfig.indexOf('params') != -1" label="定义脚本语言的参数">
+              <el-form-item v-if="scriptConfig.indexOf('params') != -1" :label="$t('定义脚本语言的参数')">
                 <json-editor
                   v-model="form.script.params"
                   style="height: 300px"
                   styles="width: 100%"
                   :read="false"
-                  title="定义脚本语言的参数"
+                  :title="$t('定义脚本语言的参数')"
                   @getValue="getParams"
                 />
               </el-form-item>
             </el-form>
           </el-card>
         </el-tab-pane>
-        <el-tab-pane label="额外参数">
+        <el-tab-pane :label="$t('额外参数')">
           <el-card class="box-card card">
-            <el-tag effect="dark" type="info">额外参数</el-tag>
+            <el-tag effect="dark" type="info">{{$t('额外参数')}}</el-tag>
             <div class="margin-20" />
             <el-form>
-              <el-form-item label="配置">
+              <el-form-item :label="$t('配置')">
                 <el-checkbox-group v-model="extendConfig">
                   <el-checkbox v-for="(v,k,index) in form.extend" v-if="k != 'index'" :key="index" :label="k" />
                 </el-checkbox-group>

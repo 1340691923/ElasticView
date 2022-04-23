@@ -2,10 +2,10 @@
   <div>
     <el-dialog :close-on-click-modal="false" width="95%" :visible.sync="dialogVisible" title="查询结果" @close="close">
       <div class="filter-container">
-        <el-tag class="filter-item">请输入关键词</el-tag>
+        <el-tag class="filter-item">{{$t('请输入关键词')}}</el-tag>
         <el-input v-model="input" class="filter-item" style="width: 300px" clearable @input="search" />
-        <el-button type="success" class="filter-item" @click="search">搜索</el-button>
-        <el-button v-if="ISDoc" type="primary" class="filter-item" @click.native="openAddDialog = true">添加文档</el-button>
+        <el-button type="success" class="filter-item" @click="search">{{$t('搜索')}}</el-button>
+        <el-button v-if="ISDoc" type="primary" class="filter-item" @click.native="openAddDialog = true">{{$t('添加文档')}}</el-button>
       </div>
 
       <el-table
@@ -40,19 +40,19 @@
         >
           <template slot-scope="scope">
             <el-popover
-              v-if=" scope.row[val] !=undefined"
-                          placement="top-start"
-                          trigger="hover"
+              v-if="scope.row[val] !=undefined"
+              placement="top-start"
+              trigger="hover"
             >
-              <div>{{ scope.row[val].toString() }}</div>
-               <span v-if="scope.row[val].toString().length>=20"  slot="reference">{{ scope.row[val].toString().substr(0, 20) + "..." }}
+              <div>{{scope.row[val].toString()}}</div>
+              <span v-if="scope.row[val].toString().length>=20" slot="reference">{{ scope.row[val].toString().substr(0,20)+"..." }}
               </span>
-               <span v-else slot="reference">{{ scope.row[val].toString() }}
+              <span v-else slot="reference">{{ scope.row[val].toString() }}
               </span>
             </el-popover>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="操作" fixed="right" width="200">
+        <el-table-column align="center" :label="$t('操作')" fixed="right" width="200">
           <template slot-scope="scope">
             <el-button-group>
               <el-button
@@ -65,7 +65,7 @@
                 {{$t('编辑')}}
               </el-button>
               <el-button v-else type="success" size="small" icon="el-icon-search" @click="look(scope.$index)">
-                查看
+                {{$t('查看')}}
               </el-button>
               <el-button
                 v-if="ISDoc"
@@ -84,7 +84,7 @@
     </el-dialog>
     <el-drawer
       ref="drawer"
-      title="详细数据"
+      :title="$t('详细数据')"
       :before-close="drawerHandleClose"
       :visible.sync="drawerShow"
 
@@ -94,8 +94,8 @@
       size="50%"
     >
       <div v-if="ISDoc" class="filter-container">
-        <el-tag class="filter-item">操作</el-tag>
-        <el-button type="primary" class="filter-item" @click="updateByID">修改</el-button>
+        <el-tag class="filter-item">{{$t('操作')}}</el-tag>
+        <el-button type="primary" class="filter-item" @click="updateByID">{{$t('修改')}}</el-button>
       </div>
       <json-editor
         v-if="isArray"
@@ -104,7 +104,7 @@
         class="res-body"
         styles="width: 100%"
         :read="true"
-        title="详细数据"
+        :title="$t('详细数据')"
       />
 
       <json-editor
@@ -114,14 +114,14 @@
         class="res-body"
         styles="width: 100%"
         :read="!ISDoc"
-        title="详细数据"
+        :title="$t('详细数据')"
         @getValue="getEditDoc"
       />
 
     </el-drawer>
     <el-drawer
       ref="drawer"
-      title="新增文档"
+      :title="$t('新增文档')"
       :before-close="drawerHandleClose"
       :visible.sync="openAddDialog"
 
@@ -131,8 +131,8 @@
       size="50%"
     >
       <div class="filter-container">
-        <el-tag class="filter-item">操作</el-tag>
-        <el-button type="primary" icon="el-icon-edit" class="filter-item" @click="add">提交</el-button>
+        <el-tag class="filter-item">{{$t('操作')}}</el-tag>
+        <el-button type="primary" icon="el-icon-edit" class="filter-item" @click="add">{{$t('提交')}}</el-button>
       </div>
 
       <json-editor
@@ -141,7 +141,7 @@
         height="900"
         class="res-body"
         styles="width: 100%"
-        title="新增文档"
+        :title="$t('新增文档')"
         @getValue="getNewDoc"
       />
 

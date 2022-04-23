@@ -1,7 +1,7 @@
 <template>
     <div>
       <el-input style="width: 30%" v-model="mysqlCol" class="filter-item" readonly></el-input>
-      <el-tag  >等于</el-tag>
+      <el-tag  >{{$t('等于')}}</el-tag>
       <el-select  class="filter-item" filterable v-model="v" style="width: 30%">
         <el-option v-for="(v,k,index) of esMappingCol" :key="index" :lable="k" :value="v"></el-option>
       </el-select>

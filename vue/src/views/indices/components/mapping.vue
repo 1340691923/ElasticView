@@ -8,12 +8,12 @@
             <el-input v-if="showTypeName" :readonly="typeReadonly"  style="width: 200px" class="filter-item" v-model="type_name" ></el-input>
             <el-tag class="filter-item" >dynamic：</el-tag>
             <el-select v-model="dynamic" class="filter-item" size="small">
-              <el-option label="动态映射" value="true" />
-              <el-option label="静态映射" value="false" />
-              <el-option label="严格映射" value="strict" />
+              <el-option :label="$t('动态映射')" value="true" />
+              <el-option :label="$t('静态映射')" value="false" />
+              <el-option :label="$t('严格映射')" value="strict" />
             </el-select>
 
-            <el-button :disabled="loading" v-loading="loading" icon="el-icon-check" type="success" size="small" @click="saveMappinng" class="filter-item">保存/修改映射</el-button>
+            <el-button :disabled="loading" v-loading="loading" icon="el-icon-check" type="success" size="small" @click="saveMappinng" class="filter-item">{{$t('保存/修改映射')}}</el-button>
           </div>
           <vue-json-helper
             v-if="showVueJsonHelper"

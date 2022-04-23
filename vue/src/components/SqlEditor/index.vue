@@ -1,14 +1,14 @@
 <template>
   <div :style="styles" class="float">
     <span v-if="!simple" style="text-align: center;display:block;" class="font1">
-      <el-button size="small" icon="el-icon-refresh" @click="format">美化</el-button>
+      <el-button size="small" icon="el-icon-refresh" @click="format">{{$t('美化')}}</el-button>
       <el-button
         v-clipboard:copy="value"
         v-clipboard:success="onCopy"
         v-clipboard:error="onError"
         size="small"
         icon="el-icon-document-copy"
-      >点击复制</el-button>
+      >{{$t('点击复制')}}</el-button>
     </span>
     <editor
       v-model="value"

@@ -6,7 +6,7 @@
         type="small"
         @click="addTab()"
       >
-        添加查询窗口
+      {{$t('添加查询窗口')}}
       </el-button>
     </div>
     <el-card class="box-card">
@@ -63,7 +63,7 @@ export default {
       this.editableTabs = JSON.parse(editableTabs)
     } else {
       this.editableTabs.push({
-        title: '新窗口1',
+        title: this.$t('新窗口1'),
         uniqueId: 1,
         input: {
           body: '{}',
@@ -120,13 +120,13 @@ export default {
       }
     },
     addTab() {
-      this.$prompt('请输入新窗口标题', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消'
+      this.$prompt(this.$t('请输入新窗口标题'), this.$t('提示'), {
+        confirmButtonText: this.$t('确定'),
+        cancelButtonText: this.$t('取消')
       }).then(({ value }) => {
         if (value == '' || value == null) {
           const count = Number(this.editableTabs.length + 1)
-          value = '新窗口' + count
+          value = this.$t('新窗口') + count
         }
         var timestamp = new Date().getTime()
         this.editableTabs.push({

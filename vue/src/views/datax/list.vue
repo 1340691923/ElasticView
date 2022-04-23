@@ -2,10 +2,10 @@
   <div class="app-container">
     <el-card class="box-card">
       <div class="filter-container">
-        <el-button @click="getList" class="filter-item" icon="el-icon-refresh" type="primary">刷新</el-button>
+        <el-button @click="getList" class="filter-item" icon="el-icon-refresh" type="primary">{{$t('刷新')}}</el-button>
         <el-button v-loading="openTaskLoading" :disabled="openTaskLoading" class="filter-item" icon="el-icon-plus"
                    @click="initForm" type="warning">
-          新建数据抽取任务
+          {{$t('新建数据抽取任务')}}
         </el-button>
       </div>
 
@@ -23,67 +23,79 @@
         <el-table-column
           align="center"
           prop="id"
-          label="备注"
+          :label="$t('备注')"
           width="100">
         </el-table-column>
         <el-table-column
           align="center"
           prop="table_name"
-          label="表名"
+          :label="$t('表名')"
           width="200">
         </el-table-column>
         <el-table-column
           align="center"
           prop="index_name"
-          label="索引名"
+          :label="$t('索引名')"
           width="200">
         </el-table-column>
 
         <el-table-column
           align="center"
           prop="dbcount"
-          label="源数据条数"
+          :label="$t('源数据条数')"
           width="100">
         </el-table-column>
         <el-table-column
           align="center"
           prop="escount"
-          label="已导入数据条数"
+          :label="$t('已导入数据条数')"
           width="100">
         </el-table-column>
         <el-table-column
           align="center"
           prop="crontab_spec"
-          label="定时任务"
+          :label="$t('定时任务')"
           width="200">
         </el-table-column>
 
         <el-table-column
+          :label="$t('状态')"
           align="center"
-          prop="status"
-          label="状态"
-          width="200">
+          width="200"
+        >
+          <template slot-scope="scope">
+            <el-tag v-if="scope.row.status == '数据导入成功'" type="success">
+              {{ $t(scope.row.status) }}
+            </el-tag>
+            <el-tag v-else-if="scope.row.status == '数据正在导入中...'" type="warning">
+              {{ $t(scope.row.status) }}
+            </el-tag>
+            <el-tag v-else type="danger">
+              {{ $t(scope.row.status) }}
+            </el-tag>
+          </template>
         </el-table-column>
+
         <el-table-column
           align="center"
           prop="error_msg"
-          label="错误信息"
+          :label="$t('错误信息')"
           width="200">
         </el-table-column>
 
         <el-table-column
           align="center"
           prop="created"
-          label="创建时间"
+          :label="$t('创建时间')"
           width="150">
         </el-table-column>
         <el-table-column
           align="center"
           prop="updated"
-          label="修改时间"
+          :label="$t('修改时间')"
           width="150">
         </el-table-column>
-        <el-table-column align="center" label="操作" fixed="right" width="300">
+        <el-table-column align="center" :label="$t('操作')" fixed="right" width="300">
           <template slot-scope="scope">
 
             <el-button :disabled="scope.row.status != '正在运行中...' && scope.row.status != '数据正在导入中...'" type="danger"
@@ -99,10 +111,10 @@
                  :title="$t('新建数据抽取任务')">
         <el-card class="box-card">
           <el-form label-width="200px" label-position="left">
-            <el-form-item label="任务备注:">
+            <el-form-item :label="$t('任务备注:')">
               <el-input v-model="form.remark" style="width: 300px"></el-input>
             </el-form-item>
-            <el-form-item label="选择数据源:">
+            <el-form-item :label="$t('选择数据源:')">
               <el-select @change="changeTable" filterable v-model="form.selectType">
                 <el-option v-for="(v,k,index) in linkSelectOpt" :key="index" :value="JSON.stringify(v)"
                            :label="v.remark.concat(`(${v.typ})`)"/>
@@ -113,21 +125,21 @@
                 <el-option v-for="(v,k,index) in tables" :key="index" :value="v" :label="v"/>
               </el-select>
             </el-form-item>
-            <el-form-item label="表字段：">
+            <el-form-item :label="$t('表字段：')">
               <div v-loading="transferLoading" class="col-transfer">
                 <el-transfer
                   @change="changeTbCols"
                   v-model="form.cols.tableCols"
-                  :titles="['全部字段', '当前ES索引字段']"
-                  :button-texts="['移除', '添加']"
+                  :titles="[$t('全部字段'), $t('当前ES索引字段')]"
+                  :button-texts="[$t('移除'), $t('添加')]"
                   filterable
                   :filter-method="filterMethod"
-                  filter-placeholder="请操作字段"
+                  :filter-placeholder="$t('请操作字段')"
                   :data="allCols"
                 />
               </div>
             </el-form-item>
-            <el-form-item label="索引名:">
+            <el-form-item :label="$t('索引名:')">
               <el-select @change="changeIndex" v-loading="indexSelectLoading" class="filter-item" filterable
                          v-model="form.indexName"
                          style="width: 350px">
@@ -139,7 +151,7 @@
                 class="filter-item"
                 icon="el-icon-plus"
                 @click="openSettingDialog('','add')"
-              >新建索引
+              >{{$t('新建索引')}}
               </el-button>
               <el-button
                 v-if="form.indexName != ''"
@@ -147,7 +159,7 @@
                 size="small"
                 icon="el-icon-setting"
                 @click="openSettingDialog(form.indexName,'update')"
-              >修改配置
+              >{{$t('修改配置')}}
               </el-button>
               <el-button
                 v-if="form.indexName != ''"
@@ -155,14 +167,14 @@
                 size="small"
                 icon="el-icon-circle-plus-outline"
                 @click="openMappingEditDialog(form.indexName,false)"
-              >修改映射
+              >{{$t('修改映射')}}
               </el-button>
             </el-form-item>
 
-            <el-form-item v-if="showMapping" label="字段映射:">
+            <el-form-item v-if="showMapping" :label="$t('字段映射:')">
               <div v-if="form.cols.tableCols.length == 0">
                 <el-alert
-                  title="请先选择表字段"
+                  :title="$t('请先选择表字段')"
                   type="warning"
                 ></el-alert>
               </div>
@@ -171,26 +183,26 @@
               </div>
             </el-form-item>
 
-            <el-form-item label="是否清空该索引重新导入数据:">
-              <el-radio v-model="form.reset" class="filter-item" :label="Boolean(true)">是</el-radio>
-              <el-radio v-model="form.reset" class="filter-item" :label="Boolean(false)">否</el-radio>
+            <el-form-item :label="$t('是否清空该索引重新导入数据:')">
+              <el-radio v-model="form.reset" class="filter-item" :label="Boolean(true)">{{$t('是')}}</el-radio>
+              <el-radio v-model="form.reset" class="filter-item" :label="Boolean(false)">{{$t('否')}}</el-radio>
             </el-form-item>
-            <el-form-item label="协程数:">
+            <el-form-item :label="$t('协程数:')">
               <el-input type="number" v-model.number="form.goNum" style="width: 300px"></el-input>
             </el-form-item>
-            <el-form-item label="源数据库每次limit条数:">
+            <el-form-item :label="$t('源数据库每次limit条数:')">
               <el-input type="number" v-model.number="form.bufferSize" style="width: 300px"></el-input>
             </el-form-item>
-            <el-form-item label="es入库批次数量:">
+            <el-form-item :label="$t('es入库批次数量:')">
               <el-input type="number" v-model.number="form.esBufferSize" style="width: 300px"></el-input>
             </el-form-item>
-            <el-form-item label="es入库轮循间隔时间:">
+            <el-form-item :label="$t('es入库轮循间隔时间:')">
               <el-input type="number" v-model.number="form.esFlushInterval" style="width: 300px"></el-input>
             </el-form-item>
-            <el-form-item label="计划任务表达式:">
+            <el-form-item :label="$t('计划任务表达式:')">
               <el-autocomplete
                 style="width: 300px"
-                placeholder="计划任务表达式（若无需定时跑，则不填）"
+                :placeholder="$t('计划任务表达式（若无需定时跑，则不填）')"
                 clearable
                 :fetch-suggestions="querySearch"
 
@@ -211,9 +223,9 @@
 
           </el-form>
           <div style="text-align:right;">
-            <el-button type="danger" icon="el-icon-close" @click="closeDialog">取消</el-button>
+            <el-button type="danger" icon="el-icon-close" @click="closeDialog">{{$t('取消')}}</el-button>
             <el-button :disabled="addLoading" type="primary" icon="el-icon-check" v-loading="addLoading" @click="add">
-              确认
+              {{$t('确认')}}
             </el-button>
           </div>
         </el-card>
@@ -316,7 +328,7 @@ export default {
       switch (this.getSelectTypeObj()["typ"]) {
         case "mysql":
         case "clickhouse":
-          return "表名:"
+          return this.$t("表名:")
         /*case "mongodb":
           return "集合名:"
           break*/
@@ -373,9 +385,9 @@ export default {
     },
     openMappingEditDialog(indexName, haveMapping) {
       if (haveMapping) {
-        this.mappingTitle = '新增字段'
+        this.mappingTitle = this.$t('新增字段')
       } else {
-        this.mappingTitle = '新增映射结构'
+        this.mappingTitle = this.$t('新增映射结构')
       }
       this.form.indexName = indexName
 
@@ -574,9 +586,22 @@ export default {
 
       const res = await LinkSelectOpt()
       if (res.code != 0) {
+        this.$message({
+          type: 'error',
+          message: res.msg
+        })
         return
       }
       if (res.data == null) res.data = []
+
+      if(res.data.length == 0){
+        this.$message({
+          type: 'error',
+          message: '请先添加数据源'
+        })
+        return
+      }
+
       this.linkSelectOpt = res.data
 
       if (this.linkSelectOpt.length > 0) {
@@ -587,7 +612,6 @@ export default {
       this.openTaskLoading = false
       this.open = true
       this.addLoading = false
-
     }
   }
 }

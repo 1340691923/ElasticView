@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-card class="box-card">
       <div class="filter-container">
-        <el-button type="primary" icon="el-icon-plus" class="filter-item" @click="handleAddRole">新建连接信息</el-button>
+        <el-button type="primary" icon="el-icon-plus" class="filter-item" @click="handleAddRole">{{$t('新建连接信息')}}</el-button>
       </div>
       <back-to-top />
       <el-table
@@ -10,7 +10,7 @@
         :data="list"
       >
         <el-table-column
-          label="序号"
+          :label="$t('序号')"
           align="center"
           fixed
           width="50"
@@ -20,42 +20,42 @@
           </template>
         </el-table-column>
 
-        <el-table-column align="center" label="HOST" width="220">
+        <el-table-column align="center" :label="$t('HOST')" width="220">
           <template slot-scope="scope">
             {{ scope.row.ip }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="用户名" width="300">
+        <el-table-column align="center" :label="$t('用户名')" width="300">
           <template slot-scope="scope">
             {{ scope.row.user }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="密码" width="300">
+        <el-table-column align="center" :label="$t('密码')" width="300">
           <template slot-scope="scope">
             {{ scope.row.pwd }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="备注" width="220">
+        <el-table-column align="center" :label="$t('备注')" width="220">
           <template slot-scope="scope">
             {{ scope.row.remark }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="版本" width="100">
+        <el-table-column align="center" :label="$t('版本')" width="100">
           <template slot-scope="scope">
             {{ scope.row.version }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="创建时间" width="220">
+        <el-table-column align="center" :label="$t('创建时间')" width="220">
           <template slot-scope="scope">
             {{ scope.row.created }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="修改时间" width="220">
+        <el-table-column align="center" :label="$t('修改时间')" width="220">
           <template slot-scope="scope">
             {{ scope.row.updated }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="操作" fixed="right" width="300">
+        <el-table-column align="center" :label="$t('操作')" fixed="right" width="300">
           <template slot-scope="scope">
             <el-button
               :disabled="scope.row.connectLoading"
@@ -64,7 +64,7 @@
               size="small"
               icon="el-icon-link"
               @click="testConnect(scope)"
-            >测试连接
+            >{{$t('测试连接')}}
             </el-button>
             <el-button type="primary" size="small" icon="el-icon-edit" @click="handleEdit(scope)">{{$t('编辑')}}</el-button>
             <el-button type="danger" size="small" icon="el-icon-delete" @click="handleDelete(scope)">{{$t('删除')}}</el-button>
@@ -72,22 +72,22 @@
         </el-table-column>
       </el-table>
 
-      <el-dialog :close-on-click-modal="false" :visible.sync="dialogVisible" :title="dialogType==='edit'?'编辑连接信息':'新建连接信息'">
+      <el-dialog :close-on-click-modal="false" :visible.sync="dialogVisible" :title="dialogType==='edit'?$t('编辑连接信息'):$t('新建连接信息')">
         <el-form :model="link" label-width="100px" label-position="left">
-          <el-form-item label="IP">
-            <el-input v-model="link.ip" placeholder="例如:http://127.0.0.1:9200" />
+          <el-form-item :label="$t('IP')">
+            <el-input v-model="link.ip" :placeholder="$t('例如:http://127.0.0.1:9200')" />
           </el-form-item>
-          <el-form-item label="用户名">
-            <el-input v-model="link.user" placeholder="用户名" />
+          <el-form-item  :label="$t('用户名')">
+            <el-input v-model="link.user" :placeholder="$t('用户名')" />
           </el-form-item>
-          <el-form-item label="密码">
-            <el-input v-model="link.pwd" placeholder="密码" />
+          <el-form-item  :label="$t('密码')">
+            <el-input v-model="link.pwd" :placeholder="$t('密码')" />
           </el-form-item>
-          <el-form-item label="备注">
-            <el-input v-model="link.remark" placeholder="备注" />
+          <el-form-item  :label="$t('备注')">
+            <el-input v-model="link.remark" :placeholder="$t('备注')" />
           </el-form-item>
-          <el-form-item label="版本">
-            <el-select v-model="link.version" placeholder="请选择版本" filterable>
+          <el-form-item  :label="$t('版本')">
+            <el-select v-model="link.version" :placeholder="$t('请选择版本')" filterable>
               <el-option label="6" :value="Number(6)" />
               <el-option label="7" :value="Number(7)" />
               <el-option label="8" :value="Number(8)" />
@@ -101,10 +101,10 @@
             type="success"
             icon="el-icon-link"
             @click="testConnectForm"
-          >测试连接
+          >{{$t('测试连接')}}
           </el-button>
-          <el-button type="danger" icon="el-icon-close" @click="dialogVisible=false">取消</el-button>
-          <el-button type="primary" icon="el-icon-check" @click="confirm">确认</el-button>
+          <el-button type="danger" icon="el-icon-close" @click="dialogVisible=false">{{$t('取消')}}</el-button>
+          <el-button type="primary" icon="el-icon-check" @click="confirm">{{$t('确认')}}</el-button>
         </div>
       </el-dialog>
     </el-card>
@@ -275,10 +275,10 @@ export default {
         message: `
             <div>id: ${id}</div>
             <div>IP: ${ip}</div>
-            <div>用户名: ${user}</div>
-            <div>密码: ${pwd}</div>
-            <div>备注: ${remark}</div>
-            <div>版本: ${version}</div>
+            <div>${this.$t('确认')}: ${user}</div>
+            <div>${this.$t('密码')}: ${pwd}</div>
+            <div>${this.$t('备注')}: ${remark}</div>
+            <div>${this.$t('版本')}: ${version}</div>
           `,
         type: 'success'
       })

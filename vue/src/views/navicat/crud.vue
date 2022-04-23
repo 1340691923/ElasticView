@@ -5,7 +5,7 @@
         <div class="filter-container">
           <el-tabs v-model="crudTab">
 
-            <el-tab-pane label="筛选" name="filter">
+            <el-tab-pane :label="$t('筛选')" name="filter">
 
               <filter-where
                 v-model="whereFilter"
@@ -14,7 +14,7 @@
                 :options="eventAttrOptions"
               />
             </el-tab-pane>
-            <el-tab-pane label="排序" name="sort">
+            <el-tab-pane :label="$t('排序')" name="sort">
               <div class="filter-container">
                 <div class="relation-row">
                   <div v-for="(v,index) in sortList" :key="index" class="action-row row___xwl">
@@ -26,7 +26,7 @@
                         filterable
                         size="mini"
                         style="width: 300px;margin-left: 30px"
-                        placeholder="请选择"
+                        :placeholder="$t('请选择')"
 
                       >
                         <el-option-group
@@ -46,13 +46,13 @@
                         </el-option-group>
                       </el-select>
                       <el-select class="filter-item" size="mini" style="width: 100px;margin-left: 30px"
-                                 placeholder="请选择排序规则" filterable v-model="sortList[index].sortRule">
+                                 :placeholder="$t('请选择排序规则')" filterable v-model="sortList[index].sortRule">
                         <el-option
-                          label="正序排"
+                          :label="$t('正序排')"
                           value="asc"
                         ></el-option>
                         <el-option
-                          label="倒序排"
+                          :label="$t('倒序排')"
                           value="desc"
                         ></el-option>
                       </el-select>
@@ -72,7 +72,7 @@
               <div style="padding: 0 12px;">
                 <span @click="pushSort" style="color:#3d90ff" class="footadd___2D4YB">
                   <a-icon type="filter"/>
-                  增加排序
+                  {{$t('增加排序')}}
                 </span>
               </div>
             </el-tab-pane>
@@ -127,7 +127,7 @@
                 </el-popover>
               </template>
             </el-table-column>
-            <el-table-column align="center" label="操作" fixed="right" width="200">
+            <el-table-column align="center" :label="$t('操作')" fixed="right" width="200">
               <template slot-scope="scope">
                 <el-button-group>
                 <!--  <el-button
@@ -223,7 +223,7 @@
         style="background: white !important;padding: 40px;width: 300px;height: 800px; text-align: center;margin: 0px auto;position: relative;top: 30%"
       >
         <a-empty>
-          <span slot="description">请先点击左侧索引名称</span>
+          <span slot="description">{{$t('请先点击左侧索引名称')}}</span>
         </a-empty>
       </div>
 

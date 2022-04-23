@@ -7,7 +7,7 @@
           clearable
           filterable
           multiple
-          placeholder="请选择存储库"
+          :placeholder="$t('请选择存储库')"
           :loading="loading"
           @change="search"
         >
@@ -18,13 +18,13 @@
             :value="k"
           />
         </el-select>
-        <el-button type="warning" @click.native="openAddDialog = true">新建存储库</el-button>
+        <el-button type="warning" @click.native="openAddDialog = true">{{$t('新建存储库')}}</el-button>
       </div>
       <el-table
         :data="tableData"
       >
         <el-table-column
-          label="序号"
+          :label="$t('序号')"
           align="center"
           fixed
           width="50"
@@ -33,32 +33,32 @@
             {{ scope.$index+1 }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="存储库名" prop="name" width="200" />
-        <el-table-column align="center" label="存储库地址" prop="location" width="300" />
-        <el-table-column align="center" label="类型" prop="type" width="200" />
+        <el-table-column align="center" :label="$t('存储库名')" prop="name" width="200" />
+        <el-table-column align="center" :label="$t('存储库地址')" prop="location" width="300" />
+        <el-table-column align="center" :label="$t('类型')" prop="type" width="200" />
 
-        <el-table-column align="center" label="是否压缩" prop="compress" width="100" />
-        <el-table-column align="center" label="分解块大小" prop="chunk_size" width="100" />
-        <el-table-column align="center" label="是否只读(默认false)" prop="readonly" width="100" />
+        <el-table-column align="center" :label="$t('是否压缩')" prop="compress" width="100" />
+        <el-table-column align="center" :label="$t('分解块大小')" prop="chunk_size" width="100" />
+        <el-table-column align="center" :label="$t('是否只读(默认false)')" prop="readonly" width="100" />
 
-        <el-table-column align="center" label="制作快照的速度" width="100">
+        <el-table-column align="center" :label="$t('制作快照的速度')" width="100">
           <template slot-scope="scope">
             <div v-if="scope.row.max_snapshot_bytes_per_sec != ''">{{ scope.row.max_snapshot_bytes_per_sec }}/s</div>
             <div v-else>20mb/s</div>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="快照恢复的速度" width="100">
+        <el-table-column align="center" :label="$t('快照恢复的速度')" width="100">
           <template slot-scope="scope">
             <div v-if="scope.row.max_restore_bytes_per_sec != ''">{{ scope.row.max_restore_bytes_per_sec }}/s</div>
             <div v-else>20mb/s</div>
           </template>
         </el-table-column>
 
-        <el-table-column align="center" label="操作" fixed="right" width="350">
+        <el-table-column align="center" :label="$t('操作')" fixed="right" width="350">
           <template slot-scope="scope">
             <el-button-group>
-              <el-button type="success" size="small" icon="el-icon-search" @click="look(scope.row.name)">查看</el-button>
-              <el-button type="warning" size="small" icon="el-icon-edit" @click="updateSnapshotData(scope.row)">修改
+              <el-button type="success" size="small" icon="el-icon-search" @click="look(scope.row.name)">{{$t('查看')}}</el-button>
+              <el-button type="warning" size="small" icon="el-icon-edit" @click="updateSnapshotData(scope.row)">{{$t('修改')}}
               </el-button>
               <el-button
                 type="danger"
@@ -72,7 +72,7 @@
                 size="small"
                 icon="el-icon-delete"
                 @click="CleanupeRepository(scope.row.name)"
-              >清理
+              >{{$t('清理')}}
               </el-button>
 
             </el-button-group>
@@ -84,7 +84,7 @@
       <el-drawer
 
         ref="drawer"
-        title="JSON数据"
+        :title="$t('JSON数据')"
         :before-close="drawerHandleClose"
         :visible.sync="drawerShow"
 
@@ -100,7 +100,7 @@
           class="res-body"
           styles="width: 100%"
           :read="true"
-          title="JSON数据"
+          :title="$t('JSON数据')"
         />
       </el-drawer>
     </el-card>

@@ -1,6 +1,6 @@
 <template>
   <div class="filter-item">
-    时间范围：
+    {{$t('时间范围')}}：
 
     <el-date-picker
       v-if="simple_format == false"
