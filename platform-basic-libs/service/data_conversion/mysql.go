@@ -88,19 +88,35 @@ func (this *Mysql) Transfer(id int, transferReq *request.TransferReq) (err error
 		return err
 	}
 
-	_ = func(offset uint64, limit int) string {
-		sql := fmt.Sprintf(`SELECT %s FROM %s WHERE id >= (select id from %s limit %v, 1) limit %v`,
-			strings.Join(transferReq.Cols.TableCols, ","),
-			transferReq.SelectTable,
-			transferReq.SelectTable,
-			offset,
-			limit,
-		)
-		return sql
-	}
 
 	go func() {
-		sqlFn := func(offset uint64, limit int) string {
+		var sqlFn  func(offset uint64, limit int) string
+		/*if transferReq.AutoIncrementId != ""{
+			sqlFn = func(offset uint64, limit int) string {
+				sql := fmt.Sprintf(`SELECT %s FROM %s WHERE %s >= (select %s from %s limit %v, 1) limit %v`,
+					strings.Join(transferReq.Cols.TableCols, ","),
+					transferReq.SelectTable,
+					transferReq.AutoIncrementId,
+					transferReq.AutoIncrementId,
+					transferReq.SelectTable,
+					offset,
+					limit,
+				)
+				return sql
+			}
+		}else{
+			sqlFn = func(offset uint64, limit int) string {
+				sql := fmt.Sprintf(`SELECT %s FROM %s limit %v,%v`,
+					strings.Join(transferReq.Cols.TableCols, ","),
+					transferReq.SelectTable,
+					offset,
+					limit,
+				)
+				return sql
+			}
+		}*/
+
+		sqlFn = func(offset uint64, limit int) string {
 			sql := fmt.Sprintf(`SELECT %s FROM %s limit %v,%v`,
 				strings.Join(transferReq.Cols.TableCols, ","),
 				transferReq.SelectTable,
@@ -109,6 +125,8 @@ func (this *Mysql) Transfer(id int, transferReq *request.TransferReq) (err error
 			)
 			return sql
 		}
+
+
 
 		switch esConnect.Version {
 		case 6:

@@ -67,9 +67,10 @@
             <el-tag v-if="scope.row.status == '数据导入成功'" type="success">
               {{ $t(scope.row.status) }}
             </el-tag>
-            <el-tag v-else-if="scope.row.status == '数据正在导入中...'" type="warning">
+            <el-tag v-else-if="scope.row.status == '数据正在导入中...' ||scope.row.status ==  '正在运行中...'" type="warning">
               {{ $t(scope.row.status) }}
             </el-tag>
+
             <el-tag v-else type="danger">
               {{ $t(scope.row.status) }}
             </el-tag>
@@ -139,6 +140,12 @@
                 />
               </div>
             </el-form-item>
+<!--            <el-form-item v-if="showAutoIncrementId" :label="$t('自增主键（若存在连续自增的主键则填，否则不填）:')">
+
+              <el-select  filterable v-model="form.autoIncrementId">
+                <el-option v-for="(v,k,index) in allCols" :key="index" :value="v.key" :label="v.label"/>
+              </el-select>
+            </el-form-item>-->
             <el-form-item :label="$t('索引名:')">
               <el-select @change="changeIndex" v-loading="indexSelectLoading" class="filter-item" filterable
                          v-model="form.indexName"
@@ -170,12 +177,7 @@
               >{{$t('修改映射')}}
               </el-button>
             </el-form-item>
-            <el-form-item v-if="showAutoIncrementId" :label="$t('自增主键（若存在连续自增的主键则填，否则不填）:')">
 
-              <el-select  filterable v-model="form.autoIncrementId">
-                <el-option v-for="(v,k,index) in allCols" :key="index" :value="v.key" :label="v.label"/>
-              </el-select>
-            </el-form-item>
 
             <el-form-item v-if="showMapping" :label="$t('字段映射:')">
               <div v-if="form.cols.tableCols.length == 0">
@@ -286,7 +288,7 @@ const defaultForm = {
   indexName: "",
   reset: true,
   bufferSize: 100,
-  esFlushInterval: 10,
+  esFlushInterval: 3,
   esBufferSize: 20000,
   maxOpenConns:50,
   maxIdleConns:50,
@@ -461,9 +463,9 @@ export default {
     },
     refreshShowAutoIncrementId(){
 
-      this.refreshshowMapping = false
+      this.showAutoIncrementId = false
       this.$nextTick(() => {
-        this.refreshshowMapping = true
+        this.showAutoIncrementId = true
       })
     },
     refreshshowMapping() {
