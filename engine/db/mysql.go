@@ -42,11 +42,11 @@ func NewSQLX(driverName, dbSource string, maxOpenConns, maxIdleConns int) (db *s
 		return
 	}
 	if maxOpenConns > 0 {
-		db.SetMaxOpenConns(maxOpenConns)
+		db.SetMaxOpenConns(maxOpenConns) //最大打开的连接数
 	}
 
 	if maxIdleConns > 0 {
-		db.SetMaxIdleConns(maxIdleConns)
+		db.SetMaxIdleConns(maxIdleConns) //最大空闲连接数
 	}
 	err = db.Ping()
 	if err != nil {

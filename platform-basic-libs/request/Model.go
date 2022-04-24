@@ -79,6 +79,8 @@ type TransferReq struct {
 	EsFlushInterval int    `json:"esFlushInterval"`
 	EsBufferSize    int    `json:"esBufferSize"`
 	CrontabSpec     string `json:"crontab_spec"`
+	MaxIdleConns    int    `json:"maxIdleConns"`
+	MaxOpenConns    int    `json:"maxOpenConns"`
 }
 
 type SelectType struct {
