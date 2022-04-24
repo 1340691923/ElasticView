@@ -153,6 +153,7 @@
       @getHistoryData="getHistoryData"
       @close="closeHistory"
     />
+
     <res-table
       v-if="tableDialogVisible"
       :search-path="input.path"
