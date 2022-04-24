@@ -80,7 +80,7 @@ func (this *Clickhouse) Transfer(id int, transferReq *request.TransferReq) (err 
 		transferReq.GoNum = 30
 	}
 
-	limit := int(math.Ceil(float64(float64(count) / float64(transferReq.GoNum))))
+	limit := transferReq.BufferSize
 
 	ts := GetTaskInstance()
 

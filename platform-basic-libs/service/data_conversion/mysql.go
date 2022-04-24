@@ -44,6 +44,7 @@ func (this *Mysql) Transfer(id int, transferReq *request.TransferReq) (err error
 		for {
 			select {
 			case <-ctx.Done():
+				log.Println("关闭连接了")
 				conn.Close()
 				return
 			default:
@@ -72,7 +73,7 @@ func (this *Mysql) Transfer(id int, transferReq *request.TransferReq) (err error
 		transferReq.GoNum = 30
 	}
 
-	limit := int(math.Ceil(float64(float64(count) / float64(transferReq.GoNum))))
+	limit := transferReq.BufferSize
 
 	ts := GetTaskInstance()
 

@@ -197,7 +197,9 @@
             <el-form-item :label="$t('协程数:')">
               <el-input type="number" v-model.number="form.goNum" style="width: 300px"></el-input>
             </el-form-item>
-
+            <el-form-item :label="$t('源数据库每次limit条数:')">
+              <el-input type="number" v-model.number="form.bufferSize" style="width: 300px"></el-input>
+            </el-form-item>
             <el-form-item :label="$t('es入库批次数量:')">
               <el-input type="number" v-model.number="form.esBufferSize" style="width: 300px"></el-input>
             </el-form-item>
@@ -284,7 +286,7 @@ const defaultForm = {
   },
   indexName: "",
   reset: true,
-
+  bufferSize:100,
   esFlushInterval: 3,
   esBufferSize: 20000,
   maxOpenConns:50,
