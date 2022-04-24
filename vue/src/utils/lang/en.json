@@ -25,7 +25,6 @@
   "真实姓名":"Real name",
   "修改角色":"Modify role",
   "全局字体大小":"Global font size",
-
   "连接树管理":"Connection management",
   "ES状态":"Es status",
   "开发工具":"dev tool",
@@ -35,7 +34,6 @@
   "备份":"backups",
   "数据抽取":"Data extraction",
   "快照存储库":"Snapshot repository",
-
   "请选择ES连接": "Please select es connection" ,
   "搜索路由": "Search routing" ,
   "确定删除这个角色吗?":"Are you sure to delete this role?",
@@ -46,6 +44,8 @@
   "角色详情信息": "Role details",
   "菜单栏": "menu bar",
   "全选": "Select all",
+  "数据库连接池最大空闲的连接数:":"maxIdleConns",
+  "数据库连接池最大打开的连接数(设置为0表示不限制):": "maxOpenConns",
   "输入关键字进行过滤": "Enter keywords to filter",
   "接口权限设置": "Interface permission setting",
   "恢复备份":"Restore backup",
@@ -68,9 +68,6 @@
   "创建快照":"Create Snapshot",
   "存储库":"memory pool",
   "请选择存储库":"Please select a repository",
-  "快照名":"Snapshot name",
-  "需要备份的索引":"Index to be backed up",
-  "迁移别名到多个索引上":"Migrate aliases to multiple indexes",
   "制作快照的速度":"Speed at which snapshots are taken",
   "密码":"password",
   "备注":"remarks",
@@ -87,7 +84,6 @@
   "查看集群健康状况":"View cluster health",
   "请输入关键词":"Please enter keywords",
   "搜索":"search",
-  "序号":"ID",
   "索引健康状态":"Index health status",
   "索引的开启状态":"Index on state",
   "索引名称":"Index Name",
@@ -102,7 +98,6 @@
   "索引别名指向":"Index alias points to",
   "过滤器":"filter",
   "索引路由":"Index routing",
-  "搜索路由":"Search routing",
   "写索引":"Write index",
   "节点host":"Node host",
   "节点ip":"Node IP",
@@ -202,25 +197,19 @@
   "任务ID":"task id",
   "节点ID":"node id",
   "索引文档总数":"Total number of indexed documents",
-
   "父任务ID":"parent task id",
   "查看":"look",
   "任务详细ID":"Task detail ID",
   "开始详细时间":"Start detailed time",
-
   "节点":"node",
   "状态":"status",
   "类型":"type",
   "运行时间（秒）":"Running time (seconds)",
-
-
   "是否可撤销":"Revocable",
   "描述":"desc",
   "开始时间":"start time",
   "开始时间（毫秒）":"Start time (MS)",
   "任务详细信息":"Task details",
-
-
   "快照管理":"snapshot manager",
   "新建存储库":"New repository",
   "类型（type）":"Type",
@@ -232,8 +221,6 @@
   "新建快照":"New snapshot",
   "确认":"Confirm",
   "备份索引数":"Number of backup indexes",
-
-
   "结束时间":"end time",
   "结束详细时间":"End detailed time",
   "耗费时长":"Time consuming",
@@ -244,13 +231,11 @@
   "索引设置":"Index settings",
   "映射结构":"Mapping structure",
   "显示该索引结构":"Displays the index structure",
-
   "筛选":"where",
   "排序":"order by",
   "增加条件":"add where",
   "增加排序":"add order by",
   "操作列表":"Action list",
-  "数据抽取":"datax",
   "数据源":"data source",
   "新建数据抽取任务":"New data extraction task",
   "表名":"Table name",
@@ -258,7 +243,7 @@
   "源数据条数":"Number of source data",
   "已导入数据条数":"Number of imported data",
   "定时任务":"Scheduled task",
-  "错误信息":"error message",
+  "附带信息":"message",
   "任务备注:":"Task remarks:",
   "选择数据源:":"Select data source:",
   "表字段：":"Table fields:",

@@ -104,6 +104,7 @@ func transferEsV6(
 	}
 
 	if transferReq.Reset {
+
 		_, err = esConn.DeleteByQuery().
 			Index(transferReq.IndexName).
 			Type(transferReq.TypeName).
@@ -113,6 +114,7 @@ func transferEsV6(
 						"match_all": {}
 					  }
 					}`).
+			Slices(5).
 			Do(ctx)
 		if err != nil {
 			updateDataXListStatus(id, 0, 0, Error, err.Error())
@@ -200,6 +202,7 @@ func transferEsV7(
 	}
 
 	if transferReq.Reset {
+
 		_, err = esConn.DeleteByQuery().
 			Index(transferReq.IndexName).
 			Body(`
@@ -208,6 +211,7 @@ func transferEsV7(
 						"match_all": {}
 					  }
 					}`).
+			Slices(5).
 			Do(ctx)
 		if err != nil {
 			updateDataXListStatus(id, 0, 0, Error, err.Error())
@@ -293,6 +297,10 @@ func init() {
 func updateDataXListStatus(id, dbcount, escount int, status, msg string) (err error) {
 	lock.Lock()
 	defer lock.Unlock()
+	if status == Error {
+		ts := GetTaskInstance()
+		ts.CancelById(id)
+	}
 	_, err = db.SqlBuilder.Update("datax_transfer_list").
 		SetMap(map[string]interface{}{
 			"status":    status,

@@ -79,7 +79,7 @@
         <el-table-column
           align="center"
           prop="error_msg"
-          :label="$t('错误信息')"
+          :label="$t('附带信息')"
           width="200">
         </el-table-column>
 
@@ -199,6 +199,14 @@
             <el-form-item :label="$t('es入库轮循间隔时间:')">
               <el-input type="number" v-model.number="form.esFlushInterval" style="width: 300px"></el-input>
             </el-form-item>
+
+            <el-form-item :label="$t('数据库连接池最大打开的连接数(设置为0表示不限制):')">
+              <el-input type="number" v-model.number="form.maxOpenConns" style="width: 300px"></el-input>
+            </el-form-item>
+            <el-form-item :label="$t('数据库连接池最大空闲的连接数:')">
+              <el-input type="number" v-model.number="form.maxIdleConns" style="width: 300px"></el-input>
+            </el-form-item>
+
             <el-form-item :label="$t('计划任务表达式:')">
               <el-autocomplete
                 style="width: 300px"
@@ -270,10 +278,12 @@ const defaultForm = {
   },
   indexName: "",
   reset: true,
-  bufferSize: 50,
-  esFlushInterval: 2,
-  esBufferSize: 5000,
-  goNum: 30,
+  bufferSize: 100,
+  esFlushInterval: 10,
+  esBufferSize: 20000,
+  maxOpenConns:50,
+  maxIdleConns:50,
+  goNum: 50,
   type_name: ""
 }
 
