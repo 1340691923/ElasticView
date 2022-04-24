@@ -170,6 +170,12 @@
               >{{$t('修改映射')}}
               </el-button>
             </el-form-item>
+            <el-form-item v-if="showAutoIncrementId" :label="$t('自增主键（若存在连续自增的主键则填，否则不填）:')">
+
+              <el-select  filterable v-model="form.autoIncrementId">
+                <el-option v-for="(v,k,index) in allCols" :key="index" :value="v.key" :label="v.label"/>
+              </el-select>
+            </el-form-item>
 
             <el-form-item v-if="showMapping" :label="$t('字段映射:')">
               <div v-if="form.cols.tableCols.length == 0">
@@ -269,6 +275,7 @@ import {filterData} from "@/utils/table";
 
 const defaultForm = {
   crontab_spec: "",
+  autoIncrementId:"",
   selectType: "{}",
   remark: "",
   selectTable: "",
@@ -291,6 +298,7 @@ export default {
   name: "list",
   data() {
     return {
+      showAutoIncrementId:false,
       openSettings: false,
       openMappings: false,
       settingsType: 'add',
@@ -451,6 +459,13 @@ export default {
     changeTbCols(v) {
       this.refreshshowMapping()
     },
+    refreshShowAutoIncrementId(){
+
+      this.refreshshowMapping = false
+      this.$nextTick(() => {
+        this.refreshshowMapping = true
+      })
+    },
     refreshshowMapping() {
       this.showMapping = false
       this.$nextTick(() => {
@@ -564,6 +579,8 @@ export default {
         }
         this.allCols.push(obj)
       }
+      this.refreshShowAutoIncrementId()
+      this.form.autoIncrementId = ""
       this.form.cols.tableCols = []
       this.form.cols.esCols = []
     },
@@ -619,6 +636,7 @@ export default {
         await this.getTables()
         await this.GetTableColumns()
       }
+      this.refreshShowAutoIncrementId()
       this.openTaskLoading = false
       this.open = true
       this.addLoading = false
