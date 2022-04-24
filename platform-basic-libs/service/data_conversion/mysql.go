@@ -20,10 +20,7 @@ type Mysql struct {
 }
 
 func (this *Mysql) Transfer(id int, transferReq *request.TransferReq) (err error) {
-	var (
-		page  = 1
-		limit = transferReq.BufferSize
-	)
+	var page = 1
 
 	ctx, cancel := context.WithCancel(context.Background())
 
@@ -47,6 +44,7 @@ func (this *Mysql) Transfer(id int, transferReq *request.TransferReq) (err error
 		for {
 			select {
 			case <-ctx.Done():
+				
 				return
 			default:
 				err = conn.Ping()
@@ -74,6 +72,8 @@ func (this *Mysql) Transfer(id int, transferReq *request.TransferReq) (err error
 		transferReq.GoNum = 30
 	}
 
+	limit := int(math.Ceil(float64(float64(count) / float64(transferReq.GoNum))))
+
 	ts := GetTaskInstance()
 
 	ts.SetCancelFunc(id, cancel)
@@ -90,8 +90,9 @@ func (this *Mysql) Transfer(id int, transferReq *request.TransferReq) (err error
 
 
 	go func() {
+
 		var sqlFn  func(offset uint64, limit int) string
-		/*if transferReq.AutoIncrementId != ""{
+		if transferReq.AutoIncrementId != ""{
 			sqlFn = func(offset uint64, limit int) string {
 				sql := fmt.Sprintf(`SELECT %s FROM %s WHERE %s >= (select %s from %s limit %v, 1) limit %v`,
 					strings.Join(transferReq.Cols.TableCols, ","),
@@ -114,16 +115,6 @@ func (this *Mysql) Transfer(id int, transferReq *request.TransferReq) (err error
 				)
 				return sql
 			}
-		}*/
-
-		sqlFn = func(offset uint64, limit int) string {
-			sql := fmt.Sprintf(`SELECT %s FROM %s limit %v,%v`,
-				strings.Join(transferReq.Cols.TableCols, ","),
-				transferReq.SelectTable,
-				offset,
-				limit,
-			)
-			return sql
 		}
 
 

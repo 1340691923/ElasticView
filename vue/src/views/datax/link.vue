@@ -55,12 +55,7 @@
           :label="$t('用户名')">
 
         </el-table-column>
-        <el-table-column
-          width="100"
-          align="center"
-          prop="pwd"
-          :label="$t('密码')">
-        </el-table-column>
+
         <el-table-column
           width="100"
           prop="db_name"
