@@ -75,7 +75,6 @@ type TransferReq struct {
 	} `json:"cols"`
 	IndexName       string `json:"indexName"`
 	Reset           bool   `json:"reset"`
-	BufferSize      int    `json:"bufferSize"`
 	GoNum           int    `json:"goNum"`
 	EsFlushInterval int    `json:"esFlushInterval"`
 	EsBufferSize    int    `json:"esBufferSize"`

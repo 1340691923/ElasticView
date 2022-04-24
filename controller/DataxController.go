@@ -236,9 +236,7 @@ func (this DataxController) Transfer(ctx *fiber.Ctx) error {
 		return this.Error(ctx, errors.New("备注不能为空"))
 	}
 
-	if reqData.BufferSize == 0 {
-		return this.Error(ctx, errors.New("源数据库每次limit条数不能为空"))
-	}
+
 	if reqData.IndexName == "" {
 		return this.Error(ctx, errors.New("索引名不能为空"))
 	}

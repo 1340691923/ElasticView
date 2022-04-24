@@ -111,7 +111,7 @@
       <el-dialog width="95%" :close-on-click-modal="false" @close="closeDialog" :visible.sync="open"
                  :title="$t('新建数据抽取任务')">
         <el-card class="box-card">
-          <el-form label-width="200px" label-position="left">
+          <el-form label-width="400px" label-position="left">
             <el-form-item :label="$t('任务备注:')">
               <el-input v-model="form.remark" style="width: 300px"></el-input>
             </el-form-item>
@@ -140,12 +140,11 @@
                 />
               </div>
             </el-form-item>
-<!--            <el-form-item v-if="showAutoIncrementId" :label="$t('自增主键（若存在连续自增的主键则填，否则不填）:')">
-
+            <el-form-item v-if="showAutoIncrementId" :label="$t('自增主键（注意：若存在连续自增的主键并该表非分区表则填)')">
               <el-select  filterable v-model="form.autoIncrementId">
                 <el-option v-for="(v,k,index) in allCols" :key="index" :value="v.key" :label="v.label"/>
               </el-select>
-            </el-form-item>-->
+            </el-form-item>
             <el-form-item :label="$t('索引名:')">
               <el-select @change="changeIndex" v-loading="indexSelectLoading" class="filter-item" filterable
                          v-model="form.indexName"
@@ -198,9 +197,7 @@
             <el-form-item :label="$t('协程数:')">
               <el-input type="number" v-model.number="form.goNum" style="width: 300px"></el-input>
             </el-form-item>
-            <el-form-item :label="$t('源数据库每次limit条数:')">
-              <el-input type="number" v-model.number="form.bufferSize" style="width: 300px"></el-input>
-            </el-form-item>
+
             <el-form-item :label="$t('es入库批次数量:')">
               <el-input type="number" v-model.number="form.esBufferSize" style="width: 300px"></el-input>
             </el-form-item>
@@ -287,7 +284,7 @@ const defaultForm = {
   },
   indexName: "",
   reset: true,
-  bufferSize: 100,
+
   esFlushInterval: 3,
   esBufferSize: 20000,
   maxOpenConns:50,
