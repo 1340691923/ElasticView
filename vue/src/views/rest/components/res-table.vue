@@ -98,7 +98,7 @@
         <el-button type="primary" class="filter-item" @click="updateByID">{{$t('修改')}}</el-button>
       </div>
       <json-editor
-        v-if="isArray"
+        v-if="Array.isArray(jsonData)"
         v-model="JSON.stringify(jsonData[index],null, '\t')"
         height="900"
         class="res-body"
@@ -108,7 +108,7 @@
       />
 
       <json-editor
-        v-if="!isArray"
+        v-else
         v-model="JSON.stringify(jsonData['hits']['hits'][index],null, '\t')"
         height="900"
         class="res-body"
@@ -211,6 +211,7 @@ export default {
       }
     },
     async add() {
+
       const editData = this.jsonData['hits']['hits'][this.index]
       const doc = this.newDoc
 
@@ -312,7 +313,7 @@ export default {
 
         const input = {}
         input['es_connect'] = this.$store.state.baseData.EsConnectID
-        input['index_name'] = this.jsonData['hits']['hits'][0]['_index']
+        input['index_name'] = resData['hits']['hits'][0]['_index']
 
         const { data, code, msg } = await ListAction(input)
 
@@ -350,6 +351,8 @@ export default {
           })
         }
       }
+
+      console.log("isArray",isArray)
     },
     getEditDoc(v) {
       try {

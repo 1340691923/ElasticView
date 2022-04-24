@@ -927,7 +927,7 @@ export const esBodyKeyWords = [
        "key": [
         "val1",
         "val2",
-        "valN",
+        "valN"
       ]
     }`,
     score: 1 },

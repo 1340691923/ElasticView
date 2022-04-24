@@ -130,7 +130,7 @@
                 <el-transfer
                   @change="changeTbCols"
                   v-model="form.cols.tableCols"
-                  :titles="[$t('全部字段'), $t('当前ES索引字段')]"
+                  :titles="[$t('全部字段'), $t('当前所选表字段')]"
                   :button-texts="[$t('移除'), $t('添加')]"
                   filterable
                   :filter-method="filterMethod"

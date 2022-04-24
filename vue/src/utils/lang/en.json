@@ -47,6 +47,7 @@
   "数据库连接池最大空闲的连接数:":"maxIdleConns",
   "数据库连接池最大打开的连接数(设置为0表示不限制):": "maxOpenConns",
   "输入关键字进行过滤": "Enter keywords to filter",
+  "当前所选表字段": "当前所选表字段",
   "接口权限设置": "Interface permission setting",
   "恢复备份":"Restore backup",
   "仓库名":"Warehouse name",
