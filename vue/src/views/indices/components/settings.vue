@@ -7,10 +7,10 @@
             <el-input v-model="indexName" :placeholder="$t('索引名称')" :disabled="settingsType != 'add'" />
           </el-form-item>
           <el-form-item label="number_of_shards (分片数)：">
-            <el-input v-model.number="form.number_of_shards" type="number" style="width: 300px" :disabled="isOpen" />
+            <el-input v-model="form.number_of_shards" type="number" style="width: 300px" :disabled="isOpen" />
           </el-form-item>
           <el-form-item label="number_of_replicas (副本数)：">
-            <el-input v-model.number="form.number_of_replicas" type="number" style="width: 300px" />
+            <el-input v-model="form.number_of_replicas" type="number" style="width: 300px" />
           </el-form-item>
           <el-form-item label="refresh_interval (索引的刷新时间间隔)：">
             <el-input v-model="form.refresh_interval" :placeholder="$t('索引的刷新时间间隔')" />
@@ -30,13 +30,13 @@
             <el-input v-model="form['index.translog.flush_threshold_size']" />
           </el-form-item>
           <el-form-item label="merge.scheduler.max_thread_count (调高合并的最大线程)：">
-            <el-input v-model.number="form['index.merge.scheduler.max_thread_count']" />
+            <el-input v-model="form['index.merge.scheduler.max_thread_count']" />
           </el-form-item>
           <el-form-item label="merge.policy.max_merged_segment (最大分段大小)：">
-            <el-input v-model.number="form['index.merge.policy.max_merged_segment']" />
+            <el-input v-model="form['index.merge.policy.max_merged_segment']" />
           </el-form-item>
           <el-form-item label="merge.policy.segments_per_tier (每层所允许的分段数)：">
-            <el-input v-model.number="form['index.merge.policy.segments_per_tier']" type="number" style="width: 300px" />
+            <el-input v-model="form['index.merge.policy.segments_per_tier']" type="number" style="width: 300px" />
           </el-form-item>
           <el-form-item label="shard.check_on_startup (是否应在索引打开前检查分片是否损坏)：">
             <el-select
@@ -55,7 +55,7 @@
 
           <el-form-item label="routing_partition_size (自定义路由值可以转发的目的分片数)：">
             <el-input
-              v-model.number="form['index.routing_partition_size']"
+              v-model="form['index.routing_partition_size']"
               :disabled="isOpen"
               type="number"
               style="width: 300px"
@@ -68,15 +68,15 @@
 
           <el-form-item label="auto_expand_replicas (基于可用节点的数量自动分配副本数量)：">
             <el-input
-              v-model.number="form['index.auto_expand_replicas']"
+              v-model="form['index.auto_expand_replicas']"
               style="width: 300px"
             />
           </el-form-item>
           <el-form-item label="max_result_window  (from+size 的最大值)：">
-            <el-input v-model.number="form['index.max_result_window']" type="number" style="width: 300px" />
+            <el-input v-model="form['index.max_result_window']" type="number" style="width: 300px" />
           </el-form-item>
           <el-form-item label="index.max_rescore_window( rescore 的 window_size 的最大值)：">
-            <el-input v-model.number="form['index.max_rescore_window']" type="number" style="width: 300px" />
+            <el-input v-model="form['index.max_rescore_window']" type="number" style="width: 300px" />
           </el-form-item>
           <el-form-item label="blocks.read_only (允许写入和元数据更改)：">
             <el-select v-model="form['index.blocks.read_only']" clearable filterable>
