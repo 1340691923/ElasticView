@@ -52,6 +52,7 @@ func (this *Clickhouse) Transfer(id int, transferReq *request.TransferReq) (err 
 		for {
 			select {
 			case <-ctx.Done():
+				conn.Close()
 				return
 			default:
 				err = conn.Ping()

@@ -44,7 +44,7 @@ func (this *Mysql) Transfer(id int, transferReq *request.TransferReq) (err error
 		for {
 			select {
 			case <-ctx.Done():
-				
+				conn.Close()
 				return
 			default:
 				err = conn.Ping()
