@@ -61,12 +61,12 @@ func (this DataxInfoInsertReq) Validate() (err error) {
 
 type TransferReq struct {
 	AutoIncrementId string `json:"autoIncrementId"`
-	EsConnect   int    `json:"es_connect"`
-	SelectType  string `json:"selectType"`
-	Remark      string `json:"remark"`
-	SelectTable string `json:"selectTable"`
-	TypeName    string `json:"type_name"`
-	Cols        struct {
+	EsConnect       int    `json:"es_connect"`
+	SelectType      string `json:"selectType"`
+	Remark          string `json:"remark"`
+	SelectTable     string `json:"selectTable"`
+	TypeName        string `json:"type_name"`
+	Cols            struct {
 		TableCols []string `json:"tableCols"`
 		EsCols    []struct {
 			Col   string `json:"col"`
@@ -78,7 +78,7 @@ type TransferReq struct {
 	GoNum           int    `json:"goNum"`
 	EsFlushInterval int    `json:"esFlushInterval"`
 	EsBufferSize    int    `json:"esBufferSize"`
-	BufferSize    int    `json:"bufferSize"`
+	BufferSize      int    `json:"bufferSize"`
 	MaxIdleConns    int    `json:"maxIdleConns"`
 	MaxOpenConns    int    `json:"maxOpenConns"`
 	CrontabSpec     string `json:"crontab_spec"`
@@ -88,6 +88,10 @@ type SelectType struct {
 	ID     int    `json:"id"`
 	Remark string `json:"remark"`
 	Typ    string `json:"typ"`
+}
+
+type TransferLogReq struct {
+	EsConnect int `json:"es_connect"`
 }
 
 func (this *TransferReq) ParseSelectType() (*SelectType, error) {

@@ -24,14 +24,18 @@ func (this GmUserModel) GetPassword() string {
 }
 
 //是否存在该用户
-func (this GmUserModel) Exsit() (b bool) {
+func (this GmUserModel) Exsit() (b bool, err error) {
 	var count int
-	err := db.Sqlx.Get(&count, "select count(*) from gm_user where username = ? and role_id = ? limit 1;", this.Username, this.RoleId)
-	if err != nil || count == 0 {
+	err = db.Sqlx.Get(&count, "select count(*) from gm_user where username = ? and role_id = ? limit 1;", this.Username, this.RoleId)
+	if err != nil {
 		logs.Logger.Error("err", zap.String("err.Error()", err.Error()))
-		return false
+		return
 	}
-	return true
+	if count > 0 {
+		b = true
+	}
+
+	return
 }
 
 //登录

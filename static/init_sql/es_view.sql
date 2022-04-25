@@ -125,12 +125,13 @@ CREATE TABLE datax_transfer_list  (
                                       `error_msg` varchar(255) NOT NULL DEFAULT '无报错',
                                       `crontab_spec` varchar(255) NOT NULL DEFAULT '',
                                       `dbcount` int(11) NOT NULL DEFAULT 0,
+                                       `es_connect` int(11) NOT NULL DEFAULT 0,
                                       `escount` int(11) NOT NULL DEFAULT 0,
                                       `status` varchar(255) NOT NULL DEFAULT '',
                                       `updated` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0),
                                       `created` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
                                       PRIMARY KEY (`id`),
-                                      UNIQUE INDEX `datax_transfer_list_remark`(`remark`) USING BTREE
+                                      UNIQUE INDEX `datax_transfer_list_remark`(`remark`,`es_connect`) USING BTREE
 );
 
 

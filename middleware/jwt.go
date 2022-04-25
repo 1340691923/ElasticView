@@ -37,9 +37,15 @@ func JwtMiddleware(c *fiber.Ctx) error {
 		} else if time.Now().Unix() > claims.ExpiresAt {
 			err = my_error.NewBusiness(TOKEN_ERROR, ERROR_AUTH_CHECK_TOKEN_TIMEOUT)
 			return res.Error(c, err)
-		} else if !service.IsExitUser(claims) {
-			err = my_error.NewBusiness(TOKEN_ERROR, ERROR_AUTH_CHECK_TOKEN_TIMEOUT)
-			return res.Error(c, err)
+		} else {
+			isExitUser, err := service.IsExitUser(claims)
+			if err != nil {
+				return res.Error(c, err)
+			}
+			if !isExitUser {
+				err = my_error.NewBusiness(TOKEN_ERROR, ERROR_AUTH_CHECK_TOKEN_TIMEOUT)
+				return res.Error(c, err)
+			}
 		}
 	}
 	return c.Next()
