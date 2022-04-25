@@ -212,9 +212,21 @@ func (this DataxController) GetTableColumns(ctx *fiber.Ctx) error {
 }
 
 func (this DataxController) TransferLogList(ctx *fiber.Ctx) error {
+
+	var reqData request.TransferLogReq
+	if err := ctx.BodyParser(&reqData); err != nil {
+		return this.Error(ctx, err)
+	}
+
+	if reqData.EsConnect == 0 {
+		return this.Error(ctx, errors.New("请先选择es连接"))
+	}
+
 	sql, args, err := db.SqlBuilder.
 		Select("*").
 		From("datax_transfer_list").
+		OrderBy("id desc").
+		Where(db.Eq{"es_connect": reqData.EsConnect}).
 		ToSql()
 	if err != nil {
 		return this.Error(ctx, err)
@@ -235,7 +247,6 @@ func (this DataxController) Transfer(ctx *fiber.Ctx) error {
 	if reqData.Remark == "" {
 		return this.Error(ctx, errors.New("备注不能为空"))
 	}
-
 
 	if reqData.IndexName == "" {
 		return this.Error(ctx, errors.New("索引名不能为空"))
@@ -273,8 +284,8 @@ func (this DataxController) Transfer(ctx *fiber.Ctx) error {
 
 	rlt, err := db.SqlBuilder.
 		Insert("datax_transfer_list").
-		Columns("form_data", "remark", "table_name", "index_name", "error_msg", "status", "updated", "created", "crontab_spec").
-		Values(formData, reqData.Remark, reqData.SelectTable, reqData.IndexName, "无", "正在运行中...", now, now, reqData.CrontabSpec).RunWith(db.Sqlx).Exec()
+		Columns("form_data", "remark", "table_name", "index_name", "error_msg", "status", "updated", "created", "crontab_spec", "es_connect").
+		Values(formData, reqData.Remark, reqData.SelectTable, reqData.IndexName, "无", "正在运行中...", now, now, reqData.CrontabSpec, reqData.EsConnect).RunWith(db.Sqlx).Exec()
 	if err != nil {
 		return this.Error(ctx, err)
 	}

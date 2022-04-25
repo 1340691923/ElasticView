@@ -22,16 +22,16 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- ----------------------------
 DROP TABLE IF EXISTS `es_link`;
 CREATE TABLE `es_link`  (
-                            `id` int(11) NOT NULL AUTO_INCREMENT,
-                            `ip` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-                            `user` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-                            `pwd` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-                            `created` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                            `updated` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP(0),
-                            `remark` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '默认连接',
-                            `version` tinyint(10) NOT NULL DEFAULT 6,
-                            PRIMARY KEY (`id`) USING BTREE,
-                            UNIQUE INDEX `es_remark`(`remark`) USING BTREE
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `ip` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `user` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `pwd` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `created` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP(0),
+  `remark` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '默认连接',
+  `version` tinyint(10) NOT NULL DEFAULT 6,
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `es_remark`(`remark`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -44,13 +44,13 @@ INSERT INTO `es_link` VALUES (10, 'http://127.0.0.1:9200', '', '', '2021-04-10 2
 -- ----------------------------
 DROP TABLE IF EXISTS `gm_dsl_history`;
 CREATE TABLE `gm_dsl_history`  (
-                                   `id` int(11) NOT NULL AUTO_INCREMENT,
-                                   `uid` int(11) DEFAULT 0,
-                                   `method` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
-                                   `path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
-                                   `body` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-                                   `created` timestamp(0) DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP(0),
-                                   PRIMARY KEY (`id`) USING BTREE
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) DEFAULT 0,
+  `method` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
+  `path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
+  `body` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `created` timestamp(0) DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP(0),
+  PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 42 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -58,12 +58,12 @@ CREATE TABLE `gm_dsl_history`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `gm_guid`;
 CREATE TABLE `gm_guid`  (
-                            `id` int(11) NOT NULL AUTO_INCREMENT,
-                            `uid` int(11) NOT NULL,
-                            `guid_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-                            `created` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP(0),
-                            PRIMARY KEY (`id`) USING BTREE,
-                            UNIQUE INDEX `guid_name`(`uid`, `guid_name`) USING BTREE
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) NOT NULL,
+  `guid_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `created` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP(0),
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `guid_name`(`uid`, `guid_name`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 15 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -71,11 +71,11 @@ CREATE TABLE `gm_guid`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `gm_role`;
 CREATE TABLE `gm_role`  (
-                            `id` int(11) NOT NULL AUTO_INCREMENT,
-                            `role_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-                            `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-                            `role_list` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-                            PRIMARY KEY (`id`) USING BTREE
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `role_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `role_list` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -87,13 +87,13 @@ INSERT INTO `gm_role` VALUES (1, 'admin', '超级管理员', '[{"path":"/permiss
 -- ----------------------------
 DROP TABLE IF EXISTS `gm_user`;
 CREATE TABLE `gm_user`  (
-                            `id` int(11) NOT NULL AUTO_INCREMENT,
-                            `username` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-                            `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-                            `role_id` int(11) DEFAULT NULL COMMENT '角色id',
-                            `realname` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '真实姓名',
-                            PRIMARY KEY (`id`) USING BTREE,
-                            UNIQUE INDEX `gm_user_username`(`username`) USING BTREE COMMENT '角色名唯一索引'
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `role_id` int(11) DEFAULT NULL COMMENT '角色id',
+  `realname` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '真实姓名',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `gm_user_username`(`username`) USING BTREE COMMENT '角色名唯一索引'
 ) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -102,18 +102,18 @@ CREATE TABLE `gm_user`  (
 INSERT INTO `gm_user` VALUES (1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 1, '肖文龙');
 DROP TABLE IF EXISTS `datax_link_info`;
 CREATE TABLE `datax_link_info` (
-                                   `id` int(11) NOT NULL AUTO_INCREMENT,
-                                   `ip` varchar(255) DEFAULT '',
-                                   `port` int(11) DEFAULT '0',
-                                   `db_name` varchar(255) DEFAULT '',
-                                   `username` varchar(255) DEFAULT '',
-                                   `pwd` varchar(255) DEFAULT '',
-                                   `remark` varchar(255) DEFAULT '',
-                                   `typ` varchar(255) DEFAULT '',
-                                   `updated` timestamp NULL DEFAULT NULL,
-                                   `created` timestamp NULL DEFAULT NULL,
-                                   PRIMARY KEY (`id`),
-                                   UNIQUE KEY `link_remark_uniq` (`remark`,`typ`) USING BTREE
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `ip` varchar(255) DEFAULT '',
+  `port` int(11) DEFAULT '0',
+  `db_name` varchar(255) DEFAULT '',
+  `username` varchar(255) DEFAULT '',
+  `pwd` varchar(255) DEFAULT '',
+  `remark` varchar(255) DEFAULT '',
+  `typ` varchar(255) DEFAULT '',
+  `updated` timestamp NULL DEFAULT NULL,
+  `created` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `link_remark_uniq` (`remark`,`typ`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 DROP TABLE IF EXISTS `datax_transfer_list`;
 CREATE TABLE datax_transfer_list  (
@@ -125,12 +125,13 @@ CREATE TABLE datax_transfer_list  (
                                       `error_msg` varchar(255) NOT NULL DEFAULT '无报错',
                                       `crontab_spec` varchar(255) NOT NULL DEFAULT '',
                                       `dbcount` int(11) NOT NULL DEFAULT 0,
+                                       `es_connect` int(11) NOT NULL DEFAULT 0,
                                       `escount` int(11) NOT NULL DEFAULT 0,
                                       `status` varchar(255) NOT NULL DEFAULT '',
                                       `updated` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0),
                                       `created` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
                                       PRIMARY KEY (`id`),
-                                      UNIQUE INDEX `datax_transfer_list_remark`(`remark`) USING BTREE
+                                      UNIQUE INDEX `datax_transfer_list_remark`(`remark`,`es_connect`) USING BTREE
 );
 
 

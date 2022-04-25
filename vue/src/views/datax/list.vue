@@ -155,6 +155,14 @@
                 id="new-index"
                 type="success"
                 class="filter-item"
+                icon="el-icon-refresh"
+                @click="getIndexList"
+              >{{$t('刷新')}}
+              </el-button>
+              <el-button
+                id="new-index"
+                type="success"
+                class="filter-item"
                 icon="el-icon-plus"
                 @click="openSettingDialog('','add')"
               >{{$t('新建索引')}}
@@ -446,7 +454,7 @@ export default {
     },
     async getList() {
       this.connectLoading = true
-      const res = await TransferLogList()
+      const res = await TransferLogList({es_connect: this.$store.state.baseData.EsConnectID})
       this.connectLoading = false
       if (res.code != 0) {
         this.$message({
@@ -614,6 +622,7 @@ export default {
 
       const res = await LinkSelectOpt()
       if (res.code != 0) {
+        this.openTaskLoading = false
         this.$message({
           type: 'error',
           message: res.msg
@@ -623,6 +632,7 @@ export default {
       if (res.data == null) res.data = []
 
       if(res.data.length == 0){
+        this.openTaskLoading = false
         this.$message({
           type: 'error',
           message: '请先添加数据源'

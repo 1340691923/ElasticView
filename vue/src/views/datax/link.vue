@@ -119,22 +119,22 @@
         <el-card class="box-card">
           <el-form label-width="300px" label-position="left">
             <el-form-item label="IP">
-              <el-input v-model="form.ip" placeholder="127.0.0.1"/>
+              <el-input v-model="form.ip" clearable placeholder="127.0.0.1"/>
             </el-form-item>
             <el-form-item :label="$t('端口')">
               <el-input v-model="form.port" placeholder="3306"/>
             </el-form-item>
             <el-form-item :label="$t('用户名')">
-              <el-input v-model="form.username" placeholder="mysql"/>
+              <el-input v-model="form.username" clearable placeholder="mysql"/>
             </el-form-item>
             <el-form-item :label="$t('密码')">
-              <el-input v-model="form.pwd" placeholder="root"/>
+              <el-input v-model="form.pwd" clearable placeholder="root"/>
             </el-form-item>
             <el-form-item :label="$t('数据库名')">
-              <el-input v-model="form.db_name" placeholder="mysql"/>
+              <el-input v-model="form.db_name" clearable placeholder="mysql"/>
             </el-form-item>
             <el-form-item :label="$t('备注')">
-              <el-input v-model="form.remark" placeholder="测试"/>
+              <el-input v-model="form.remark" clearable placeholder="测试"/>
             </el-form-item>
             <el-form-item :label="$t('数据源类型')">
               <el-radio v-model="form.typ" label="mysql">mysql</el-radio>
@@ -163,12 +163,12 @@
   import {DelLinkById, InsertLink, LinkInfoList, TestLink} from '@/api/datax'
 
   const defaultForm = {
-    ip: "",
-    port: 0,
-    db_name: "",
-    username: "",
+    ip: "127.0.0.1",
+    port: 3306,
+    db_name: "test",
+    username: "root",
     pwd: "",
-    remark: "",
+    remark: "test",
     typ: "mysql"
   }
 

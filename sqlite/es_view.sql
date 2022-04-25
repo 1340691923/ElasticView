@@ -71,8 +71,9 @@ CREATE TABLE `datax_transfer_list`  (
                                     `crontab_spec` TEXT NOT NULL DEFAULT '' ,
                                  `dbcount` INTEGER NOT NULL DEFAULT '0',
                                   `escount` INTEGER NOT NULL DEFAULT '0',
+                                  `es_connect` INTEGER NOT NULL DEFAULT '0',
                                   `status` TEXT NOT NULL DEFAULT '任务运行中...' ,
                                   `updated` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,
                                   `created` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
-CREATE UNIQUE INDEX datax_transfer_list_remark on datax_transfer_list ( `remark`);
+CREATE UNIQUE INDEX datax_transfer_list_remark on datax_transfer_list ( `remark`, `es_connect`);

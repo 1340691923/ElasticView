@@ -34,7 +34,7 @@ func (this GmUserService) GetRoleInfo(roleId int32) (gminfo model.GmRoleModel, e
 	return
 }
 
-func (this GmUserService) IsExitUser(claims *jwt.Claims) bool {
+func (this GmUserService) IsExitUser(claims *jwt.Claims) (bool, error) {
 	var model2 model.GmUserModel
 	model2.Username = claims.Username
 	model2.RoleId = claims.RoleId

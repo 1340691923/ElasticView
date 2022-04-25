@@ -12,5 +12,6 @@ type DataxListModel struct {
 	Escount     int    `json:"escount" db:"escount"  `
 	Updated     string `json:"updated" db:"updated"`
 	Created     string `json:"created" db:"created"`
+	EsConnect   int    `json:"es_connect" db:"es_connect"`
 	CrontabSpec string `json:"crontab_spec" db:"crontab_spec"`
 }
