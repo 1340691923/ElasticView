@@ -70,7 +70,11 @@ func InitSqlx() (fn func(), err error) {
 // 初始化mysql连接
 func InitSqliteData() (fn func(), err error) {
 	fn = func() {}
-	sql2.Init()
+	driverType := GlobConfig.DbType
+	if driverType == "sqlite3" {
+		sql2.Init()
+	}
+
 	return
 }
 
