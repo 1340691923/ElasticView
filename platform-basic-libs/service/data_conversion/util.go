@@ -11,7 +11,6 @@ import (
 	elasticV6 "github.com/olivere/elastic"
 	elasticV7 "github.com/olivere/elastic/v7"
 	"go.uber.org/zap"
-	"sync"
 	"time"
 )
 
@@ -288,15 +287,8 @@ func transferEsV7(
 	return nil
 }
 
-var lock *sync.RWMutex
-
-func init() {
-	lock = new(sync.RWMutex)
-}
-
 func updateDataXListStatus(id, dbcount, escount int, status, msg string) (err error) {
-	lock.Lock()
-	defer lock.Unlock()
+
 	if status == Error {
 		ts := GetTaskInstance()
 		ts.CancelById(id)

@@ -56,25 +56,27 @@ func (this *RealTimeWarehousingV7) Flush() (err error) {
 			this.completeLen++
 		}
 		res, err := bulkRequest.Do(this.ctx)
-		if res.Errors {
-			resStr, _ := json.Marshal(res)
-			updateDataXListStatus(this.taskId, this.expectLen, this.completeLen, Error, string(resStr))
-			logs.Logger.Sugar().Errorf("res", string(resStr))
-		}
 
 		if err != nil {
 			updateDataXListStatus(this.taskId, this.expectLen, this.completeLen, Error, err.Error())
 			logs.Logger.Sugar().Infof("插入失败！", err)
 		} else {
-			if this.expectLen == this.completeLen {
-				ts := GetTaskInstance()
-				ts.CancelById(this.taskId)
-				updateDataXListStatus(this.taskId, this.expectLen, this.completeLen, Success, "数据已全部导入完毕！")
-				logs.Logger.Sugar().Infof("所有数据都插入完成！")
+			if res.Errors {
+				resStr, _ := json.Marshal(res)
+				updateDataXListStatus(this.taskId, this.expectLen, this.completeLen, Error, string(resStr))
+				logs.Logger.Sugar().Errorf("res", string(resStr))
 			} else {
-				updateDataXListStatus(this.taskId, this.expectLen, this.completeLen, Running, "正在导入...")
+				if this.expectLen == this.completeLen {
+					ts := GetTaskInstance()
+					ts.CancelById(this.taskId)
+					updateDataXListStatus(this.taskId, this.expectLen, this.completeLen, Success, "数据已全部导入完毕！")
+					logs.Logger.Sugar().Infof("所有数据都插入完成！")
+				} else {
+
+					updateDataXListStatus(this.taskId, this.expectLen, this.completeLen, Running, "正在导入...")
+				}
+				logs.Logger.Sugar().Infof("插入成功，继续插入！")
 			}
-			logs.Logger.Sugar().Infof("插入成功，继续插入！")
 		}
 		this.buffer = make([]*elasticV7.BulkIndexRequest, 0, this.batchSize)
 
