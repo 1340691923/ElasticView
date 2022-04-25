@@ -67,7 +67,7 @@ CREATE TABLE `datax_transfer_list`  (
                                   `remark` TEXT NOT NULL DEFAULT '' ,
                                   `table_name` TEXT NOT NULL DEFAULT '',
                                   `index_name` TEXT NOT NULL DEFAULT '' ,
-                                  `error_msg` TEXT NOT NULL DEFAULT '无报错' ,
+                                  `error_msg` TEXT NOT NULL DEFAULT '' ,
                                     `crontab_spec` TEXT NOT NULL DEFAULT '' ,
                                  `dbcount` INTEGER NOT NULL DEFAULT '0',
                                   `escount` INTEGER NOT NULL DEFAULT '0',
