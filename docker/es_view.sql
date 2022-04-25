@@ -17,11 +17,17 @@
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
+DROP DATABASE IF EXISTS es_view;
+
+create database es_view;
+ 
+use es_view;
+
 -- ----------------------------
 -- Table structure for es_link
 -- ----------------------------
 DROP TABLE IF EXISTS `es_link`;
-CREATE TABLE `es_link`  (
+CREATE TABLE `es_link`  ( 
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `ip` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `user` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
@@ -108,8 +114,8 @@ CREATE TABLE `datax_link_info` (
   `db_name` varchar(255) DEFAULT '',
   `username` varchar(255) DEFAULT '',
   `pwd` varchar(255) DEFAULT '',
-  `remark` varchar(255) DEFAULT '',
-  `typ` varchar(255) DEFAULT '',
+  `remark` varchar(50) DEFAULT '',
+  `typ` varchar(50) DEFAULT '',
   `updated` timestamp NULL DEFAULT NULL,
   `created` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -122,7 +128,7 @@ CREATE TABLE datax_transfer_list  (
                                       `remark` varchar(50) NOT NULL DEFAULT '',
                                       `table_name` varchar(255) NOT NULL DEFAULT '',
                                       `index_name` varchar(255) NOT NULL DEFAULT '',
-                                      `error_msg` varchar(255) NOT NULL DEFAULT '无报错',
+                                      `error_msg` varchar(255) NOT NULL DEFAULT '',
                                       `crontab_spec` varchar(255) NOT NULL DEFAULT '',
                                       `dbcount` int(11) NOT NULL DEFAULT 0,
                                        `es_connect` int(11) NOT NULL DEFAULT 0,
@@ -131,7 +137,8 @@ CREATE TABLE datax_transfer_list  (
                                       `updated` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0),
                                       `created` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
                                       PRIMARY KEY (`id`),
-                                      UNIQUE INDEX `datax_transfer_list_remark`(`remark`,`es_connect`) USING BTREE
+                                        UNIQUE INDEX `datax_transfer_list_remark`(`remark`, `es_connect`) USING BTREE
+
 );
 
 
