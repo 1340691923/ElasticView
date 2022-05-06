@@ -141,7 +141,7 @@
               </div>
             </el-form-item>
             <el-form-item v-if="showAutoIncrementId" :label="$t('自增主键（注意：若存在连续自增的主键并该表非分区表则填)')">
-              <el-select  filterable v-model="form.autoIncrementId">
+              <el-select  filterable clearable v-model="form.autoIncrementId">
                 <el-option v-for="(v,k,index) in allCols" :key="index" :value="v.key" :label="v.label"/>
               </el-select>
             </el-form-item>

@@ -37,7 +37,7 @@ service.interceptors.request.use(
       // please modify it according to the actual situation
       config.headers['X-Token'] = getToken()
     }
-    console.log(" localStorage.getItem('lang')", localStorage.getItem('lang'))
+
     if(localStorage.getItem('lang')!=null){
       config.headers['Current-Language'] = localStorage.getItem('lang')
     }

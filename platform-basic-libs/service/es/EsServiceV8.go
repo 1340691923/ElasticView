@@ -310,7 +310,11 @@ func (this EsServiceV8) RecoverCanWrite(ctx *fiber.Ctx) (err error) {
 
 func (this EsServiceV8) EsDocDeleteRowByID(ctx *fiber.Ctx, esDocDeleteRowByID *es.EsDocDeleteRowByID) (err error) {
 
-	res, err := this.esClient.Delete().Index(esDocDeleteRowByID.IndexName).Id(esDocDeleteRowByID.ID).Do(context.Background())
+	res,err := this.esClient.PerformRequest(ctx.Context(),elasticV7.PerformRequestOptions{
+		Method:           "DELETE",
+		Path:             fmt.Sprintf("/%s/%s",esDocDeleteRowByID.IndexName,esDocDeleteRowByID.ID),
+	})
+	//res, err := this.esClient.Delete().Index(esDocDeleteRowByID.IndexName).Id(esDocDeleteRowByID.ID).Do(context.Background())
 
 	if err != nil {
 		return this.Error(ctx, err)

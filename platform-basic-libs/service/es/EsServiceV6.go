@@ -165,9 +165,9 @@ func (this EsServiceV6) Cat(ctx *fiber.Ctx, esCat *es.EsCat) (err error) {
 		data, err = this.esClient.CatAliases().Human(true).Do(ctx.Context())
 	case "CatIndices":
 		if esCat.IndexBytesFormat != "" {
-			data, err = this.esClient.CatIndices().Human(true).Bytes(esCat.IndexBytesFormat).Do(ctx.Context())
+			data, err = this.esClient.CatIndices().Sort("store.size:desc").Human(true).Bytes(esCat.IndexBytesFormat).Do(ctx.Context())
 		} else {
-			data, err = this.esClient.CatIndices().Human(true).Do(ctx.Context())
+			data, err = this.esClient.CatIndices().Sort("store.size:desc").Human(true).Do(ctx.Context())
 		}
 	case "CatSegments":
 		data, err = this.esClient.IndexSegments().Human(true).Do(ctx.Context())

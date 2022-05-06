@@ -18,5 +18,6 @@
     "maxIdleConns":10
   },
   "appSecret": "1340691923@qq.com",
+  "version": "1.8.4",
   "deBug": true
 }

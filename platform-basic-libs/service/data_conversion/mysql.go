@@ -44,7 +44,6 @@ func (this *Mysql) Transfer(id int, transferReq *request.TransferReq) (err error
 		for {
 			select {
 			case <-ctx.Done():
-				log.Println("关闭连接了")
 				conn.Close()
 				return
 			default:

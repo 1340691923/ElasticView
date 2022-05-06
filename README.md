@@ -13,7 +13,7 @@
 
 > ElasticView 是一款用来监控ElasticSearch状态和操作ElasticSearch索引的web可视化工具。它由golang开发而成，具有部署方便，占用内存小等优点
 * ElasticSearch连接树管理（更方便的切换测试/生产环境）
-* 支持页面级别的权限管理（未来将完善）
+* 支持权限管理
 * 支持sql转换成dsl语法
 * 更方便的重建索引
 * 任务管理
@@ -63,14 +63,10 @@
   -->
 
 ## ☁docker部署
-1. `docker pull 1340691923/elastic_view:latest`
-2. `docker run -d -p 8090:8090 1340691923/elastic_view:latest`
-3. `浏览器访问对应ip:8090，初始用户名：admin，初始密码：admin`
+1. `docker run -d -p 8090:8090 1340691923/elastic_view:latest`
+2. `浏览器访问对应ip:8090，初始用户名：admin，初始密码：admin`
    
 ```shell
-# 拉取docker镜像
-sudo docker pull 1340691923/elastic_view:latest
-
 # 启动程序
 docker run -d -p 8090:8090 1340691923/elastic_view:latest
 

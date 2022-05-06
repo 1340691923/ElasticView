@@ -130,14 +130,14 @@
             <el-table-column align="center" :label="$t('操作')" fixed="right" width="200">
               <template slot-scope="scope">
                 <el-button-group>
-                <!--  <el-button
+                <el-button
                     type="primary"
                     size="small"
                     icon="el-icon-edit"
                     @click="look(scope.$index)"
                   >
                     编辑
-                  </el-button>-->
+                  </el-button>
 
                   <el-button
                     type="danger"
@@ -161,7 +161,7 @@
             @current-change="search"
           />
         </el-card>
-     <!--   <el-drawer
+        <!--<el-drawer
           ref="drawer"
           title="新增文档"
           :before-close="drawerHandleClose"
@@ -187,13 +187,13 @@
             @getValue="getNewDoc"
           />
 
-        </el-drawer>
+        </el-drawer>-->
         <el-drawer
           ref="drawer"
           title="详细数据"
           :before-close="drawerHandleClose"
           :visible.sync="drawerShow"
-
+          v-if="drawerShow"
           direction="rtl"
           close-on-press-escape
           destroy-on-close
@@ -201,21 +201,18 @@
         >
 
           <el-tag class="filter-item">操作</el-tag>
-          <el-button type="primary" class="filter-item" @click="updateByID">修改</el-button>
-
+          <el-button type="primary" class="filter-item" size="small" @click="updateByID">修改</el-button>
 
           <json-editor
-
-            v-model="JSON.stringify(jsonData['hits']['hits'][index],null, '\t')"
+            v-model="JSON.stringify(jsonData,null, '\t')"
             height="900"
             class="res-body"
             styles="width: 100%"
-            :read="!ISDoc"
             title="详细数据"
             @getValue="getEditDoc"
           />
 
-        </el-drawer>-->
+        </el-drawer>
       </template>
 
       <div
@@ -229,7 +226,7 @@
 
 
     </div>
-  </div>
+  </div
 </template>
 
 <script>
@@ -237,6 +234,7 @@
   import {GetList} from "@/api/es-crud"
   import { ListAction } from '@/api/es-map'
   import { DeleteRowByIDAction, InsertAction, UpdateByIDAction } from '@/api/es-doc'
+  import {clone} from "../../utils";
   export default {
     name: "crud",
     components: {
@@ -281,6 +279,7 @@
         typName:'',
         newDoc:{},
         jsonData:{},
+        tableDataClone:[],
         drawerShow:false,
       }
     },
@@ -288,9 +287,17 @@
       if (this.indexName != '') this.search(1)
     },
     methods: {
+      drawerShowFn() {
+        this.drawerShow = false // 先关闭，
+        this.$nextTick(() => {
+          this.drawerShow = true
+        })
+      },
       look(index) {
         this.index = index
-        this.drawerShow = true
+        console.log("this.tableDataClone",this.tableDataClone)
+        this.jsonData = this.tableDataClone[index]
+        this.drawerShowFn()
       },
       async updateByID() {
         const editData = this.jsonData['hits']['hits'][this.index]
@@ -400,7 +407,7 @@
             this.typName = resData['hits']['hits'][0]['_type']
 
             const sourceArr = []
-
+            this.tableDataClone = clone(resData['hits']['hits'])
             for (const index in resData['hits']['hits']) {
               const _source = resData['hits']['hits'][index]['_source']
               _source['_id'] = resData['hits']['hits'][index]['_id']
@@ -420,9 +427,6 @@
             }
           }
         }
-        console.log("this.tableData",this.tableData)
-
-
 
       },
 
@@ -508,7 +512,7 @@
         await this.getMapping()
 
         if(this.count>0){
-          this.jsonData = res.data.list
+
           await this.initTableData(res.data.list)
         }else{
           this.tableData = []

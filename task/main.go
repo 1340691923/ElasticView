@@ -1,10 +1,33 @@
 package main
 
 import (
-	"github.com/1340691923/ElasticView/engine/db"
+	"context"
 	"log"
+	"time"
 )
 
 func main() {
-	log.Println(db.SqlBuilder.Select("a.test,b.test2").From("a").LeftJoin("b on a.id = b.id").ToSql())
+	ctx,cancel := context.WithCancel(context.Background())
+	go func() {
+		ticker := time.NewTicker(time.Duration(1) * time.Second)
+		defer func() {
+			ticker.Stop()
+			log.Println("defer")
+		}()
+		for {
+			select {
+			case <-ctx.Done():
+				return
+			case <-ticker.C:
+				log.Println("123")
+			default:
+
+			}
+
+		}
+	}()
+	time.Sleep(5*time.Second)
+	cancel()
+	time.Sleep(30*time.Second)
 }
+

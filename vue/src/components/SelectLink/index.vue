@@ -22,7 +22,7 @@
       <el-option :value="Number(0)" :label="$t('请选择ES连接')" />
       <el-option v-for="item in opt" :key="item.id" :value="Number(item.id)" :label="item.remark" />
     </el-select>
-    <el-button style="margin-left: 10px" @click="refresh"> {{$t('刷新')}}</el-button>
+    <el-button type="primary" style="margin-left: 10px" @click="refresh"> {{$t('刷新')}}</el-button>
   </div>
 </template>
 
