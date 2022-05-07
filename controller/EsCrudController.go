@@ -11,7 +11,7 @@ type EsCrudController struct {
 	BaseController
 }
 
-// 删除文档数据
+// 可视化筛选获取数据
 func (this EsCrudController) GetList(ctx *fiber.Ctx) error {
 	crudFilter := new(es.CrudFilter)
 	err := ctx.BodyParser(crudFilter)
@@ -29,4 +29,24 @@ func (this EsCrudController) GetList(ctx *fiber.Ctx) error {
 	}
 
 	return esService.CrudGetList(ctx, crudFilter)
+}
+
+// 可视化GetDSL
+func (this EsCrudController) GetDSL(ctx *fiber.Ctx) error {
+	crudFilter := new(es.CrudFilter)
+	err := ctx.BodyParser(crudFilter)
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+	esConnect, err := es.GetEsClientByID(crudFilter.EsConnect)
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+
+	esService, err := es2.NewEsService(esConnect)
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+
+	return esService.CrudGetDSL(ctx, crudFilter)
 }

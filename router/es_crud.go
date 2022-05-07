@@ -19,6 +19,12 @@ func runEsCrud(app *App) {
 			AbsolutePath: AbsolutePath,
 			RelativePath: "GetList",
 		}, es.(*Group), true, esCrudController.GetList)
+		apiRouterConfig.MountApi(api_config.MountApiBasePramas{
+			Remark:       "Navicat（获取查询语句）",
+			Method:       api_config.MethodPost,
+			AbsolutePath: AbsolutePath,
+			RelativePath: "GetDSL",
+		}, es.(*Group), true, esCrudController.GetDSL)
 
 	}
 }

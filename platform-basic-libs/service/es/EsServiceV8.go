@@ -13,6 +13,7 @@ import (
 	"github.com/1340691923/ElasticView/platform-basic-libs/request"
 	"github.com/1340691923/ElasticView/platform-basic-libs/response"
 	"github.com/1340691923/ElasticView/platform-basic-libs/service/es/es6_utils"
+	"github.com/1340691923/ElasticView/platform-basic-libs/service/es/es7_utils"
 	"github.com/1340691923/ElasticView/platform-basic-libs/service/es_optimize"
 	"github.com/1340691923/ElasticView/platform-basic-libs/service/es_settings"
 	"github.com/1340691923/ElasticView/platform-basic-libs/util"
@@ -729,4 +730,29 @@ func NewEsServiceV8(connect *es.EsConnect) (service EsInterface, err error) {
 	}
 
 	return &EsServiceV8{esClient: esClinet}, nil
+}
+
+func (this EsServiceV8) CrudGetDSL(ctx *fiber.Ctx, crudFilter *es.CrudFilter) (err error) {
+	q, err := es7_utils.GetWhereSql(crudFilter.Relation)
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+
+	search := elasticV7.NewSearchSource()
+
+	q2 := search.Query(q)
+	for _, tmp := range crudFilter.SortList {
+		switch tmp.SortRule {
+		case "desc":
+			q2 = q2.Sort(tmp.Col, false)
+		case "asc":
+			q2 = q2.Sort(tmp.Col, true)
+		}
+	}
+
+	res, err := q2.From(int(db.CreatePage(crudFilter.Page, crudFilter.Limit))).Size(crudFilter.Limit).Source()
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+	return this.Success(ctx, response.SearchSuccess, util.Map{"list": res})
 }

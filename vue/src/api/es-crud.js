@@ -9,3 +9,11 @@ export function GetList(data) {
     data
   })
 }
+
+export function GetDSL(data) {
+  return request({
+    url: api + 'GetDSL',
+    method: 'post',
+    data
+  })
+}

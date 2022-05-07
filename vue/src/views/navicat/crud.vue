@@ -4,9 +4,7 @@
       <template v-if="indexName != ''">
         <div class="filter-container">
           <el-tabs v-model="crudTab">
-
             <el-tab-pane :label="$t('筛选')" name="filter">
-
               <filter-where
                 v-model="whereFilter"
                 table-typ="2"
@@ -81,8 +79,8 @@
         <el-card class="box-card">
           <div class="filter-container">
             <!--<el-button icon="el-icon-plus" type="primary" @click.native="openAddDialog = true" class="filter-item">添加文档</el-button>-->
-
-            <el-button  icon="el-icon-search" type="success"  class="filter-item" @click="search(1)">GO!</el-button>
+            <el-button  icon="el-icon-view" type="warning"  class="filter-item" @click="getdsl(1)">查看查询语句</el-button>
+            <el-button  icon="el-icon-search" type="success"  class="filter-item" @click="search(1)">查询</el-button>
           </div>
           <el-table
 
@@ -193,7 +191,7 @@
           title="详细数据"
           :before-close="drawerHandleClose"
           :visible.sync="drawerShow"
-          v-if="drawerShow"
+        
           direction="rtl"
           close-on-press-escape
           destroy-on-close
@@ -210,6 +208,29 @@
             styles="width: 100%"
             title="详细数据"
             @getValue="getEditDoc"
+          />
+
+        </el-drawer>
+
+        <el-drawer
+          ref="drawer"
+          title="查询DSL"
+          :before-close="drawerHandleClose"
+          :visible.sync="queryDslShow"
+
+          direction="rtl"
+          close-on-press-escape
+          destroy-on-close
+          size="50%"
+        >
+
+          <json-editor
+            v-model="JSON.stringify(queryDsl,null, '\t')"
+            height="900"
+            class="res-body"
+            styles="width: 100%"
+            title="DSL"
+            :read="true"
           />
 
         </el-drawer>
@@ -231,7 +252,7 @@
 
 <script>
 
-  import {GetList} from "@/api/es-crud"
+  import {GetList,GetDSL} from "@/api/es-crud"
   import { ListAction } from '@/api/es-map'
   import { DeleteRowByIDAction, InsertAction, UpdateByIDAction } from '@/api/es-doc'
   import {clone} from "../../utils";
@@ -281,6 +302,8 @@
         jsonData:{},
         tableDataClone:[],
         drawerShow:false,
+        queryDslShow:false,
+        queryDsl:{}
       }
     },
     mounted() {
@@ -486,6 +509,26 @@
       handleSizeChange(v) {
         this.input.limit = v
         this.search(1)
+      },
+      async getdsl() {
+        let form = {
+          index_name: this.indexName,
+          relation: this.whereFilter,
+          sort_list: this.sortList,
+          es_connect: this.$store.state.baseData.EsConnectID,
+          page: this.input.page,
+          limit: this.input.limit
+        }
+        let res = await GetDSL(form)
+        if(res.code != 0){
+          this.$message({
+            type: 'error',
+            message: res.msg
+          })
+          return
+        }
+        this.queryDsl = res.data.list
+        this.queryDslShow = true
       },
       async search(page) {
         this.tableLoading = true

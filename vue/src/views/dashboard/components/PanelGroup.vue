@@ -9,7 +9,7 @@
           <div class="card-panel-text">
               {{$t('总分片数')}}
           </div>
-          <span class="card-panel-num">
+          <span v-loading="loading4" class="card-panel-num">
             {{ count.allShared }}
           </span>
         </div>
@@ -24,7 +24,7 @@
           <div class="card-panel-text">
              {{$t('成功的分片数')}}
           </div>
-          <span class="card-panel-num">
+          <span v-loading="loading4" class="card-panel-num">
             {{ count.successfulShared }}
           </span>
         </div>
@@ -39,7 +39,7 @@
           <div class="card-panel-text">
              {{$t('失败的分片数')}}
           </div>
-          <span class="card-panel-num">
+          <span v-loading="loading4" class="card-panel-num">
             {{ count.failedShared }}
           </span>
         </div>
@@ -54,7 +54,7 @@
           <div class="card-panel-text">
               {{$t('索引数')}}
           </div>
-          <span class="card-panel-num">
+          <span v-loading="loading1" class="card-panel-num">
             {{ count.index }}
           </span>
         </div>
@@ -71,7 +71,7 @@
           <div class="card-panel-text">
                {{$t('文档数')}}
           </div>
-          <span class="card-panel-num">
+          <span v-loading="loading3" class="card-panel-num">
             {{ count.document }}
           </span>
         </div>
@@ -86,7 +86,7 @@
           <div class="card-panel-text">
              {{$t('索引所占空间大小')}}
           </div>
-          <span class="card-panel-num">
+          <span v-loading="loading2" class="card-panel-num">
             {{ count.size }}
           </span>
 
@@ -112,8 +112,12 @@ export default {
         index: 0,
         failedShared: 0,
         document: 0,
-        size: 0
-      }
+        size: 0,
+      },
+      loading1:false,
+      loading2:false,
+      loading3:false,
+      loading4:false,
     }
   },
   mounted() {
@@ -133,7 +137,9 @@ export default {
         es_connect: this.$store.state.baseData.EsConnectID,
         index_bytes_format: 'kb'
       }
+      this.loading1 = true
       const { data, code, msg } = await CatAction(form)
+      this.loading1 = false
       if (code == 0) {
         this.count.index = data.length
       }
@@ -143,7 +149,9 @@ export default {
         cat: 'CatAllocation',
         es_connect: this.$store.state.baseData.EsConnectID
       }
+      this.loading2 = true
       const { data, code, msg } = await CatAction(form)
+      this.loading2 = false
       if (code == 0) {
         this.count.size = data[0]['disk.indices']
       }
@@ -153,7 +161,9 @@ export default {
         cat: 'CatStats',
         es_connect: this.$store.state.baseData.EsConnectID
       }
+      this.loading3 = true
       const { data, code, msg } = await CatAction(form)
+      this.loading3 = false
       if (code == 0) {
         this.count.document = data.indices.docs.count
       }
@@ -163,7 +173,9 @@ export default {
         cat: 'CatSegments',
         es_connect: this.$store.state.baseData.EsConnectID
       }
+      this.loading4 = true
       const { data, code, msg } = await CatAction(form)
+      this.loading4 = false
       if (code == 0) {
         this.count.failedShared = Number(data._shards.failed)
         this.count.allShared = Number(data._shards.total)
