@@ -166,9 +166,9 @@ export default {
   computed: {
     getIndexList() {
       if (this.filterStr == '') {
-        return this.indexList.sort(this.compare('docsCount', true))
+        return this.indexList
       }
-      return filterData(this.indexList, this.filterStr).sort(this.compare('docsCount', true))
+      return filterData(this.indexList, this.filterStr))
     }
   },
   async beforeMount() {
