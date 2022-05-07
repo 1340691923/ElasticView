@@ -24,6 +24,7 @@ type Config struct {
 		MaxIdleConns int    `json:"maxIdleConns"`
 	} `json:"mysql"`
 	AppSecret string `json:"appSecret"`
+	Version string `json:"version"`
 	DeBug     bool   `json:"deBug"`
 }
 

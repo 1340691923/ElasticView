@@ -267,21 +267,13 @@ export default {
         this.getList()
       }
 
-      const { created, ip, id, pwd, remark, updated, user, version } = this.link
+
       this.dialogVisible = false
-      this.$notify({
-        title: 'Success',
-        dangerouslyUseHTMLString: true,
-        message: `
-            <div>id: ${id}</div>
-            <div>IP: ${ip}</div>
-            <div>${this.$t('确认')}: ${user}</div>
-            <div>${this.$t('密码')}: ${pwd}</div>
-            <div>${this.$t('备注')}: ${remark}</div>
-            <div>${this.$t('版本')}: ${version}</div>
-          `,
-        type: 'success'
+      this.$message({
+        type: 'success',
+        message: isEdit?'修改成功':'创建成功'
       })
+
     }
   }
 }

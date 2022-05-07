@@ -168,7 +168,7 @@ export default {
       if (this.filterStr == '') {
         return this.indexList
       }
-      return filterData(this.indexList, this.filterStr))
+      return filterData(this.indexList, this.filterStr)
     }
   },
   async beforeMount() {

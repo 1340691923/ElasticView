@@ -351,8 +351,7 @@ export default {
           })
         }
       }
-
-      console.log("isArray",isArray)
+      
     },
     getEditDoc(v) {
       try {
@@ -413,7 +412,6 @@ export default {
           input['type'] = this.jsonData['hits']['hits'][0]['_type']
           input['id'] = row['_id']
 
-          console.log(input)
           const res = await DeleteRowByIDAction(input)
           if (res.code == 0) {
             this.tableData.splice(index, 1)

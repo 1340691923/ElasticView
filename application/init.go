@@ -138,3 +138,4 @@ func InitOpenWinBrowser() (fn func(), err error) {
 	}
 	return
 }
+
