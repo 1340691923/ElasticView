@@ -11,31 +11,36 @@
                 <template slot="title">
                   <span>主节点</span>
                 </template>
-                <el-button type="warning" icon="el-icon-star-on" circle/>
+                <el-tag type="primary">主节点</el-tag>
+<!--                <el-button type="warning" icon="el-icon-star-on" circle/>-->
               </a-tooltip>
               <a-tooltip  v-else-if="v['node.role'].includes('m')" placement="top" style="cursor: pointer">
                 <template slot="title">
                   <span>主节点候选</span>
                 </template>
-                <el-button type="warning" icon=" el-icon-star-off" circle/>
+                <el-tag type="primary">主节点候选</el-tag>
+<!--                <el-button type="warning" icon=" el-icon-star-off" circle/>-->
               </a-tooltip>
               <a-tooltip v-if="v['node.role'].includes('d')"  placement="top" style="cursor: pointer">
                 <template slot="title">
                   <span>数据节点</span>
                 </template>
-                <el-button icon="el-icon-bank-card" circle />
+                <el-tag type="success">数据节点</el-tag>
+<!--                <el-button icon="el-icon-bank-card" circle />-->
               </a-tooltip>
               <a-tooltip  v-if="v['node.role'].includes('i')" placement="top" style="cursor: pointer">
                 <template slot="title">
                   <span>预处理节点</span>
                 </template>
-                <el-button type="success" icon="el-icon-postcard" circle />
+                <el-tag type="warning">预处理节点</el-tag>
+<!--                <el-button type="success" icon="el-icon-postcard" circle />-->
               </a-tooltip>
               <a-tooltip  v-if="v['node.role'] === '-'" placement="top" style="cursor: pointer">
                 <template slot="title">
                   <span>仅协调节点</span>
                 </template>
-                <el-button type="success" icon="el-icon-s-flag" circle />
+                <el-tag type="warning">仅协调节点</el-tag>
+<!--                <el-button type="success" icon="el-icon-s-flag" circle />-->
               </a-tooltip>
             </div>
           </div>
