@@ -1,7 +1,7 @@
 package router
 
 import (
-	. "github.com/1340691923/ElasticView/controller"
+	. "github.com/1340691923/ElasticView/api"
 	"github.com/1340691923/ElasticView/platform-basic-libs/api_config"
 	. "github.com/gofiber/fiber/v2"
 )

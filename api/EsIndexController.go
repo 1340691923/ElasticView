@@ -1,4 +1,4 @@
-package controller
+package api
 
 import (
 	"github.com/1340691923/ElasticView/engine/es"

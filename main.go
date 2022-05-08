@@ -2,7 +2,7 @@ package main
 
 import (
 	"flag"
-	"github.com/1340691923/ElasticView/application"
+	"github.com/1340691923/ElasticView/core"
 	"github.com/1340691923/ElasticView/engine/logs"
 	"github.com/1340691923/ElasticView/router"
 	_ "github.com/ClickHouse/clickhouse-go"
@@ -37,17 +37,17 @@ func init() {
 
 // By 肖文龙
 func main() {
-	app := application.NewApp(
-		application.WithAppName(appName),
-		application.WithConfigFileDir(configFileDir),
-		application.WithConfigFileName(configFileName),
-		application.WithConfigFileExt(configFileExt),
-		application.RegisterInitFnObserver(application.InitLogs),
-		application.RegisterInitFnObserver(application.InitSqlx),
-		application.RegisterInitFnObserver(application.InitSqliteData),
-		application.RegisterInitFnObserver(application.InitTask),
-		application.RegisterInitFnObserver(application.InitRbac),
-		application.RegisterInitFnObserver(application.InitOpenWinBrowser),
+	app := core.NewApp(
+		core.WithAppName(appName),
+		core.WithConfigFileDir(configFileDir),
+		core.WithConfigFileName(configFileName),
+		core.WithConfigFileExt(configFileExt),
+		core.RegisterInitFnObserver(core.InitLogs),
+		core.RegisterInitFnObserver(core.InitSqlx),
+		core.RegisterInitFnObserver(core.InitSqliteData),
+		core.RegisterInitFnObserver(core.InitTask),
+		core.RegisterInitFnObserver(core.InitRbac),
+		core.RegisterInitFnObserver(core.InitOpenWinBrowser),
 	)
 
 	err := app.InitConfig().NotifyInitFnObservers().Error()
@@ -59,7 +59,7 @@ func main() {
 
 	defer app.Close()
 
-	port := ":" + strconv.Itoa(application.GlobConfig.Port)
+	port := ":" + strconv.Itoa(core.GlobConfig.Port)
 	appServer := router.Init()
 
 	go func() {

@@ -3,7 +3,9 @@
     <back-to-top />
     <el-card class="box-card">
       <el-tabs v-model="activeName">
-
+        <el-tab-pane :label="$t('节点')" name="Node">
+          <node></node>
+        </el-tab-pane>
         <el-tab-pane :label="$t('查看索引信息')" name="CatIndices">
           <cat v-if="activeName == 'CatIndices'" :cat-type="activeName" :table-info="catData[activeName]" />
         </el-tab-pane>
@@ -31,11 +33,12 @@
 export default {
   components: {
     'BackToTop': () => import('@/components/BackToTop/index'),
-    'Cat': () => import('@/components/Cat/index')
+    'Cat': () => import('@/components/Cat/index'),
+    'Node': () => import('@/components/Cat/Node')
   },
   data() {
     return {
-      activeName: 'CatIndices',
+      activeName: 'Node',
       catData: {
         'CatIndices': [
           {
@@ -360,13 +363,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .app-container {
-    .roles-table {
-      margin-top: 30px;
-    }
 
-    .permission-tree {
-      margin-bottom: 30px;
-    }
-  }
 </style>

@@ -21,6 +21,7 @@ import (
 	jsoniter "github.com/json-iterator/go"
 	"github.com/olivere/elastic/v7"
 	elasticV7 "github.com/olivere/elastic/v7"
+	"net/url"
 	"strconv"
 	"strings"
 	"sync"
@@ -197,6 +198,16 @@ func (this EsServiceV8) Cat(ctx *fiber.Ctx, esCat *es.EsCat) (err error) {
 		data, err = this.esClient.IndexSegments().Human(true).Do(ctx.Context())
 	case "CatStats":
 		data, err = this.esClient.ClusterStats().Human(true).Do(ctx.Context())
+	case "Node":
+		parmas := url.Values{}
+		parmas.Set("h","ip,name,heap.percent,heap.current,heap.max,ram.percent,ram.current,ram.max,node.role,master,cpu,load_1m,load_5m,load_15m,disk.used_percent,disk.used,disk.total")
+		var res *elasticV7.Response
+		res, err = this.esClient.PerformRequest(ctx.Context(), elasticV7.PerformRequestOptions{
+			Method: "GET",
+			Params: parmas,
+			Path: "/_cat/nodes",
+		})
+		data = res.Body
 	}
 
 	if err != nil {
@@ -231,22 +242,34 @@ func (this EsServiceV8) RunDsl(ctx *fiber.Ctx, esRest *es.EsRest) (err error) {
 	var performRequestOptions elasticV7.PerformRequestOptions
 
 	if len(esRest.Path) > 0 {
+
 		if esRest.Path[0:1] != "/" {
 			esRest.Path = "/" + esRest.Path
 		}
 
-		if len(strings.Split(esRest.Path, "/")) == 2 {
+		u,err:=url.Parse(esRest.Path)
+
+		if err!=nil{
+			return this.Error(ctx, err)
+		}
+		path := strings.Split(esRest.Path,"?")[0]
+
+		if len(strings.Split(esRest.Path, "/")) == 2 || strings.Contains(esRest.Path,"/_cat") {
+
 			performRequestOptions = elasticV7.PerformRequestOptions{
 				Method: esRest.Method,
-				Path:   esRest.Path,
+				Path:   path,
 				Body:   nil,
 			}
+			performRequestOptions.Params = u.Query()
 		} else {
+
 			performRequestOptions = elasticV7.PerformRequestOptions{
 				Method: esRest.Method,
-				Path:   esRest.Path,
+				Path:   path,
 				Body:   esRest.Body,
 			}
+			performRequestOptions.Params = u.Query()
 		}
 	}
 

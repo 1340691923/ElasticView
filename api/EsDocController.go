@@ -1,4 +1,4 @@
-package controller
+package api
 
 import (
 	es2 "github.com/1340691923/ElasticView/platform-basic-libs/service/es"

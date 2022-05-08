@@ -13,6 +13,9 @@ import 'intro.js/introjs.css'
 import VueClipboard from 'vue-clipboard2'
 Vue.use(VueClipboard)
 
+import ProgressBar from 'vuejs-progress-bar'
+Vue.use(ProgressBar)
+
 Vue.config.productionTip = false
 
 import ElementUI from 'element-ui'

@@ -88,6 +88,7 @@
     "vue-splitpane": "^1.0.6",
     "vue2-ace-editor": "^0.0.15",
     "vuedraggable": "^2.20.0",
+    "vuejs-progress-bar": "^1.2.7",
     "vuex": "3.1.0",
     "x-data-spreadsheet": "^1.1.4",
     "xlsx": "0.14.1"

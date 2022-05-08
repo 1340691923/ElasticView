@@ -1,5 +1,5 @@
 //应用启动引擎层
-package application
+package core
 
 var GlobConfig Config
 

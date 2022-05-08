@@ -1,5 +1,5 @@
 //控制器层
-package controller
+package api
 
 import (
 	"github.com/1340691923/ElasticView/platform-basic-libs/request"

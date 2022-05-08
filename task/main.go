@@ -1,10 +1,18 @@
 package main
 
 import (
-	"github.com/1340691923/ElasticView/engine/db"
 	"log"
+	"net/url"
 )
 
 func main() {
-	log.Println(db.SqlBuilder.Select("a.test,b.test2").From("a").LeftJoin("b on a.id = b.id").ToSql())
+	p := "_cat/nodes?h=ip,name,heap.percent,heap.current,heap.max,ram.percent,ram.current,ram.max,node.role,master,cpu,load_1m,load_5m,load_15m,disk.used_percent,disk.used,disk.total"
+
+	u,err:=url.Parse(p)
+
+	if err!=nil{
+		panic(err)
+	}
+
+	log.Println(u.Query())
 }

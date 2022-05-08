@@ -20,6 +20,7 @@ import (
 	jsoniter "github.com/json-iterator/go"
 	elasticV6 "github.com/olivere/elastic"
 	"github.com/olivere/elastic/v7"
+	"net/url"
 	"strconv"
 	"strings"
 	"sync"
@@ -173,6 +174,16 @@ func (this EsServiceV6) Cat(ctx *fiber.Ctx, esCat *es.EsCat) (err error) {
 		data, err = this.esClient.IndexSegments().Human(true).Do(ctx.Context())
 	case "CatStats":
 		data, err = this.esClient.ClusterStats().Human(true).Do(ctx.Context())
+	case "Node":
+		parmas := url.Values{}
+		parmas.Set("h","ip,name,heap.percent,heap.current,heap.max,ram.percent,ram.current,ram.max,node.role,master,cpu,load_1m,load_5m,load_15m,disk.used_percent,disk.used,disk.total")
+		var res *elasticV6.Response
+		res, err = this.esClient.PerformRequest(ctx.Context(), elasticV6.PerformRequestOptions{
+			Method: "GET",
+			Params: parmas,
+			Path: "/_cat/nodes",
+		})
+		data = res.Body
 	}
 
 	if err != nil {
@@ -204,11 +215,24 @@ func (this EsServiceV6) RunDsl(ctx *fiber.Ctx, esRest *es.EsRest) (err error) {
 		}
 	}
 
-	res, err := this.esClient.PerformRequest(context.Background(), elasticV6.PerformRequestOptions{
+
+	u,err:=url.Parse(esRest.Path)
+
+	if err!=nil{
+		return this.Error(ctx, err)
+	}
+
+	path := strings.Split(esRest.Path,"?")[0]
+
+	per :=  elasticV6.PerformRequestOptions{
 		Method: esRest.Method,
-		Path:   esRest.Path,
+		Path:   path,
 		Body:   esRest.Body,
-	})
+	}
+
+	per.Params = u.Query()
+
+	res, err := this.esClient.PerformRequest(context.Background(), per)
 
 	if err != nil {
 		return this.Error(ctx, err)
