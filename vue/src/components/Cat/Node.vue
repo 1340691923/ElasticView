@@ -4,43 +4,38 @@
       <el-col v-for="(v,k,index) in list" :key="index" :xs="18" :sm="18" :lg="12" class="card-panel-col">
         <el-card class="box-card" style="">
           <div slot="header" style="display: flex; align-items: center; justify-content: space-between;">
-            <span>节点名:{{v["name"]}}</span>
+            <span><el-tag>节点名:{{v["name"]}}</el-tag></span>
             <div>
 
               <a-tooltip  v-if="v.master" placement="top" style="cursor: pointer">
                 <template slot="title">
                   <span>主节点</span>
                 </template>
-                <el-tag type="primary">主节点</el-tag>
-<!--                <el-button type="warning" icon="el-icon-star-on" circle/>-->
+                <el-tag type="primary"><i class="el-icon-star-on"></i>主节点</el-tag>
               </a-tooltip>
               <a-tooltip  v-else-if="v['node.role'].includes('m')" placement="top" style="cursor: pointer">
                 <template slot="title">
                   <span>主节点候选</span>
                 </template>
-                <el-tag type="primary">主节点候选</el-tag>
-<!--                <el-button type="warning" icon=" el-icon-star-off" circle/>-->
+                <el-tag type="primary"><i class="el-icon-star-off"></i>主节点候选</el-tag>
               </a-tooltip>
               <a-tooltip v-if="v['node.role'].includes('d')"  placement="top" style="cursor: pointer">
                 <template slot="title">
                   <span>数据节点</span>
                 </template>
-                <el-tag type="success">数据节点</el-tag>
-<!--                <el-button icon="el-icon-bank-card" circle />-->
+                <el-tag type="success"><i class="el-icon-bank-card"></i>数据节点</el-tag>
               </a-tooltip>
               <a-tooltip  v-if="v['node.role'].includes('i')" placement="top" style="cursor: pointer">
                 <template slot="title">
                   <span>预处理节点</span>
                 </template>
-                <el-tag type="warning">预处理节点</el-tag>
-<!--                <el-button type="success" icon="el-icon-postcard" circle />-->
+                <el-tag type="warning"><i class="el-icon-postcard"></i>预处理节点</el-tag>
               </a-tooltip>
               <a-tooltip  v-if="v['node.role'] === '-'" placement="top" style="cursor: pointer">
                 <template slot="title">
                   <span>仅协调节点</span>
                 </template>
                 <el-tag type="warning">仅协调节点</el-tag>
-<!--                <el-button type="success" icon="el-icon-s-flag" circle />-->
               </a-tooltip>
             </div>
           </div>
@@ -49,36 +44,36 @@
 
               <div style="display: flex; align-items: center; justify-content: space-between;min-height: 50px;">
                 <div>
-                  {{ $t('IP地址') }}
+                  {{ $t('IP地址') }}:
                 </div>
                 <div>
-                  {{v.ip}}
-                </div>
-              </div>
-              <div style="display: flex; align-items: center; justify-content: space-between;min-height: 50px;">
-                <div>
-                  {{ $t('主节点') }}
-                </div>
-                <div>
-                  <template v-if="v.master">yes</template>
-                  <template v-else-if="v.masterEligible">eligible</template>
-                  <template v-else>no</template>
+                  <el-tag>{{v.ip}}</el-tag>
                 </div>
               </div>
               <div style="display: flex; align-items: center; justify-content: space-between;min-height: 50px;">
                 <div>
-                  {{ $t('节点角色') }}
+                  {{ $t('主节点') }}:
                 </div>
                 <div>
-                  {{v["node.role"]}}
+                  <template v-if="v.master"><el-tag>yes</el-tag></template>
+                  <template v-else-if="v.masterEligible"><el-tag>eligible</el-tag></template>
+                  <template v-else><el-tag>no</el-tag></template>
                 </div>
               </div>
               <div style="display: flex; align-items: center; justify-content: space-between;min-height: 50px;">
                 <div>
-                  {{ $t('负载') }}
+                  {{ $t('节点角色') }}:
                 </div>
                 <div>
-                 1m:{{ v.load_1m }} / 5m:{{ v.load_5m }} / 15m:{{ v.load_15m }}
+                  <el-tag>{{v["node.role"]}}</el-tag>
+                </div>
+              </div>
+              <div style="display: flex; align-items: center; justify-content: space-between;min-height: 50px;">
+                <div>
+                  {{ $t('负载') }}:
+                </div>
+                <div>
+                 <el-tag>1m:{{ v.load_1m }} / 5m:{{ v.load_5m }} / 15m:{{ v.load_15m }}</el-tag>
                 </div>
               </div>
             </div>
@@ -106,7 +101,7 @@
 
                 <div style="display: flex; align-items: center; justify-content: space-between;min-height: 50px;">
                   <div>
-                    {{ $t('内存') }}:{{ v["ram.current"] }}/ {{ v["ram.max"] }}
+                    {{ $t('内存') }}:&nbsp;&nbsp;<el-tag>{{ v["ram.current"] }}/{{ v["ram.max"] }}</el-tag>
                   </div>
                   <div style="margin-left: 10px">
                     <progress-bar
@@ -123,7 +118,7 @@
 
                 <div style="display: flex; align-items: center; justify-content: space-between;min-height: 50px;">
                   <div>
-                    {{ $t('堆内存') }}:{{ v["heap.current"] }}/ {{ v["heap.max"] }}
+                    {{ $t('堆内存') }}:&nbsp;&nbsp;<el-tag>{{ v["heap.current"] }}/ {{ v["heap.max"] }}</el-tag>
                   </div>
                   <div style="margin-left: 10px">
                     <progress-bar
@@ -140,7 +135,7 @@
 
                 <div style="display: flex; align-items: center; justify-content: space-between;min-height: 50px;">
                   <div>
-                    {{ $t('磁盘') }}:{{ v["disk.used"] }}/ {{ v["disk.total"] }}
+                    {{ $t('磁盘') }}:&nbsp;&nbsp;<el-tag>{{ v["disk.used"] }}/ {{ v["disk.total"] }}</el-tag>
                   </div>
                   <div style="margin-left: 10px">
                     <progress-bar
@@ -206,7 +201,7 @@ export default {
       let numV = Number(v)
       const opt = JSON.parse(JSON.stringify(this.options))
       if(numV<60){
-        opt.progress.color = "green"
+        opt.progress.color = "#4ad47f"
         opt.progress.backgroundColor = "grey"
       }else if (numV>=60 && numV <=80){
         opt.progress.color = "#ff9800"
