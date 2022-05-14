@@ -33,9 +33,11 @@ func GetEsClientByID(id int) (*EsConnect, error) {
 	if esConnectTmp.Ip == "" {
 		return nil, errors.New("请先选择ES连接")
 	}
-	esConnectTmp.Pwd,err = EsPwdESBDecrypt(esConnectTmp.Pwd)
-	if err != nil {
-		return nil, err
+	if esConnectTmp.Pwd != ""{
+		esConnectTmp.Pwd,err = EsPwdESBDecrypt(esConnectTmp.Pwd)
+		if err != nil {
+			return nil, err
+		}
 	}
 	esCache.Set(id, &esConnectTmp)
 	return &esConnectTmp, nil

@@ -10,8 +10,8 @@
   },
   "mysql":{
     "username":"root",
-    "pwd":"",
-    "ip":"110.42.11.1",
+    "pwd":"123456",
+    "ip":"127.0.01",
     "port":"3306",
     "dbName":"es_view",
     "maxOpenConns":10,
@@ -19,7 +19,7 @@
   },
   "appSecret": "1340691923@qq.com",
   "esPwdSecret": "concat_mail!!->1340691923@qq.com",
-  "version": "1.8.4",
-  "deBug": true
+  "version": "1.8.5",
+  "deBug": false
 }
 
