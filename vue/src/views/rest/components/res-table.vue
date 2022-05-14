@@ -2,10 +2,12 @@
   <div>
     <el-dialog :close-on-click-modal="false" width="95%" :visible.sync="dialogVisible" title="查询结果" @close="close">
       <div class="filter-container">
-        <el-tag class="filter-item">{{$t('请输入关键词')}}</el-tag>
-        <el-input v-model="input" class="filter-item" style="width: 300px" clearable @input="search" />
-        <el-button type="success" class="filter-item" @click="search">{{$t('搜索')}}</el-button>
-        <el-button v-if="ISDoc" type="primary" class="filter-item" @click.native="openAddDialog = true">{{$t('添加文档')}}</el-button>
+        <el-tag class="filter-item">{{ $t('请输入关键词') }}</el-tag>
+        <el-input v-model="input" class="filter-item" style="width: 300px" clearable @input="search"/>
+        <el-button type="success" class="filter-item" @click="search">{{ $t('搜索') }}</el-button>
+        <el-button v-if="ISDoc" type="primary" class="filter-item" @click.native="openAddDialog = true">
+          {{ $t('添加文档') }}
+        </el-button>
       </div>
 
       <el-table
@@ -25,7 +27,7 @@
               {{ scope.row["_id"] }}
             </template>
             <template v-else>
-              {{ scope.$index+1 }}
+              {{ scope.$index + 1 }}
             </template>
           </template>
         </el-table-column>
@@ -44,8 +46,9 @@
               placement="top-start"
               trigger="hover"
             >
-              <div>{{scope.row[val].toString()}}</div>
-              <span v-if="scope.row[val].toString().length>=20" slot="reference">{{ scope.row[val].toString().substr(0,20)+"..." }}
+              <div>{{ scope.row[val].toString() }}</div>
+              <span v-if="scope.row[val].toString().length>=20"
+                    slot="reference">{{ scope.row[val].toString().substr(0, 20) + "..." }}
               </span>
               <span v-else slot="reference">{{ scope.row[val].toString() }}
               </span>
@@ -62,10 +65,10 @@
                 icon="el-icon-edit"
                 @click="look(scope.$index)"
               >
-                {{$t('编辑')}}
+                {{ $t('编辑') }}
               </el-button>
               <el-button v-else type="success" size="small" icon="el-icon-search" @click="look(scope.$index)">
-                {{$t('查看')}}
+                {{ $t('查看') }}
               </el-button>
               <el-button
                 v-if="ISDoc"
@@ -73,7 +76,7 @@
                 size="small"
                 icon="el-icon-delete"
                 @click="deleteByID(scope.row,scope.$index)"
-              >{{$t('删除')}}
+              >{{ $t('删除') }}
               </el-button>
             </el-button-group>
           </template>
@@ -94,8 +97,8 @@
       size="50%"
     >
       <div v-if="ISDoc" class="filter-container">
-        <el-tag class="filter-item">{{$t('操作')}}</el-tag>
-        <el-button type="primary" class="filter-item" @click="updateByID">{{$t('修改')}}</el-button>
+        <el-tag class="filter-item">{{ $t('操作') }}</el-tag>
+        <el-button type="primary" class="filter-item" @click="updateByID">{{ $t('修改') }}</el-button>
       </div>
       <json-editor
         v-if="Array.isArray(jsonData)"
@@ -131,8 +134,8 @@
       size="50%"
     >
       <div class="filter-container">
-        <el-tag class="filter-item">{{$t('操作')}}</el-tag>
-        <el-button type="primary" icon="el-icon-edit" class="filter-item" @click="add">{{$t('提交')}}</el-button>
+        <el-tag class="filter-item">{{ $t('操作') }}</el-tag>
+        <el-button type="primary" icon="el-icon-edit" class="filter-item" @click="add">{{ $t('提交') }}</el-button>
       </div>
 
       <json-editor
@@ -150,10 +153,10 @@
 </template>
 
 <script>
-import { filterData } from '@/utils/table'
-import { clone } from '@/utils/index'
-import { DeleteRowByIDAction, InsertAction, UpdateByIDAction } from '@/api/es-doc'
-import { ListAction } from '@/api/es-map'
+import {filterData} from '@/utils/table'
+import {clone} from '@/utils/index'
+import {DeleteRowByIDAction, InsertAction, UpdateByIDAction} from '@/api/es-doc'
+import {ListAction} from '@/api/es-map'
 
 export default {
   name: 'ResTable',
@@ -315,11 +318,11 @@ export default {
         input['es_connect'] = this.$store.state.baseData.EsConnectID
         input['index_name'] = resData['hits']['hits'][0]['_index']
 
-        const { data, code, msg } = await ListAction(input)
+        const {data, code, msg} = await ListAction(input)
 
         if (code == 0) {
 
-          if(data.ver == 6){
+          if (data.ver == 6) {
             const mappings = Object.keys(data.list[input['index_name']].mappings)
 
             const tableHeader = Object.keys(data.list[input['index_name']].mappings[mappings[0]].properties)
@@ -332,7 +335,7 @@ export default {
               }
             }
             this.tableHeader = tmpTableHeader
-          }else if(data.ver == 7 || data.ver == 8){
+          } else if (data.ver == 7 || data.ver == 8) {
             const tableHeader = Object.keys(data.list[input['index_name']].mappings.properties)
             this.properties = data.list[input['index_name']].mappings.properties
             const tmpTableHeader = []
@@ -351,7 +354,7 @@ export default {
           })
         }
       }
-      
+
     },
     getEditDoc(v) {
       try {
@@ -405,7 +408,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       })
-        .then(async() => {
+        .then(async () => {
           const input = {}
           input['es_connect'] = this.$store.state.baseData.EsConnectID
           input['index_name'] = this.jsonData['hits']['hits'][0]['_index']

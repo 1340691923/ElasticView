@@ -6,7 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/1340691923/ElasticView/engine/db"
-	"github.com/1340691923/ElasticView/engine/es"
+	"github.com/1340691923/ElasticView/platform-basic-libs/escache"
 	"github.com/1340691923/ElasticView/platform-basic-libs/request"
 	"github.com/jmoiron/sqlx"
 	"log"
@@ -89,7 +89,7 @@ func (this *Clickhouse) Transfer(id int, transferReq *request.TransferReq) (err 
 	length := int(math.Ceil(float64(float64(count) / float64(limit))))
 	lastLimit := count % limit
 
-	esConnect, err := es.GetEsClientByID(transferReq.EsConnect)
+	esConnect, err := escache.GetEsClientByID(transferReq.EsConnect)
 
 	if err != nil {
 		updateDataXListStatus(id, 0, 0, Error, err.Error())
@@ -120,7 +120,7 @@ func (this *Clickhouse) Transfer(id int, transferReq *request.TransferReq) (err 
 
 		switch esConnect.Version {
 		case 6:
-			esConn, err := es.NewEsClientV6(esConnect)
+			esConn, err := escache.NewEsClientV6(esConnect)
 			if err != nil {
 				updateDataXListStatus(id, 0, 0, Error, err.Error())
 				return
@@ -137,7 +137,7 @@ func (this *Clickhouse) Transfer(id int, transferReq *request.TransferReq) (err 
 		case 7:
 			fallthrough
 		case 8:
-			esConn, err := es.NewEsClientV7(esConnect)
+			esConn, err := escache.NewEsClientV7(esConnect)
 			if err != nil {
 				updateDataXListStatus(id, 0, 0, Error, err.Error())
 				return

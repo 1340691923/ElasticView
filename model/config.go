@@ -1,5 +1,5 @@
 //应用启动引擎层
-package core
+package model
 
 var GlobConfig Config
 
@@ -26,6 +26,7 @@ type Config struct {
 	AppSecret string `json:"appSecret"`
 	Version string `json:"version"`
 	DeBug     bool   `json:"deBug"`
+	EsPwdSecret string `json:"esPwdSecret"`
 }
 
 const (

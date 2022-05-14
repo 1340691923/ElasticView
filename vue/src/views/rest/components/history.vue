@@ -1,11 +1,12 @@
 <template>
   <div>
-    <el-dialog :close-on-click-modal="false" width="80%" :visible.sync="dialogVisible" :title="$t('历史记录')" @close="close">
+    <el-dialog :close-on-click-modal="false" width="80%" :visible.sync="dialogVisible" :title="$t('历史记录')"
+               @close="close">
       <div class="filter-container">
-        <el-tag class="filter-item">{{$t('请选择索引名')}}</el-tag>
-        <index-select class="filter-item" :clearable="true" :placeholder="$t('请选择索引名')" @change="changeIndex" />
-        <el-tag class="filter-item">{{$t('请筛选搜索时间')}}</el-tag>
-        <date class="filter-item" :dates="input.date" @changeDate="changeDate" />
+        <el-tag class="filter-item">{{ $t('请选择索引名') }}</el-tag>
+        <index-select class="filter-item" :clearable="true" :placeholder="$t('请选择索引名')" @change="changeIndex"/>
+        <el-tag class="filter-item">{{ $t('请筛选搜索时间') }}</el-tag>
+        <date class="filter-item" :dates="input.date" @changeDate="changeDate"/>
       </div>
       <el-table
         :data="list"
@@ -17,7 +18,7 @@
           width="50"
         >
           <template slot-scope="scope">
-            {{ scope.$index+1 }}
+            {{ scope.$index + 1 }}
           </template>
         </el-table-column>
 
@@ -41,8 +42,8 @@
               trigger="hover"
             >
 
-              <div>{{scope.row.body}}</div>
-              <span slot="reference">{{ scope.row.body.substr(0,50)+"..." }}</span>
+              <div>{{ scope.row.body }}</div>
+              <span slot="reference">{{ scope.row.body.substr(0, 50) + "..." }}</span>
 
               </span slot="reference">
             </el-popover>
@@ -57,10 +58,11 @@
 
         <el-table-column align="center" :label="$t('操作')" fixed="right" width="300">
           <template slot="header" slot-scope="scope">
-            <el-button type="danger" size="small" icon="el-icon-delete" @click="clean">{{$t('清空')}}</el-button>
+            <el-button type="danger" size="small" icon="el-icon-delete" @click="clean">{{ $t('清空') }}</el-button>
           </template>
           <template slot-scope="scope">
-            <el-button type="success" size="small" icon="el-icon-search" @click="getHistoryData(scope)">{{$t('搜索')}}</el-button>
+            <el-button type="success" size="small" icon="el-icon-search" @click="getHistoryData(scope)">{{ $t('搜索') }}
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -80,7 +82,7 @@
 </template>
 
 <script>
-import { CleanAction, ListAction } from '@/api/dsl-history'
+import {CleanAction, ListAction} from '@/api/dsl-history'
 
 export default {
   name: 'History',
@@ -132,7 +134,7 @@ export default {
       this.$emit('close', false)
     },
     async clean() {
-      const { data, code, msg } = await CleanAction(this.input)
+      const {data, code, msg} = await CleanAction(this.input)
       console.log(data)
       if (code != 0) {
         this.$message({
@@ -154,7 +156,7 @@ export default {
     async searchHistory(page) {
 
       !page ? this.input.page = 1 : this.input.page = page
-      const { data, code, msg } = await ListAction(this.input)
+      const {data, code, msg} = await ListAction(this.input)
       console.log(data)
       if (code != 0) {
         this.$message({

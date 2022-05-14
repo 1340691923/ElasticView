@@ -5,9 +5,9 @@ import (
 	"errors"
 	"fmt"
 	"github.com/1340691923/ElasticView/engine/db"
-	"github.com/1340691923/ElasticView/engine/es"
 	"github.com/1340691923/ElasticView/engine/logs"
 	"github.com/1340691923/ElasticView/model"
+	"github.com/1340691923/ElasticView/platform-basic-libs/escache"
 	"github.com/1340691923/ElasticView/platform-basic-libs/jwt"
 	"github.com/1340691923/ElasticView/platform-basic-libs/my_error"
 	"github.com/1340691923/ElasticView/platform-basic-libs/request"
@@ -32,7 +32,7 @@ type EsServiceV6 struct {
 	esClient *elasticV6.Client
 }
 
-func (this EsServiceV6) CreateSnapshot(ctx *fiber.Ctx, createSnapshot *es.CreateSnapshot) (err error) {
+func (this EsServiceV6) CreateSnapshot(ctx *fiber.Ctx, createSnapshot *escache.CreateSnapshot) (err error) {
 	snapshotCreateService := this.esClient.
 		SnapshotCreate(createSnapshot.RepositoryName, createSnapshot.SnapshotName)
 
@@ -40,7 +40,7 @@ func (this EsServiceV6) CreateSnapshot(ctx *fiber.Ctx, createSnapshot *es.Create
 		snapshotCreateService.WaitForCompletion(*createSnapshot.Wait)
 	}
 
-	settings := es.Json{}
+	settings := escache.Json{}
 
 	if len(createSnapshot.IndexList) > 0 {
 		settings["indices"] = strings.Join(createSnapshot.IndexList, ",")
@@ -66,7 +66,7 @@ func (this EsServiceV6) CreateSnapshot(ctx *fiber.Ctx, createSnapshot *es.Create
 	return this.Success(ctx, response.OperateSuccess, res)
 }
 
-func (this EsServiceV6) SnapshotList(ctx *fiber.Ctx, snapshotList *es.SnapshotList) (err error) {
+func (this EsServiceV6) SnapshotList(ctx *fiber.Ctx, snapshotList *escache.SnapshotList) (err error) {
 	if snapshotList.Repository == "" {
 		return this.Error(ctx, errors.New("请先选择快照存储库"))
 	}
@@ -83,7 +83,7 @@ func (this EsServiceV6) SnapshotList(ctx *fiber.Ctx, snapshotList *es.SnapshotLi
 	return this.Success(ctx, response.SearchSuccess, res.Body)
 }
 
-func (this EsServiceV6) SnapshotDelete(ctx *fiber.Ctx, snapshotDelete *es.SnapshotDelete) (err error) {
+func (this EsServiceV6) SnapshotDelete(ctx *fiber.Ctx, snapshotDelete *escache.SnapshotDelete) (err error) {
 	_, err = this.esClient.
 		SnapshotDelete(snapshotDelete.Repository, snapshotDelete.Snapshot).Do(ctx.Context())
 	if err != nil {
@@ -93,7 +93,7 @@ func (this EsServiceV6) SnapshotDelete(ctx *fiber.Ctx, snapshotDelete *es.Snapsh
 	return this.Success(ctx, response.OperateSuccess, nil)
 }
 
-func (this EsServiceV6) SnapshotDetail(ctx *fiber.Ctx, snapshotDetail *es.SnapshotDetail) (err error) {
+func (this EsServiceV6) SnapshotDetail(ctx *fiber.Ctx, snapshotDetail *escache.SnapshotDetail) (err error) {
 	res, err := this.esClient.PerformRequest(ctx.Context(), elasticV6.PerformRequestOptions{
 		Method: "GET",
 		Path:   fmt.Sprintf("/_snapshot/%s/%s", snapshotDetail.Repository, snapshotDetail.Snapshot),
@@ -104,7 +104,7 @@ func (this EsServiceV6) SnapshotDetail(ctx *fiber.Ctx, snapshotDetail *es.Snapsh
 	return this.Success(ctx, response.SearchSuccess, res.Body)
 }
 
-func (this EsServiceV6) SnapshotRestore(ctx *fiber.Ctx, snapshotRestore *es.SnapshotRestore) (err error) {
+func (this EsServiceV6) SnapshotRestore(ctx *fiber.Ctx, snapshotRestore *escache.SnapshotRestore) (err error) {
 
 	snapshotRestoreService := this.esClient.SnapshotRestore(snapshotRestore.RepositoryName, snapshotRestore.SnapshotName)
 
@@ -139,7 +139,7 @@ func (this EsServiceV6) SnapshotRestore(ctx *fiber.Ctx, snapshotRestore *es.Snap
 	return this.Success(ctx, response.OperateSuccess, res)
 }
 
-func (this EsServiceV6) SnapshotStatus(ctx *fiber.Ctx, snapshotStatus *es.SnapshotStatus) (err error) {
+func (this EsServiceV6) SnapshotStatus(ctx *fiber.Ctx, snapshotStatus *escache.SnapshotStatus) (err error) {
 	snapshotRestoreStatus := this.esClient.SnapshotStatus().Repository(snapshotStatus.RepositoryName).Snapshot(snapshotStatus.SnapshotName)
 
 	res, err := snapshotRestoreStatus.Do(ctx.Context())
@@ -150,7 +150,7 @@ func (this EsServiceV6) SnapshotStatus(ctx *fiber.Ctx, snapshotStatus *es.Snapsh
 	return this.Success(ctx, response.SearchSuccess, res)
 }
 
-func (this EsServiceV6) Cat(ctx *fiber.Ctx, esCat *es.EsCat) (err error) {
+func (this EsServiceV6) Cat(ctx *fiber.Ctx, esCat *escache.EsCat) (err error) {
 	var data interface{}
 
 	switch esCat.Cat {
@@ -193,7 +193,7 @@ func (this EsServiceV6) Cat(ctx *fiber.Ctx, esCat *es.EsCat) (err error) {
 	return this.Success(ctx, response.SearchSuccess, data)
 }
 
-func (this EsServiceV6) RunDsl(ctx *fiber.Ctx, esRest *es.EsRest) (err error) {
+func (this EsServiceV6) RunDsl(ctx *fiber.Ctx, esRest *escache.EsRest) (err error) {
 	esRest.Method = strings.ToUpper(esRest.Method)
 	if esRest.Method == "GET" {
 		c, err := jwt.ParseToken(ctx.Get("X-Token"))
@@ -249,7 +249,7 @@ func (this EsServiceV6) RunDsl(ctx *fiber.Ctx, esRest *es.EsRest) (err error) {
 	return this.Success(ctx, response.OperateSuccess, res.Body)
 }
 
-func (this EsServiceV6) Optimize(ctx *fiber.Ctx, esOptimize *es.EsOptimize) (err error) {
+func (this EsServiceV6) Optimize(ctx *fiber.Ctx, esOptimize *escache.EsOptimize) (err error) {
 	optimize := es_optimize.OptimizeFactory(esOptimize.Command)
 
 	if optimize == nil {
@@ -291,7 +291,7 @@ func (this EsServiceV6) RecoverCanWrite(ctx *fiber.Ctx) (err error) {
 	return this.Success(ctx, response.OperateSuccess, res.Body)
 }
 
-func (this EsServiceV6) EsDocDeleteRowByID(ctx *fiber.Ctx, esDocDeleteRowByID *es.EsDocDeleteRowByID) (err error) {
+func (this EsServiceV6) EsDocDeleteRowByID(ctx *fiber.Ctx, esDocDeleteRowByID *escache.EsDocDeleteRowByID) (err error) {
 
 	res, err := this.esClient.PerformRequest(ctx.Context(), elasticV6.PerformRequestOptions{
 		Method: "DELETE",
@@ -305,7 +305,7 @@ func (this EsServiceV6) EsDocDeleteRowByID(ctx *fiber.Ctx, esDocDeleteRowByID *e
 	return this.Success(ctx, response.OperateSuccess, res)
 }
 
-func (this EsServiceV6) EsDocUpdateByID(ctx *fiber.Ctx, esDocUpdateByID *es.EsDocUpdateByID) (err error) {
+func (this EsServiceV6) EsDocUpdateByID(ctx *fiber.Ctx, esDocUpdateByID *escache.EsDocUpdateByID) (err error) {
 	res, err := this.esClient.Update().Index(esDocUpdateByID.Index).Type(esDocUpdateByID.Type).Id(esDocUpdateByID.ID).
 		Doc(esDocUpdateByID.JSON).Do(ctx.Context())
 	if err != nil {
@@ -314,7 +314,7 @@ func (this EsServiceV6) EsDocUpdateByID(ctx *fiber.Ctx, esDocUpdateByID *es.EsDo
 	return this.Success(ctx, response.OperateSuccess, res)
 }
 
-func (this EsServiceV6) EsDocInsert(ctx *fiber.Ctx, esDocUpdateByID *es.EsDocUpdateByID) (err error) {
+func (this EsServiceV6) EsDocInsert(ctx *fiber.Ctx, esDocUpdateByID *escache.EsDocUpdateByID) (err error) {
 	res, err := this.esClient.Index().
 		Index(esDocUpdateByID.Index).
 		Type(esDocUpdateByID.Type).BodyJson(esDocUpdateByID.JSON).Do(ctx.Context())
@@ -324,9 +324,9 @@ func (this EsServiceV6) EsDocInsert(ctx *fiber.Ctx, esDocUpdateByID *es.EsDocUpd
 	return this.Success(ctx, response.OperateSuccess, res)
 }
 
-func (this EsServiceV6) EsIndexCreate(ctx *fiber.Ctx, esIndexInfo *es.EsIndexInfo) (err error) {
+func (this EsServiceV6) EsIndexCreate(ctx *fiber.Ctx, esIndexInfo *escache.EsIndexInfo) (err error) {
 	if esIndexInfo.IndexName == "" {
-		return this.Error(ctx, my_error.NewBusiness(es.ParmasNullError, es.IndexNameNullError))
+		return this.Error(ctx, my_error.NewBusiness(escache.ParmasNullError, escache.IndexNameNullError))
 	}
 	var res interface{}
 	if esIndexInfo.Types == "update" {
@@ -346,9 +346,9 @@ func (this EsServiceV6) EsIndexCreate(ctx *fiber.Ctx, esIndexInfo *es.EsIndexInf
 	return this.Success(ctx, response.OperateSuccess, res)
 }
 
-func (this EsServiceV6) EsIndexDelete(ctx *fiber.Ctx, esIndexInfo *es.EsIndexInfo) (err error) {
+func (this EsServiceV6) EsIndexDelete(ctx *fiber.Ctx, esIndexInfo *escache.EsIndexInfo) (err error) {
 	if esIndexInfo.IndexName == "" {
-		return this.Error(ctx, my_error.NewBusiness(es.ParmasNullError, es.IndexNameNullError))
+		return this.Error(ctx, my_error.NewBusiness(escache.ParmasNullError, escache.IndexNameNullError))
 
 	}
 	_, err = this.esClient.DeleteIndex(strings.Split(esIndexInfo.IndexName, ",")...).Do(context.Background())
@@ -358,9 +358,9 @@ func (this EsServiceV6) EsIndexDelete(ctx *fiber.Ctx, esIndexInfo *es.EsIndexInf
 	return this.Success(ctx, response.OperateSuccess, nil)
 }
 
-func (this EsServiceV6) EsIndexGetSettings(ctx *fiber.Ctx, esIndexInfo *es.EsIndexInfo) (err error) {
+func (this EsServiceV6) EsIndexGetSettings(ctx *fiber.Ctx, esIndexInfo *escache.EsIndexInfo) (err error) {
 	if esIndexInfo.IndexName == "" {
-		this.Error(ctx, my_error.NewBusiness(es.ParmasNullError, es.IndexNameNullError))
+		this.Error(ctx, my_error.NewBusiness(escache.ParmasNullError, escache.IndexNameNullError))
 	}
 
 	res, err := this.esClient.IndexGetSettings(esIndexInfo.IndexName).Do(ctx.Context())
@@ -371,9 +371,9 @@ func (this EsServiceV6) EsIndexGetSettings(ctx *fiber.Ctx, esIndexInfo *es.EsInd
 	return this.Success(ctx, response.OperateSuccess, res[esIndexInfo.IndexName].Settings)
 }
 
-func (this EsServiceV6) EsIndexGetSettingsInfo(ctx *fiber.Ctx, esIndexInfo *es.EsIndexInfo) (err error) {
+func (this EsServiceV6) EsIndexGetSettingsInfo(ctx *fiber.Ctx, esIndexInfo *escache.EsIndexInfo) (err error) {
 	if esIndexInfo.IndexName == "" {
-		return this.Error(ctx, my_error.NewBusiness(es.ParmasNullError, es.IndexNameNullError))
+		return this.Error(ctx, my_error.NewBusiness(escache.ParmasNullError, escache.IndexNameNullError))
 	}
 
 	res, err := this.esClient.IndexGetSettings(esIndexInfo.IndexName).Do(ctx.Context())
@@ -384,9 +384,9 @@ func (this EsServiceV6) EsIndexGetSettingsInfo(ctx *fiber.Ctx, esIndexInfo *es.E
 	return this.Success(ctx, response.OperateSuccess, res)
 }
 
-func (this EsServiceV6) EsIndexGetAlias(ctx *fiber.Ctx, esAliasInfo *es.EsAliasInfo) (err error) {
+func (this EsServiceV6) EsIndexGetAlias(ctx *fiber.Ctx, esAliasInfo *escache.EsAliasInfo) (err error) {
 	if esAliasInfo.IndexName == "" {
-		return this.Error(ctx, my_error.NewBusiness(es.ParmasNullError, es.IndexNameNullError))
+		return this.Error(ctx, my_error.NewBusiness(escache.ParmasNullError, escache.IndexNameNullError))
 	}
 
 	aliasRes, err := this.esClient.Aliases().Index(esAliasInfo.IndexName).Do(ctx.Context())
@@ -394,7 +394,7 @@ func (this EsServiceV6) EsIndexGetAlias(ctx *fiber.Ctx, esAliasInfo *es.EsAliasI
 	return this.Success(ctx, response.OperateSuccess, aliasRes.Indices[esAliasInfo.IndexName].Aliases)
 }
 
-func (this EsServiceV6) EsIndexOperateAlias(ctx *fiber.Ctx, esAliasInfo *es.EsAliasInfo) (err error) {
+func (this EsServiceV6) EsIndexOperateAlias(ctx *fiber.Ctx, esAliasInfo *escache.EsAliasInfo) (err error) {
 	const Add = 1
 	const Delete = 2
 	const MoveToAnotherIndex = 3
@@ -403,19 +403,19 @@ func (this EsServiceV6) EsIndexOperateAlias(ctx *fiber.Ctx, esAliasInfo *es.EsAl
 	switch esAliasInfo.Types {
 	case Add:
 		if esAliasInfo.IndexName == "" {
-			return this.Error(ctx, my_error.NewBusiness(es.ParmasNullError, es.IndexNameNullError))
+			return this.Error(ctx, my_error.NewBusiness(escache.ParmasNullError, escache.IndexNameNullError))
 		}
 		res, err = this.esClient.Alias().Add(esAliasInfo.IndexName, esAliasInfo.AliasName).Do(ctx.Context())
 	case Delete:
 		if esAliasInfo.IndexName == "" {
-			return this.Error(ctx, my_error.NewBusiness(es.ParmasNullError, es.IndexNameNullError))
+			return this.Error(ctx, my_error.NewBusiness(escache.ParmasNullError, escache.IndexNameNullError))
 		}
 		res, err = this.esClient.Alias().Remove(esAliasInfo.IndexName, esAliasInfo.AliasName).Do(ctx.Context())
 	case MoveToAnotherIndex:
 		res, err = this.esClient.Alias().Action(elastic.NewAliasAddAction(esAliasInfo.AliasName).Index(esAliasInfo.NewIndexList...)).Do(ctx.Context())
 	case PatchAdd:
 		if esAliasInfo.IndexName == "" {
-			return this.Error(ctx, my_error.NewBusiness(es.ParmasNullError, es.IndexNameNullError))
+			return this.Error(ctx, my_error.NewBusiness(escache.ParmasNullError, escache.IndexNameNullError))
 		}
 		wg := sync.WaitGroup{}
 		NewAliasNameListLen := len(esAliasInfo.NewAliasNameList)
@@ -435,7 +435,7 @@ func (this EsServiceV6) EsIndexOperateAlias(ctx *fiber.Ctx, esAliasInfo *es.EsAl
 			wg.Wait()
 		}
 	default:
-		err = es.ReqParmasValid
+		err = escache.ReqParmasValid
 	}
 
 	if err != nil {
@@ -445,7 +445,7 @@ func (this EsServiceV6) EsIndexOperateAlias(ctx *fiber.Ctx, esAliasInfo *es.EsAl
 	return this.Success(ctx, response.OperateSuccess, res)
 }
 
-func (this EsServiceV6) EsIndexReindex(ctx *fiber.Ctx, esReIndexInfo *es.EsReIndexInfo) (err error) {
+func (this EsServiceV6) EsIndexReindex(ctx *fiber.Ctx, esReIndexInfo *escache.EsReIndexInfo) (err error) {
 	reindex := this.esClient.Reindex()
 	urlValues := esReIndexInfo.UrlValues
 	if urlValues.WaitForActiveShards != "" {
@@ -488,9 +488,9 @@ func (this EsServiceV6) EsIndexIndexNames(ctx *fiber.Ctx) (err error) {
 	return this.Success(ctx, response.SearchSuccess, indexNames)
 }
 
-func (this EsServiceV6) EsIndexStats(ctx *fiber.Ctx, esIndexInfo *es.EsIndexInfo) (err error) {
+func (this EsServiceV6) EsIndexStats(ctx *fiber.Ctx, esIndexInfo *escache.EsIndexInfo) (err error) {
 	if esIndexInfo.IndexName == "" {
-		return this.Error(ctx, my_error.NewBusiness(es.ParmasNullError, es.IndexNameNullError))
+		return this.Error(ctx, my_error.NewBusiness(escache.ParmasNullError, escache.IndexNameNullError))
 
 	}
 
@@ -502,7 +502,7 @@ func (this EsServiceV6) EsIndexStats(ctx *fiber.Ctx, esIndexInfo *es.EsIndexInfo
 	return this.Success(ctx, response.OperateSuccess, res)
 }
 
-func (this EsServiceV6) EsIndexCatStatus(ctx *fiber.Ctx, esIndexInfo *es.EsIndexInfo) (err error) {
+func (this EsServiceV6) EsIndexCatStatus(ctx *fiber.Ctx, esIndexInfo *escache.EsIndexInfo) (err error) {
 	res, err := this.esClient.PerformRequest(ctx.Context(), elasticV6.PerformRequestOptions{
 		Method: "GET",
 		Path:   fmt.Sprintf("/_cat/indices/%s?h=status", esIndexInfo.IndexName),
@@ -514,7 +514,7 @@ func (this EsServiceV6) EsIndexCatStatus(ctx *fiber.Ctx, esIndexInfo *es.EsIndex
 	return this.Success(ctx, response.SearchSuccess, res.Body)
 }
 
-func (this EsServiceV6) EsMappingList(ctx *fiber.Ctx, esConnect *es.EsMapGetProperties) (err error) {
+func (this EsServiceV6) EsMappingList(ctx *fiber.Ctx, esConnect *escache.EsMapGetProperties) (err error) {
 	if esConnect.IndexName == "" {
 		res, err := this.esClient.GetMapping().Do(context.Background())
 		if err != nil {
@@ -532,7 +532,7 @@ func (this EsServiceV6) EsMappingList(ctx *fiber.Ctx, esConnect *es.EsMapGetProp
 	}
 }
 
-func (this EsServiceV6) UpdateMapping(ctx *fiber.Ctx, updateMapping *es.UpdateMapping) (err error) {
+func (this EsServiceV6) UpdateMapping(ctx *fiber.Ctx, updateMapping *escache.UpdateMapping) (err error) {
 	res, err := this.esClient.PutMapping().
 		Index(updateMapping.IndexName).
 		Type(updateMapping.TypeName).
@@ -564,7 +564,7 @@ func (this EsServiceV6) TaskList(ctx *fiber.Ctx) (err error) {
 	return this.Success(ctx, response.SearchSuccess, taskListRes)
 }
 
-func (this EsServiceV6) Cancel(ctx *fiber.Ctx, cancelTask *es.CancelTask) (err error) {
+func (this EsServiceV6) Cancel(ctx *fiber.Ctx, cancelTask *escache.CancelTask) (err error) {
 	res, err := this.esClient.TasksCancel().TaskId(cancelTask.TaskID).Do(ctx.Context())
 	if err != nil {
 		return this.Error(ctx, err)
@@ -572,7 +572,7 @@ func (this EsServiceV6) Cancel(ctx *fiber.Ctx, cancelTask *es.CancelTask) (err e
 	return this.Success(ctx, response.OperateSuccess, res)
 }
 
-func (this EsServiceV6) SnapshotRepositoryList(ctx *fiber.Ctx, esSnapshotInfo *es.EsSnapshotInfo) (err error) {
+func (this EsServiceV6) SnapshotRepositoryList(ctx *fiber.Ctx, esSnapshotInfo *escache.EsSnapshotInfo) (err error) {
 
 	clusterSettings, err := es_settings.NewSettingsByV6(this.esClient)
 	if err != nil {
@@ -625,7 +625,7 @@ func (this EsServiceV6) SnapshotRepositoryList(ctx *fiber.Ctx, esSnapshotInfo *e
 	})
 }
 
-func (this EsServiceV6) SnapshotCreateRepository(ctx *fiber.Ctx, snapshotCreateRepository *es.SnapshotCreateRepository) (err error) {
+func (this EsServiceV6) SnapshotCreateRepository(ctx *fiber.Ctx, snapshotCreateRepository *escache.SnapshotCreateRepository) (err error) {
 
 	clusterSettings, err := es_settings.NewSettingsByV6(this.esClient)
 	if err != nil {
@@ -684,7 +684,7 @@ func (this EsServiceV6) SnapshotCreateRepository(ctx *fiber.Ctx, snapshotCreateR
 	return this.Success(ctx, response.OperateSuccess, nil)
 }
 
-func (this EsServiceV6) CleanupeRepository(ctx *fiber.Ctx, cleanupeRepository *es.CleanupeRepository) (err error) {
+func (this EsServiceV6) CleanupeRepository(ctx *fiber.Ctx, cleanupeRepository *escache.CleanupeRepository) (err error) {
 	res, err := this.esClient.PerformRequest(ctx.Context(), elasticV6.PerformRequestOptions{
 		Method: "POST",
 		Path:   fmt.Sprintf("/_snapshot/%s/_cleanup", cleanupeRepository.Repository),
@@ -696,7 +696,7 @@ func (this EsServiceV6) CleanupeRepository(ctx *fiber.Ctx, cleanupeRepository *e
 	return this.Success(ctx, response.OperateSuccess, res.Body)
 }
 
-func (this EsServiceV6) SnapshotDeleteRepository(ctx *fiber.Ctx, repository *es.SnapshotDeleteRepository) (err error) {
+func (this EsServiceV6) SnapshotDeleteRepository(ctx *fiber.Ctx, repository *escache.SnapshotDeleteRepository) (err error) {
 	_, err = this.esClient.SnapshotDeleteRepository(repository.Repository).Do(ctx.Context())
 	if err != nil {
 		return this.Error(ctx, err)
@@ -705,8 +705,8 @@ func (this EsServiceV6) SnapshotDeleteRepository(ctx *fiber.Ctx, repository *es.
 	return this.Success(ctx, response.OperateSuccess, nil)
 }
 
-func NewEsServiceV6(connect *es.EsConnect) (service EsInterface, err error) {
-	esClinet, err := es.NewEsClientV6(connect)
+func NewEsServiceV6(connect *escache.EsConnect) (service EsInterface, err error) {
+	esClinet, err := escache.NewEsClientV6(connect)
 
 	if err != nil {
 		return nil, err
@@ -715,7 +715,7 @@ func NewEsServiceV6(connect *es.EsConnect) (service EsInterface, err error) {
 	return &EsServiceV6{esClient: esClinet}, nil
 }
 
-func (this EsServiceV6) CrudGetList(ctx *fiber.Ctx, crudFilter *es.CrudFilter) (err error) {
+func (this EsServiceV6) CrudGetList(ctx *fiber.Ctx, crudFilter *escache.CrudFilter) (err error) {
 	q, err := es6_utils.GetWhereSql(crudFilter.Relation)
 	if err != nil {
 		return this.Error(ctx, err)
@@ -739,7 +739,7 @@ func (this EsServiceV6) CrudGetList(ctx *fiber.Ctx, crudFilter *es.CrudFilter) (
 	return this.Success(ctx, response.SearchSuccess, util.Map{"list": res, "count": res.Hits.TotalHits})
 }
 
-func (this EsServiceV6) CrudGetDSL(ctx *fiber.Ctx, crudFilter *es.CrudFilter) (err error) {
+func (this EsServiceV6) CrudGetDSL(ctx *fiber.Ctx, crudFilter *escache.CrudFilter) (err error) {
 	q, err := es6_utils.GetWhereSql(crudFilter.Relation)
 	if err != nil {
 		return this.Error(ctx, err)

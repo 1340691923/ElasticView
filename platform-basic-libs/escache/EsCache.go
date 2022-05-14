@@ -1,5 +1,5 @@
 //ES引擎层
-package es
+package escache
 
 import (
 	"sync"

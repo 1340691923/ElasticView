@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-card class="box-card">
+
       <div class="filter-container">
         <el-select
           v-model="input.actions"
@@ -13,7 +13,7 @@
           filterable
           @change="searchByFilter()"
         >
-          <el-option v-for="(action, index) in actions" :key="index" :label="action" :value="action" />
+          <el-option v-for="(action, index) in actions" :key="index" :label="action" :value="action"/>
         </el-select>
         <el-select
           v-model="input.task_id"
@@ -26,7 +26,7 @@
           filterable
           @change="searchByFilter()"
         >
-          <el-option v-for="(taskID, index) in taskIdList" :key="index" :label="taskID" :value="taskID" />
+          <el-option v-for="(taskID, index) in taskIdList" :key="index" :label="taskID" :value="taskID"/>
         </el-select>
         <el-select
           v-model="input.node_id"
@@ -39,7 +39,7 @@
           filterable
           @change="searchByFilter()"
         >
-          <el-option v-for="(node, index) in nodeIdList" :key="index" :label="node" :value="node" />
+          <el-option v-for="(node, index) in nodeIdList" :key="index" :label="node" :value="node"/>
         </el-select>
         <el-select
           v-model="input.parent_task_id"
@@ -49,10 +49,10 @@
           filterable
           @change="searchByFilter()"
         >
-          <el-option v-for="(taskID, index) in parentTaskIdList" :key="index" :label="taskID" :value="taskID" />
+          <el-option v-for="(taskID, index) in parentTaskIdList" :key="index" :label="taskID" :value="taskID"/>
         </el-select>
-        <el-button type="primary" icon="el-icon-search" @click="search(true)">{{$t('搜索')}}</el-button>
-        <el-button type="success" icon="el-icon-refresh" @click="refresh">{{$t('刷新')}}</el-button>
+        <el-button type="primary" icon="el-icon-search" @click="search(true)">{{ $t('搜索') }}</el-button>
+        <el-button type="success" icon="el-icon-refresh" @click="refresh">{{ $t('刷新') }}</el-button>
       </div>
       <el-table
         :data="tableData"
@@ -64,14 +64,14 @@
           width="50"
         >
           <template slot-scope="scope">
-            {{ scope.$index+1 }}
+            {{ scope.$index + 1 }}
           </template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('行为')" prop="action" width="200" />
-        <el-table-column align="center" :label="$t('任务详细ID')" prop="taskID" width="300" />
-        <el-table-column align="center" :label="$t('任务ID')" prop="id" width="100" />
+        <el-table-column align="center" :label="$t('行为')" prop="action" width="200"/>
+        <el-table-column align="center" :label="$t('任务详细ID')" prop="taskID" width="300"/>
+        <el-table-column align="center" :label="$t('任务ID')" prop="id" width="100"/>
 
-        <el-table-column align="center" :label="$t('节点')" prop="node" width="200" />
+        <el-table-column align="center" :label="$t('节点')" prop="node" width="200"/>
 
         <el-table-column align="center" :label="$t('父任务ID')" prop="parent_task_id" width="300">
           <template slot-scope="scope">
@@ -94,7 +94,7 @@
             >
 
               <div>{{ JSON.stringify(scope.row.status) }}</div>
-              <span  slot="reference">{{ JSON.stringify(scope.row.status).substr(0,50)+"..." }}</span>
+              <span slot="reference">{{ JSON.stringify(scope.row.status).substr(0, 50) + "..." }}</span>
 
               </span slot="reference">
             </el-popover>
@@ -102,7 +102,7 @@
         </el-table-column>
         <el-table-column align="center" :label="$t('运行时间（秒）')" width="180">
           <template slot-scope="scope">
-            <div>{{ Number(scope.row.running_time_in_nanos/1000000000) }}</div>
+            <div>{{ Number(scope.row.running_time_in_nanos / 1000000000) }}</div>
           </template>
         </el-table-column>
 
@@ -122,28 +122,29 @@
               trigger="hover"
             >
 
-              <div>{{scope.row.description}}</div>
-              <span slot="reference">{{ scope.row.description.substr(0,50)+"..." }}</span>
+              <div>{{ scope.row.description }}</div>
+              <span slot="reference">{{ scope.row.description.substr(0, 50) + "..." }}</span>
               </span slot="reference">
             </el-popover>
           </template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('开始时间')" prop="start_time" width="100" />
-        <el-table-column align="center" :label="$t('开始时间（毫秒）')" prop="start_time_in_millis" width="150" />
+        <el-table-column align="center" :label="$t('开始时间')" prop="start_time" width="100"/>
+        <el-table-column align="center" :label="$t('开始时间（毫秒）')" prop="start_time_in_millis" width="150"/>
 
-        <el-table-column align="center" :label="$t('类型')" prop="type" width="100" />
+        <el-table-column align="center" :label="$t('类型')" prop="type" width="100"/>
 
         <el-table-column align="center" :label="$t('操作')" fixed="right" width="350">
           <template slot-scope="scope">
             <el-button-group>
-              <el-button type="success" size="small" icon="el-icon-search" @click="look(scope.row)">{{$t('查看')}}</el-button>
+              <el-button type="success" size="small" icon="el-icon-search" @click="look(scope.row)">{{ $t('查看') }}
+              </el-button>
 
               <el-button
                 type="danger"
                 size="small"
                 icon="el-icon-delete"
                 @click="CancelAction(scope.row.taskID)"
-              >{{$t('取消')}}
+              >{{ $t('取消') }}
               </el-button>
 
             </el-button-group>
@@ -171,13 +172,12 @@
         />
       </el-drawer>
 
-    </el-card>
   </div>
 </template>
 
 <script>
 import Moment from 'moment'
-import { CancelAction, ListAction } from '@/api/es-task'
+import {CancelAction, ListAction} from '@/api/es-task'
 
 export default {
   name: 'ResTable',
@@ -264,7 +264,7 @@ export default {
       input['es_connect'] = this.$store.state.baseData.EsConnectID
       input['task_id'] = taskid
 
-      const { data, code, msg } = await CancelAction(input)
+      const {data, code, msg} = await CancelAction(input)
       if (code != 0) {
         this.$message({
           type: 'error',
@@ -307,7 +307,7 @@ export default {
 
       input['es_connect'] = this.$store.state.baseData.EsConnectID
 
-      const { data, code, msg } = await ListAction(input)
+      const {data, code, msg} = await ListAction(input)
 
       if (code != 0) {
         this.$message({

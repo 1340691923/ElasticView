@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-card class="box-card">
+
       <div class="filter-container">
         <el-tag class="filter-item">{{$t('请输入关键词')}}</el-tag>
         <el-input v-model="input" class="filter-item" style="width: 300px" clearable @input="search" />
@@ -40,7 +40,6 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
       />
-    </el-card>
   </div>
 </template>
 

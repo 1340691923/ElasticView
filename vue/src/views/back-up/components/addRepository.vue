@@ -4,12 +4,12 @@
       <el-card class="box-card">
         <el-form label-width="300px" label-position="left">
           <el-form-item :label="$t('存储库名')">
-            <el-input v-model="form.name" :placeholder="$t('存储库名')" />
+            <el-input v-model="form.name" :placeholder="$t('存储库名')"/>
           </el-form-item>
           <el-form-item :label="$t('类型（type）')">
             <el-select v-model="form.type" filterable>
-              <el-option label="fs" value="fs" />
-              <el-option label="url" value="url" />
+              <el-option label="fs" value="fs"/>
+              <el-option label="url" value="url"/>
             </el-select>
           </el-form-item>
           <el-form-item :label="$t('存储位置（location/url）')">
@@ -22,30 +22,30 @@
           </el-form-item>
           <el-form-item :label="$t('是否压缩 (compress)')">
             <el-select v-model="form.compress" clearable filterable>
-              <el-option :label=" $t('是')" value="true" />
-              <el-option :label=" $t('否')" value="false" />
+              <el-option :label=" $t('是')" value="true"/>
+              <el-option :label=" $t('否')" value="false"/>
             </el-select>
           </el-form-item>
           <el-form-item :label="$t('大文件分解块大小')">
 
-            <el-input v-model="form.chunk_size" :placeholder="$t('1GB，10MB，5KB，500B。默认为null（无限制的块大小）')" />
+            <el-input v-model="form.chunk_size" :placeholder="$t('1GB，10MB，5KB，500B。默认为null（无限制的块大小）')"/>
           </el-form-item>
           <el-form-item :label="$t('是否只读')">
             <el-select v-model="form.readonly" filterable>
-              <el-option :label=" $t('是')" value="true" />
-              <el-option :label=" $t('否')" value="false" />
+              <el-option :label=" $t('是')" value="true"/>
+              <el-option :label=" $t('否')" value="false"/>
             </el-select>
           </el-form-item>
           <el-form-item :label="$t('节点恢复速率')">
-            <el-input v-model="form.max_restore_bytes_per_sec" :placeholder="$t('节点恢复速率')" />
+            <el-input v-model="form.max_restore_bytes_per_sec" :placeholder="$t('节点恢复速率')"/>
           </el-form-item>
           <el-form-item :label="$t('每个节点快照速率')">
-            <el-input v-model="form.max_snapshot_bytes_per_sec" :placeholder="$t('每个节点快照速率')" />
+            <el-input v-model="form.max_snapshot_bytes_per_sec" :placeholder="$t('每个节点快照速率')"/>
           </el-form-item>
         </el-form>
         <div style="text-align:right;">
-          <el-button type="danger" icon="el-icon-close" @click="closeDialog">{{$t('取消')}}</el-button>
-          <el-button type="primary" icon="el-icon-check" @click="confirm"> {{$t('确认')}}</el-button>
+          <el-button type="danger" icon="el-icon-close" @click="closeDialog">{{ $t('取消') }}</el-button>
+          <el-button type="primary" icon="el-icon-check" @click="confirm"> {{ $t('确认') }}</el-button>
         </div>
       </el-card>
     </el-dialog>
@@ -53,7 +53,7 @@
 </template>
 
 <script>
-import { SnapshotCreateRepositoryAction } from '@/api/es-backup'
+import {SnapshotCreateRepositoryAction} from '@/api/es-backup'
 
 export default {
   name: 'Add',
@@ -97,7 +97,7 @@ export default {
     async confirm() {
       const input = this.form
       input['es_connect'] = this.$store.state.baseData.EsConnectID
-      const { code, data, msg } = await SnapshotCreateRepositoryAction(input)
+      const {code, data, msg} = await SnapshotCreateRepositoryAction(input)
       if (code == 0) {
         this.$emit('close', true)
         this.$message({

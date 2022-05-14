@@ -1,7 +1,7 @@
 package api
 
 import (
-	"github.com/1340691923/ElasticView/engine/es"
+	"github.com/1340691923/ElasticView/platform-basic-libs/escache"
 	es2 "github.com/1340691923/ElasticView/platform-basic-libs/service/es"
 	. "github.com/gofiber/fiber/v2"
 )
@@ -13,13 +13,13 @@ type EsBackUpController struct {
 
 //快照仓库列表
 func (this EsBackUpController) SnapshotRepositoryListAction(ctx *Ctx) error {
-	esSnapshotInfo := new(es.EsSnapshotInfo)
+	esSnapshotInfo := new(escache.EsSnapshotInfo)
 	err := ctx.BodyParser(esSnapshotInfo)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
 
-	esConnect, err := es.GetEsClientByID(esSnapshotInfo.EsConnect)
+	esConnect, err := escache.GetEsClientByID(esSnapshotInfo.EsConnect)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
@@ -32,12 +32,12 @@ func (this EsBackUpController) SnapshotRepositoryListAction(ctx *Ctx) error {
 
 //新建快照仓库
 func (this EsBackUpController) SnapshotCreateRepositoryAction(ctx *Ctx) error {
-	snapshotCreateRepository := new(es.SnapshotCreateRepository)
+	snapshotCreateRepository := new(escache.SnapshotCreateRepository)
 	err := ctx.BodyParser(snapshotCreateRepository)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	esConnect, err := es.GetEsClientByID(snapshotCreateRepository.EsConnect)
+	esConnect, err := escache.GetEsClientByID(snapshotCreateRepository.EsConnect)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
@@ -50,13 +50,13 @@ func (this EsBackUpController) SnapshotCreateRepositoryAction(ctx *Ctx) error {
 
 //清理快照仓库
 func (this EsBackUpController) CleanupeRepositoryAction(ctx *Ctx) error {
-	cleanupeRepository := new(es.CleanupeRepository)
+	cleanupeRepository := new(escache.CleanupeRepository)
 	err := ctx.BodyParser(cleanupeRepository)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
 
-	esConnect, err := es.GetEsClientByID(cleanupeRepository.EsConnect)
+	esConnect, err := escache.GetEsClientByID(cleanupeRepository.EsConnect)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
@@ -69,12 +69,12 @@ func (this EsBackUpController) CleanupeRepositoryAction(ctx *Ctx) error {
 
 //删除快照仓库
 func (this EsBackUpController) SnapshotDeleteRepositoryAction(ctx *Ctx) error {
-	snapshotDeleteRepository := new(es.SnapshotDeleteRepository)
+	snapshotDeleteRepository := new(escache.SnapshotDeleteRepository)
 	err := ctx.BodyParser(snapshotDeleteRepository)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	esConnect, err := es.GetEsClientByID(snapshotDeleteRepository.EsConnect)
+	esConnect, err := escache.GetEsClientByID(snapshotDeleteRepository.EsConnect)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
@@ -89,12 +89,12 @@ func (this EsBackUpController) SnapshotDeleteRepositoryAction(ctx *Ctx) error {
 
 //创建快照
 func (this EsBackUpController) CreateSnapshotAction(ctx *Ctx) error {
-	createSnapshot := new(es.CreateSnapshot)
+	createSnapshot := new(escache.CreateSnapshot)
 	err := ctx.BodyParser(createSnapshot)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	esConnect, err := es.GetEsClientByID(createSnapshot.EsConnect)
+	esConnect, err := escache.GetEsClientByID(createSnapshot.EsConnect)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
@@ -109,12 +109,12 @@ func (this EsBackUpController) CreateSnapshotAction(ctx *Ctx) error {
 
 //快照列表
 func (this EsBackUpController) SnapshotListAction(ctx *Ctx) error {
-	snapshotList := new(es.SnapshotList)
+	snapshotList := new(escache.SnapshotList)
 	err := ctx.BodyParser(snapshotList)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	esConnect, err := es.GetEsClientByID(snapshotList.EsConnect)
+	esConnect, err := escache.GetEsClientByID(snapshotList.EsConnect)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
@@ -127,12 +127,12 @@ func (this EsBackUpController) SnapshotListAction(ctx *Ctx) error {
 
 //删除快照
 func (this EsBackUpController) SnapshotDeleteAction(ctx *Ctx) error {
-	snapshotDelete := new(es.SnapshotDelete)
+	snapshotDelete := new(escache.SnapshotDelete)
 	err := ctx.BodyParser(snapshotDelete)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	esConnect, err := es.GetEsClientByID(snapshotDelete.EsConnect)
+	esConnect, err := escache.GetEsClientByID(snapshotDelete.EsConnect)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
@@ -145,13 +145,13 @@ func (this EsBackUpController) SnapshotDeleteAction(ctx *Ctx) error {
 
 //快照详情
 func (this EsBackUpController) SnapshotDetailAction(ctx *Ctx) error {
-	snapshotDetail := new(es.SnapshotDetail)
+	snapshotDetail := new(escache.SnapshotDetail)
 	err := ctx.BodyParser(snapshotDetail)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
 
-	esConnect, err := es.GetEsClientByID(snapshotDetail.EsConnect)
+	esConnect, err := escache.GetEsClientByID(snapshotDetail.EsConnect)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
@@ -165,12 +165,12 @@ func (this EsBackUpController) SnapshotDetailAction(ctx *Ctx) error {
 
 // 将索引恢复至快照时状态
 func (this EsBackUpController) SnapshotRestoreAction(ctx *Ctx) error {
-	snapshotRestore := new(es.SnapshotRestore)
+	snapshotRestore := new(escache.SnapshotRestore)
 	err := ctx.BodyParser(snapshotRestore)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	esConnect, err := es.GetEsClientByID(snapshotRestore.EsConnect)
+	esConnect, err := escache.GetEsClientByID(snapshotRestore.EsConnect)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
@@ -183,12 +183,12 @@ func (this EsBackUpController) SnapshotRestoreAction(ctx *Ctx) error {
 
 //得到快照状态
 func (this EsBackUpController) SnapshotStatusAction(ctx *Ctx) error {
-	snapshotStatus := new(es.SnapshotStatus)
+	snapshotStatus := new(escache.SnapshotStatus)
 	err := ctx.BodyParser(snapshotStatus)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	esConnect, err := es.GetEsClientByID(snapshotStatus.EsConnect)
+	esConnect, err := escache.GetEsClientByID(snapshotStatus.EsConnect)
 	if err != nil {
 		return this.Error(ctx, err)
 	}

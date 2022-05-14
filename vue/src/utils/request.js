@@ -3,12 +3,12 @@ import store from '@/store'
 
 import axios from 'axios'
 
-import { getToken } from '@/utils/auth'
+import {getToken} from '@/utils/auth'
 
-import { message } from '@/utils/singleMsg.js'
+import {message} from '@/utils/singleMsg.js'
+import ElementUI from 'element-ui';
 
 const CancelMsg = '用户已经取消请求'
-import ElementUI from 'element-ui';
 
 // create an axios instance
 const service = axios.create({
@@ -25,7 +25,7 @@ service.interceptors.request.use(
     if (config.data) {
       if (config.data.hasOwnProperty('cancelToken')) {
         config.cancelToken = new axios.CancelToken((c) => {
-          store.dispatch('baseData/SET_ReqCancelMap', { token: config.data['cancelToken'], fn: c })
+          store.dispatch('baseData/SET_ReqCancelMap', {token: config.data['cancelToken'], fn: c})
         })
       }
     }
@@ -38,7 +38,7 @@ service.interceptors.request.use(
       config.headers['X-Token'] = getToken()
     }
 
-    if(localStorage.getItem('lang')!=null){
+    if (localStorage.getItem('lang') != null) {
       config.headers['Current-Language'] = localStorage.getItem('lang')
     }
 
@@ -115,7 +115,7 @@ service.interceptors.response.use(
 )
 
 service.defaults.transformResponse = [
-  data=>{
+  data => {
     return jsonlint.parse(data)
   }
 ]

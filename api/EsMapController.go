@@ -1,9 +1,9 @@
 package api
 
 import (
+	"github.com/1340691923/ElasticView/platform-basic-libs/escache"
 	es2 "github.com/1340691923/ElasticView/platform-basic-libs/service/es"
 
-	"github.com/1340691923/ElasticView/engine/es"
 	. "github.com/gofiber/fiber/v2"
 )
 
@@ -14,12 +14,12 @@ type EsMappingController struct {
 
 // Es 映射列表
 func (this EsMappingController) ListAction(ctx *Ctx) error {
-	esMapGetProperties := new(es.EsMapGetProperties)
+	esMapGetProperties := new(escache.EsMapGetProperties)
 	err := ctx.BodyParser(&esMapGetProperties)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	esConnect, err := es.GetEsClientByID(esMapGetProperties.EsConnectID)
+	esConnect, err := escache.GetEsClientByID(esMapGetProperties.EsConnectID)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
@@ -33,12 +33,12 @@ func (this EsMappingController) ListAction(ctx *Ctx) error {
 
 // 修改映射
 func (this EsMappingController) UpdateMappingAction(ctx *Ctx) error {
-	updateMapping := new(es.UpdateMapping)
+	updateMapping := new(escache.UpdateMapping)
 	err := ctx.BodyParser(&updateMapping)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	esConnect, err := es.GetEsClientByID(updateMapping.EsConnect)
+	esConnect, err := escache.GetEsClientByID(updateMapping.EsConnect)
 	if err != nil {
 		return this.Error(ctx, err)
 	}

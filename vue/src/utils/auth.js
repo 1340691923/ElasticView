@@ -1,5 +1,4 @@
 // 鉴权 token 相关函数
-import Cookies from 'js-cookie'
 
 const TokenKey = 'Admin-Token'
 const UserName = 'UserName'

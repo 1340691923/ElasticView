@@ -1,4 +1,4 @@
-package es
+package escache
 
 import "github.com/1340691923/ElasticView/platform-basic-libs/util"
 

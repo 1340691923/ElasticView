@@ -1,6 +1,5 @@
 <template>
   <div class="app-container">
-    <el-card class="box-card">
       <div class="filter-container">
         <el-select
           id="index-health-status"
@@ -517,7 +516,6 @@
         @close="closeMappings"
       />
 
-    </el-card>
   </div>
 </template>
 

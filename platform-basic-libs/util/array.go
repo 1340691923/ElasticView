@@ -3,6 +3,7 @@ package util
 
 import (
 	"errors"
+	"reflect"
 	"strconv"
 	"strings"
 	"unsafe"
@@ -36,10 +37,15 @@ func InMap(maps map[string]int, column string) (ok bool) {
 }
 
 //替换string与byte转换时性能损耗的代码  ！！！ 只可用于不可修改字符串变量
-func Str2bytes(s string) []byte {
-	x := (*[2]uintptr)(unsafe.Pointer(&s))
-	h := [3]uintptr{x[0], x[1], x[1]}
-	return *(*[]byte)(unsafe.Pointer(&h))
+func Str2bytes(s string) (b []byte)  {
+	/* #nosec G103 */
+	bh := (*reflect.SliceHeader)(unsafe.Pointer(&b))
+	/* #nosec G103 */
+	sh := (*reflect.StringHeader)(unsafe.Pointer(&s))
+	bh.Data = sh.Data
+	bh.Cap = sh.Len
+	bh.Len = sh.Len
+	return b
 }
 
 func Bytes2str(b []byte) string {

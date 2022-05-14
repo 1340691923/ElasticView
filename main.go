@@ -4,6 +4,7 @@ import (
 	"flag"
 	"github.com/1340691923/ElasticView/core"
 	"github.com/1340691923/ElasticView/engine/logs"
+	"github.com/1340691923/ElasticView/model"
 	"github.com/1340691923/ElasticView/router"
 	_ "github.com/ClickHouse/clickhouse-go"
 	_ "github.com/denisenkom/go-mssqldb"
@@ -59,7 +60,7 @@ func main() {
 
 	defer app.Close()
 
-	port := ":" + strconv.Itoa(core.GlobConfig.Port)
+	port := ":" + strconv.Itoa(model.GlobConfig.Port)
 	appServer := router.Init()
 
 	go func() {

@@ -1,7 +1,7 @@
 package api
 
 import (
-	"github.com/1340691923/ElasticView/engine/es"
+	"github.com/1340691923/ElasticView/platform-basic-libs/escache"
 	es2 "github.com/1340691923/ElasticView/platform-basic-libs/service/es"
 	"github.com/gofiber/fiber/v2"
 )
@@ -13,12 +13,12 @@ type EsCrudController struct {
 
 // 可视化筛选获取数据
 func (this EsCrudController) GetList(ctx *fiber.Ctx) error {
-	crudFilter := new(es.CrudFilter)
+	crudFilter := new(escache.CrudFilter)
 	err := ctx.BodyParser(crudFilter)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	esConnect, err := es.GetEsClientByID(crudFilter.EsConnect)
+	esConnect, err := escache.GetEsClientByID(crudFilter.EsConnect)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
@@ -33,12 +33,12 @@ func (this EsCrudController) GetList(ctx *fiber.Ctx) error {
 
 // 可视化GetDSL
 func (this EsCrudController) GetDSL(ctx *fiber.Ctx) error {
-	crudFilter := new(es.CrudFilter)
+	crudFilter := new(escache.CrudFilter)
 	err := ctx.BodyParser(crudFilter)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	esConnect, err := es.GetEsClientByID(crudFilter.EsConnect)
+	esConnect, err := escache.GetEsClientByID(crudFilter.EsConnect)
 	if err != nil {
 		return this.Error(ctx, err)
 	}

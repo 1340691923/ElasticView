@@ -1,7 +1,7 @@
 import variables from '@/styles/element-variables.scss'
 import defaultSettings from '@/settings'
 
-const { showSettings, tagsView, fixedHeader, sidebarLogo } = defaultSettings
+const {showSettings, tagsView, fixedHeader, sidebarLogo} = defaultSettings
 
 const state = {
   theme: variables.theme,
@@ -12,7 +12,7 @@ const state = {
 }
 
 const mutations = {
-  CHANGE_SETTING: (state, { key, value }) => {
+  CHANGE_SETTING: (state, {key, value}) => {
     if (state.hasOwnProperty(key)) {
       state[key] = value
     }
@@ -20,7 +20,7 @@ const mutations = {
 }
 
 const actions = {
-  changeSetting({ commit }, data) {
+  changeSetting({commit}, data) {
     commit('CHANGE_SETTING', data)
   }
 }

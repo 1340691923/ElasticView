@@ -1,11 +1,10 @@
 <template>
   <div class="app-container">
-    <el-card class="box-card">
       <div class="filter-container">
-        <el-button @click="getList" class="filter-item" icon="el-icon-refresh" type="primary">{{$t('刷新')}}</el-button>
+        <el-button @click="getList" class="filter-item" icon="el-icon-refresh" type="primary">{{ $t('刷新') }}</el-button>
         <el-button v-loading="openTaskLoading" :disabled="openTaskLoading" class="filter-item" icon="el-icon-plus"
                    @click="initForm" type="warning">
-          {{$t('新建数据抽取任务')}}
+          {{ $t('新建数据抽取任务') }}
         </el-button>
       </div>
 
@@ -141,7 +140,7 @@
               </div>
             </el-form-item>
             <el-form-item v-if="showAutoIncrementId" :label="$t('自增主键（注意：若存在连续自增的主键并该表非分区表则填)')">
-              <el-select  filterable clearable v-model="form.autoIncrementId">
+              <el-select filterable clearable v-model="form.autoIncrementId">
                 <el-option v-for="(v,k,index) in allCols" :key="index" :value="v.key" :label="v.label"/>
               </el-select>
             </el-form-item>
@@ -157,7 +156,7 @@
                 class="filter-item"
                 icon="el-icon-refresh"
                 @click="getIndexList"
-              >{{$t('刷新')}}
+              >{{ $t('刷新') }}
               </el-button>
               <el-button
                 id="new-index"
@@ -165,7 +164,7 @@
                 class="filter-item"
                 icon="el-icon-plus"
                 @click="openSettingDialog('','add')"
-              >{{$t('新建索引')}}
+              >{{ $t('新建索引') }}
               </el-button>
               <el-button
                 v-if="form.indexName != ''"
@@ -173,7 +172,7 @@
                 size="small"
                 icon="el-icon-setting"
                 @click="openSettingDialog(form.indexName,'update')"
-              >{{$t('修改配置')}}
+              >{{ $t('修改配置') }}
               </el-button>
               <el-button
                 v-if="form.indexName != ''"
@@ -181,7 +180,7 @@
                 size="small"
                 icon="el-icon-circle-plus-outline"
                 @click="openMappingEditDialog(form.indexName,false)"
-              >{{$t('修改映射')}}
+              >{{ $t('修改映射') }}
               </el-button>
             </el-form-item>
 
@@ -199,8 +198,8 @@
             </el-form-item>
 
             <el-form-item :label="$t('是否清空该索引重新导入数据:')">
-              <el-radio v-model="form.reset" class="filter-item" :label="Boolean(true)">{{$t('是')}}</el-radio>
-              <el-radio v-model="form.reset" class="filter-item" :label="Boolean(false)">{{$t('否')}}</el-radio>
+              <el-radio v-model="form.reset" class="filter-item" :label="Boolean(true)">{{ $t('是') }}</el-radio>
+              <el-radio v-model="form.reset" class="filter-item" :label="Boolean(false)">{{ $t('否') }}</el-radio>
             </el-form-item>
             <el-form-item :label="$t('协程数:')">
               <el-input type="number" v-model.number="form.goNum" style="width: 300px"></el-input>
@@ -246,14 +245,14 @@
 
           </el-form>
           <div style="text-align:right;">
-            <el-button type="danger" icon="el-icon-close" @click="closeDialog">{{$t('取消')}}</el-button>
+            <el-button type="danger" icon="el-icon-close" @click="closeDialog">{{ $t('取消') }}</el-button>
             <el-button :disabled="addLoading" type="primary" icon="el-icon-check" v-loading="addLoading" @click="add">
-              {{$t('确认')}}
+              {{ $t('确认') }}
             </el-button>
           </div>
         </el-card>
       </el-dialog>
-    </el-card>
+
     <settings
       style="z-index: 99999"
       v-if="openSettings"
@@ -284,7 +283,7 @@ import {filterData} from "@/utils/table";
 
 const defaultForm = {
   crontab_spec: "",
-  autoIncrementId:"",
+  autoIncrementId: "",
   selectType: "{}",
   remark: "",
   selectTable: "",
@@ -294,11 +293,11 @@ const defaultForm = {
   },
   indexName: "",
   reset: true,
-  bufferSize:100,
+  bufferSize: 100,
   esFlushInterval: 3,
   esBufferSize: 20000,
-  maxOpenConns:50,
-  maxIdleConns:50,
+  maxOpenConns: 50,
+  maxIdleConns: 50,
   goNum: 50,
   type_name: ""
 }
@@ -307,7 +306,7 @@ export default {
   name: "list",
   data() {
     return {
-      showAutoIncrementId:false,
+      showAutoIncrementId: false,
       openSettings: false,
       openMappings: false,
       settingsType: 'add',
@@ -329,12 +328,12 @@ export default {
       ver: 6,
       tableList: [],
       indexName: "",
-      crontabTishiList:[
+      crontabTishiList: [
         {'value': "0 30 2 * * *", 'data': "每天凌晨2：30跑一次"},
         {'value': "0 */5 * * * *", 'data': "每5分钟跑一次"},
       ],
-      transferLoading:false,
-      max:20
+      transferLoading: false,
+      max: 20
     }
   },
   created() {
@@ -379,7 +378,7 @@ export default {
     querySearch(queryString, cb) {
 
       let queryData = JSON.parse(JSON.stringify(this.crontabTishiList))
-      if(queryString == undefined)queryString = ""
+      if (queryString == undefined) queryString = ""
       if (queryString.trim() == '') {
         if (queryData.length > this.max) {
           cb(queryData.slice(0, this.max))
@@ -468,7 +467,7 @@ export default {
     changeTbCols(v) {
       this.refreshshowMapping()
     },
-    refreshShowAutoIncrementId(){
+    refreshShowAutoIncrementId() {
 
       this.showAutoIncrementId = false
       this.$nextTick(() => {
@@ -631,7 +630,7 @@ export default {
       }
       if (res.data == null) res.data = []
 
-      if(res.data.length == 0){
+      if (res.data.length == 0) {
         this.openTaskLoading = false
         this.$message({
           type: 'error',

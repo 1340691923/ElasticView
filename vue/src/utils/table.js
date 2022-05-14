@@ -4,8 +4,8 @@ export function filterData(data, searchContent) {
   var items = data
   var items1
   if (input) {
-    items1 = items.filter(function(item) {
-      return Object.keys(item).some(function(key1) {
+    items1 = items.filter(function (item) {
+      return Object.keys(item).some(function (key1) {
         return String(item[key1])
           .toLowerCase()
           .match(input)

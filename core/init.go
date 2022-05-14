@@ -20,25 +20,25 @@ import (
 func InitLogs() (fn func(), err error) {
 	fn = func() {}
 	logger := logs.NewLog(
-		logs.WithLogPath(GlobConfig.Log.LogDir),
-		logs.WithStorageDays(GlobConfig.Log.StorageDays),
+		logs.WithLogPath(model.GlobConfig.Log.LogDir),
+		logs.WithStorageDays(model.GlobConfig.Log.StorageDays),
 	)
 	logs.Logger, err = logger.InitLog()
 	if err != nil {
 		return
 	}
-	log.Println(fmt.Sprintf("日志组件初始化成功！日志所在目录：%v，保存天数为：%v", GlobConfig.Log.LogDir, GlobConfig.Log.StorageDays))
+	log.Println(fmt.Sprintf("日志组件初始化成功！日志所在目录：%v，保存天数为：%v", model.GlobConfig.Log.LogDir, model.GlobConfig.Log.StorageDays))
 	return
 }
 
 // 初始化mysql连接
 func InitSqlx() (fn func(), err error) {
 	fn = func() {}
-	config := GlobConfig.Mysql
-	driverType := GlobConfig.DbType
+	config := model.GlobConfig.Mysql
+	driverType := model.GlobConfig.DbType
 	var dbSource string
-	if driverType == SqliteDbTyp {
-		dbSource = GlobConfig.Sqlite.DbPath + "?_loc=Local&_busy_timeout=9999999"
+	if driverType == model.SqliteDbTyp {
+		dbSource = model.GlobConfig.Sqlite.DbPath + "?_loc=Local&_busy_timeout=9999999"
 	} else {
 		dbSource = fmt.Sprintf(
 			"%s:%s@tcp(%s:%s)/%s",
@@ -70,7 +70,7 @@ func InitSqlx() (fn func(), err error) {
 // 初始化mysql连接
 func InitSqliteData() (fn func(), err error) {
 	fn = func() {}
-	driverType := GlobConfig.DbType
+	driverType := model.GlobConfig.DbType
 	if driverType == "sqlite3" {
 		sql2.Init()
 	}
@@ -100,11 +100,11 @@ func InitTask() (fn func(), err error) {
 // 初始化项目启动任务
 func InitRbac() (fn func(), err error) {
 	fn = func() {}
-	config := GlobConfig.Mysql
-	driverType := GlobConfig.DbType
+	config := model.GlobConfig.Mysql
+	driverType := model.GlobConfig.DbType
 	var dbSource string
-	if driverType == SqliteDbTyp {
-		dbSource = GlobConfig.Sqlite.DbPath + "?_loc=Local&_busy_timeout=9999999"
+	if driverType == model.SqliteDbTyp {
+		dbSource = model.GlobConfig.Sqlite.DbPath + "?_loc=Local&_busy_timeout=9999999"
 	} else {
 		dbSource = fmt.Sprintf(
 			"%s:%s@tcp(%s:%s)/%s",
@@ -127,7 +127,7 @@ func InitRbac() (fn func(), err error) {
 
 func InitOpenWinBrowser() (fn func(), err error) {
 	fn = func() {}
-	config := GlobConfig
+	config := model.GlobConfig
 	if !config.DeBug {
 		port := ":" + strconv.Itoa(config.Port)
 		uri := fmt.Sprintf("%s%s", "http://127.0.0.1", port)

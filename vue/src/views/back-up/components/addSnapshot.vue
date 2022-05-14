@@ -19,44 +19,47 @@
             </el-select>
           </el-form-item>
           <el-form-item :label="$t('快照名')">
-            <el-input v-model="form.snapshotName" :placeholder="$t('快照名')" />
+            <el-input v-model="form.snapshotName" :placeholder="$t('快照名')"/>
           </el-form-item>
           <el-form-item :label="$t('需要备份的索引')">
-            <index-select :multiple="true" :have-all="true" :clearable="true" :placeholder="$t('迁移别名到多个索引上')" @change="changeIndex" />
+            <index-select :multiple="true" :have-all="true" :clearable="true" :placeholder="$t('迁移别名到多个索引上')"
+                          @change="changeIndex"/>
           </el-form-item>
 
-          <el-form-item :label="$t('ignore_unavailable   【把这个选项设置为 true 的时候在创建快照的过程中会忽略不存在的索引,如果没有设置ignore_unavailable，在索引不存在的情况下快照请求将会失败。】')">
+          <el-form-item
+            :label="$t('ignore_unavailable   【把这个选项设置为 true 的时候在创建快照的过程中会忽略不存在的索引,如果没有设置ignore_unavailable，在索引不存在的情况下快照请求将会失败。】')">
             <el-select v-model="form.ignore_unavailable" filterable>
-              <el-option :label="$t('不设置')" :value="null" />
-              <el-option :label="$t('是')" :value="true" />
-              <el-option :label="$t('否')" :value="false" />
+              <el-option :label="$t('不设置')" :value="null"/>
+              <el-option :label="$t('是')" :value="true"/>
+              <el-option :label="$t('否')" :value="false"/>
             </el-select>
           </el-form-item>
-          <el-form-item :label="$t('include_global_state 【通过设置 include_global_state 为false 能够防止 集群的全局状态被作为快照的一部分存储起来】')">
+          <el-form-item
+            :label="$t('include_global_state 【通过设置 include_global_state 为false 能够防止 集群的全局状态被作为快照的一部分存储起来】')">
             <el-select v-model="form.include_global_state" filterable>
-              <el-option :label="$t('不设置')" :value="null" />
-              <el-option :label="$t('是')" :value="true" />
-              <el-option :label="$t('否')" :value="false" />
+              <el-option :label="$t('不设置')" :value="null"/>
+              <el-option :label="$t('是')" :value="true"/>
+              <el-option :label="$t('否')" :value="false"/>
             </el-select>
           </el-form-item>
           <el-form-item :label="$t('partial  【如果快照中的1个或多个索引不是全部主分片都可用，就会导致整个创建快照的过程失败。 通过设置 partial 为 true 可以改变这个行为】')">
             <el-select v-model="form.partial" clearable filterable>
-              <el-option :label="$t('不设置')" :value="null" />
-              <el-option :label="$t('是')" :value="true" />
-              <el-option :label="$t('否')" :value="false" />
+              <el-option :label="$t('不设置')" :value="null"/>
+              <el-option :label="$t('是')" :value="true"/>
+              <el-option :label="$t('否')" :value="false"/>
             </el-select>
           </el-form-item>
           <el-form-item :label="$t('创建方式')">
             <el-select v-model="form.wait" clearable filterable>
-              <el-option :label="$t('不设置')" :value="null" />
-              <el-option :label="$t('异步创建')" :value="true" />
-              <el-option :label="$t('同步创建')" :value="false" />
+              <el-option :label="$t('不设置')" :value="null"/>
+              <el-option :label="$t('异步创建')" :value="true"/>
+              <el-option :label="$t('同步创建')" :value="false"/>
             </el-select>
           </el-form-item>
         </el-form>
         <div style="text-align:right;">
-          <el-button type="danger" icon="el-icon-close" @click="closeDialog">{{$t('取消')}}</el-button>
-          <el-button type="primary" icon="el-icon-check" @click="confirm">{{$t('确认')}}</el-button>
+          <el-button type="danger" icon="el-icon-close" @click="closeDialog">{{ $t('取消') }}</el-button>
+          <el-button type="primary" icon="el-icon-check" @click="confirm">{{ $t('确认') }}</el-button>
         </div>
       </el-card>
     </el-dialog>
@@ -64,7 +67,7 @@
 </template>
 
 <script>
-import { CreateSnapshotAction, SnapshotRepositoryListAction } from '@/api/es-backup'
+import {CreateSnapshotAction, SnapshotRepositoryListAction} from '@/api/es-backup'
 
 export default {
   name: 'Add',
@@ -112,7 +115,7 @@ export default {
       this.loading = true
       const input = {}
       input['es_connect'] = this.$store.state.baseData.EsConnectID
-      const { data, code, msg } = await SnapshotRepositoryListAction(input)
+      const {data, code, msg} = await SnapshotRepositoryListAction(input)
       if (code == 0) {
         this.repositoryNameList = data.res
       } else if (code == 199999) {
@@ -145,7 +148,7 @@ export default {
       const input = this.form
       input['es_connect'] = this.$store.state.baseData.EsConnectID
 
-      const { code, data, msg } = await CreateSnapshotAction(input)
+      const {code, data, msg} = await CreateSnapshotAction(input)
       if (code == 0) {
         this.$emit('close', true)
         this.$message({

@@ -16,13 +16,13 @@ const mutations = {
 }
 
 const actions = {
-  SetEsConnect({ commit }, p) {
+  SetEsConnect({commit}, p) {
     commit('SET_EsConnect', p)
   },
-  SET_ReqCancelMap({ commit }, p) {
+  SET_ReqCancelMap({commit}, p) {
     commit('SET_ReqCancelMap', p)
   },
-  DElETE_ReqCancelMap({ commit }, p) {
+  DElETE_ReqCancelMap({commit}, p) {
     commit('DElETE_ReqCancelMap', p)
   }
 }

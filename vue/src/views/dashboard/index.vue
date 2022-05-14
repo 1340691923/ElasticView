@@ -1,13 +1,13 @@
 <template>
   <div>
-    <el-card class="box-card">
+
       <div class="dashboard-editor-container">
         <github-corner class="github-corner" />
 
         <panel-group  />
 
       </div>
-    </el-card>
+
   </div>
 </template>
 

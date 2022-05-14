@@ -3,7 +3,7 @@ package api
 import (
 	"context"
 	"errors"
-	"github.com/1340691923/ElasticView/engine/es"
+	"github.com/1340691923/ElasticView/platform-basic-libs/escache"
 	"github.com/1340691923/ElasticView/platform-basic-libs/response"
 	es2 "github.com/1340691923/ElasticView/platform-basic-libs/service/es"
 	"github.com/1340691923/ElasticView/platform-basic-libs/util"
@@ -18,15 +18,22 @@ type EsController struct {
 
 // Ping
 func (this EsController) PingAction(ctx *Ctx) error {
-	esConnect := new(es.EsConnect)
+	esConnect := new(escache.EsConnect)
 	err := ctx.BodyParser(esConnect)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
 
+	if esConnect.Pwd != ""{
+		pwd,decrptErr := escache.EsPwdESBDecrypt(esConnect.Pwd)
+		if decrptErr == nil{
+			esConnect.Pwd = pwd
+		}
+	}
+
 	switch esConnect.Version {
 	case 6:
-		esClient, err := es.NewEsClientV6(esConnect)
+		esClient, err := escache.NewEsClientV6(esConnect)
 		if err != nil {
 			return this.Error(ctx, err)
 		}
@@ -36,7 +43,7 @@ func (this EsController) PingAction(ctx *Ctx) error {
 		}
 		return this.Success(ctx, response.OperateSuccess, data)
 	case 7:
-		esClient, err := es.NewEsClientV7(esConnect)
+		esClient, err := escache.NewEsClientV7(esConnect)
 		if err != nil {
 			return this.Error(ctx, err)
 		}
@@ -46,7 +53,7 @@ func (this EsController) PingAction(ctx *Ctx) error {
 		}
 		return this.Success(ctx, response.OperateSuccess, data)
 	case 8:
-		esClient, err := es.NewEsClientV8(esConnect)
+		esClient, err := escache.NewEsClientV8(esConnect)
 		if err != nil {
 			return this.Error(ctx, err)
 		}
@@ -66,12 +73,12 @@ func (this EsController) PingAction(ctx *Ctx) error {
 // Es 的CAT API
 func (this EsController) CatAction(ctx *Ctx) error {
 
-	esCat := new(es.EsCat)
+	esCat := new(escache.EsCat)
 	err := ctx.BodyParser(&esCat)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	esConnect, err := es.GetEsClientByID(esCat.EsConnect)
+	esConnect, err := escache.GetEsClientByID(esCat.EsConnect)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
@@ -86,12 +93,12 @@ func (this EsController) CatAction(ctx *Ctx) error {
 
 func (this EsController) RunDslAction(ctx *Ctx) error {
 
-	esRest := new(es.EsRest)
+	esRest := new(escache.EsRest)
 	err := ctx.BodyParser(&esRest)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	esConnect, err := es.GetEsClientByID(esRest.EsConnect)
+	esConnect, err := escache.GetEsClientByID(esRest.EsConnect)
 
 	if err != nil {
 		return this.Error(ctx, err)
@@ -119,12 +126,12 @@ func (this EsController) SqlToDslAction(ctx *Ctx) error {
 
 // 一些索引的操作
 func (this EsController) OptimizeAction(ctx *Ctx) error {
-	esOptimize := new(es.EsOptimize)
+	esOptimize := new(escache.EsOptimize)
 	err := ctx.BodyParser(&esOptimize)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	esConnect, err := es.GetEsClientByID(esOptimize.EsConnect)
+	esConnect, err := escache.GetEsClientByID(esOptimize.EsConnect)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
@@ -138,12 +145,12 @@ func (this EsController) OptimizeAction(ctx *Ctx) error {
 
 // 将索引恢复为可写状态   由于不可抗力，ES禁止写后，默认不会自动恢复
 func (this EsController) RecoverCanWrite(ctx *Ctx) error {
-	esConnectID := new(es.EsConnectID)
+	esConnectID := new(escache.EsConnectID)
 	err := ctx.BodyParser(&esConnectID)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	esConnect, err := es.GetEsClientByID(esConnectID.EsConnectID)
+	esConnect, err := escache.GetEsClientByID(esConnectID.EsConnectID)
 	if err != nil {
 		return this.Error(ctx, err)
 	}

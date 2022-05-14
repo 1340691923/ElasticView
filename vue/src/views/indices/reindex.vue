@@ -1,6 +1,5 @@
 <template>
   <div class="app-container">
-    <el-card class="box-card">
       <div class="filter-container">
         <div class="margin-left30">
           <el-button type="success" class="filter-item" icon="el-icon-refresh" @click="refresh">{{$t('清空表单')}}</el-button>
@@ -294,7 +293,6 @@
           </el-card>
         </el-tab-pane>
       </el-tabs>
-    </el-card>
   </div>
 </template>
 

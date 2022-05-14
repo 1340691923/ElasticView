@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-card class="box-card">
+
       <div class="filter-container">
         <el-select
           v-model="snapshotNameList"
@@ -18,7 +18,7 @@
             :value="k"
           />
         </el-select>
-        <el-button type="warning" @click.native="openAddDialog = true">{{$t('新建存储库')}}</el-button>
+        <el-button type="warning" @click.native="openAddDialog = true">{{ $t('新建存储库') }}</el-button>
       </div>
       <el-table
         :data="tableData"
@@ -30,16 +30,16 @@
           width="50"
         >
           <template slot-scope="scope">
-            {{ scope.$index+1 }}
+            {{ scope.$index + 1 }}
           </template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('存储库名')" prop="name" width="200" />
-        <el-table-column align="center" :label="$t('存储库地址')" prop="location" width="300" />
-        <el-table-column align="center" :label="$t('类型')" prop="type" width="200" />
+        <el-table-column align="center" :label="$t('存储库名')" prop="name" width="200"/>
+        <el-table-column align="center" :label="$t('存储库地址')" prop="location" width="300"/>
+        <el-table-column align="center" :label="$t('类型')" prop="type" width="200"/>
 
-        <el-table-column align="center" :label="$t('是否压缩')" prop="compress" width="100" />
-        <el-table-column align="center" :label="$t('分解块大小')" prop="chunk_size" width="100" />
-        <el-table-column align="center" :label="$t('是否只读(默认false)')" prop="readonly" width="100" />
+        <el-table-column align="center" :label="$t('是否压缩')" prop="compress" width="100"/>
+        <el-table-column align="center" :label="$t('分解块大小')" prop="chunk_size" width="100"/>
+        <el-table-column align="center" :label="$t('是否只读(默认false)')" prop="readonly" width="100"/>
 
         <el-table-column align="center" :label="$t('制作快照的速度')" width="100">
           <template slot-scope="scope">
@@ -57,22 +57,25 @@
         <el-table-column align="center" :label="$t('操作')" fixed="right" width="350">
           <template slot-scope="scope">
             <el-button-group>
-              <el-button type="success" size="small" icon="el-icon-search" @click="look(scope.row.name)">{{$t('查看')}}</el-button>
-              <el-button type="warning" size="small" icon="el-icon-edit" @click="updateSnapshotData(scope.row)">{{$t('修改')}}
+              <el-button type="success" size="small" icon="el-icon-search" @click="look(scope.row.name)">
+                {{ $t('查看') }}
+              </el-button>
+              <el-button type="warning" size="small" icon="el-icon-edit" @click="updateSnapshotData(scope.row)">
+                {{ $t('修改') }}
               </el-button>
               <el-button
                 type="danger"
                 size="small"
                 icon="el-icon-delete"
                 @click="SnapshotDeleteRepositoryAction(scope.row.name)"
-              >{{$t('删除')}}
+              >{{ $t('删除') }}
               </el-button>
               <el-button
                 type="warning"
                 size="small"
                 icon="el-icon-delete"
                 @click="CleanupeRepository(scope.row.name)"
-              >{{$t('清理')}}
+              >{{ $t('清理') }}
               </el-button>
 
             </el-button-group>
@@ -103,7 +106,7 @@
           :title="$t('JSON数据')"
         />
       </el-drawer>
-    </el-card>
+
     <add
       v-if="openAddDialog"
       :snapshot-data="snapshotData"
@@ -114,7 +117,7 @@
 </template>
 
 <script>
-import { CleanupeRepositoryAction, SnapshotDeleteRepositoryAction, SnapshotRepositoryListAction, SnapshotListAction } from '@/api/es-backup'
+import {CleanupeRepositoryAction, SnapshotDeleteRepositoryAction, SnapshotRepositoryListAction} from '@/api/es-backup'
 
 export default {
   name: 'ResTable',
@@ -146,7 +149,7 @@ export default {
       const input = {}
       input['es_connect'] = this.$store.state.baseData.EsConnectID
       input['name'] = name
-      const { data, code, msg } = await CleanupeRepositoryAction(input)
+      const {data, code, msg} = await CleanupeRepositoryAction(input)
       if (code != 0) {
         this.$message({
           type: 'error',
@@ -167,7 +170,7 @@ export default {
       const input = {}
       input['es_connect'] = this.$store.state.baseData.EsConnectID
       input['name'] = name
-      const { data, code, msg } = await SnapshotDeleteRepositoryAction(input)
+      const {data, code, msg} = await SnapshotDeleteRepositoryAction(input)
       if (code != 0) {
         this.$message({
           type: 'error',
@@ -200,7 +203,7 @@ export default {
       this.loading = true
       const input = {}
       input['es_connect'] = this.$store.state.baseData.EsConnectID
-      const { data, code, msg } = await SnapshotRepositoryListAction(input)
+      const {data, code, msg} = await SnapshotRepositoryListAction(input)
       if (code == 0) {
         this.resData = data.res
         this.$notify({
@@ -239,7 +242,7 @@ export default {
       input['es_connect'] = this.$store.state.baseData.EsConnectID
       input['snapshot_info_list'] = this.snapshotNameList
       input['repository'] = 'test3'
-      const { data, code, msg } = await SnapshotRepositoryListAction(input)
+      const {data, code, msg} = await SnapshotRepositoryListAction(input)
 
       if (code != 0) {
         this.$message({

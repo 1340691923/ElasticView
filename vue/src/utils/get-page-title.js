@@ -5,7 +5,6 @@ import {i18nText} from "@/utils/lang";
 const title = defaultSettings.title || 'ElasticView'
 
 
-
 export default function getPageTitle(pageTitle) {
 
   if (pageTitle) {

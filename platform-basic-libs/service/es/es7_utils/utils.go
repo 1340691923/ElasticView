@@ -2,7 +2,7 @@ package es7_utils
 
 import (
 	"errors"
-	"github.com/1340691923/ElasticView/engine/es"
+	"github.com/1340691923/ElasticView/platform-basic-libs/escache"
 	"github.com/olivere/elastic/v7"
 )
 
@@ -40,7 +40,7 @@ const SIMPLE = "SIMPLE"
 const AND = "且"
 const OR = "或"
 
-func GetWhereSql(anlysisFilter es.AnalysisFilter) (q elastic.Query, err error) {
+func GetWhereSql(anlysisFilter escache.AnalysisFilter) (q elastic.Query, err error) {
 	var arrP esI
 	colArr := []string{}
 	switch anlysisFilter.Relation {

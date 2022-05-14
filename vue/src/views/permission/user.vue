@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-card class="box-card">
+
 
       <div class="filter-container">
         <el-button type="primary" icon="el-icon-plus" class="filter-item" @click="handleAddRole">{{$t('新建用户')}}</el-button>
@@ -76,7 +76,7 @@
           <el-button type="primary" icon="el-icon-check" @click="confirmRole">{{$t('确认')}}</el-button>
         </div>
       </el-dialog>
-    </el-card> </div>
+  </div>
 </template>
 
 <script>

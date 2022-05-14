@@ -3,8 +3,8 @@ package data_conversion
 import (
 	"context"
 	"encoding/json"
-	"github.com/1340691923/ElasticView/engine/es"
 	"github.com/1340691923/ElasticView/engine/logs"
+	"github.com/1340691923/ElasticView/platform-basic-libs/escache"
 	"github.com/1340691923/ElasticView/platform-basic-libs/util"
 	elasticV6 "github.com/olivere/elastic"
 	elasticV7 "github.com/olivere/elastic/v7"
@@ -22,9 +22,9 @@ func (this *Es6) fn1(indexName string, typeName string, data util.Map) interface
 	return elasticV6.NewBulkIndexRequest().Index(indexName).Type(typeName).Doc(data)
 }
 
-func (this *Es6) fn2(data []interface{}, connect *es.EsConnect) error {
+func (this *Es6) fn2(data []interface{}, connect *escache.EsConnect) error {
 
-	esClinet, err := es.NewEsClientV6(connect)
+	esClinet, err := escache.NewEsClientV6(connect)
 
 	if err != nil {
 		return err
@@ -55,9 +55,9 @@ func (this *Es7) fn1(indexName string, typeName string, data util.Map) interface
 	return elasticV7.NewBulkIndexRequest().Index(indexName).Doc(data)
 }
 
-func (this *Es7) fn2(data []interface{}, connect *es.EsConnect) error {
+func (this *Es7) fn2(data []interface{}, connect *escache.EsConnect) error {
 
-	esClinet, err := es.NewEsClientV7(connect)
+	esClinet, err := escache.NewEsClientV7(connect)
 
 	if err != nil {
 		return err

@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-card class="box-card">
+
       <div class="filter-container">
         <el-button type="primary" icon="el-icon-plus" class="filter-item" @click="handleAddRole">{{$t('新建连接信息')}}</el-button>
       </div>
@@ -30,11 +30,7 @@
             {{ scope.row.user }}
           </template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('密码')" width="300">
-          <template slot-scope="scope">
-            {{ scope.row.pwd }}
-          </template>
-        </el-table-column>
+
         <el-table-column align="center" :label="$t('备注')" width="220">
           <template slot-scope="scope">
             {{ scope.row.remark }}
@@ -107,7 +103,7 @@
           <el-button type="primary" icon="el-icon-check" @click="confirm">{{$t('确认')}}</el-button>
         </div>
       </el-dialog>
-    </el-card>
+
   </div>
 </template>
 
@@ -209,6 +205,7 @@ export default {
       this.dialogVisible = true
       this.checkStrictly = true
       this.link = deepClone(scope.row)
+      this.link.pwd = ""
     },
     handleDelete({ $index, row }) {
       this.$confirm('确定删除该连接信息吗?', '警告', {

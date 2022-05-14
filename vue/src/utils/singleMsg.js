@@ -1,5 +1,6 @@
 /** 重置message，防止重复点击重复弹出message弹框 */
 import ElementUI from 'element-ui';
+
 let messageInstance = null
 const mainMessage = function DoneMessage(options) {
   // 如果弹窗已存在先关闭
@@ -9,8 +10,8 @@ const mainMessage = function DoneMessage(options) {
   messageInstance = ElementUI.Message(options)
 }
 const arr = ['success', 'warning', 'info', 'error']
-arr.forEach(function(type) {
-  mainMessage[type] = function(options) {
+arr.forEach(function (type) {
+  mainMessage[type] = function (options) {
     if (typeof options === 'string') {
       options = {
         message: options

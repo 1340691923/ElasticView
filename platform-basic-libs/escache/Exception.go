@@ -1,4 +1,4 @@
-package es
+package escache
 
 import "errors"
 

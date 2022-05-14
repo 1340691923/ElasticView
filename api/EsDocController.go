@@ -1,9 +1,9 @@
 package api
 
 import (
+	"github.com/1340691923/ElasticView/platform-basic-libs/escache"
 	es2 "github.com/1340691923/ElasticView/platform-basic-libs/service/es"
 
-	"github.com/1340691923/ElasticView/engine/es"
 	. "github.com/gofiber/fiber/v2"
 )
 
@@ -14,12 +14,12 @@ type EsDocController struct {
 
 // 删除文档数据
 func (this EsDocController) DeleteRowByIDAction(ctx *Ctx) error {
-	esDocDeleteRowByID := new(es.EsDocDeleteRowByID)
+	esDocDeleteRowByID := new(escache.EsDocDeleteRowByID)
 	err := ctx.BodyParser(esDocDeleteRowByID)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	esConnect, err := es.GetEsClientByID(esDocDeleteRowByID.EsConnect)
+	esConnect, err := escache.GetEsClientByID(esDocDeleteRowByID.EsConnect)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
@@ -33,12 +33,12 @@ func (this EsDocController) DeleteRowByIDAction(ctx *Ctx) error {
 
 // 修改文档
 func (this EsDocController) UpdateByIDAction(ctx *Ctx) error {
-	esDocUpdateByID := new(es.EsDocUpdateByID)
+	esDocUpdateByID := new(escache.EsDocUpdateByID)
 	err := ctx.BodyParser(esDocUpdateByID)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	esConnect, err := es.GetEsClientByID(esDocUpdateByID.EsConnect)
+	esConnect, err := escache.GetEsClientByID(esDocUpdateByID.EsConnect)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
@@ -51,12 +51,12 @@ func (this EsDocController) UpdateByIDAction(ctx *Ctx) error {
 
 // 新增文档
 func (this EsDocController) InsertAction(ctx *Ctx) error {
-	esDocUpdateByID := new(es.EsDocUpdateByID)
+	esDocUpdateByID := new(escache.EsDocUpdateByID)
 	err := ctx.BodyParser(esDocUpdateByID)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	esConnect, err := es.GetEsClientByID(esDocUpdateByID.EsConnect)
+	esConnect, err := escache.GetEsClientByID(esDocUpdateByID.EsConnect)
 	if err != nil {
 		return this.Error(ctx, err)
 	}

@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-card class="box-card">
+
       <div class="filter-container">
         <el-select
           v-model="repositoryName"
@@ -17,8 +17,8 @@
             :value="k"
           />
         </el-select>
-        <el-button type="warning" @click.native="openAddDialog = true">{{$t('新建快照')}}</el-button>
-        <el-button type="success" @click="search">{{$t('刷新')}}</el-button>
+        <el-button type="warning" @click.native="openAddDialog = true">{{ $t('新建快照') }}</el-button>
+        <el-button type="success" @click="search">{{ $t('刷新') }}</el-button>
       </div>
       <el-table
         :data="tableData"
@@ -30,26 +30,26 @@
           width="50"
         >
           <template slot-scope="scope">
-            {{ scope.$index+1 }}
+            {{ scope.$index + 1 }}
           </template>
         </el-table-column>
 
-        <el-table-column align="center" :label="$t('快照名')" prop="id" width="100" />
-        <el-table-column align="center" :label="$t('备份索引数')" prop="indices" width="50" />
+        <el-table-column align="center" :label="$t('快照名')" prop="id" width="100"/>
+        <el-table-column align="center" :label="$t('备份索引数')" prop="indices" width="50"/>
 
-        <el-table-column align="center" :label="$t('状态')" prop="status" width="100" />
+        <el-table-column align="center" :label="$t('状态')" prop="status" width="100"/>
 
         <el-table-column align="center" :label="状态" width="100">
           <template slot-scope="scope">
-            <el-tag v-if="scope.row.status == 'SUCCESS'" type="success">{{$t('成功')}}</el-tag>
-            <el-tag v-else-if="scope.row.status == 'IN_PROGRESS'" type="warning">{{$t('还在进行中')}}</el-tag>
+            <el-tag v-if="scope.row.status == 'SUCCESS'" type="success">{{ $t('成功') }}</el-tag>
+            <el-tag v-else-if="scope.row.status == 'IN_PROGRESS'" type="warning">{{ $t('还在进行中') }}</el-tag>
             <el-tag v-else>{{ scope.row.status }}</el-tag>
           </template>
         </el-table-column>
 
-        <el-table-column align="center" :label="$t('开始时间')" prop="start_time" width="100" />
+        <el-table-column align="center" :label="$t('开始时间')" prop="start_time" width="100"/>
 
-        <el-table-column align="center" :label="$t('结束时间')" prop="end_time" width="100" />
+        <el-table-column align="center" :label="$t('结束时间')" prop="end_time" width="100"/>
 
         <el-table-column align="center" :label="$t('开始详细时间')" width="180">
           <template slot-scope="scope">
@@ -63,36 +63,37 @@
           </template>
         </el-table-column>
 
-        <el-table-column align="center" :label="$t('耗费时长')" prop="duration" width="90" />
-        <el-table-column align="center" :label="$t('分片总数')" prop="total_shards" width="90" />
-        <el-table-column align="center" :label="$t('成功分片数')" prop="successful_shards" width="90" />
-        <el-table-column align="center" :label="$t('失败分片数')" prop="failed_shards" width="90" />
+        <el-table-column align="center" :label="$t('耗费时长')" prop="duration" width="90"/>
+        <el-table-column align="center" :label="$t('分片总数')" prop="total_shards" width="90"/>
+        <el-table-column align="center" :label="$t('成功分片数')" prop="successful_shards" width="90"/>
+        <el-table-column align="center" :label="$t('失败分片数')" prop="failed_shards" width="90"/>
 
         <el-table-column align="center" :label="$t('操作')" fixed="right" width="350">
           <template slot-scope="scope">
             <el-button-group>
-              <el-button type="success" size="small" icon="el-icon-search" @click="look(scope.row.id)">{{$t('查看')}}</el-button>
+              <el-button type="success" size="small" icon="el-icon-search" @click="look(scope.row.id)">{{ $t('查看') }}
+              </el-button>
 
               <el-button
                 type="danger"
                 size="small"
                 icon="el-icon-delete"
                 @click="SnapshotDeleteAction(scope.row.id)"
-              >{{$t('删除')}}
+              >{{ $t('删除') }}
               </el-button>
               <el-button
                 type="warning"
                 size="small"
                 icon="el-icon-refresh"
                 @click="openRestore(scope.row.id)"
-              >{{$t('恢复')}}
+              >{{ $t('恢复') }}
               </el-button>
               <el-button
                 type="primary"
                 size="small"
                 icon="el-icon-refresh"
                 @click="status(scope.row.id)"
-              >{{$t('状态')}}
+              >{{ $t('状态') }}
               </el-button>
 
             </el-button-group>
@@ -121,7 +122,7 @@
           :title="$t('快照详细信息')"
         />
       </el-drawer>
-    </el-card>
+
     <add
       v-if="openAddDialog"
       :open="openAddDialog"
@@ -139,9 +140,15 @@
 </template>
 
 <script>
-import { SnapshotListAction, SnapshotRepositoryListAction, SnapshotDeleteAction, SnapshotDetailAction, SnapshotStatusAction } from '@/api/es-backup'
+import {
+  SnapshotListAction,
+  SnapshotRepositoryListAction,
+  SnapshotDeleteAction,
+  SnapshotDetailAction,
+  SnapshotStatusAction
+} from '@/api/es-backup'
 
-import { timestampToTime } from '@/utils/time'
+import {timestampToTime} from '@/utils/time'
 
 export default {
   name: 'ResTable',
@@ -177,7 +184,7 @@ export default {
       input['snapshot'] = name
       input['repository'] = this.repositoryName
 
-      const { data, code, msg } = await SnapshotStatusAction(input)
+      const {data, code, msg} = await SnapshotStatusAction(input)
       if (code != 0) {
         this.$message({
           type: 'error',
@@ -208,7 +215,7 @@ export default {
       input['snapshot'] = name
       input['repository'] = this.repositoryName
 
-      const { data, code, msg } = await SnapshotDeleteAction(input)
+      const {data, code, msg} = await SnapshotDeleteAction(input)
       if (code != 0) {
         this.$message({
           type: 'error',
@@ -243,7 +250,7 @@ export default {
       this.loading = true
       const input = {}
       input['es_connect'] = this.$store.state.baseData.EsConnectID
-      const { data, code, msg } = await SnapshotRepositoryListAction(input)
+      const {data, code, msg} = await SnapshotRepositoryListAction(input)
       if (code == 0) {
         this.resData = data.res
 
@@ -280,7 +287,7 @@ export default {
 
       input['es_connect'] = this.$store.state.baseData.EsConnectID
       input['repository'] = this.repositoryName
-      const { data, code, msg } = await SnapshotListAction(input)
+      const {data, code, msg} = await SnapshotListAction(input)
 
       if (code != 0) {
         this.$message({
@@ -308,7 +315,7 @@ export default {
       input['repository'] = this.repositoryName
       input['snapshot'] = index
 
-      const { data, code, msg } = await SnapshotDetailAction(input)
+      const {data, code, msg} = await SnapshotDetailAction(input)
       if (code != 0) {
         this.$message({
           type: 'error',

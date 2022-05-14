@@ -1,6 +1,7 @@
 package core
 
 import (
+	"github.com/1340691923/ElasticView/model"
 	"github.com/1340691923/ElasticView/platform-basic-libs/util"
 	"log"
 	"path/filepath"
@@ -85,7 +86,7 @@ func (this *App) InitConfig() *App {
 		return this
 	}
 
-	if err := config.Unmarshal(&GlobConfig); err != nil {
+	if err := config.Unmarshal(&model.GlobConfig); err != nil {
 		this.err = err
 		return this
 	}
@@ -96,7 +97,7 @@ func (this *App) InitConfig() *App {
 			log.Println("应用配置修改失败", err)
 			return
 		}
-		if err := config.Unmarshal(&GlobConfig); err != nil {
+		if err := config.Unmarshal(&model.GlobConfig); err != nil {
 			log.Println("应用配置修改失败", err)
 			return
 		}

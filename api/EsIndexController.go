@@ -1,7 +1,7 @@
 package api
 
 import (
-	"github.com/1340691923/ElasticView/engine/es"
+	"github.com/1340691923/ElasticView/platform-basic-libs/escache"
 	es2 "github.com/1340691923/ElasticView/platform-basic-libs/service/es"
 	. "github.com/gofiber/fiber/v2"
 )
@@ -13,12 +13,12 @@ type EsIndexController struct {
 
 //创建索引
 func (this EsIndexController) CreateAction(ctx *Ctx) error {
-	esIndexInfo := new(es.EsIndexInfo)
+	esIndexInfo := new(escache.EsIndexInfo)
 	err := ctx.BodyParser(&esIndexInfo)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	esConnect, err := es.GetEsClientByID(esIndexInfo.EsConnect)
+	esConnect, err := escache.GetEsClientByID(esIndexInfo.EsConnect)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
@@ -32,12 +32,12 @@ func (this EsIndexController) CreateAction(ctx *Ctx) error {
 
 // 删除索引
 func (this EsIndexController) DeleteAction(ctx *Ctx) error {
-	esIndexInfo := new(es.EsIndexInfo)
+	esIndexInfo := new(escache.EsIndexInfo)
 	err := ctx.BodyParser(&esIndexInfo)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	esConnect, err := es.GetEsClientByID(esIndexInfo.EsConnect)
+	esConnect, err := escache.GetEsClientByID(esIndexInfo.EsConnect)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
@@ -52,12 +52,12 @@ func (this EsIndexController) DeleteAction(ctx *Ctx) error {
 
 //获取索引配置信息
 func (this EsIndexController) GetSettingsAction(ctx *Ctx) error {
-	esIndexInfo := new(es.EsIndexInfo)
+	esIndexInfo := new(escache.EsIndexInfo)
 	err := ctx.BodyParser(&esIndexInfo)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	esConnect, err := es.GetEsClientByID(esIndexInfo.EsConnect)
+	esConnect, err := escache.GetEsClientByID(esIndexInfo.EsConnect)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
@@ -72,12 +72,12 @@ func (this EsIndexController) GetSettingsAction(ctx *Ctx) error {
 
 //获取所有的索引配置信息
 func (this EsIndexController) GetSettingsInfoAction(ctx *Ctx) error {
-	esIndexInfo := new(es.EsIndexInfo)
+	esIndexInfo := new(escache.EsIndexInfo)
 	err := ctx.BodyParser(&esIndexInfo)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	esConnect, err := es.GetEsClientByID(esIndexInfo.EsConnect)
+	esConnect, err := escache.GetEsClientByID(esIndexInfo.EsConnect)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
@@ -92,12 +92,12 @@ func (this EsIndexController) GetSettingsInfoAction(ctx *Ctx) error {
 
 // 获取别名
 func (this EsIndexController) GetAliasAction(ctx *Ctx) error {
-	esAliasInfo := new(es.EsAliasInfo)
+	esAliasInfo := new(escache.EsAliasInfo)
 	err := ctx.BodyParser(&esAliasInfo)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	esConnect, err := es.GetEsClientByID(esAliasInfo.EsConnect)
+	esConnect, err := escache.GetEsClientByID(esAliasInfo.EsConnect)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
@@ -112,12 +112,12 @@ func (this EsIndexController) GetAliasAction(ctx *Ctx) error {
 
 // 操作别名
 func (this EsIndexController) OperateAliasAction(ctx *Ctx) error {
-	esAliasInfo := new(es.EsAliasInfo)
+	esAliasInfo := new(escache.EsAliasInfo)
 	err := ctx.BodyParser(&esAliasInfo)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	esConnect, err := es.GetEsClientByID(esAliasInfo.EsConnect)
+	esConnect, err := escache.GetEsClientByID(esAliasInfo.EsConnect)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
@@ -130,12 +130,12 @@ func (this EsIndexController) OperateAliasAction(ctx *Ctx) error {
 
 // 重建索引
 func (this EsIndexController) ReindexAction(ctx *Ctx) error {
-	esReIndexInfo := new(es.EsReIndexInfo)
+	esReIndexInfo := new(escache.EsReIndexInfo)
 	err := ctx.BodyParser(&esReIndexInfo)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	esConnect, err := es.GetEsClientByID(esReIndexInfo.EsConnect)
+	esConnect, err := escache.GetEsClientByID(esReIndexInfo.EsConnect)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
@@ -148,12 +148,12 @@ func (this EsIndexController) ReindexAction(ctx *Ctx) error {
 
 // 得到所有的索引名
 func (this EsIndexController) IndexNamesAction(ctx *Ctx) error {
-	esConnectID := new(es.EsConnectID)
+	esConnectID := new(escache.EsConnectID)
 	err := ctx.BodyParser(&esConnectID)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	esConnect, err := es.GetEsClientByID(esConnectID.EsConnectID)
+	esConnect, err := escache.GetEsClientByID(esConnectID.EsConnectID)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
@@ -166,12 +166,12 @@ func (this EsIndexController) IndexNamesAction(ctx *Ctx) error {
 
 // 获取索引的Stats
 func (this EsIndexController) StatsAction(ctx *Ctx) error {
-	esIndexInfo := new(es.EsIndexInfo)
+	esIndexInfo := new(escache.EsIndexInfo)
 	err := ctx.BodyParser(&esIndexInfo)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	esConnect, err := es.GetEsClientByID(esIndexInfo.EsConnect)
+	esConnect, err := escache.GetEsClientByID(esIndexInfo.EsConnect)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
@@ -184,12 +184,12 @@ func (this EsIndexController) StatsAction(ctx *Ctx) error {
 }
 
 func (this EsIndexController) CatStatusAction(ctx *Ctx) error {
-	esIndexInfo := new(es.EsIndexInfo)
+	esIndexInfo := new(escache.EsIndexInfo)
 	err := ctx.BodyParser(&esIndexInfo)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	esConnect, err := es.GetEsClientByID(esIndexInfo.EsConnect)
+	esConnect, err := escache.GetEsClientByID(esIndexInfo.EsConnect)
 	if err != nil {
 		return this.Error(ctx, err)
 	}

@@ -1,9 +1,10 @@
-package es
+package escache
 
 import (
+	"encoding/base64"
 	"errors"
-
 	"github.com/1340691923/ElasticView/engine/db"
+	"github.com/1340691923/ElasticView/model"
 	"github.com/1340691923/ElasticView/platform-basic-libs/util"
 )
 
@@ -32,7 +33,31 @@ func GetEsClientByID(id int) (*EsConnect, error) {
 	if esConnectTmp.Ip == "" {
 		return nil, errors.New("请先选择ES连接")
 	}
-
+	esConnectTmp.Pwd,err = EsPwdESBDecrypt(esConnectTmp.Pwd)
+	if err != nil {
+		return nil, err
+	}
 	esCache.Set(id, &esConnectTmp)
 	return &esConnectTmp, nil
+}
+
+func  EsPwdESBDecrypt(cryptedStr string) (string,error) {
+	pwdByte,err := base64.StdEncoding.DecodeString(cryptedStr)
+	if err!=nil{
+		return "", err
+	}
+	b,err := util.ECBDecrypt(pwdByte, model.GlobConfig.EsPwdSecret)
+	if err!=nil{
+		return "", err
+	}
+	return string(b), nil
+}
+
+func EsPwdESBEncrypt(pwd string) (string,error) {
+	b,err := util.ECBEncrypt(pwd, model.GlobConfig.EsPwdSecret)
+	if err!=nil{
+		return "", err
+	}
+
+	return base64.StdEncoding.EncodeToString(b), nil
 }

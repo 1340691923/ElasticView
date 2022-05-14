@@ -1,17 +1,18 @@
 <template>
   <div class="app-container">
-    <el-card class="box-card">
+
       <div class="filter-container">
 
-        <el-radio @change="search" v-model="input.typ" class="filter-item" label="">{{$t('全部')}}</el-radio>
-        <el-radio @change="search" v-model="input.typ" class="filter-item" label="mysql">{{$t('mysql')}}</el-radio>
+        <el-radio @change="search" v-model="input.typ" class="filter-item" label="">{{ $t('全部') }}</el-radio>
+        <el-radio @change="search" v-model="input.typ" class="filter-item" label="mysql">{{ $t('mysql') }}</el-radio>
         <!--<el-radio @change="search" v-model="input.typ" class="filter-item" label="sqlserver">sqlserver</el-radio>-->
-        <el-radio @change="search" v-model="input.typ" class="filter-item" label="clickhouse">{{$t('clickhouse')}}</el-radio>
+        <el-radio @change="search" v-model="input.typ" class="filter-item" label="clickhouse">{{ $t('clickhouse') }}
+        </el-radio>
         <!--<el-radio @change="search" v-model="input.typ" class="filter-item" label="mongodb">mongodb</el-radio>-->
         <el-input style="width: 300px" class="filter-item" v-model="input.remark" clearable
                   :placeholder="$t('备注')"></el-input>
-        <el-button @click="search" type="success" class="filter-item">{{$t('查询')}}</el-button>
-        <el-button @click.native="open = true" type="primary" class="filter-item">{{$t('新增')}}</el-button>
+        <el-button @click="search" type="success" class="filter-item">{{ $t('查询') }}</el-button>
+        <el-button @click.native="open = true" type="primary" class="filter-item">{{ $t('新增') }}</el-button>
       </div>
 
       <el-table v-loading="tableLoading" :data="tableData">
@@ -21,7 +22,7 @@
           prop="id"
           label="id">
         </el-table-column>
-        <el-table-column  width="100"  align="center" :label="$t('类型')">
+        <el-table-column width="100" align="center" :label="$t('类型')">
           <template slot-scope="scope">
             <el-tag v-if="scope.row.typ == 'clickhouse'" type="primary">
               {{ scope.row.typ }}
@@ -90,14 +91,14 @@
               @click="link({typ:scope.row.typ,db_name:scope.row.db_name,ip:scope.row.ip,
                 port:scope.row.port,username:scope.row.username,pwd:scope.row.pwd,
                 },scope.$index)"
-            >{{$t('测试连接')}}
+            >{{ $t('测试连接') }}
             </el-button>
             <el-button
               icon="el-icon-delete"
               type="danger"
               size="small"
               @click="deleteById(scope.row.id)"
-            >{{$t('删除')}}
+            >{{ $t('删除') }}
             </el-button>
           </template>
         </el-table-column>
@@ -144,172 +145,172 @@
             </el-form-item>
           </el-form>
           <div style="text-align:right;">
-            <el-button type="danger" icon="el-icon-close" @click="closeDialog">{{$t('取消')}}</el-button>
-            <el-button type="primary" icon="el-icon-check" @click="add">{{$t('确认')}}</el-button>
+            <el-button type="danger" icon="el-icon-close" @click="closeDialog">{{ $t('取消') }}</el-button>
+            <el-button type="primary" icon="el-icon-check" @click="add">{{ $t('确认') }}</el-button>
             <el-button :disabled="formLinkLoading" v-loading="formLinkLoading" type="success" icon="el-icon-link"
                        @click="link({typ:form.typ,db_name:form.db_name,ip:form.ip,
                 port:form.port,username:form.username,pwd:form.pwd,
-                })">{{$t('测试连接')}}
+                })">{{ $t('测试连接') }}
             </el-button>
           </div>
         </el-card>
       </el-dialog>
-    </el-card>
+
   </div>
 </template>
 
 <script>
 
-  import {DelLinkById, InsertLink, LinkInfoList, TestLink} from '@/api/datax'
+import {DelLinkById, InsertLink, LinkInfoList, TestLink} from '@/api/datax'
 
-  const defaultForm = {
-    ip: "127.0.0.1",
-    port: 3306,
-    db_name: "test",
-    username: "root",
-    pwd: "",
-    remark: "test",
-    typ: "mysql"
-  }
+const defaultForm = {
+  ip: "127.0.0.1",
+  port: 3306,
+  db_name: "test",
+  username: "root",
+  pwd: "",
+  remark: "test",
+  typ: "mysql"
+}
 
-  export default {
-    name: "link",
-    data() {
-      return {
-        formLinkLoading: false,
-        count: 0,
-        pageshow: true,
-        tableData: [],
-        form: Object.assign({}, defaultForm),
-        input: {
-          remark: "",
-          typ: "",
-          page: 1,
-          limit: 10
-        },
-        loadingList: [],
-        tableLoading: false,
-        open: false,
+export default {
+  name: "link",
+  data() {
+    return {
+      formLinkLoading: false,
+      count: 0,
+      pageshow: true,
+      tableData: [],
+      form: Object.assign({}, defaultForm),
+      input: {
+        remark: "",
+        typ: "",
+        page: 1,
+        limit: 10
+      },
+      loadingList: [],
+      tableLoading: false,
+      open: false,
+    }
+  },
+  created() {
+    this.search()
+  },
+  methods: {
+
+    async link(form, index) {
+      if (form.port == "") form.port = 0
+      form.port = Number(form.port)
+      if (index != undefined) {
+        this.loadingList[index]['loading'] = true
+      } else {
+        this.formLinkLoading = true
       }
+
+      const res = await TestLink(form)
+      if (index != undefined) {
+        this.loadingList[index].loading = false
+      } else {
+        this.formLinkLoading = false
+      }
+      if (res.code != 0) {
+        this.$message({
+          type: 'error',
+          message: res.msg
+        })
+        return
+      }
+
+      this.$message({
+        type: 'success',
+        message: res.msg
+      })
     },
-    created() {
+    async deleteById(id) {
+      const res = await DelLinkById({"id": id})
+      if (res.code != 0) {
+        this.$message({
+          type: 'error',
+          message: res.msg
+        })
+        return
+      }
+      this.$message({
+        type: 'success',
+        message: res.msg
+      })
       this.search()
     },
-    methods: {
-
-      async link(form, index) {
-        if (form.port == "") form.port = 0
-        form.port = Number(form.port)
-        if (index != undefined) {
-          this.loadingList[index]['loading'] = true
-        } else {
-          this.formLinkLoading = true
-        }
-
-        const res = await TestLink(form)
-        if (index != undefined) {
-          this.loadingList[index].loading = false
-        } else {
-          this.formLinkLoading = false
-        }
-        if (res.code != 0) {
-          this.$message({
-            type: 'error',
-            message: res.msg
-          })
-          return
-        }
-
+    refreshPage() {
+      this.pageshow = false
+      this.count = this.tableData.length
+      this.$nextTick(() => {
+        this.pageshow = true
+      })
+    },
+    handleSizeChange(v) {
+      this.input.limit = v
+      this.refreshPage()
+    },
+    async add() {
+      if (this.form.port == "") this.form.port = 0
+      this.form.port = Number(this.form.port)
+      const res = await InsertLink(this.form)
+      if (res.code != 0) {
         this.$message({
-          type: 'success',
+          type: 'error',
           message: res.msg
         })
-      },
-      async deleteById(id) {
-        const res = await DelLinkById({"id": id})
-        if (res.code != 0) {
-          this.$message({
-            type: 'error',
-            message: res.msg
-          })
-          return
-        }
-        this.$message({
-          type: 'success',
-          message: res.msg
-        })
-        this.search()
-      },
-      refreshPage() {
-        this.pageshow = false
-        this.count = this.tableData.length
-        this.$nextTick(() => {
-          this.pageshow = true
-        })
-      },
-      handleSizeChange(v) {
-        this.input.limit = v
-        this.refreshPage()
-      },
-      async add() {
-        if (this.form.port == "") this.form.port = 0
-        this.form.port = Number(this.form.port)
-        const res = await InsertLink(this.form)
-        if (res.code != 0) {
-          this.$message({
-            type: 'error',
-            message: res.msg
-          })
-          return
-        }
-        this.$message({
-          type: 'success',
-          message: res.msg
-        })
-        this.open = false
-        this.search()
-      },
-      closeDialog() {
-        this.open = false
-        this.form = Object.assign({}, defaultForm)
-        this.formLinkLoading = false
-      },
-      async search() {
-
-        this.tableLoading = true
-        const res = await LinkInfoList(this.input)
-        if (res.code != 0) {
-          this.$message({
-            type: 'error',
-            message: res.msg
-          })
-          return
-        }
-        this.tableData = res.data.data
-        this.count = res.data.count
-        if (this.tableData == null) {
-          this.tableData = []
-        }
-        this.loadingList = []
-        for (const k in this.tableData) {
-
-          this.loadingList.push({
-            loading: false
-          })
-        }
-
-
-        this.$message({
-          type: 'success',
-          message: res.msg
-        })
-        this.tableLoading = false
-      },
-      handleClick() {
-
+        return
       }
+      this.$message({
+        type: 'success',
+        message: res.msg
+      })
+      this.open = false
+      this.search()
+    },
+    closeDialog() {
+      this.open = false
+      this.form = Object.assign({}, defaultForm)
+      this.formLinkLoading = false
+    },
+    async search() {
+
+      this.tableLoading = true
+      const res = await LinkInfoList(this.input)
+      if (res.code != 0) {
+        this.$message({
+          type: 'error',
+          message: res.msg
+        })
+        return
+      }
+      this.tableData = res.data.data
+      this.count = res.data.count
+      if (this.tableData == null) {
+        this.tableData = []
+      }
+      this.loadingList = []
+      for (const k in this.tableData) {
+
+        this.loadingList.push({
+          loading: false
+        })
+      }
+
+
+      this.$message({
+        type: 'success',
+        message: res.msg
+      })
+      this.tableLoading = false
+    },
+    handleClick() {
+
     }
   }
+}
 </script>
 
 <style scoped>

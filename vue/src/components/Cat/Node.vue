@@ -23,25 +23,32 @@
                 <template slot="title">
                   <span>数据节点</span>
                 </template>
-                <el-tag type="success"><i class="el-icon-bank-card"></i>数据节点</el-tag>
+                <el-tag type="success">
+                  <i class="el-icon-bank-card"></i>数据节点
+                </el-tag>
               </a-tooltip>
               <a-tooltip  v-if="v['node.role'].includes('i')" placement="top" style="cursor: pointer">
                 <template slot="title">
                   <span>预处理节点</span>
                 </template>
-                <el-tag type="warning"><i class="el-icon-postcard"></i>预处理节点</el-tag>
+                <el-tag type="warning">
+                  <i class="el-icon-postcard"></i>预处理节点
+                </el-tag>
               </a-tooltip>
               <a-tooltip  v-if="v['node.role'] === '-'" placement="top" style="cursor: pointer">
                 <template slot="title">
-                  <span>仅协调节点</span>
+                  <span>
+                    仅协调节点
+                  </span>
                 </template>
-                <el-tag type="warning">仅协调节点</el-tag>
+                <el-tag type="warning">
+                  仅协调节点
+                </el-tag>
               </a-tooltip>
             </div>
           </div>
           <div style="display: flex; align-items: center; justify-content: space-between;">
             <div style="width: 48%;border-bottom: 1px solid white">
-
               <div style="display: flex; align-items: center; justify-content: space-between;min-height: 50px;">
                 <div>
                   {{ $t('IP地址') }}:
@@ -78,10 +85,8 @@
               </div>
             </div>
             <div style="width: 48%;border-bottom: 1px solid white">
-
               <div
                 style="min-height: 50px;display: flex;align-items: center;text-align: center;width: 100%">
-
                 <div style="display: flex; align-items: center; justify-content: space-between;min-height: 50px;">
                   <div>
                     {{ $t('CPU') }}:
@@ -94,11 +99,9 @@
                     />
                   </div>
                 </div>
-
               </div>
               <div
                 style="min-height: 50px;display: flex;align-items: center;text-align: center;width: 100%">
-
                 <div style="display: flex; align-items: center; justify-content: space-between;min-height: 50px;">
                   <div>
                     {{ $t('内存') }}:&nbsp;&nbsp;<el-tag>{{ v["ram.current"] }}/{{ v["ram.max"] }}</el-tag>
@@ -111,11 +114,9 @@
                     />
                   </div>
                 </div>
-
               </div>
               <div
                 style="min-height: 50px;display: flex;align-items: center;text-align: center;width: 100%">
-
                 <div style="display: flex; align-items: center; justify-content: space-between;min-height: 50px;">
                   <div>
                     {{ $t('堆内存') }}:&nbsp;&nbsp;<el-tag>{{ v["heap.current"] }}/ {{ v["heap.max"] }}</el-tag>
@@ -128,11 +129,9 @@
                     />
                   </div>
                 </div>
-
               </div>
               <div
                 style="min-height: 50px;display: flex;align-items: center;text-align: center;width: 100%">
-
                 <div style="display: flex; align-items: center; justify-content: space-between;min-height: 50px;">
                   <div>
                     {{ $t('磁盘') }}:&nbsp;&nbsp;<el-tag>{{ v["disk.used"] }}/ {{ v["disk.total"] }}</el-tag>
@@ -143,13 +142,11 @@
                       :options="getOpt(v['disk.used_percent'])"
                       :value="v['disk.used_percent']"
                     />
-
                   </div>
                 </div>
               </div>
             </div>
           </div>
-
         </el-card>
       </el-col>
     </el-row>
@@ -190,7 +187,7 @@ export default {
           type: 'line'
         }
       },
-      value: 90
+      value: 90,
     }
   },
   beforeMount() {
@@ -227,7 +224,6 @@ export default {
         return
       }
       this.list = res.data
-
       this.connectLoading = false
     }
   }

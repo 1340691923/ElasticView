@@ -6,7 +6,7 @@
         type="small"
         @click="addTab()"
       >
-      {{$t('添加查询窗口')}}
+        {{ $t('添加查询窗口') }}
       </el-button>
     </div>
     <el-card class="box-card">
@@ -31,9 +31,9 @@
   </div>
 </template>
 <script>
-import { clone } from '@/utils/index'
-import { esPathKeyWords } from '@/utils/base-data'
-import { ListAction } from '@/api/es-map'
+import {clone} from '@/utils/index'
+import {esPathKeyWords} from '@/utils/base-data'
+import {ListAction} from '@/api/es-map'
 
 export default {
   components: {
@@ -123,7 +123,7 @@ export default {
       this.$prompt(this.$t('请输入新窗口标题'), this.$t('提示'), {
         confirmButtonText: this.$t('确定'),
         cancelButtonText: this.$t('取消')
-      }).then(({ value }) => {
+      }).then(({value}) => {
         if (value == '' || value == null) {
           const count = Number(this.editableTabs.length + 1)
           value = this.$t('新窗口') + count

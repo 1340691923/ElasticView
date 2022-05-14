@@ -15,7 +15,7 @@
           <el-form-item label="refresh_interval (索引的刷新时间间隔)：">
             <el-input v-model="form.refresh_interval" :placeholder="$t('索引的刷新时间间隔')" />
           </el-form-item>
-          <el-form-item label="translog.sync_interval (translog同步到磁盘的时间间隔)：">
+<!--          <el-form-item label="translog.sync_interval (translog同步到磁盘的时间间隔)：">
             <el-input v-model="form['index.translog.sync_interval']" :disabled="isOpen" />
           </el-form-item>
 
@@ -71,11 +71,11 @@
               v-model="form['index.auto_expand_replicas']"
               style="width: 300px"
             />
-          </el-form-item>
+          </el-form-item>-->
           <el-form-item label="max_result_window  (from+size 的最大值)：">
             <el-input v-model="form['index.max_result_window']" type="number" style="width: 300px" />
           </el-form-item>
-          <el-form-item label="index.max_rescore_window( rescore 的 window_size 的最大值)：">
+<!--          <el-form-item label="index.max_rescore_window( rescore 的 window_size 的最大值)：">
             <el-input v-model="form['index.max_rescore_window']" type="number" style="width: 300px" />
           </el-form-item>
           <el-form-item label="blocks.read_only (允许写入和元数据更改)：">
@@ -107,10 +107,10 @@
               <el-option  :label="$t('是')"  value="true" />
               <el-option :label="$t('否')" value="false" />
             </el-select>
-          </el-form-item>
-          <el-form-item label="max_refresh_listeners (索引的每个分片上可用的最大刷新侦听器数)：">
+          </el-form-item>-->
+<!--          <el-form-item label="max_refresh_listeners (索引的每个分片上可用的最大刷新侦听器数)：">
             <el-input v-model="form['index.max_refresh_listeners']" type="number" style="width: 300px" />
-          </el-form-item>
+          </el-form-item>-->
         </el-form>
         <div style="text-align:right;">
           <el-button type="danger" icon="el-icon-close" @click="closeDialog">{{$t('取消')}}</el-button>

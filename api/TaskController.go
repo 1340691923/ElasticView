@@ -1,7 +1,7 @@
 package api
 
 import (
-	"github.com/1340691923/ElasticView/engine/es"
+	"github.com/1340691923/ElasticView/platform-basic-libs/escache"
 	es2 "github.com/1340691923/ElasticView/platform-basic-libs/service/es"
 	. "github.com/gofiber/fiber/v2"
 )
@@ -13,12 +13,12 @@ type TaskController struct {
 
 // 任务列表
 func (this TaskController) ListAction(ctx *Ctx) error {
-	taskListReq := new(es.TaskList)
+	taskListReq := new(escache.TaskList)
 	err := ctx.BodyParser(&taskListReq)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	esConnect, err := es.GetEsClientByID(taskListReq.EsConnect)
+	esConnect, err := escache.GetEsClientByID(taskListReq.EsConnect)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
@@ -32,12 +32,12 @@ func (this TaskController) ListAction(ctx *Ctx) error {
 
 // 取消任务
 func (this TaskController) CancelAction(ctx *Ctx) error {
-	cancelTask := new(es.CancelTask)
+	cancelTask := new(escache.CancelTask)
 	err := ctx.BodyParser(&cancelTask)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	esConnect, err := es.GetEsClientByID(cancelTask.EsConnect)
+	esConnect, err := escache.GetEsClientByID(cancelTask.EsConnect)
 	if err != nil {
 		return this.Error(ctx, err)
 	}

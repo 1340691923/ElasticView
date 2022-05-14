@@ -2,11 +2,11 @@ package api
 
 import (
 	"encoding/json"
+	"github.com/1340691923/ElasticView/platform-basic-libs/escache"
 	"github.com/1340691923/ElasticView/platform-basic-libs/util"
 	"time"
 
 	"github.com/1340691923/ElasticView/engine/db"
-	"github.com/1340691923/ElasticView/engine/es"
 	"github.com/1340691923/ElasticView/model"
 	"github.com/1340691923/ElasticView/platform-basic-libs/response"
 	. "github.com/gofiber/fiber/v2"
@@ -73,6 +73,13 @@ func (this EsLinkController) InsertAction(ctx *Ctx) error {
 	delete(insertMap, "id")
 	insertMap["created"] = time.Now().Format(util.TimeFormat)
 	insertMap["updated"] = time.Now().Format(util.TimeFormat)
+	if insertMap["pwd"] != ""{
+		insertMap["pwd"], err = escache.EsPwdESBEncrypt(insertMap["pwd"].(string))
+		if err != nil {
+			return this.Error(ctx, err)
+		}
+	}
+
 	_, err = db.SqlBuilder.
 		Insert("es_link").
 		SetMap(insertMap).
@@ -111,6 +118,13 @@ func (this EsLinkController) UpdateAction(ctx *Ctx) error {
 	delete(insertMap, "created")
 	delete(insertMap, "updated")
 	insertMap["updated"] = time.Now().Format(util.TimeFormat)
+	if insertMap["pwd"] != ""{
+		insertMap["pwd"], err = escache.EsPwdESBEncrypt(insertMap["pwd"].(string))
+		if err != nil {
+			return this.Error(ctx, err)
+		}
+	}
+
 	_, err = db.SqlBuilder.
 		Update("es_link").
 		SetMap(insertMap).
@@ -121,7 +135,7 @@ func (this EsLinkController) UpdateAction(ctx *Ctx) error {
 		return this.Error(ctx, err)
 	}
 
-	esCache := es.NewEsCache()
+	esCache := escache.NewEsCache()
 	esCache.Rem(int(esLinkModel.ID))
 
 	err = esLinkModel.FlushEsLinkList()
@@ -152,7 +166,7 @@ func (this EsLinkController) DeleteAction(ctx *Ctx) error {
 		return this.Error(ctx, err)
 	}
 
-	esCache := es.NewEsCache()
+	esCache := escache.NewEsCache()
 	esCache.Rem(req.Id)
 	esLinkModel := model.EsLinkModel{}
 	err = esLinkModel.FlushEsLinkList()
