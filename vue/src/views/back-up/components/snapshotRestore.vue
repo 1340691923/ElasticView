@@ -14,10 +14,10 @@
                           @change="changeIndex"/>
           </el-form-item>
           <el-form-item :label="$t('rename_pattern 【正则表达式】')">
-            <el-input v-model="form.rename_pattern" readonly/>
+            <el-input v-model="form.rename_pattern"/>
           </el-form-item>
           <el-form-item :label="$t('rename_replacement 【正则表达式】')">
-            <el-input v-model="form.rename_replacement" readonly/>
+            <el-input v-model="form.rename_replacement"/>
           </el-form-item>
 
           <el-form-item
@@ -53,7 +53,7 @@
         </el-form>
         <div style="text-align:right;">
           <el-button type="danger" icon="el-icon-close" @click="closeDialog">{{ $t('取消') }}</el-button>
-          <el-button type="primary" icon="el-icon-check" @click="confirm">{{ $('确认') }}</el-button>
+          <el-button type="primary" icon="el-icon-check" @click="confirm">{{ $t('确认') }}</el-button>
         </div>
       </el-card>
     </el-dialog>
@@ -62,10 +62,10 @@
 
 <script>
 import {SnapshotRestoreAction} from '@/api/es-backup'
-
+import {DeleteRowByIDAction} from "@/api/es-doc";
+import { OptimizeAction } from '@/api/es'
 export default {
   name: 'Add',
-  components: {},
   components: {
     'IndexSelect': () => import('@/components/index/select')
   },
@@ -101,23 +101,20 @@ export default {
   },
   computed: {},
   created() {
-    console.log(this.snapshot)
+
   },
 
   methods: {
     changeIndex(index) {
-      console.log(index)
       this.form.indexList = []
       this.form.indexList = index
     },
-
     closeDialog() {
       this.$emit('close', false)
     },
     async confirm() {
       const input = this.form
       input['es_connect'] = this.$store.state.baseData.EsConnectID
-
       const {code, data, msg} = await SnapshotRestoreAction(input)
       if (code == 0) {
         this.$emit('close', true)
@@ -126,12 +123,36 @@ export default {
           message: msg
         })
         return
+      }
+      if (msg.indexOf(" with same name already exists ") !== -1) {
+        this.$confirm('错误信息:【'+msg+'】,是否先关闭所有索引再进行恢复快照?', '警告', {
+          confirmButtonText: '确认',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+          .then(async() => {
+            let input = {}
+            input['es_connect'] = this.$store.state.baseData.EsConnectID
+            input['index_name'] = "*"
+            input['command'] = "close"
+            let res = await OptimizeAction(input)
+            if(res.code != 0){
+              this.$message({
+                type: 'error',
+                message: msg
+              })
+              return
+            }
+            this.confirm()
+          })
+          .catch(err => {
+            console.error(err)
+          })
       } else {
         this.$message({
           type: 'error',
           message: msg
         })
-        return
       }
     }
   }

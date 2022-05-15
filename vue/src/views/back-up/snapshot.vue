@@ -35,11 +35,10 @@
         </el-table-column>
 
         <el-table-column align="center" :label="$t('快照名')" prop="id" width="100"/>
-        <el-table-column align="center" :label="$t('备份索引数')" prop="indices" width="50"/>
+        <el-table-column align="center" :label="$t('备份索引数')" prop="indices" width="100"/>
 
-        <el-table-column align="center" :label="$t('状态')" prop="status" width="100"/>
 
-        <el-table-column align="center" :label="状态" width="100">
+        <el-table-column align="center" :label="$t('状态')" width="100">
           <template slot-scope="scope">
             <el-tag v-if="scope.row.status == 'SUCCESS'" type="success">{{ $t('成功') }}</el-tag>
             <el-tag v-else-if="scope.row.status == 'IN_PROGRESS'" type="warning">{{ $t('还在进行中') }}</el-tag>
@@ -47,9 +46,6 @@
           </template>
         </el-table-column>
 
-        <el-table-column align="center" :label="$t('开始时间')" prop="start_time" width="100"/>
-
-        <el-table-column align="center" :label="$t('结束时间')" prop="end_time" width="100"/>
 
         <el-table-column align="center" :label="$t('开始详细时间')" width="180">
           <template slot-scope="scope">
@@ -63,10 +59,10 @@
           </template>
         </el-table-column>
 
-        <el-table-column align="center" :label="$t('耗费时长')" prop="duration" width="90"/>
-        <el-table-column align="center" :label="$t('分片总数')" prop="total_shards" width="90"/>
-        <el-table-column align="center" :label="$t('成功分片数')" prop="successful_shards" width="90"/>
-        <el-table-column align="center" :label="$t('失败分片数')" prop="failed_shards" width="90"/>
+        <el-table-column align="center" :label="$t('耗费时长')" prop="duration" width="120"/>
+        <el-table-column align="center" :label="$t('分片总数')" prop="total_shards" width="120"/>
+        <el-table-column align="center" :label="$t('成功分片数')" prop="successful_shards" width="120"/>
+        <el-table-column align="center" :label="$t('失败分片数')" prop="failed_shards" width="120"/>
 
         <el-table-column align="center" :label="$t('操作')" fixed="right" width="350">
           <template slot-scope="scope">
@@ -156,7 +152,6 @@ export default {
     'JsonEditor': () => import('@/components/JsonEditor/index'),
     'Add': () => import('@/views/back-up/components/addSnapshot'),
     'SnapshotRestore': () => import('@/views/back-up/components/snapshotRestore')
-
   },
   data() {
     return {
@@ -169,7 +164,6 @@ export default {
       drawerShow: false,
       tableData: [],
       index: 0,
-
       tableHeader: [],
       snapshotDetail: ''
     }
