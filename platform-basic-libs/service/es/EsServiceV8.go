@@ -133,26 +133,26 @@ func (this EsServiceV8) SnapshotRestore(ctx *fiber.Ctx, snapshotRestore *escache
 	snapshotRestoreService := this.esClient.SnapshotRestore(snapshotRestore.RepositoryName, snapshotRestore.SnapshotName)
 
 	if snapshotRestore.Wait != nil {
-		snapshotRestoreService.WaitForCompletion(*snapshotRestore.Wait)
+		snapshotRestoreService = snapshotRestoreService.WaitForCompletion(*snapshotRestore.Wait)
 	}
 
 	if snapshotRestore.IgnoreUnavailable != nil {
-		snapshotRestoreService.IgnoreUnavailable(*snapshotRestore.IgnoreUnavailable)
+		snapshotRestoreService = snapshotRestoreService.IgnoreUnavailable(*snapshotRestore.IgnoreUnavailable)
 	}
 	if len(snapshotRestore.IndexList) > 0 {
-		snapshotRestoreService.Indices(snapshotRestore.IndexList...)
+		snapshotRestoreService = snapshotRestoreService.Indices(snapshotRestore.IndexList...)
 	}
 	if snapshotRestore.Partial != nil {
-		snapshotRestoreService.Partial(*snapshotRestore.Partial)
+		snapshotRestoreService = snapshotRestoreService.Partial(*snapshotRestore.Partial)
 	}
 	if snapshotRestore.IncludeGlobalState != nil {
-		snapshotRestoreService.IncludeGlobalState(*snapshotRestore.IncludeGlobalState)
+		snapshotRestoreService = snapshotRestoreService.IncludeGlobalState(*snapshotRestore.IncludeGlobalState)
 	}
 	if snapshotRestore.RenamePattern != "" {
-		snapshotRestoreService.RenamePattern(snapshotRestore.RenamePattern)
+		snapshotRestoreService = snapshotRestoreService.RenamePattern(snapshotRestore.RenamePattern)
 	}
 	if snapshotRestore.RenameReplacement != "" {
-		snapshotRestoreService.RenameReplacement(snapshotRestore.RenameReplacement)
+		snapshotRestoreService = snapshotRestoreService.RenameReplacement(snapshotRestore.RenameReplacement)
 	}
 
 	res, err := snapshotRestoreService.Do(ctx.Context())
