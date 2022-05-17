@@ -30,11 +30,9 @@ func init() {
 	flag.StringVar(&appName, "appName", "ElasticView", "应用名")
 	flag.StringVar(&configFileDir, "configFileDir", "config", "配置文件夹名")
 	flag.StringVar(&configFileName, "configFileName", "config", "配置文件名")
-	flag.StringVar(&configFileExt, "configFileExt", "json", "配置文件后缀")
+	flag.StringVar(&configFileExt, "configFileExt", "yml", "配置文件后缀")
 	flag.Parse()
 }
-
-
 
 // By 肖文龙
 func main() {
