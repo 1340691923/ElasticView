@@ -1,5 +1,8 @@
 <template>
-  <div  v-loading="connectLoading">
+  <div class="app-container" v-loading="connectLoading">
+    <div class="filter-container">
+      <el-button @click="searchData" type="primary"   icon="el-icon-refresh" class="filter-item">刷新</el-button>
+    </div>
     <el-row  :gutter="40" >
       <el-col v-for="(v,k,index) in list" :key="index" :xs="18" :sm="18" :lg="12" class="card-panel-col">
         <el-card class="box-card" style="">
