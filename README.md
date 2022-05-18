@@ -11,7 +11,7 @@
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)](https://github.com/1340691923/ElasticView/blob/main/LICENSE)
 [![Release](https://img.shields.io/github/release/1340691923/ElasticView.svg?label=Release)](https://gitee.com/cynthia520/elastic-view/releases)
 
-> ElasticView 是一款用来监控ElasticSearch状态和操作ElasticSearch索引的web可视化工具。它由golang开发而成，具有部署方便，占用内存小等优点
+> ElasticView 是一款用来监控ElasticSearch状态和操作ElasticSearch索引的web可视化工具。它由golang开发而成，具有部署方便，占用内存小等优点，官网地址:http://www.elastic-view.cn
 * ElasticSearch连接树管理（更方便的切换测试/生产环境）
 * 支持权限管理
 * 支持sql转换成dsl语法
@@ -25,6 +25,10 @@
 * docker部署
 * 支持sqlite3（免安装gcc版）
 * 数据抽取功能
+
+## 官网地址
+[http://www.elastic-view.cn]( http://www.elastic-view.cn)
+
 
 ## Quick Start
 1. [应用程序下载地址]( https://gitee.com/cynthia520/elastic-view/releases/)

@@ -7,7 +7,7 @@
             <span><el-tag>节点名:{{v["name"]}}</el-tag></span>
             <div>
 
-              <a-tooltip  v-if="v.master" placement="top" style="cursor: pointer">
+              <a-tooltip  v-if="v.master === '*'" placement="top" style="cursor: pointer">
                 <template slot="title">
                   <span>主节点</span>
                 </template>
