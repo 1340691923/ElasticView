@@ -88,7 +88,9 @@ func (this *Mysql) Transfer(id int, transferReq *request.TransferReq) (err error
 		return err
 	}
 
-
+	if transferReq.EsDocID != ""{
+		transferReq.Cols.TableCols = append(transferReq.Cols.TableCols, transferReq.EsDocID)
+	}
 	go func() {
 
 		var sqlFn  func(offset uint64, limit int) string

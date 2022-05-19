@@ -172,6 +172,16 @@
             @click="deleteIndex(selectIndexList.join(','),'deleteIndex')"
           >{{$t('删除索引')}}
           </el-button>
+          <el-button
+            id="patchEmptyIndex"
+            v-loading="loadingGroup['empty']"
+            :disabled="loadingGroup['empty']"
+            class="filter-item"
+            type="danger"
+            icon="el-icon-delete"
+            @click="runCommandByIndex('empty',selectIndexList.join(','))"
+          >{{$t('清空索引')}}
+          </el-button>
         </el-button-group>
       </div>
       <back-to-top />
@@ -495,7 +505,16 @@
               @click="deleteIndex(indexName,'deleteIndex')"
             >{{$t('删除索引')}}
             </el-button>
-
+            <el-button
+              :disabled="loadingGroup['empty']"
+              v-loading="loadingGroup['empty']"
+              class="filter-item"
+              type="danger"
+              size="small"
+              icon="el-icon-delete"
+              @click="runCommandByIndex('empty',indexName)"
+            >{{$t('清空索引')}}
+            </el-button>
           </div>
         </el-tabs>
 

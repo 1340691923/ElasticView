@@ -13,7 +13,7 @@ COPY ElasticViewLinux /usr/local/ElasticViewLinux
 
 COPY config /usr/local/config
 
-COPY config/config.json /usr/local/config/config.json
+COPY config/config.yml /usr/local/config/config.yml
 
 #设置容器启动时执行的命令
 CMD ["sh", "/mysql/setup.sh"]

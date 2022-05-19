@@ -3,6 +3,7 @@ package data_conversion
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
 	"github.com/1340691923/ElasticView/engine/db"
 	"github.com/1340691923/ElasticView/engine/logs"
 	"github.com/1340691923/ElasticView/platform-basic-libs/request"
@@ -11,6 +12,7 @@ import (
 	elasticV6 "github.com/olivere/elastic"
 	elasticV7 "github.com/olivere/elastic/v7"
 	"go.uber.org/zap"
+	"strconv"
 	"time"
 )
 
@@ -36,7 +38,9 @@ func queryRows(table2EsMap map[string]string, db *sqlx.DB, sqlStr string, val ..
 	}
 
 	for index := range columns {
-		columns[index] = table2EsMap[columns[index]]
+		if _,ok:=table2EsMap[columns[index]];ok{
+			columns[index] = table2EsMap[columns[index]]
+		}
 	}
 
 	values := make([]interface{}, len(columns))
@@ -98,12 +102,14 @@ func transferEsV6(
 	createSqlFn func(offset uint64, limit int) string, ctx context.Context, conn *sqlx.DB, esConn *elasticV6.Client) (err error) {
 
 	table2EsColMap := map[string]string{}
+	es2TableColMap := map[string]string{}
+
 	for _, t := range transferReq.Cols.EsCols {
 		table2EsColMap[t.TbCol] = t.Col
+		es2TableColMap[t.Col] = t.TbCol
 	}
 
 	if transferReq.Reset {
-
 		_, err = esConn.DeleteByQuery().
 			Index(transferReq.IndexName).
 			Type(transferReq.TypeName).
@@ -138,7 +144,21 @@ func transferEsV6(
 				return
 			case data := <-InputC:
 				var err error
-				err = realTimeWarehousing.Add(elasticV6.NewBulkIndexRequest().Index(transferReq.IndexName).Type(transferReq.TypeName).Doc(data))
+				if transferReq.EsDocID != ""{
+
+					var esDocId string
+
+					if _,ok:=table2EsColMap[transferReq.EsDocID];ok{
+						esDocId = strval(data[table2EsColMap[transferReq.EsDocID]])
+					}else{
+						esDocId = strval(data[transferReq.EsDocID])
+						delete(data,transferReq.EsDocID)
+					}
+
+					err = realTimeWarehousing.Add(elasticV6.NewBulkIndexRequest().Index(transferReq.IndexName).Type(transferReq.TypeName).Doc(data).Id(esDocId))
+				}else{
+					err = realTimeWarehousing.Add(elasticV6.NewBulkIndexRequest().Index(transferReq.IndexName).Type(transferReq.TypeName).Doc(data))
+				}
 				if err != nil {
 					updateDataXListStatus(id, 0, 0, Error, err.Error())
 					logs.Logger.Sugar().Errorf("上报失败 重新上报err", err)
@@ -196,8 +216,10 @@ func transferEsV7(
 	createSqlFn func(offset uint64, limit int) string, ctx context.Context, conn *sqlx.DB, esConn *elasticV7.Client) (err error) {
 
 	table2EsColMap := map[string]string{}
+	es2TableColMap := map[string]string{}
 	for _, t := range transferReq.Cols.EsCols {
 		table2EsColMap[t.TbCol] = t.Col
+		es2TableColMap[t.Col] = t.TbCol
 	}
 
 	if transferReq.Reset {
@@ -235,7 +257,21 @@ func transferEsV7(
 				return
 			case data := <-InputC:
 				var err error
-				err = realTimeWarehousing.Add(elasticV7.NewBulkIndexRequest().Index(transferReq.IndexName).Doc(data))
+
+				if transferReq.EsDocID != ""{
+					var esDocId string
+
+					if _,ok:=table2EsColMap[transferReq.EsDocID];ok{
+						esDocId = strval(data[table2EsColMap[transferReq.EsDocID]])
+					}else{
+						esDocId = strval(data[transferReq.EsDocID])
+						delete(data,transferReq.EsDocID)
+					}
+
+					err = realTimeWarehousing.Add(elasticV7.NewBulkIndexRequest().Index(transferReq.IndexName).Doc(data).Id(esDocId))
+				}else{
+					err = realTimeWarehousing.Add(elasticV7.NewBulkIndexRequest().Index(transferReq.IndexName).Doc(data))
+				}
 				if err != nil {
 					updateDataXListStatus(id, 0, 0, Error, err.Error())
 					logs.Logger.Sugar().Errorf("上报失败 重新上报err", err)
@@ -303,4 +339,57 @@ func updateDataXListStatus(id, dbcount, escount int, status, msg string) (err er
 		}).Where(db.Eq{"id": id}).RunWith(db.Sqlx).Exec()
 
 	return
+}
+
+func strval(value interface{}) string {
+	var key string
+	if value == nil {
+		return key
+	}
+	switch value.(type) {
+	case float64:
+		ft := value.(float64)
+		key = strconv.FormatFloat(ft, 'f', -1, 64)
+	case float32:
+		ft := value.(float32)
+		key = strconv.FormatFloat(float64(ft), 'f', -1, 64)
+	case int:
+		it := value.(int)
+		key = strconv.Itoa(it)
+	case uint:
+		it := value.(uint)
+		key = strconv.Itoa(int(it))
+	case int8:
+		it := value.(int8)
+		key = strconv.Itoa(int(it))
+	case uint8:
+		it := value.(uint8)
+		key = strconv.Itoa(int(it))
+	case int16:
+		it := value.(int16)
+		key = strconv.Itoa(int(it))
+	case uint16:
+		it := value.(uint16)
+		key = strconv.Itoa(int(it))
+	case int32:
+		it := value.(int32)
+		key = strconv.Itoa(int(it))
+	case uint32:
+		it := value.(uint32)
+		key = strconv.Itoa(int(it))
+	case int64:
+		it := value.(int64)
+		key = strconv.FormatInt(it, 10)
+	case uint64:
+		it := value.(uint64)
+		key = strconv.FormatUint(it, 10)
+	case string:
+		key = value.(string)
+	case []byte:
+		key = string(value.([]byte))
+	default:
+		newValue, _ := json.Marshal(value)
+		key = string(newValue)
+	}
+	return key
 }

@@ -139,8 +139,9 @@
                 />
               </div>
             </el-form-item>
-            <el-form-item v-if="showAutoIncrementId" :label="$t('自增主键（注意：若存在连续自增的主键并该表非分区表则填)')">
-              <el-select filterable clearable v-model="form.autoIncrementId">
+
+            <el-form-item v-if="showAutoIncrementId" :label="$t('自定义ES文档ID(若只需ES自己的分布式ID则不填)')">
+              <el-select filterable clearable v-model="form.esDocId">
                 <el-option v-for="(v,k,index) in allCols" :key="index" :value="v.key" :label="v.label"/>
               </el-select>
             </el-form-item>
@@ -151,7 +152,6 @@
                 <el-option v-for="(v,k,index) in indexList" :key="index" :lable="v" :value="v"></el-option>
               </el-select>
               <el-button
-                id="new-index"
                 type="success"
                 class="filter-item"
                 icon="el-icon-refresh"
@@ -159,7 +159,6 @@
               >{{ $t('刷新') }}
               </el-button>
               <el-button
-                id="new-index"
                 type="success"
                 class="filter-item"
                 icon="el-icon-plus"
@@ -284,6 +283,7 @@ import {filterData} from "@/utils/table";
 const defaultForm = {
   crontab_spec: "",
   autoIncrementId: "",
+  esDocId:"",
   selectType: "{}",
   remark: "",
   selectTable: "",

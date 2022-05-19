@@ -95,7 +95,9 @@ func (this *Clickhouse) Transfer(id int, transferReq *request.TransferReq) (err 
 		updateDataXListStatus(id, 0, 0, Error, err.Error())
 		return err
 	}
-
+	if transferReq.EsDocID != "" {
+		transferReq.Cols.TableCols = append(transferReq.Cols.TableCols, transferReq.EsDocID)
+	}
 	_ = func(offset uint64, limit int) string {
 		sql := fmt.Sprintf(`SELECT %s FROM %s WHERE id >= (select id from %s limit %v, 1) limit %v`,
 			strings.Join(transferReq.Cols.TableCols, ","),

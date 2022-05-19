@@ -19,6 +19,7 @@ var optimizeMap = map[string]OptimizeInterface{
 	"_forcemerge":  newForcemerge(),
 	"open":         newOpen(),
 	"close":        newClose(),
+	"empty":        newEmpty(),
 }
 
 func OptimizeFactory(command string) OptimizeInterface {
