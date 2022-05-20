@@ -207,6 +207,9 @@ func (this EsServiceV8) Cat(ctx *fiber.Ctx, esCat *escache.EsCat) (err error) {
 			Params: parmas,
 			Path: "/_cat/nodes",
 		})
+		if err!=nil{
+			return this.Error(ctx,err)
+		}
 		data = res.Body
 	}
 
