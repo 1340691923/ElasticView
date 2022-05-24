@@ -11,7 +11,7 @@ module.exports = {
         "ie >= 8",
         "last 10 versions", // 所有主流浏览器最近10版本用
       ],
-      grid: true,
+    //  grid: true,
     },
     "postcss-pxtorem": {
       rootValue: 65, //结果为：设计稿元素尺寸/16，比如元素宽320px,最终页面会换算成 20rem
