@@ -12,22 +12,22 @@
  File Encoding         : 65001
 
  Date: 22/04/2021 01:31:30
-*/ 
+*/
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
 DROP DATABASE IF EXISTS es_view;
 
-create database es_view;
- 
+create database es_view default character set utf8mb4 collate utf8mb4_unicode_ci;
+
 use es_view;
 
 -- ----------------------------
 -- Table structure for es_link
 -- ----------------------------
 DROP TABLE IF EXISTS `es_link`;
-CREATE TABLE `es_link`  ( 
+CREATE TABLE `es_link`  (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `ip` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `user` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,

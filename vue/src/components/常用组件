@@ -5,7 +5,9 @@
         <el-input v-model="searchData"  placeholder="输入姓名搜索"></el-input>
       </el-col>
       <el-col :span="2">
-        <el-button type="success" @click="search">搜索</el-button>
+        <el-button
+ size="mini"
+ type="success" @click="search">搜索</el-button>
       </el-col>
     </el-row>
     <el-table :data="list">

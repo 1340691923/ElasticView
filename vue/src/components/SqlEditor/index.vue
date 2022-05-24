@@ -1,14 +1,20 @@
 <template>
   <div :style="styles" class="float">
     <span v-if="!simple" style="text-align: center;display:block;" class="font1">
-      <el-button size="small" icon="el-icon-refresh" @click="format">{{$t('美化')}}</el-button>
       <el-button
+
+        size="mini"
+        icon="el-icon-refresh"
+        @click="format"
+      >{{ $t('美化') }}</el-button>
+      <el-button
+
         v-clipboard:copy="value"
         v-clipboard:success="onCopy"
         v-clipboard:error="onError"
-        size="small"
+        size="mini"
         icon="el-icon-document-copy"
-      >{{$t('点击复制')}}</el-button>
+      >{{ $t('点击复制') }}</el-button>
     </span>
     <editor
       v-model="value"
@@ -22,6 +28,7 @@
 </template>
 <script>
 import { format } from 'sql-formatter'
+
 export default {
   name: 'Sql',
   props: {
@@ -112,12 +119,12 @@ export default {
 }
 </script>
 <style scoped>
-  .float {
-    float: left;
-  }
+.float {
+  float: left;
+}
 
-  .font1 {
-    font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
-    color: green;
-  }
+.font1 {
+  font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+  color: green;
+}
 </style>

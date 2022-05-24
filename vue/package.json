@@ -15,6 +15,7 @@
     "svgo": "svgo -f src/icons/svg --config=src/icons/svgo.yml",
     "new": "plop"
   },
+
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged"
@@ -117,6 +118,7 @@
     "mockjs": "1.0.1-beta3",
     "node-sass": "^4.14.1",
     "plop": "2.3.0",
+    "postcss-pxtorem": "5.1.1",
     "runjs": "^4.3.2",
     "sass-loader": "^7.1.0",
     "script-ext-html-webpack-plugin": "2.1.3",

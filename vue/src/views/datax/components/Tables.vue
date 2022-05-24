@@ -1,20 +1,26 @@
 <template>
   <div>
     <el-form-item :label="isOne?'主表':'副表'">
-      <el-select @change="GetTableColumns" filterable v-model="form.selectTable">
-        <el-option v-for="(v,k,index) in tables" :key="index" :value="v" :label="v"/>
+      <el-select v-model="form.selectTable" filterable @change="GetTableColumns">
+        <el-option v-for="(v,k,index) in tables" :key="index" :value="v" :label="v" />
       </el-select>
-      <el-button icon="el-icon-delete" type="danger" @click="deleteTable">{{ $t('删除该表') }}{{ currentIndex }}</el-button>
+      <el-button
+        size="mini"
+        icon="el-icon-delete"
+        type="danger"
+        @click="deleteTable"
+      >{{ $t('删除该表') }}{{ currentIndex }}
+      </el-button>
     </el-form-item>
     <el-form-item v-if="!isOne" :label="$t('设置表间联系')">
       hello.
-      <el-select @change="GetTableColumns" filterable v-model="form.selectTable">
-        <el-option v-for="(v,k,index) in tables" :key="index" :value="v" :label="v"/>
+      <el-select v-model="form.selectTable" filterable @change="GetTableColumns">
+        <el-option v-for="(v,k,index) in tables" :key="index" :value="v" :label="v" />
       </el-select>
       <el-tag>=</el-tag>
       test.
-      <el-select @change="GetTableColumns" filterable v-model="form.selectTable">
-        <el-option v-for="(v,k,index) in tables" :key="index" :value="v" :label="v"/>
+      <el-select v-model="form.selectTable" filterable @change="GetTableColumns">
+        <el-option v-for="(v,k,index) in tables" :key="index" :value="v" :label="v" />
       </el-select>
 
     </el-form-item>
@@ -35,17 +41,17 @@
 </template>
 
 <script>
-import {GetTableColumns, Tables} from "@/api/datax"
+import { GetTableColumns, Tables } from '@/api/datax'
 
 export default {
-  name: "tables",
+  name: 'Tables',
   props: {
     tables: {
       default: [],
       type: Array
     },
     selectType: {
-      default: "",
+      default: '',
       type: String
     },
     isOne: {
@@ -57,7 +63,7 @@ export default {
     return {
       allCols: [],
       form: {
-        selectTable: "",
+        selectTable: '',
         cols: []
       }
     }
@@ -65,13 +71,13 @@ export default {
   computed: {},
   methods: {
     deleteTable() {
-      this.$emit("deleteTable", this.currentIndex)
+      this.$emit('deleteTable', this.currentIndex)
     },
     getSelectTypeObj() {
       return JSON.parse(this.selectType)
     },
     async GetTableColumns() {
-      const res = await GetTableColumns({id: this.getSelectTypeObj()['id'], table_name: this.form.selectTable})
+      const res = await GetTableColumns({ id: this.getSelectTypeObj()['id'], table_name: this.form.selectTable })
       if (res.code != 0) {
         this.$message({
           type: 'error',
@@ -81,7 +87,7 @@ export default {
       }
       if (res.data == null) res.data = []
       this.allCols = []
-      for (let v of res.data) {
+      for (const v of res.data) {
         const obj = {
           key: v.Field,
           label: v.Comment == '' ? v.Field : `${v.Field}【${v.Comment}】`,
@@ -95,7 +101,7 @@ export default {
       await this.GetTableColumns()
     },
     async GetTableColumns() {
-      const res = await GetTableColumns({id: this.getSelectTypeObj()['id'], table_name: this.form.selectTable})
+      const res = await GetTableColumns({ id: this.getSelectTypeObj()['id'], table_name: this.form.selectTable })
       if (res.code != 0) {
         this.$message({
           type: 'error',
@@ -105,7 +111,7 @@ export default {
       }
       if (res.data == null) res.data = []
       this.allCols = []
-      for (let v of res.data) {
+      for (const v of res.data) {
         const obj = {
           key: v.Field,
           label: v.Comment == '' ? v.Field : `${v.Field}【${v.Comment}】`,
@@ -115,7 +121,7 @@ export default {
       }
     },
     async getTables() {
-      const res = await Tables({id: this.getSelectTypeObj()['id']})
+      const res = await Tables({ id: this.getSelectTypeObj()['id'] })
       if (res.code != 0) {
         this.$message({
           type: 'error',
@@ -129,11 +135,10 @@ export default {
       if (this.tables.length > 0) {
         this.form.selectTable = this.tables[0]
       }
-
     },
     filterMethod(query, item) {
       return item.label.indexOf(query) > -1
-    },
+    }
   }
 }
 </script>

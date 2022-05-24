@@ -15,106 +15,118 @@
           <el-form-item label="refresh_interval (索引的刷新时间间隔)：">
             <el-input v-model="form.refresh_interval" :placeholder="$t('索引的刷新时间间隔')" />
           </el-form-item>
-<!--          <el-form-item label="translog.sync_interval (translog同步到磁盘的时间间隔)：">
-            <el-input v-model="form['index.translog.sync_interval']" :disabled="isOpen" />
-          </el-form-item>
+          <!--          <el-form-item label="translog.sync_interval (translog同步到磁盘的时间间隔)：">
+                      <el-input v-model="form['index.translog.sync_interval']" :disabled="isOpen" />
+                    </el-form-item>
 
-          <el-form-item label="translog.durability (tanslog同步到本地的方式)：">
-            <el-select v-model="form['index.translog.durability']" style="width: 300px" clearable filterable>
-              <el-option label="request (直接写入到磁盘中)" value="request" />
-              <el-option label="async (写入cache中，再写入磁盘)" value="async" />
-            </el-select>
-          </el-form-item>
+                    <el-form-item label="translog.durability (tanslog同步到本地的方式)：">
+                      <el-select v-model="form['index.translog.durability']" style="width: 300px" clearable filterable>
+                        <el-option label="request (直接写入到磁盘中)" value="request" />
+                        <el-option label="async (写入cache中，再写入磁盘)" value="async" />
+                      </el-select>
+                    </el-form-item>
 
-          <el-form-item label="flush_threshold_size (满足translog同步的容量)：">
-            <el-input v-model="form['index.translog.flush_threshold_size']" />
-          </el-form-item>
-          <el-form-item label="merge.scheduler.max_thread_count (调高合并的最大线程)：">
-            <el-input v-model="form['index.merge.scheduler.max_thread_count']" />
-          </el-form-item>
-          <el-form-item label="merge.policy.max_merged_segment (最大分段大小)：">
-            <el-input v-model="form['index.merge.policy.max_merged_segment']" />
-          </el-form-item>
-          <el-form-item label="merge.policy.segments_per_tier (每层所允许的分段数)：">
-            <el-input v-model="form['index.merge.policy.segments_per_tier']" type="number" style="width: 300px" />
-          </el-form-item>
-          <el-form-item label="shard.check_on_startup (是否应在索引打开前检查分片是否损坏)：">
-            <el-select
-              v-model="form['index.shard.check_on_startup']"
-              clearable
-              style="width: 300px"
-              :disabled="isOpen"
-              filterable
-            >
-              <el-option label="true(检查物理和逻辑损坏，这将消耗大量内存和CPU)" :value="true" />
-              <el-option label="false(不检查物理和逻辑损坏)" :value="false" />
-              <el-option label="checksum(检查物理损坏)" value="checksum" />
-              <el-option label="fix(检查物理和逻辑损坏。有损坏的分片将被集群自动删除)" value="fix" />
-            </el-select>
-          </el-form-item>
+                    <el-form-item label="flush_threshold_size (满足translog同步的容量)：">
+                      <el-input v-model="form['index.translog.flush_threshold_size']" />
+                    </el-form-item>
+                    <el-form-item label="merge.scheduler.max_thread_count (调高合并的最大线程)：">
+                      <el-input v-model="form['index.merge.scheduler.max_thread_count']" />
+                    </el-form-item>
+                    <el-form-item label="merge.policy.max_merged_segment (最大分段大小)：">
+                      <el-input v-model="form['index.merge.policy.max_merged_segment']" />
+                    </el-form-item>
+                    <el-form-item label="merge.policy.segments_per_tier (每层所允许的分段数)：">
+                      <el-input v-model="form['index.merge.policy.segments_per_tier']" type="number" style="width: 300px" />
+                    </el-form-item>
+                    <el-form-item label="shard.check_on_startup (是否应在索引打开前检查分片是否损坏)：">
+                      <el-select
+                        v-model="form['index.shard.check_on_startup']"
+                        clearable
+                        style="width: 300px"
+                        :disabled="isOpen"
+                        filterable
+                      >
+                        <el-option label="true(检查物理和逻辑损坏，这将消耗大量内存和CPU)" :value="true" />
+                        <el-option label="false(不检查物理和逻辑损坏)" :value="false" />
+                        <el-option label="checksum(检查物理损坏)" value="checksum" />
+                        <el-option label="fix(检查物理和逻辑损坏。有损坏的分片将被集群自动删除)" value="fix" />
+                      </el-select>
+                    </el-form-item>
 
-          <el-form-item label="routing_partition_size (自定义路由值可以转发的目的分片数)：">
-            <el-input
-              v-model="form['index.routing_partition_size']"
-              :disabled="isOpen"
-              type="number"
-              style="width: 300px"
-            />
-          </el-form-item>
+                    <el-form-item label="routing_partition_size (自定义路由值可以转发的目的分片数)：">
+                      <el-input
+                        v-model="form['index.routing_partition_size']"
+                        :disabled="isOpen"
+                        type="number"
+                        style="width: 300px"
+                      />
+                    </el-form-item>
 
-          <el-form-item label="index.codec (默认使用LZ4压缩方式存储数据)：">
-            <el-input v-model="form['index.codec']" :disabled="isOpen" />
-          </el-form-item>
+                    <el-form-item label="index.codec (默认使用LZ4压缩方式存储数据)：">
+                      <el-input v-model="form['index.codec']" :disabled="isOpen" />
+                    </el-form-item>
 
-          <el-form-item label="auto_expand_replicas (基于可用节点的数量自动分配副本数量)：">
-            <el-input
-              v-model="form['index.auto_expand_replicas']"
-              style="width: 300px"
-            />
-          </el-form-item>-->
+                    <el-form-item label="auto_expand_replicas (基于可用节点的数量自动分配副本数量)：">
+                      <el-input
+                        v-model="form['index.auto_expand_replicas']"
+                        style="width: 300px"
+                      />
+                    </el-form-item>-->
           <el-form-item label="max_result_window  (from+size 的最大值)：">
             <el-input v-model="form['index.max_result_window']" type="number" style="width: 300px" />
           </el-form-item>
-<!--          <el-form-item label="index.max_rescore_window( rescore 的 window_size 的最大值)：">
-            <el-input v-model="form['index.max_rescore_window']" type="number" style="width: 300px" />
-          </el-form-item>
-          <el-form-item label="blocks.read_only (允许写入和元数据更改)：">
-            <el-select v-model="form['index.blocks.read_only']" clearable filterable>
-              <el-option :label="$t('是')" value="true" />
-              <el-option :label="$t('否')" value="false" />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="blocks.read_only_allow_delete (只允许读和删数据，不允许增和改数据)：">
-            <el-select v-model="form['index.blocks.read_only_allow_delete']" clearable filterable>
-              <el-option  :label="$t('是')"  value="true" />
-              <el-option :label="$t('否')" value="false" />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="blocks.read (禁用对索引的读取操作)：">
-            <el-select v-model="form['index.blocks.read']" clearable filterable>
-              <el-option  :label="$t('是')"  value="true" />
-              <el-option :label="$t('否')" value="false" />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="blocks.write (禁用对索引的写入操作)：">
-            <el-select v-model="form['index.blocks.write']" clearable filterable>
-              <el-option  :label="$t('是')" value="true" />
-              <el-option :label="$t('否')" value="false" />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="blocks.metadata (禁用索引元数据的读取和写入)：">
-            <el-select v-model="form['index.blocks.metadata']" clearable filterable>
-              <el-option  :label="$t('是')"  value="true" />
-              <el-option :label="$t('否')" value="false" />
-            </el-select>
-          </el-form-item>-->
-<!--          <el-form-item label="max_refresh_listeners (索引的每个分片上可用的最大刷新侦听器数)：">
-            <el-input v-model="form['index.max_refresh_listeners']" type="number" style="width: 300px" />
-          </el-form-item>-->
+          <!--          <el-form-item label="index.max_rescore_window( rescore 的 window_size 的最大值)：">
+                      <el-input v-model="form['index.max_rescore_window']" type="number" style="width: 300px" />
+                    </el-form-item>
+                    <el-form-item label="blocks.read_only (允许写入和元数据更改)：">
+                      <el-select v-model="form['index.blocks.read_only']" clearable filterable>
+                        <el-option :label="$t('是')" value="true" />
+                        <el-option :label="$t('否')" value="false" />
+                      </el-select>
+                    </el-form-item>
+                    <el-form-item label="blocks.read_only_allow_delete (只允许读和删数据，不允许增和改数据)：">
+                      <el-select v-model="form['index.blocks.read_only_allow_delete']" clearable filterable>
+                        <el-option  :label="$t('是')"  value="true" />
+                        <el-option :label="$t('否')" value="false" />
+                      </el-select>
+                    </el-form-item>
+                    <el-form-item label="blocks.read (禁用对索引的读取操作)：">
+                      <el-select v-model="form['index.blocks.read']" clearable filterable>
+                        <el-option  :label="$t('是')"  value="true" />
+                        <el-option :label="$t('否')" value="false" />
+                      </el-select>
+                    </el-form-item>
+                    <el-form-item label="blocks.write (禁用对索引的写入操作)：">
+                      <el-select v-model="form['index.blocks.write']" clearable filterable>
+                        <el-option  :label="$t('是')" value="true" />
+                        <el-option :label="$t('否')" value="false" />
+                      </el-select>
+                    </el-form-item>
+                    <el-form-item label="blocks.metadata (禁用索引元数据的读取和写入)：">
+                      <el-select v-model="form['index.blocks.metadata']" clearable filterable>
+                        <el-option  :label="$t('是')"  value="true" />
+                        <el-option :label="$t('否')" value="false" />
+                      </el-select>
+                    </el-form-item>-->
+          <!--          <el-form-item label="max_refresh_listeners (索引的每个分片上可用的最大刷新侦听器数)：">
+                      <el-input v-model="form['index.max_refresh_listeners']" type="number" style="width: 300px" />
+                    </el-form-item>-->
         </el-form>
         <div style="text-align:right;">
-          <el-button type="danger" icon="el-icon-close" @click="closeDialog">{{$t('取消')}}</el-button>
-          <el-button type="primary" icon="el-icon-check" @click="confirmSettings">{{$t('确认')}}</el-button>
+          <el-button
+            size="mini"
+            type="danger"
+            icon="el-icon-close"
+            @click="closeDialog"
+          >{{ $t('取消') }}
+          </el-button>
+          <el-button
+            size="mini"
+            type="primary"
+            icon="el-icon-check"
+            @click="confirmSettings"
+          >{{ $t('确认') }}
+          </el-button>
         </div>
       </el-card>
     </el-dialog>
@@ -123,7 +135,7 @@
 
 <script>
 
-import { CreateAction, GetSettingsAction, CatStatusAction } from '@/api/es-index'
+import { CatStatusAction, CreateAction, GetSettingsAction } from '@/api/es-index'
 import { clone } from '@/utils/index'
 
 export default {
@@ -141,7 +153,7 @@ export default {
     open: {
       type: Boolean,
       default: false
-    },
+    }
   },
   data() {
     return {

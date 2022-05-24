@@ -2,9 +2,27 @@
   <div>
     <el-form>
       <el-form-item>
-        <el-button type="success" icon="el-icon-plus" @click="addAlias">{{$t('新增别名')}}</el-button>
-        <el-button type="primary" icon="el-icon-check" @click="batchAdd">{{$t('批量提交')}}</el-button>
-        <el-button type="info" icon="el-icon-delete" @click="getAlias">{{$t('重置')}}</el-button>
+        <el-button
+          size="mini"
+          type="success"
+          icon="el-icon-plus"
+          @click="addAlias"
+        >{{ $t('新增别名') }}
+        </el-button>
+        <el-button
+          size="mini"
+          type="primary"
+          icon="el-icon-check"
+          @click="batchAdd"
+        >{{ $t('批量提交') }}
+        </el-button>
+        <el-button
+          size="mini"
+          type="info"
+          icon="el-icon-delete"
+          @click="getAlias"
+        >{{ $t('重置') }}
+        </el-button>
         <index-select :multiple="true" :clearable="true" :placeholder="$t('迁移别名到多个索引上')" @change="changeAnotherIndex" />
 
       </el-form-item>
@@ -15,24 +33,41 @@
       >
         <el-input v-model="aliasList[index].name" :readonly="aliasList[index].types !='new'" style="width:300px" />
 
-        <el-button v-show="anotherIndex.length>0" icon="el-icon-right" type="success" @click="moveAliasToIndex(index)">迁移</el-button>
+        <el-button
+          v-show="anotherIndex.length>0"
+          size="mini"
+          icon="el-icon-right"
+          type="success"
+          @click="moveAliasToIndex(index)"
+        >迁移
+        </el-button>
 
         <el-button
           v-clipboard:copy="aliasList[index].name"
+
           v-clipboard:success="onCopy"
           v-clipboard:error="onError"
+          size="mini"
           icon="el-icon-copy"
           type="success"
-        >{{$t('复制')}}
+        >{{ $t('复制') }}
         </el-button>
         <el-button
           v-show="aliasList[index].types =='new'"
+
+          size="mini"
           type="primary"
           icon="el-icon-check"
           @click="submitForm(index)"
-        >{{$t('提交')}}
+        >{{ $t('提交') }}
         </el-button>
-        <el-button icon="el-icon-delete" type="danger" @click="removeAlias(index)">{{$t('删除')}}</el-button>
+        <el-button
+          size="mini"
+          icon="el-icon-delete"
+          type="danger"
+          @click="removeAlias(index)"
+        >{{ $t('删除') }}
+        </el-button>
 
       </el-form-item>
     </el-form>

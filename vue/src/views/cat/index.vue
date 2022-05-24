@@ -1,29 +1,29 @@
 <template>
   <div class="app-container">
-    <back-to-top/>
-      <el-tabs v-model="activeName">
-        <el-tab-pane :label="$t('节点')" name="Node">
-          <node></node>
-        </el-tab-pane>
-        <el-tab-pane :label="$t('查看索引信息')" name="CatIndices">
-          <cat v-if="activeName == 'CatIndices'" :cat-type="activeName" :table-info="catData[activeName]"/>
-        </el-tab-pane>
-        <el-tab-pane :label="$t('显示别名,过滤器,路由信息')" name="CatAliases">
-          <cat v-if="activeName == 'CatAliases'" :cat-type="activeName" :table-info="catData[activeName]"/>
-        </el-tab-pane>
-        <el-tab-pane :label="$t('显示每个节点分片数量、占用空间')" name="CatAllocation">
-          <cat v-if="activeName == 'CatAllocation'" :cat-type="activeName" :table-info="catData[activeName]"/>
-        </el-tab-pane>
-        <el-tab-pane :label="$t('显示索引文档的数量')" name="CatCount">
-          <cat v-if="activeName == 'CatCount'" :cat-type="activeName" :table-info="catData[activeName]"/>
-        </el-tab-pane>
-        <el-tab-pane :label="$t('查看集群健康状况')" name="CatHealth">
-          <cat v-if="activeName == 'CatHealth'" :cat-type="activeName" :table-info="catData[activeName]"/>
-        </el-tab-pane>
-        <el-tab-pane :label="$t('显示索引分片信息')" name="CatShards">
-          <cat v-if="activeName == 'CatShards'" :cat-type="activeName" :table-info="catData[activeName]"/>
-        </el-tab-pane>
-      </el-tabs>
+    <back-to-top />
+    <el-tabs v-model="activeName">
+      <el-tab-pane :label="$t('节点')" name="Node">
+        <node />
+      </el-tab-pane>
+      <el-tab-pane :label="$t('查看索引信息')" name="CatIndices">
+        <cat v-if="activeName == 'CatIndices'" :cat-type="activeName" :table-info="catData[activeName]" />
+      </el-tab-pane>
+      <el-tab-pane :label="$t('显示别名,过滤器,路由信息')" name="CatAliases">
+        <cat v-if="activeName == 'CatAliases'" :cat-type="activeName" :table-info="catData[activeName]" />
+      </el-tab-pane>
+      <el-tab-pane :label="$t('显示每个节点分片数量、占用空间')" name="CatAllocation">
+        <cat v-if="activeName == 'CatAllocation'" :cat-type="activeName" :table-info="catData[activeName]" />
+      </el-tab-pane>
+      <el-tab-pane :label="$t('显示索引文档的数量')" name="CatCount">
+        <cat v-if="activeName == 'CatCount'" :cat-type="activeName" :table-info="catData[activeName]" />
+      </el-tab-pane>
+      <el-tab-pane :label="$t('查看集群健康状况')" name="CatHealth">
+        <cat v-if="activeName == 'CatHealth'" :cat-type="activeName" :table-info="catData[activeName]" />
+      </el-tab-pane>
+      <el-tab-pane :label="$t('显示索引分片信息')" name="CatShards">
+        <cat v-if="activeName == 'CatShards'" :cat-type="activeName" :table-info="catData[activeName]" />
+      </el-tab-pane>
+    </el-tabs>
   </div>
 </template>
 

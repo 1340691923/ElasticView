@@ -7,7 +7,7 @@
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
-              {{$t('总分片数')}}
+            {{ $t('总分片数') }}
           </div>
           <span v-loading="loading4" class="card-panel-num">
             {{ count.allShared }}
@@ -22,7 +22,7 @@
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
-             {{$t('成功的分片数')}}
+            {{ $t('成功的分片数') }}
           </div>
           <span v-loading="loading4" class="card-panel-num">
             {{ count.successfulShared }}
@@ -37,7 +37,7 @@
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
-             {{$t('失败的分片数')}}
+            {{ $t('失败的分片数') }}
           </div>
           <span v-loading="loading4" class="card-panel-num">
             {{ count.failedShared }}
@@ -52,7 +52,7 @@
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
-              {{$t('索引数')}}
+            {{ $t('索引数') }}
           </div>
           <span v-loading="loading1" class="card-panel-num">
             {{ count.index }}
@@ -69,7 +69,7 @@
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
-               {{$t('文档数')}}
+            {{ $t('文档数') }}
           </div>
           <span v-loading="loading3" class="card-panel-num">
             {{ count.document }}
@@ -84,7 +84,7 @@
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
-             {{$t('索引所占空间大小')}}
+            {{ $t('索引所占空间大小') }}
           </div>
           <span v-loading="loading2" class="card-panel-num">
             {{ count.size }}
@@ -112,12 +112,12 @@ export default {
         index: 0,
         failedShared: 0,
         document: 0,
-        size: 0,
+        size: 0
       },
-      loading1:false,
-      loading2:false,
-      loading3:false,
-      loading4:false,
+      loading1: false,
+      loading2: false,
+      loading3: false,
+      loading4: false
     }
   },
   mounted() {
@@ -187,111 +187,116 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .panel-group {
-    margin-top: 18px;
+.panel-group {
+  margin-top: 18px;
 
-    .card-panel-col {
-      margin-bottom: 32px;
-    }
+.card-panel-col {
+  margin-bottom: 32px;
+}
 
-    .card-panel {
-      height: 108px;
-      cursor: pointer;
-      font-size: 12px;
-      position: relative;
-      overflow: hidden;
-      color: #666;
-      background: #fff;
-      box-shadow: 4px 4px 40px rgba(0, 0, 0, .05);
-      border-color: rgba(0, 0, 0, .05);
+.card-panel {
+  height: 108px;
+  cursor: pointer;
+  font-size: 12px;
+  position: relative;
+  overflow: hidden;
+  color: #666;
+  background: #fff;
+  box-shadow: 4px 4px 40px rgba(0, 0, 0, .05);
+  border-color: rgba(0, 0, 0, .05);
 
-      &:hover {
-        .card-panel-icon-wrapper {
-          color: #fff;
-        }
+&
+:hover {
 
-        .icon-people {
-          background: #40c9c6;
-        }
+.card-panel-icon-wrapper {
+  color: #fff;
+}
 
-        .icon-message {
-          background: #36a3f7;
-        }
+.icon-people {
+  background: #40c9c6;
+}
 
-        .icon-money {
-          background: #f4516c;
-        }
+.icon-message {
+  background: #36a3f7;
+}
 
-        .icon-shopping {
-          background: #34bfa3
-        }
-      }
+.icon-money {
+  background: #f4516c;
+}
 
-      .icon-people {
-        color: #40c9c6;
-      }
+.icon-shopping {
+  background: #34bfa3
+}
 
-      .icon-message {
-        color: #36a3f7;
-      }
+}
 
-      .icon-money {
-        color: #f4516c;
-      }
+.icon-people {
+  color: #40c9c6;
+}
 
-      .icon-shopping {
-        color: #34bfa3
-      }
+.icon-message {
+  color: #36a3f7;
+}
 
-      .card-panel-icon-wrapper {
-        float: left;
-        margin: 14px 0 0 14px;
-        padding: 16px;
-        transition: all 0.38s ease-out;
-        border-radius: 6px;
-      }
+.icon-money {
+  color: #f4516c;
+}
 
-      .card-panel-icon {
-        float: left;
-        font-size: 48px;
-      }
+.icon-shopping {
+  color: #34bfa3
+}
 
-      .card-panel-description {
-        float: right;
-        font-weight: bold;
-        margin: 26px;
-        margin-left: 0px;
+.card-panel-icon-wrapper {
+  float: left;
+  margin: 14px 0 0 14px;
+  padding: 16px;
+  transition: all 0.38s ease-out;
+  border-radius: 6px;
+}
 
-        .card-panel-text {
-          line-height: 18px;
-          color: rgba(0, 0, 0, 0.45);
-          font-size: 16px;
-          margin-bottom: 12px;
-        }
+.card-panel-icon {
+  float: left;
+  font-size: 48px;
+}
 
-        .card-panel-num {
-          font-size: 20px;
-        }
-      }
-    }
+.card-panel-description {
+  float: right;
+  font-weight: bold;
+  margin: 26px;
+  margin-left: 0px;
+
+.card-panel-text {
+  line-height: 18px;
+  color: rgba(0, 0, 0, 0.45);
+  font-size: 16px;
+  margin-bottom: 12px;
+}
+
+.card-panel-num {
+  font-size: 20px;
+}
+
+}
+}
+}
+
+@media (max-width: 550px) {
+  .card-panel-description {
+    display: none;
   }
 
-  @media (max-width: 550px) {
-    .card-panel-description {
-      display: none;
-    }
+  .card-panel-icon-wrapper {
+    float: none !important;
+    width: 100%;
+    height: 100%;
+    margin: 0 !important;
 
-    .card-panel-icon-wrapper {
-      float: none !important;
-      width: 100%;
-      height: 100%;
-      margin: 0 !important;
-
-      .svg-icon {
-        display: block;
-        margin: 14px auto !important;
-        float: none !important;
-      }
-    }
+  .svg-icon {
+    display: block;
+    margin: 14px auto !important;
+    float: none !important;
   }
+}
+
+}
 </style>

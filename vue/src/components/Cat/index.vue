@@ -1,45 +1,59 @@
 <template>
   <div class="app-container">
 
-      <div class="filter-container">
-        <el-tag class="filter-item">{{$t('请输入关键词')}}</el-tag>
-        <el-input v-model="input" class="filter-item" style="width: 300px" clearable @input="search" />
-        <el-button type="primary"  class="filter-item"  @click="search">{{$t('搜索')}}</el-button>
-      </div>
+    <div class="filter-container">
+      <el-tag class="filter-item">{{ $t('请输入关键词') }}</el-tag>
+      <el-input v-model="input" class="filter-item" style="width: 300px" clearable @input="search" />
+      <el-button
+        size="mini"
+        type="primary"
+        class="filter-item"
+        @click="search"
+      >{{ $t('搜索') }}
+      </el-button>
+    </div>
 
-      <el-table
-        v-loading="connectLoading"
-        :data="list"
+    <el-table
+      v-loading="connectLoading"
+      :data="list"
+    >
+      <el-table-column
+        :label="$t('序号')"
+        align="center"
+        fixed
+        width="50"
       >
-        <el-table-column
-          :label="$t('序号')"
-          align="center"
-          fixed
-          width="50"
-        >
-          <template slot-scope="scope">
-            {{ scope.$index+1 }}
-          </template>
-        </el-table-column>
+        <template slot-scope="scope">
+          {{ scope.$index + 1 }}
+        </template>
+      </el-table-column>
 
-        <el-table-column v-for="(info,index) in tableInfo" :key="index" align="center" :label="tableInfo[index].desc" :width="info.width" :prop="info.data.toString()" :sortable="info.sort">
-          <template slot-scope="scope">
-            {{ scope.row[info.data.split('->').join('.') ] }}
-          </template>
-        </el-table-column>
+      <el-table-column
+        v-for="(info,index) in tableInfo"
+        :key="index"
+        align="center"
+        :label="tableInfo[index].desc"
+        :width="info.width"
+        :prop="info.data.toString()"
+        :sortable="info.sort"
+      >
+        <template slot-scope="scope">
+          {{ scope.row[info.data.split('->').join('.')] }}
+        </template>
+      </el-table-column>
 
-      </el-table>
-      <el-pagination
-        v-if="pageshow"
-        class="pagination-container"
-        :current-page="page"
-        :page-sizes="[10, 20, 30, 50,100,150,200,500,1000]"
-        :page-size="limit"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-      />
+    </el-table>
+    <el-pagination
+      v-if="pageshow"
+      class="pagination-container"
+      :current-page="page"
+      :page-sizes="[10, 20, 30, 50,100,150,200,500,1000]"
+      :page-size="limit"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="total"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+    />
   </div>
 </template>
 
@@ -68,14 +82,14 @@ export default {
       pageshow: true,
       list: [],
       input: '',
-      allList:[]
+      allList: []
     }
   },
   mounted() {
     this.searchData()
   },
   methods: {
-    pageLimit(){
+    pageLimit() {
       this.list = this.allList.filter((item, index) =>
         index < this.page * this.limit && index >= this.limit * (this.page - 1)
       )
@@ -129,7 +143,6 @@ export default {
           this.allList = list
           this.total = list.length
           this.pageLimit()
-
         } else {
           this.$message({
             type: 'error',

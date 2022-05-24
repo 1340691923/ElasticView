@@ -112,16 +112,17 @@ export default {
 .show {
   transition: all .3s cubic-bezier(.7, .3, .1, 1);
 
-  .rightPanel-background {
-    z-index: 20000;
-    opacity: 1;
-    width: 100%;
-    height: 100%;
-  }
+.rightPanel-background {
+  z-index: 20000;
+  opacity: 1;
+  width: 100%;
+  height: 100%;
+}
 
-  .rightPanel {
-    transform: translate(0);
-  }
+.rightPanel {
+  transform: translate(0);
+}
+
 }
 
 .handle-button {
@@ -137,9 +138,11 @@ export default {
   cursor: pointer;
   color: #fff;
   line-height: 48px;
-  i {
-    font-size: 24px;
-    line-height: 48px;
-  }
+
+i {
+  font-size: 24px;
+  line-height: 48px;
+}
+
 }
 </style>

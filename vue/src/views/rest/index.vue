@@ -2,6 +2,7 @@
   <div class="app-container">
     <div class="filter-container">
       <el-button
+
         class="filter-item"
         type="small"
         @click="addTab()"
@@ -31,9 +32,9 @@
   </div>
 </template>
 <script>
-import {clone} from '@/utils/index'
-import {esPathKeyWords} from '@/utils/base-data'
-import {ListAction} from '@/api/es-map'
+import { clone } from '@/utils/index'
+import { esPathKeyWords } from '@/utils/base-data'
+import { ListAction } from '@/api/es-map'
 
 export default {
   components: {
@@ -102,7 +103,6 @@ export default {
         for (const esPathKeyWord of queryData) {
           if (esPathKeyWord.value.indexOf('{indices}') !== -1) {
             for (const indice of indices) {
-
               const mappings = Object.keys(list[indice]['mappings'])
 
               if (mappings.length == 0) {
@@ -123,7 +123,7 @@ export default {
       this.$prompt(this.$t('请输入新窗口标题'), this.$t('提示'), {
         confirmButtonText: this.$t('确定'),
         cancelButtonText: this.$t('取消')
-      }).then(({value}) => {
+      }).then(({ value }) => {
         if (value == '' || value == null) {
           const count = Number(this.editableTabs.length + 1)
           value = this.$t('新窗口') + count

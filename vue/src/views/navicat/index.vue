@@ -4,10 +4,15 @@
       <div class="header_xwl" style="background: white">
         <div class="root_xwl">
           <div class="main_xwl">
-            <span class="title_xwl" style="color: #202d3f">&nbsp;&nbsp;{{$t('数据管理')}}</span>
+            <span class="title_xwl" style="color: #202d3f">&nbsp;&nbsp;{{ $t('数据管理') }}</span>
           </div>
-          <div class="actions_xwl" >
-            <el-button type="primary" @click.native="showIndexSettings = true">{{$t('显示该索引结构')}}</el-button>
+          <div class="actions_xwl">
+            <el-button
+              size="mini"
+              type="primary"
+              @click.native="showIndexSettings = true"
+            >{{ $t('显示该索引结构') }}
+            </el-button>
           </div>
         </div>
       </div>
@@ -23,18 +28,17 @@
                 ;border-bottom: 1px solid #f0f2f5;background: white;display: flex;align-items: center;justify-content: center"
               >
                 <el-autocomplete
+                  v-model="filterStr"
                   style="width: 90%"
                   clearable
-                  :fetch-suggestions="querySearch"
 
-                  v-model="filterStr"
+                  :fetch-suggestions="querySearch"
                   :placeholder="$t('请输入索引名')"
                 >
                   <i
-                    class="el-icon-edit el-input__icon"
                     slot="suffix"
-                  >
-                  </i>
+                    class="el-icon-edit el-input__icon"
+                  />
                   <template slot-scope="{ item }">
                     <span>{{ item.value }}</span>
                   </template>
@@ -61,7 +65,11 @@
                         <i v-if="v.health == 'yellow'" style="color: #ffba00" class="el-icon-s-grid" />
                       </span>
                       <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item icon="el-icon-delete" @click.native="deleteIndex(getIndexList[index2].k,getIndexList[index2].index)">{{$t('删除')}}
+                        <el-dropdown-item
+                          icon="el-icon-delete"
+                          @click.native="deleteIndex(getIndexList[index2].k,getIndexList[index2].index)"
+                        >
+                          {{ $t('删除') }}
                         </el-dropdown-item>
                       </el-dropdown-menu>
                     </el-dropdown>
@@ -72,12 +80,17 @@
             </div>
           </div>
         </template>
-        <template  slot="paneR">
+        <template slot="paneR">
           <div
             style="width: 100%;height: calc(100% - 80px); overflow-x: hidden; overflow-y: auto;padding: 10px"
           >
 
-            <crud v-if="refreshTab" :attr-map-prop="attrMap" :event-attr-options-prop="eventAttrOptions" :index-name="currentIndexName" />
+            <crud
+              v-if="refreshTab"
+              :attr-map-prop="attrMap"
+              :event-attr-options-prop="eventAttrOptions"
+              :index-name="currentIndexName"
+            />
           </div>
           <el-drawer
             ref="drawer"
@@ -91,7 +104,7 @@
             size="50%"
           >
             <div
-                 style="height: 95%;width: 100px;display: inline-block; height: 100%;vertical-align: top;width: 100%;background: white;"
+              style="height: 95%;width: 100px;display: inline-block; height: 100%;vertical-align: top;width: 100%;background: white;"
             >
               <el-tabs v-model="activeName" v-loading="tabLoading" type="border-card">
                 <el-tab-pane :label="$t('索引设置')" name="settings">
@@ -118,14 +131,14 @@
             </div>
 
           </el-drawer>
-<!--          <split-pane :default-percent="98" :min-percent="2" split="vertical">
-            <template slot="paneL">
+          <!--          <split-pane :default-percent="98" :min-percent="2" split="vertical">
+                      <template slot="paneL">
 
-            </template>
-            <template slot="paneR">
+                      </template>
+                      <template slot="paneR">
 
-            </template>
-          </split-pane>-->
+                      </template>
+                    </split-pane>-->
         </template>
       </split-pane>
     </div>
@@ -138,7 +151,7 @@ import { CatAction } from '@/api/es'
 import { filterData } from '@/utils/table'
 import { DeleteAction, GetSettingsAction } from '@/api/es-index'
 import { ListAction } from '@/api/es-map'
-import ElementUI from 'element-ui';
+import ElementUI from 'element-ui'
 
 export default {
   name: 'Navicat',
@@ -148,8 +161,8 @@ export default {
   },
   data() {
     return {
-      indexTishiList:[],
-      currentMappings:{},
+      indexTishiList: [],
+      currentMappings: {},
       tabLoading: false,
       refreshTab: true,
       activeName: 'settings',
@@ -159,7 +172,7 @@ export default {
       currentIndexName: '',
       currentSettings: {},
       eventAttrOptions: [],
-      showIndexSettings:false,
+      showIndexSettings: false,
       attrMap: []
     }
   },
@@ -323,18 +336,16 @@ export default {
       }
     },
     querySearch(queryString, cb) {
-
       let queryData = JSON.parse(JSON.stringify(this.indexTishiList))
-      if(queryString == undefined)queryString = ""
+      if (queryString == undefined) queryString = ''
       if (queryString.trim() == '') {
         if (queryData.length > this.max) {
           cb(queryData.slice(0, this.max))
         } else {
           cb(queryData)
         }
-        return;
+        return
       }
-
 
       queryData = filterData(queryData, queryString.trim())
 
@@ -366,7 +377,7 @@ export default {
         const v = res.data[k]
         const obj = { health: v.health, index: v.index, k: k, storeSize: v['store.size'], docsCount: v['docs.count'] }
         this.indexList.push(obj)
-        this.indexTishiList.push( {'value': v.index, 'data': v.index})
+        this.indexTishiList.push({ 'value': v.index, 'data': v.index })
       }
       this.loadingMenu = false
     }
@@ -377,13 +388,13 @@ export default {
 <style scoped src="@/styles/event.css"/>
 
 <style>
-  .eventNameDisplayInput .ant-input {
-    resize: none;
-    border: none;
-  }
+.eventNameDisplayInput .ant-input {
+  resize: none;
+  border: none;
+}
 
-  .eventNameDisplayInput .ant-input:focus {
-    border: none;
-    box-shadow: none;
-  }
+.eventNameDisplayInput .ant-input:focus {
+  border: none;
+  box-shadow: none;
+}
 </style>

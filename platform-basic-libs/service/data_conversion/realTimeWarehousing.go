@@ -57,7 +57,7 @@ func (this *RealTimeWarehousingV6) Flush() (err error) {
 		}
 		res, err := bulkRequest.Do(this.ctx)
 		if res.Errors {
-			resStr, _ := json.Marshal(res)
+			resStr, _ := json.Marshal(res.Items[0])
 			updateDataXListStatus(this.taskId, this.expectLen, this.completeLen, Error, string(resStr))
 			logs.Logger.Sugar().Errorf("res", string(resStr))
 		}
@@ -68,7 +68,7 @@ func (this *RealTimeWarehousingV6) Flush() (err error) {
 		} else {
 			if res.Errors {
 				go func() {
-					resStr, _ := json.Marshal(res)
+					resStr, _ := json.Marshal(res.Items[0])
 					updateDataXListStatus(this.taskId, this.expectLen, this.completeLen, Error, string(resStr))
 					logs.Logger.Sugar().Errorf("res", string(resStr))
 				}()

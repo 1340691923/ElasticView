@@ -5,7 +5,7 @@ import Cookies from 'js-cookie'
 import 'normalize.css/normalize.css' // a modern alternative to CSS resets
 
 import '@/styles/index.scss' // global css
-
+import 'lib-flexible/flexible.js'
 import VueIntro from 'vue-introjs'
 Vue.use(VueIntro)
 import 'intro.js/introjs.css'
@@ -25,7 +25,7 @@ import Antd from 'ant-design-vue'
 import 'ant-design-vue/dist/antd.css'
 
 Vue.use(Antd)
-Vue.config.devtools = true;
+Vue.config.devtools = true
 import { i18n } from '@/utils/lang'
 
 // excel导出

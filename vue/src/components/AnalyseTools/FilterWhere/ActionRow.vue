@@ -32,11 +32,18 @@
 
       <template v-if="noValueSymbolArr.indexOf(v.comparator)!==-1" />
       <template v-else-if="rangeSymbolArr.indexOf(v.comparator)!==-1">
-        <el-input v-model="v.ftv[0]" clearable size="mini" type="number" style="width: 150px" />~
+        <el-input v-model="v.ftv[0]" clearable size="mini" type="number" style="width: 150px" />
+        ~
         <el-input v-model="v.ftv[1]" clearable size="mini" type="number" style="width: 150px" />
       </template>
 
-      <el-input v-else-if="inputSymbolArr.indexOf(v.comparator)!==-1 " v-model="v.ftv" clearable size="mini" style="width: 300px" />
+      <el-input
+        v-else-if="inputSymbolArr.indexOf(v.comparator)!==-1 "
+        v-model="v.ftv"
+        clearable
+        size="mini"
+        style="width: 300px"
+      />
       <template v-else-if="rangeTimeSymbolArr.indexOf(v.comparator)!==-1">
         <el-date-picker
           v-model="v.ftv"
@@ -68,7 +75,13 @@
 
 <script>
 import { pickerOptions } from '@/utils/date'
-import { dataTypeCalcuSymbol, noValueSymbolArr, inputSymbolArr, rangeSymbolArr, rangeTimeSymbolArr } from '@/utils/base-data'
+import {
+  dataTypeCalcuSymbol,
+  inputSymbolArr,
+  noValueSymbolArr,
+  rangeSymbolArr,
+  rangeTimeSymbolArr
+} from '@/utils/base-data'
 
 export default {
   name: 'ActionRow',
@@ -124,7 +137,7 @@ export default {
   methods: {
     getDataTypeCalcuSymbol(data) {
       let typ = 0
-      console.log("this.dataTypeMap",this.dataTypeMap,this.tableTyp)
+      console.log('this.dataTypeMap', this.dataTypeMap, this.tableTyp)
       if (this.dataTypeMap.hasOwnProperty(this.tableTyp.toString())) {
         for (const v of this.dataTypeMap[this.tableTyp.toString()]) {
           if (data == v.attribute_name) {

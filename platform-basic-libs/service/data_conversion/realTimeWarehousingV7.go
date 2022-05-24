@@ -62,7 +62,7 @@ func (this *RealTimeWarehousingV7) Flush() (err error) {
 			logs.Logger.Sugar().Infof("插入失败！", err)
 		} else {
 			if res.Errors {
-				resStr, _ := json.Marshal(res)
+				resStr, _ := json.Marshal(res.Items[0])
 				updateDataXListStatus(this.taskId, this.expectLen, this.completeLen, Error, string(resStr))
 				logs.Logger.Sugar().Errorf("res", string(resStr))
 			} else {

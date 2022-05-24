@@ -12,8 +12,8 @@
     </el-select>
 
     <el-select
-      style="margin-left: 10px"
       v-model="linkID"
+      style="margin-left: 10px"
       filterable
       default-first-option
       :placeholder="$t('请选择ES连接')"
@@ -22,13 +22,19 @@
       <el-option :value="Number(0)" :label="$t('请选择ES连接')" />
       <el-option v-for="item in opt" :key="item.id" :value="Number(item.id)" :label="item.remark" />
     </el-select>
-    <el-button type="primary" style="margin-left: 10px" @click="refresh"> {{$t('刷新')}}</el-button>
+    <el-button
+      size="mini"
+      type="primary"
+      style="margin-left: 10px"
+      @click="refresh"
+    > {{ $t('刷新') }}
+    </el-button>
   </div>
 </template>
 
 <script>
 import { OptAction } from '@/api/es-link'
-import {setI18nLanguage} from "../../utils/lang";
+import { setI18nLanguage } from '../../utils/lang'
 
 export default {
   inject: ['reload'],
@@ -37,7 +43,7 @@ export default {
     return {
       opt: [],
       linkID: '',
-      Esi18n: localStorage.getItem('lang') || "zh",
+      Esi18n: localStorage.getItem('lang') || 'zh',
       time: null,
       timeSecend: 60
     }
@@ -88,41 +94,45 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .header-search {
-    font-size: 0 !important;
+.header-search {
+  font-size: 0 !important;
 
-    .search-icon {
-      cursor: pointer;
-      font-size: 18px;
-      vertical-align: middle;
-    }
+.search-icon {
+  cursor: pointer;
+  font-size: 18px;
+  vertical-align: middle;
+}
 
-    .header-search-select {
-      font-size: 18px;
-      transition: width 0.2s;
-      width: 0;
-      overflow: hidden;
-      background: transparent;
-      border-radius: 0;
-      display: inline-block;
-      vertical-align: middle;
+.header-search-select {
+  font-size: 18px;
+  transition: width 0.2s;
+  width: 0;
+  overflow: hidden;
+  background: transparent;
+  border-radius: 0;
+  display: inline-block;
+  vertical-align: middle;
 
-      /deep/ .el-input__inner {
-        border-radius: 0;
-        border: 0;
-        padding-left: 0;
-        padding-right: 0;
-        box-shadow: none !important;
-        border-bottom: 1px solid #d9d9d9;
-        vertical-align: middle;
-      }
-    }
+/deep/ .el-input__inner {
+  border-radius: 0;
+  border: 0;
+  padding-left: 0;
+  padding-right: 0;
+  box-shadow: none !important;
+  border-bottom: 1px solid #d9d9d9;
+  vertical-align: middle;
+}
 
-    &.show {
-      .header-search-select {
-        width: 210px;
-        margin-left: 10px;
-      }
-    }
-  }
+}
+
+&
+.show {
+
+.header-search-select {
+  width: 210px;
+  margin-left: 10px;
+}
+
+}
+}
 </style>

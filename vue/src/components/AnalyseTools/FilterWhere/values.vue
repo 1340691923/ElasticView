@@ -18,7 +18,6 @@
 </template>
 
 <script>
-import { GetValues } from '@/api/analysis'
 
 export default {
   name: 'Values',

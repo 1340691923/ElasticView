@@ -1,5 +1,16 @@
 <template>
-  <el-select v-model="indexName" :reserve-keyword="multiple" :collapse-tags="multiple" :disabled="disabled" :placeholder="placeholder" clearable :multiple="multiple" :clearable="clearable" filterable @change="change()">
+  <el-select
+    v-model="indexName"
+    :reserve-keyword="multiple"
+    :collapse-tags="multiple"
+    :disabled="disabled"
+    :placeholder="placeholder"
+    clearable
+    :multiple="multiple"
+    :clearable="clearable"
+    filterable
+    @change="change()"
+  >
 
     <el-option v-if="haveAll == true" label="全部" value="*" />
     <el-option v-for="(indexName, index) in indexList" :key="index" :label="indexName" :value="indexName" />
@@ -8,6 +19,7 @@
 
 <script>
 import { IndexNamesAction } from '@/api/es-index.js'
+
 export default {
   name: 'Index',
   props: {
@@ -41,9 +53,7 @@ export default {
       indexList: []
     }
   },
-  computed: {
-
-  },
+  computed: {},
   mounted() {
     this.getIndexList()
   },

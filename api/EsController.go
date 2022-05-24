@@ -41,6 +41,9 @@ func (this EsController) PingAction(ctx *Ctx) error {
 		if err != nil {
 			return this.Error(ctx, err)
 		}
+		if data.Version.Number == "" {
+			return this.Error(ctx, errors.New("ES地址OK，但是密码验证失败"))
+		}
 		return this.Success(ctx, response.OperateSuccess, data)
 	case 7:
 		esClient, err := escache.NewEsClientV7(esConnect)
@@ -51,6 +54,9 @@ func (this EsController) PingAction(ctx *Ctx) error {
 		if err != nil {
 			return this.Error(ctx, err)
 		}
+		if data.Version.Number == "" {
+			return this.Error(ctx, errors.New("ES地址OK，但是密码验证失败"))
+		}
 		return this.Success(ctx, response.OperateSuccess, data)
 	case 8:
 		esClient, err := escache.NewEsClientV8(esConnect)
@@ -60,6 +66,9 @@ func (this EsController) PingAction(ctx *Ctx) error {
 		data, _, err := esClient.Ping(esConnect.Ip).Do(context.Background())
 		if err != nil {
 			return this.Error(ctx, err)
+		}
+		if data.Version.Number == "" {
+			return this.Error(ctx, errors.New("ES地址OK，但是密码验证失败"))
 		}
 		return this.Success(ctx, response.OperateSuccess, data)
 	default:

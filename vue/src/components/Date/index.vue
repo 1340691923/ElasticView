@@ -1,6 +1,6 @@
 <template>
   <div class="filter-item">
-    {{$t('时间范围')}}：
+    {{ $t('时间范围') }}：
 
     <el-date-picker
       v-if="simple_format == false"
@@ -38,7 +38,6 @@
 <script>
 import { pickerOptions } from '@/utils/date'
 
-import { dateFormat } from '@/utils/date'
 const day = 3600 * 1000 * 24
 export default {
   name: 'Index',
@@ -69,13 +68,13 @@ export default {
 </script>
 
 <style scoped>
-  .xwl>>>.el-input__inner{
+.xwl >>> .el-input__inner {
 
-    color:#000000!important;
-    font-family: cursive!important;
-    border-top:  1px red !important;
-    border-left:  1px red !important;
-    border-right:  1px red !important;
-  }
+  color: #000000 !important;
+  font-family: cursive !important;
+  border-top: 1px red !important;
+  border-left: 1px red !important;
+  border-right: 1px red !important;
+}
 
 </style>

@@ -20,23 +20,29 @@
           :placeholder="$t('请选择Http Method')"
           filterable
         >
-          <el-option :label="$t('PUT【更新或创建】')" value="PUT"/>
-          <el-option :label="$t('GET【查询】')" value="GET"/>
-          <el-option :label="'DELETE【'+$t('删除')+'】'" value="DELETE"/>
-          <el-option :label="$t('POST【创建】')" value="POST"/>
-          <el-option :label="$t('HEAD【是否存在】')" value="HEAD"/>
+          <el-option :label="$t('PUT【更新或创建】')" value="PUT" />
+          <el-option :label="$t('GET【查询】')" value="GET" />
+          <el-option :label="'DELETE【'+$t('删除')+'】'" value="DELETE" />
+          <el-option :label="$t('POST【创建】')" value="POST" />
+          <el-option :label="$t('HEAD【是否存在】')" value="HEAD" />
         </el-select>
       </el-autocomplete>
       <el-button
         slot="append"
+
+        size="mini"
         class="filter-item "
         icon="el-icon-search"
         type="text"
       >
-        <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/index.html"
-           target="_blank">{{ $t('官方文档') }}</a>
+        <a
+          href="https://www.elastic.co/guide/en/elasticsearch/reference/current/index.html"
+          target="_blank"
+        >{{ $t('官方文档') }}</a>
       </el-button>
       <el-button
+        size="mini"
+
         class="filter-item go"
         style="display: inline;"
         :loading="loading"
@@ -47,6 +53,8 @@
       </el-button>
       <el-button
         v-if="cancelToken != ''"
+
+        size="mini"
         class="filter-item cancel"
         style="display: inline;"
         type="danger"
@@ -60,6 +68,8 @@
       <el-button-group>
         <el-button
           v-show="input.method == 'GET'"
+
+          size="mini"
           class="filter-item sql-format"
           style="display: inline;"
           type="warning"
@@ -68,6 +78,8 @@
         >{{ $t('SQL转换') }}
         </el-button>
         <el-button
+          size="mini"
+
           class="filter-item search-history"
           style="display: inline;"
           type="danger"
@@ -78,6 +90,8 @@
         </el-button>
         <el-button
           v-if="canExport && input.path.trim() != '_search'"
+
+          size="mini"
           class="filter-item "
           style="display: inline;"
           type="success"
@@ -97,8 +111,14 @@
         :before-generate="startDownload"
         :before-finish="endDownload"
       >
-        <el-button :disabled="downloadLoading" v-loading="downloadLoading" type="primary" icon="el-icon-download"
-                   class="filter-item download">
+        <el-button
+          v-loading="downloadLoading"
+          size="mini"
+          :disabled="downloadLoading"
+          type="primary"
+          icon="el-icon-download"
+          class="filter-item download"
+        >
           {{ $t('下载') }}
         </el-button>
       </download-excel>
@@ -140,7 +160,13 @@
       destroy-on-close
       size="50%"
     >
-      <el-button style="margin: 20px" type="warning" icon="el-icon-refresh" @click="sqlToDsl">{{ $t('开始转换为DSL') }}
+      <el-button
+        size="mini"
+        style="margin: 20px"
+        type="warning"
+        icon="el-icon-refresh"
+        @click="sqlToDsl"
+      >{{ $t('开始转换为DSL') }}
       </el-button>
       <el-link type="success" disabled>{{ $t('表名可用索引名代替') }}</el-link>
       <sql-editor
@@ -149,7 +175,7 @@
         @getValue="getSql"
       />
     </el-drawer>
-    <back-to-top/>
+    <back-to-top />
     <history
       v-if="dialogVisible"
       :dialog-visible="dialogVisible"
@@ -171,13 +197,13 @@
 import Driver from 'driver.js' // import driver.js
 import 'driver.js/dist/driver.min.css' // import driver.js css
 import steps from '@/views/rest/guide'
-import {clone} from '@/utils/index'
-import {RunDslAction, SqlToDslAction} from '@/api/es'
+import { clone } from '@/utils/index'
+import { RunDslAction, SqlToDslAction } from '@/api/es'
 
-import {Finish, IsFinish} from '@/api/guid'
-import {filterData} from '@/utils/table'
+import { Finish, IsFinish } from '@/api/guid'
+import { filterData } from '@/utils/table'
 
-import {esBodyKeyWords} from '@/utils/base-data'
+import { esBodyKeyWords } from '@/utils/base-data'
 
 export default {
   name: 'Index',
@@ -325,10 +351,10 @@ export default {
     },
 
     async finishGuid() {
-      const {data, code, msg} = await Finish({'guid_name': this.modName})
+      const { data, code, msg } = await Finish({ 'guid_name': this.modName })
     },
     async startGuid() {
-      const {data, code, msg} = await IsFinish({'guid_name': this.modName})
+      const { data, code, msg } = await IsFinish({ 'guid_name': this.modName })
 
       if (!data) {
         console.log('开始新手引导')
@@ -367,7 +393,7 @@ export default {
       })
     },
     async sqlToDsl() {
-      const {data, code, msg} = await SqlToDslAction({sql: this.sqlStr})
+      const { data, code, msg } = await SqlToDslAction({ sql: this.sqlStr })
       if (code == 0) {
         this.$message({
           type: 'success',
@@ -423,7 +449,7 @@ export default {
         } else {
           cb(queryData)
         }
-        return;
+        return
       }
 
       queryData = filterData(queryData, queryString.trim())
@@ -509,17 +535,17 @@ export default {
 
 <style scoped>
 .search-history {
-  width: 100px;
+  width: 150px;
   font-size: 8px;
 }
 
 .download {
   display: inline;
-  width: 100px;
+  width: 150px;
 }
 
 .sql-format {
-  width: 100px;
+  width: 150px;
   font-size: 8px;
 }
 

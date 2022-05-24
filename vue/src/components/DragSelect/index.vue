@@ -51,8 +51,8 @@ export default {
 <style scoped>
 .drag-select >>> .sortable-ghost {
   opacity: .8;
-  color: #fff!important;
-  background: #42b983!important;
+  color: #fff !important;
+  background: #42b983 !important;
 }
 
 .drag-select >>> .el-tag {

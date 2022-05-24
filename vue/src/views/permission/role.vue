@@ -1,92 +1,134 @@
 <template>
   <div class="app-container">
 
-      <div class="filter-container">
-        <el-button type="primary" class="filter-item" icon="el-icon-plus" @click="handleAddRole">{{$t('新建角色')}}</el-button>
-      </div>
-      <el-table
-        :data="rolesList"
-        @row-dblclick="handleEdit"
+    <div class="filter-container">
+      <el-button
+        size="mini"
+        type="primary"
+        class="filter-item"
+        icon="el-icon-plus"
+        @click="handleAddRole"
+      >{{ $t('新建角色') }}
+      </el-button>
+    </div>
+    <el-table
+      :data="rolesList"
+      @row-dblclick="handleEdit"
+    >
+      <el-table-column
+        :label="$t('序号')"
+        align="center"
+        fixed
+        width="50"
       >
-        <el-table-column
-          :label="$t('序号')"
-          align="center"
-          fixed
-          width="50"
-        >
-          <template slot-scope="scope">
-            {{ scope.$index+1 }}
-          </template>
-        </el-table-column>
-        <el-table-column align="center" :label="$t('角色id')" width="220">
-          <template slot-scope="scope">
-            {{ scope.row.id }}
-          </template>
-        </el-table-column>
-        <el-table-column align="center" :label="$t('角色名')" width="220">
-          <template slot-scope="scope">
-            {{ scope.row.name }}
-          </template>
-        </el-table-column>
-        <el-table-column align="header-center" :label="$t('角色详细信息')">
-          <template slot-scope="scope">
-            {{ scope.row.description }}
-          </template>
-        </el-table-column>
-        <el-table-column align="center" :label="$t('操作')" width="220" fixed="right">
-          <template slot-scope="scope">
-            <el-button type="primary" size="small" icon="el-icon-edit" @click.stop="handleEdit(scope.row)">{{$t('编辑')}}
-            </el-button>
-            <el-button type="danger" size="small" icon="el-icon-delete" @click.stop="handleDelete(scope)">{{$t('删除')}}</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+        <template slot-scope="scope">
+          {{ scope.$index + 1 }}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" :label="$t('角色id')" width="220">
+        <template slot-scope="scope">
+          {{ scope.row.id }}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" :label="$t('角色名')" width="220">
+        <template slot-scope="scope">
+          {{ scope.row.name }}
+        </template>
+      </el-table-column>
+      <el-table-column align="header-center" :label="$t('角色详细信息')">
+        <template slot-scope="scope">
+          {{ scope.row.description }}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" :label="$t('操作')" width="220" fixed="right">
+        <template slot-scope="scope">
+          <el-button
 
-      <el-dialog :close-on-click-modal="false" width="70%" :visible.sync="dialogVisible" :title="dialogType==='edit'?$t('修改角色'): $t('新建角色')">
-        <el-form :model="role" label-width="120px" label-position="left">
-          <el-form-item :label="$t('角色名')">
-            <el-input v-model="role.name" :placeholder="$t('角色名')" />
-          </el-form-item>
-          <el-form-item :label="$t('角色详情信息')">
-            <el-input
-              v-model="role.description"
-              :autosize="{ minRows: 2, maxRows: 4}"
-              type="textarea"
-              :placeholder="$t('角色详情信息')"
-            />
-          </el-form-item>
-          <el-form-item :label="$t('菜单栏')">
-            <el-input v-model="filterText" :placeholder="$t('输入关键字进行过滤')" style="width: 300px" />
-            <el-button icon="el-icon-check" @click="quanxuan">{{$t('全选')}}</el-button>
-            <el-tree
-              ref="tree"
-              :filter-node-method="filterNode"
-              :check-strictly="checkStrictly"
-              :data="routesData"
-              :props="defaultProps"
-              show-checkbox
-              node-key="path"
-              class="permission-tree"
-            />
-          </el-form-item>
-          <el-form-item v-if="role.id != 1" :label="$t('接口权限设置')">
-            <el-transfer
-              v-if="dialogVisible"
-              v-model="role.api"
-              :titles="[$t('全部接口权限'), $t('角色拥有权限')]"
-              :button-texts="[$t('移除权限'), $t('添加权限')]"
-              filterable
-              :filter-method="filterMethod"
-              :filter-placeholder="$t('请选择接口名')"
-              :data="allApiConfig"
-            />
-          </el-form-item>
-        </el-form>
-        <div style="text-align:right;">
-          <el-button type="danger" icon="el-icon-close" @click="dialogVisible=false">{{$t('取消')}}</el-button>
-          <el-button type="primary" icon="el-icon-check" @click="confirmRole">{{$t('确定')}}</el-button>
-        </div>
-      </el-dialog>
+            type="primary"
+            size="mini"
+            icon="el-icon-edit"
+            @click.stop="handleEdit(scope.row)"
+          >{{ $t('编辑') }}
+          </el-button>
+          <el-button
+
+            type="danger"
+            size="mini"
+            icon="el-icon-delete"
+            @click.stop="handleDelete(scope)"
+          >{{ $t('删除') }}
+          </el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+
+    <el-dialog
+      :close-on-click-modal="false"
+      width="70%"
+      :visible.sync="dialogVisible"
+      :title="dialogType==='edit'?$t('修改角色'): $t('新建角色')"
+    >
+      <el-form :model="role" label-width="120px" label-position="left">
+        <el-form-item :label="$t('角色名')">
+          <el-input v-model="role.name" :placeholder="$t('角色名')" />
+        </el-form-item>
+        <el-form-item :label="$t('角色详情信息')">
+          <el-input
+            v-model="role.description"
+            :autosize="{ minRows: 2, maxRows: 4}"
+            type="textarea"
+            :placeholder="$t('角色详情信息')"
+          />
+        </el-form-item>
+        <el-form-item :label="$t('菜单栏')">
+          <el-input v-model="filterText" :placeholder="$t('输入关键字进行过滤')" style="width: 300px" />
+          <el-button
+            size="mini"
+            icon="el-icon-check"
+            @click="quanxuan"
+          >{{ $t('全选') }}
+          </el-button>
+          <el-tree
+            ref="tree"
+            :filter-node-method="filterNode"
+            :check-strictly="checkStrictly"
+            :data="routesData"
+            :props="defaultProps"
+            show-checkbox
+            node-key="path"
+            class="permission-tree"
+          />
+        </el-form-item>
+        <el-form-item v-if="role.id != 1" :label="$t('接口权限设置')">
+          <el-transfer
+            v-if="dialogVisible"
+            v-model="role.api"
+            :titles="[$t('全部接口权限'), $t('角色拥有权限')]"
+            :button-texts="[$t('移除权限'), $t('添加权限')]"
+            filterable
+            :filter-method="filterMethod"
+            :filter-placeholder="$t('请选择接口名')"
+            :data="allApiConfig"
+          />
+        </el-form-item>
+      </el-form>
+      <div style="text-align:right;">
+        <el-button
+          size="mini"
+          type="danger"
+          icon="el-icon-close"
+          @click="dialogVisible=false"
+        >{{ $t('取消') }}
+        </el-button>
+        <el-button
+          size="mini"
+          type="primary"
+          icon="el-icon-check"
+          @click="confirmRole"
+        >{{ $t('确定') }}
+        </el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -246,8 +288,8 @@ export default {
     },
     handleDelete({ $index, row }) {
       this.$confirm(this.$t('确定删除这个角色吗?'), this.$t('警告'), {
-        confirmButtonText:  this.$t('确定'),
-        cancelButtonText:  this.$t('取消'),
+        confirmButtonText: this.$t('确定'),
+        cancelButtonText: this.$t('取消'),
         type: 'warning'
       })
         .then(async() => {
@@ -336,24 +378,27 @@ export default {
 </script>
 
 <style>
-  .el-transfer-panel{
-    width:  400px;
-    height: 600px;
-  }
-  .el-transfer-panel__list.is-filterable{
-    height: 500px;
-  }
+.el-transfer-panel {
+  width: 400px;
+  height: 600px;
+}
+
+.el-transfer-panel__list.is-filterable {
+  height: 500px;
+}
 
 </style>
 
 <style lang="scss" scoped>
-  .app-container {
-    .roles-table {
-      margin-top: 30px;
-    }
+.app-container {
 
-    .permission-tree {
-      margin-bottom: 30px;
-    }
-  }
+.roles-table {
+  margin-top: 30px;
+}
+
+.permission-tree {
+  margin-bottom: 30px;
+}
+
+}
 </style>

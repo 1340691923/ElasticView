@@ -1,108 +1,145 @@
 <template>
   <div class="app-container">
 
-      <div class="filter-container">
-        <el-button type="primary" icon="el-icon-plus" class="filter-item" @click="handleAddRole">{{$t('新建连接信息')}}</el-button>
-      </div>
-      <back-to-top />
-      <el-table
-
-        :data="list"
+    <div class="filter-container">
+      <el-button
+        size="mini"
+        type="primary"
+        icon="el-icon-plus"
+        class="filter-item"
+        @click="handleAddRole"
+      >{{ $t('新建连接信息') }}
+      </el-button>
+    </div>
+    <back-to-top />
+    <el-table
+      :data="list"
+    >
+      <el-table-column
+        :label="$t('序号')"
+        align="center"
+        fixed
+        width="50"
       >
-        <el-table-column
-          :label="$t('序号')"
-          align="center"
-          fixed
-          width="50"
-        >
-          <template slot-scope="scope">
-            {{ scope.$index+1 }}
-          </template>
-        </el-table-column>
+        <template slot-scope="scope">
+          {{ scope.$index + 1 }}
+        </template>
+      </el-table-column>
 
-        <el-table-column align="center" :label="$t('HOST')" width="220">
-          <template slot-scope="scope">
-            {{ scope.row.ip }}
-          </template>
-        </el-table-column>
-        <el-table-column align="center" :label="$t('用户名')" width="300">
-          <template slot-scope="scope">
-            {{ scope.row.user }}
-          </template>
-        </el-table-column>
+      <el-table-column align="center" :label="$t('HOST')" width="220">
+        <template slot-scope="scope">
+          {{ scope.row.ip }}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" :label="$t('用户名')" width="300">
+        <template slot-scope="scope">
+          {{ scope.row.user }}
+        </template>
+      </el-table-column>
 
-        <el-table-column align="center" :label="$t('备注')" width="220">
-          <template slot-scope="scope">
-            {{ scope.row.remark }}
-          </template>
-        </el-table-column>
-        <el-table-column align="center" :label="$t('版本')" width="100">
-          <template slot-scope="scope">
-            {{ scope.row.version }}
-          </template>
-        </el-table-column>
-        <el-table-column align="center" :label="$t('创建时间')" width="220">
-          <template slot-scope="scope">
-            {{ scope.row.created }}
-          </template>
-        </el-table-column>
-        <el-table-column align="center" :label="$t('修改时间')" width="220">
-          <template slot-scope="scope">
-            {{ scope.row.updated }}
-          </template>
-        </el-table-column>
-        <el-table-column align="center" :label="$t('操作')" fixed="right" width="300">
-          <template slot-scope="scope">
-            <el-button
-              :disabled="scope.row.connectLoading"
-              v-loading="scope.row.connectLoading"
-              type="success"
-              size="small"
-              icon="el-icon-link"
-              @click="testConnect(scope)"
-            >{{$t('测试连接')}}
-            </el-button>
-            <el-button type="primary" size="small" icon="el-icon-edit" @click="handleEdit(scope)">{{$t('编辑')}}</el-button>
-            <el-button type="danger" size="small" icon="el-icon-delete" @click="handleDelete(scope)">{{$t('删除')}}</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-
-      <el-dialog :close-on-click-modal="false" :visible.sync="dialogVisible" :title="dialogType==='edit'?$t('编辑连接信息'):$t('新建连接信息')">
-        <el-form :model="link" label-width="100px" label-position="left">
-          <el-form-item :label="$t('IP')">
-            <el-input v-model="link.ip" :placeholder="$t('例如:http://127.0.0.1:9200')" />
-          </el-form-item>
-          <el-form-item  :label="$t('用户名')">
-            <el-input v-model="link.user" :placeholder="$t('用户名')" />
-          </el-form-item>
-          <el-form-item  :label="$t('密码')">
-            <el-input v-model="link.pwd" :placeholder="$t('密码')" />
-          </el-form-item>
-          <el-form-item  :label="$t('备注')">
-            <el-input v-model="link.remark" :placeholder="$t('备注')" />
-          </el-form-item>
-          <el-form-item  :label="$t('版本')">
-            <el-select v-model="link.version" :placeholder="$t('请选择版本')" filterable>
-              <el-option label="6" :value="Number(6)" />
-              <el-option label="7" :value="Number(7)" />
-              <el-option label="8" :value="Number(8)" />
-            </el-select>
-          </el-form-item>
-        </el-form>
-        <div style="text-align:right;">
+      <el-table-column align="center" :label="$t('备注')" width="220">
+        <template slot-scope="scope">
+          {{ scope.row.remark }}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" :label="$t('版本')" width="100">
+        <template slot-scope="scope">
+          {{ scope.row.version }}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" :label="$t('创建时间')" width="220">
+        <template slot-scope="scope">
+          {{ scope.row.created }}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" :label="$t('修改时间')" width="220">
+        <template slot-scope="scope">
+          {{ scope.row.updated }}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" :label="$t('操作')" fixed="right" width="300">
+        <template slot-scope="scope">
           <el-button
-            :disabled="testConnectLoading"
-            v-loading="testConnectLoading"
+
+            v-loading="scope.row.connectLoading"
+            :disabled="scope.row.connectLoading"
             type="success"
+            size="mini"
             icon="el-icon-link"
-            @click="testConnectForm"
-          >{{$t('测试连接')}}
+            @click="testConnect(scope)"
+          >{{ $t('测试连接') }}
           </el-button>
-          <el-button type="danger" icon="el-icon-close" @click="dialogVisible=false">{{$t('取消')}}</el-button>
-          <el-button type="primary" icon="el-icon-check" @click="confirm">{{$t('确认')}}</el-button>
-        </div>
-      </el-dialog>
+          <el-button
+            type="primary"
+            size="mini"
+            icon="el-icon-edit"
+            @click="handleEdit(scope)"
+          >{{ $t('编辑') }}
+          </el-button>
+          <el-button
+            type="danger"
+            size="mini"
+            icon="el-icon-delete"
+            @click="handleDelete(scope)"
+          >{{ $t('删除') }}
+          </el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+
+    <el-dialog
+      :close-on-click-modal="false"
+      :visible.sync="dialogVisible"
+      :title="dialogType==='edit'?$t('编辑连接信息'):$t('新建连接信息')"
+    >
+      <el-form :model="link" label-width="100px" label-position="left">
+        <el-form-item :label="$t('IP')">
+          <el-input v-model="link.ip" :placeholder="$t('例如:http://127.0.0.1:9200')" />
+        </el-form-item>
+        <el-form-item :label="$t('用户名')">
+          <el-input v-model="link.user" :placeholder="$t('用户名')" />
+        </el-form-item>
+        <el-form-item :label="$t('密码')">
+          <el-input v-model="link.pwd" :placeholder="$t('密码')" />
+        </el-form-item>
+        <el-form-item :label="$t('备注')">
+          <el-input v-model="link.remark" :placeholder="$t('备注')" />
+        </el-form-item>
+        <el-form-item :label="$t('版本')">
+          <el-select v-model="link.version" :placeholder="$t('请选择版本')" filterable>
+            <el-option label="6" :value="Number(6)" />
+            <el-option label="7" :value="Number(7)" />
+            <el-option label="8" :value="Number(8)" />
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div style="text-align:right;">
+        <el-button
+          v-loading="testConnectLoading"
+
+          size="mini"
+          :disabled="testConnectLoading"
+          type="success"
+          icon="el-icon-link"
+          @click="testConnectForm"
+        >{{ $t('测试连接') }}
+        </el-button>
+        <el-button
+          size="mini"
+          type="primary"
+          icon="el-icon-check"
+          @click="confirm"
+        >{{ $t('确认') }}
+        </el-button>
+        <el-button
+          size="mini"
+          type="danger"
+          icon="el-icon-close"
+          @click="dialogVisible=false"
+        >{{ $t('取消') }}
+        </el-button>
+      </div>
+    </el-dialog>
 
   </div>
 </template>
@@ -169,9 +206,8 @@ export default {
     testConnect(scope) {
       this.list[scope.$index].connectLoading = true
       PingAction(scope.row).then(res => {
-
         if (res.code == 0) {
-          console.log("res",res)
+          console.log('res', res)
           this.$message({
             type: 'success',
             message: `连接成功,ES版本为 :${res.data.version.number}`
@@ -205,7 +241,7 @@ export default {
       this.dialogVisible = true
       this.checkStrictly = true
       this.link = deepClone(scope.row)
-      this.link.pwd = ""
+      this.link.pwd = ''
     },
     handleDelete({ $index, row }) {
       this.$confirm('确定删除该连接信息吗?', '警告', {
@@ -264,26 +300,26 @@ export default {
         this.getList()
       }
 
-
       this.dialogVisible = false
       this.$message({
         type: 'success',
-        message: isEdit?'修改成功':'创建成功'
+        message: isEdit ? '修改成功' : '创建成功'
       })
-
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-  .app-container {
-    .roles-table {
-      margin-top: 30px;
-    }
+.app-container {
 
-    .permission-tree {
-      margin-bottom: 30px;
-    }
-  }
+.roles-table {
+  margin-top: 30px;
+}
+
+.permission-tree {
+  margin-bottom: 30px;
+}
+
+}
 </style>

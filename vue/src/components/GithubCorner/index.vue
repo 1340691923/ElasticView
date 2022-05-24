@@ -1,5 +1,10 @@
 <template>
-  <a href="https://github.com/1340691923/ElasticView" target="_blank" class="github-corner" aria-label="View source on Github">
+  <a
+    href="https://github.com/1340691923/ElasticView"
+    target="_blank"
+    class="github-corner"
+    aria-label="View source on Github"
+  >
     <svg
       width="80"
       height="80"
@@ -43,10 +48,11 @@
   }
 }
 
-@media (max-width:500px) {
+@media (max-width: 500px) {
   .github-corner:hover .octo-arm {
     animation: none
   }
+
   .github-corner .octo-arm {
     animation: octocat-wave 560ms ease-in-out
   }
