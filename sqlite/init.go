@@ -6,6 +6,7 @@ import (
 	"github.com/1340691923/ElasticView/engine/db"
 	"github.com/1340691923/ElasticView/platform-basic-libs/util"
 	"os"
+	"path/filepath"
 
 	"log"
 	"strings"
@@ -17,7 +18,14 @@ var SqlByte []byte
 //初始化sqlite数据
 func Init() {
 
-	if util.CheckFileIsExist("lock") {
+	currDir := util.GetCurrentDirectory()
+
+
+	dataDir := filepath.Join(currDir,"data")
+
+	lockFile := filepath.Join(dataDir,"lock")
+
+	if util.CheckFileIsExist(lockFile) {
 		return
 	}
 
@@ -34,5 +42,8 @@ func Init() {
 	}
 
 	log.Println("初始化sqlite数据完成！")
-	os.Create("lock")
+	if !util.CheckFileIsExist(dataDir){
+		os.MkdirAll(dataDir,os.ModePerm)
+	}
+	os.Create(lockFile)
 }
