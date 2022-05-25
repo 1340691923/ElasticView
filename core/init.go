@@ -6,6 +6,8 @@ import (
 	"github.com/1340691923/ElasticView/engine/db"
 	"github.com/1340691923/ElasticView/engine/logs"
 	"github.com/1340691923/ElasticView/model"
+	"os"
+	"path/filepath"
 
 	"github.com/1340691923/ElasticView/platform-basic-libs/rbac"
 
@@ -38,7 +40,12 @@ func InitSqlx() (fn func(), err error) {
 	driverType := model.GlobConfig.DbType
 	var dbSource string
 	if driverType == model.SqliteDbTyp {
-		dbSource = model.GlobConfig.Sqlite.DbPath + "?_loc=Local&_busy_timeout=9999999"
+		currDir := util.GetCurrentDirectory()
+		dataDir := filepath.Join(currDir,"data")
+		if !util.CheckFileIsExist(dataDir){
+			os.MkdirAll(dataDir,os.ModePerm)
+		}
+		dbSource = filepath.Join(dataDir,model.GlobConfig.Sqlite.DbPath) + "?_loc=Local&_busy_timeout=9999999"
 	} else {
 		dbSource = fmt.Sprintf(
 			"%s:%s@tcp(%s:%s)/%s",
@@ -104,7 +111,12 @@ func InitRbac() (fn func(), err error) {
 	driverType := model.GlobConfig.DbType
 	var dbSource string
 	if driverType == model.SqliteDbTyp {
-		dbSource = model.GlobConfig.Sqlite.DbPath + "?_loc=Local&_busy_timeout=9999999"
+		currDir := util.GetCurrentDirectory()
+		dataDir := filepath.Join(currDir,"data")
+		if !util.CheckFileIsExist(dataDir){
+			os.MkdirAll(dataDir,os.ModePerm)
+		}
+		dbSource = filepath.Join(dataDir,model.GlobConfig.Sqlite.DbPath) + "?_loc=Local&_busy_timeout=9999999"
 	} else {
 		dbSource = fmt.Sprintf(
 			"%s:%s@tcp(%s:%s)/%s",
