@@ -3,21 +3,14 @@
     <el-dialog :close-on-click-modal="false" width="95%" :visible.sync="dialogVisible" title="查询结果" @close="close">
       <div class="filter-container">
         <el-tag class="filter-item">{{ $t('请输入关键词') }}</el-tag>
-        <el-input v-model="input" class="filter-item" style="width: 300px" clearable @input="search" />
+        <el-input v-model="input" class="filter-item" style="width: 300px" clearable @input="search"/>
         <el-button
           size="mini"
-          type="success"
-          class="filter-item"
-          @click="search"
-        >{{ $t('搜索') }}
+          type="success" class="filter-item" @click="search">{{ $t('搜索') }}
         </el-button>
         <el-button
-          v-if="ISDoc"
           size="mini"
-          type="primary"
-          class="filter-item"
-          @click.native="openAddDialog = true"
-        >
+          v-if="ISDoc" type="primary" class="filter-item" @click.native="openAddDialog = true">
           {{ $t('添加文档') }}
         </el-button>
       </div>
@@ -59,10 +52,8 @@
               trigger="hover"
             >
               <div>{{ scope.row[val].toString() }}</div>
-              <span
-                v-if="scope.row[val].toString().length>=20"
-                slot="reference"
-              >{{ scope.row[val].toString().substr(0, 20) + "..." }}
+              <span v-if="scope.row[val].toString().length>=20"
+                    slot="reference">{{ scope.row[val].toString().substr(0, 20) + "..." }}
               </span>
               <span v-else slot="reference">{{ scope.row[val].toString() }}
               </span>
@@ -74,6 +65,7 @@
             <el-button-group>
               <el-button
 
+
                 v-if="ISDoc"
                 type="primary"
                 size="mini"
@@ -84,12 +76,7 @@
               </el-button>
               <el-button
 
-                v-else
-                type="success"
-                size="mini"
-                icon="el-icon-search"
-                @click="look(scope.$index)"
-              >
+                v-else type="success" size="mini" icon="el-icon-search" @click="look(scope.$index)">
                 {{ $t('查看') }}
               </el-button>
               <el-button
@@ -122,10 +109,7 @@
         <el-tag class="filter-item">{{ $t('操作') }}</el-tag>
         <el-button
           size="mini"
-          type="primary"
-          class="filter-item"
-          @click="updateByID"
-        >{{ $t('修改') }}
+          type="primary" class="filter-item" @click="updateByID">{{ $t('修改') }}
         </el-button>
       </div>
       <json-editor
@@ -165,11 +149,7 @@
         <el-tag class="filter-item">{{ $t('操作') }}</el-tag>
         <el-button
           size="mini"
-          type="primary"
-          icon="el-icon-edit"
-          class="filter-item"
-          @click="add"
-        >{{ $t('提交') }}
+          type="primary" icon="el-icon-edit" class="filter-item" @click="add">{{ $t('提交') }}
         </el-button>
       </div>
 
@@ -188,10 +168,10 @@
 </template>
 
 <script>
-import { filterData } from '@/utils/table'
-import { clone } from '@/utils/index'
-import { DeleteRowByIDAction, InsertAction, UpdateByIDAction } from '@/api/es-doc'
-import { ListAction } from '@/api/es-map'
+import {filterData} from '@/utils/table'
+import {clone} from '@/utils/index'
+import {DeleteRowByIDAction, InsertAction, UpdateByIDAction} from '@/api/es-doc'
+import {ListAction} from '@/api/es-map'
 
 export default {
   name: 'ResTable',
@@ -249,6 +229,7 @@ export default {
       }
     },
     async add() {
+
       const editData = this.jsonData['hits']['hits'][this.index]
       const doc = this.newDoc
 
@@ -352,9 +333,10 @@ export default {
         input['es_connect'] = this.$store.state.baseData.EsConnectID
         input['index_name'] = resData['hits']['hits'][0]['_index']
 
-        const { data, code, msg } = await ListAction(input)
+        const {data, code, msg} = await ListAction(input)
 
         if (code == 0) {
+
           if (data.ver == 6) {
             const mappings = Object.keys(data.list[input['index_name']].mappings)
 
@@ -387,6 +369,7 @@ export default {
           })
         }
       }
+
     },
     getEditDoc(v) {
       try {
@@ -440,7 +423,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       })
-        .then(async() => {
+        .then(async () => {
           const input = {}
           input['es_connect'] = this.$store.state.baseData.EsConnectID
           input['index_name'] = this.jsonData['hits']['hits'][0]['_index']
@@ -497,5 +480,7 @@ export default {
 </script>
 
 <style scoped>
-
+::v-deep .el-table .sort-caret.descending{
+  bottom: 0px;
+}
 </style>

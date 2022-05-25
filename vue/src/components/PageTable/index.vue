@@ -11,7 +11,7 @@
     >
       <template v-for="(col, index) in tableInfo" slot-scope="scope">
         <!-- 全部自定义 只需要这个分页 -->
-        <slot :name="col.slot" :row="scope.row" />
+        <slot :name="col.slot" :row="scope.row"/>
       </template>
     </el-table>
 
@@ -31,7 +31,7 @@
 
 <script>
 
-import { filterData } from '@/utils/table'
+import {filterData} from '@/utils/table'
 
 export default {
 
@@ -71,7 +71,7 @@ export default {
     },
     tableInfo: {
       type: Array,
-      default: [{ slot: 'operate' }]
+      default: [{slot: 'operate'}]
     },
     spanMethod: {
       type: Function
@@ -132,5 +132,7 @@ export default {
 </script>
 
 <style scoped>
-
+::v-deep .el-table .sort-caret.descending{
+  bottom: 0px;
+}
 </style>

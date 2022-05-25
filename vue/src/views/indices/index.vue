@@ -9,27 +9,28 @@
         filterable
         @change="search"
       >
-        <el-option :label="$t('索引健康状态')" value="" />
-        <el-option label="green" value="green" />
-        <el-option label="yellow" value="yellow" />
-        <el-option label="red" value="red" />
+        <el-option :label="$t('索引健康状态')" value=""/>
+        <el-option label="green" value="green"/>
+        <el-option label="yellow" value="yellow"/>
+        <el-option label="red" value="red"/>
       </el-select>
 
       <el-tag class="filter-item">{{ $t('请输入关键词') }}</el-tag>
 
       <el-autocomplete
-        id="index-keyword"
-        v-model="input"
         class="filter-item width300"
+        id="index-keyword"
         clearable
-
         :fetch-suggestions="querySearch"
+
+        v-model="input"
         :placeholder="$t('请输入索引名')"
       >
         <i
-          slot="suffix"
           class="el-icon-edit el-input__icon"
-        />
+          slot="suffix"
+        >
+        </i>
         <template slot-scope="{ item }">
           <span>{{ item.value }}</span>
         </template>
@@ -37,20 +38,15 @@
       </el-autocomplete>
 
       <el-button
-        id="index-search"
         size="mini"
-        type="primary"
-        class="filter-item"
-        icon="el-icon-search"
-        @click="search"
-      >{{ $t('搜索') }}
+        id="index-search" type="primary" class="filter-item" icon="el-icon-search" @click="search">{{ $t('搜索') }}
       </el-button>
       <el-button-group>
 
         <el-button
-          id="new-index"
-
           size="mini"
+
+          id="new-index"
           type="success"
           class="filter-item"
           icon="el-icon-plus"
@@ -59,11 +55,11 @@
         </el-button>
 
         <el-button
-          id="readOnlyAllowDelete"
-
-          v-loading="readOnlyAllowDeleteLoading"
           size="mini"
+
           :disabled="readOnlyAllowDeleteLoading"
+          id="readOnlyAllowDelete"
+          v-loading="readOnlyAllowDeleteLoading"
           type="warning"
           class="filter-item"
           icon="el-icon-sort"
@@ -73,11 +69,11 @@
         </el-button>
 
         <el-button
-          id="flushIndex"
-
-          v-loading="loadingGroup['_flush']"
           size="mini"
+
           :disabled="loadingGroup['_flush']"
+          id="flushIndex"
+          v-loading="loadingGroup['_flush']"
           type="info"
           class="filter-item"
           icon="el-icon-s-open"
@@ -90,11 +86,11 @@
     <div id="patch-operate" class="filter-container">
       <el-button-group>
         <el-button
-          id="patchCloseIndex"
-
-          v-loading="loadingGroup['close']"
           size="mini"
+
           :disabled="loadingGroup['close']"
+          id="patchCloseIndex"
+          v-loading="loadingGroup['close']"
           type="danger"
           icon="el-icon-circle-close"
           class="filter-item"
@@ -103,10 +99,10 @@
         </el-button>
 
         <el-button
-          id="patchOpenIndex"
-
-          v-loading="loadingGroup['open']"
           size="mini"
+
+          id="patchOpenIndex"
+          v-loading="loadingGroup['open']"
           :disabled="loadingGroup['open']"
           type="success"
 
@@ -116,10 +112,10 @@
         >{{ $t('打开') }}
         </el-button>
         <el-button
-          id="patchForcemergeIndex"
-
-          v-loading="loadingGroup['_forcemerge']"
           size="mini"
+
+          id="patchForcemergeIndex"
+          v-loading="loadingGroup['_forcemerge']"
           :disabled="loadingGroup['_forcemerge']"
           icon="el-icon-connection"
           class="filter-item"
@@ -135,11 +131,11 @@
           :content="$t('为了让最新的数据可以立即被搜索到')"
         >
           <el-button
-            id="patchRefreshIndex"
+            size="mini"
 
+            id="patchRefreshIndex"
             slot="reference"
             v-loading="loadingGroup['_refresh']"
-            size="mini"
             :disabled="loadingGroup['_refresh']"
             class="filter-item"
 
@@ -158,11 +154,11 @@
           :content="$t('让数据持久化到磁盘中')"
         >
           <el-button
-            id="patchFlushIndex"
+            size="mini"
 
+            id="patchFlushIndex"
             slot="reference"
             v-loading="loadingGroup['_flush']"
-            size="mini"
             :disabled="loadingGroup['_flush']"
             type="info"
             icon="el-icon-s-open"
@@ -173,10 +169,10 @@
         </el-popover>
 
         <el-button
-          id="patchCacheClear"
-
-          v-loading="loadingGroup['_cache/clear']"
           size="mini"
+
+          id="patchCacheClear"
+          v-loading="loadingGroup['_cache/clear']"
           :disabled="loadingGroup['_cache/clear']"
           class="filter-item"
 
@@ -187,10 +183,10 @@
         </el-button>
 
         <el-button
-          id="patchDeleteIndex"
-
-          v-loading="loadingGroup['deleteIndex']"
           size="mini"
+
+          id="patchDeleteIndex"
+          v-loading="loadingGroup['deleteIndex']"
           :disabled="loadingGroup['deleteIndex']"
           class="filter-item"
           type="danger"
@@ -199,10 +195,10 @@
         >{{ $t('删除索引') }}
         </el-button>
         <el-button
-          id="patchEmptyIndex"
-
-          v-loading="loadingGroup['empty']"
           size="mini"
+
+          id="patchEmptyIndex"
+          v-loading="loadingGroup['empty']"
           :disabled="loadingGroup['empty']"
           class="filter-item"
           type="danger"
@@ -212,7 +208,7 @@
         </el-button>
       </el-button-group>
     </div>
-    <back-to-top />
+    <back-to-top/>
 
     <el-table
       v-loading="connectLoading"
@@ -237,23 +233,14 @@
       <el-table-column align="center" :label="$t('索引健康状态')" width="100">
         <template slot-scope="scope">
           <el-button
-            v-if="scope.row.health == 'green'"
             size="mini"
-            type="success"
-            circle
-          />
+            v-if="scope.row.health == 'green'" type="success" circle/>
           <el-button
-            v-if="scope.row.health == 'yellow'"
             size="mini"
-            type="warning"
-            circle
-          />
+            v-if="scope.row.health == 'yellow'" type="warning" circle/>
           <el-button
-            v-if="scope.row.health == 'red'"
             size="mini"
-            type="danger"
-            circle
-          />
+            v-if="scope.row.health == 'red'" type="danger" circle/>
         </template>
       </el-table-column>
       <el-table-column align="center" :label="$t('索引的开启状态')" width="100">
@@ -343,6 +330,7 @@ size="mini"
             </el-button>
             <el-button
 
+
               type="primary"
               size="mini"
               icon="el-icon-circle-plus-outline"
@@ -350,6 +338,7 @@ size="mini"
             >{{ $t('修改映射') }}
             </el-button>
             <el-button
+
 
               icon="el-icon-more"
               type="primary"
@@ -408,8 +397,9 @@ size="mini"
             <el-tag type="primary" class="filter-item">{{ $t('操作') }}</el-tag>
             <el-button
 
-              v-loading="loadingGroup['saveMappinng']"
+
               :disabled="loadingGroup['saveMappinng']"
+              v-loading="loadingGroup['saveMappinng']"
               class="filter-item"
               size="mini"
               type="primary"
@@ -444,16 +434,11 @@ size="mini"
             <el-form-item :label="$t('编辑索引配置')">
               <el-button
                 size="mini"
-                type="primary"
-                icon="el-icon-edit-outline"
-                @click="submitSettings()"
-              >{{ $t('提交') }}
+                type="primary" icon="el-icon-edit-outline" @click="submitSettings()">{{ $t('提交') }}
               </el-button>
               <el-button
                 size="mini"
-                icon="refresh"
-                @click="resetSettings"
-              >{{ $t('重置') }}
+                icon="refresh" @click="resetSettings">{{ $t('重置') }}
               </el-button>
             </el-form-item>
             <el-form-item>
@@ -470,14 +455,15 @@ size="mini"
           </el-form>
         </el-tab-pane>
         <el-tab-pane :label="$t('修改别名')" name="alias">
-          <alias v-if="activeName == 'alias'" :index-name="indexName" />
+          <alias v-if="activeName == 'alias'" :index-name="indexName"/>
         </el-tab-pane>
         <div class="filter-container operate">
           <el-tag class="filter-item">{{ $t('操作') }}</el-tag>
           <el-button
 
-            v-loading="loadingGroup['close']"
+
             :disabled="loadingGroup['close']"
+            v-loading="loadingGroup['close']"
             type="danger"
             size="mini"
             icon="el-icon-circle-close"
@@ -488,8 +474,8 @@ size="mini"
 
           <el-button
 
-            v-loading="loadingGroup['open']"
             :disabled="loadingGroup['open']"
+            v-loading="loadingGroup['open']"
             type="success"
             size="mini"
             icon="el-icon-success"
@@ -499,8 +485,8 @@ size="mini"
           </el-button>
           <el-button
 
-            v-loading="loadingGroup['_forcemerge']"
             :disabled="loadingGroup['_forcemerge']"
+            v-loading="loadingGroup['_forcemerge']"
             size="mini"
             icon="el-icon-connection"
             class="filter-item"
@@ -518,8 +504,8 @@ size="mini"
             <el-button
 
               slot="reference"
-              v-loading="loadingGroup['_refresh']"
               :disabled="loadingGroup['_refresh']"
+              v-loading="loadingGroup['_refresh']"
               class="filter-item"
               size="mini"
               type="primary"
@@ -539,8 +525,8 @@ size="mini"
             <el-button
 
               slot="reference"
-              v-loading="loadingGroup['_flush']"
               :disabled="loadingGroup['_flush']"
+              v-loading="loadingGroup['_flush']"
               size="mini"
               type="info"
               icon="el-icon-s-open"
@@ -552,8 +538,8 @@ size="mini"
 
           <el-button
 
-            v-loading="loadingGroup['_cache/clear']"
             :disabled="loadingGroup['_cache/clear']"
+            v-loading="loadingGroup['_cache/clear']"
             class="filter-item"
             size="mini"
             type="warning"
@@ -564,8 +550,8 @@ size="mini"
 
           <el-button
 
-            v-loading="loadingGroup['deleteIndex']"
             :disabled="loadingGroup['deleteIndex']"
+            v-loading="loadingGroup['deleteIndex']"
             class="filter-item"
             type="danger"
             size="mini"
@@ -574,8 +560,8 @@ size="mini"
           >{{ $t('删除索引') }}
           </el-button>
           <el-button
-            v-loading="loadingGroup['empty']"
             :disabled="loadingGroup['empty']"
+            v-loading="loadingGroup['empty']"
             class="filter-item"
             type="danger"
             size="mini"
@@ -591,8 +577,8 @@ size="mini"
       v-if="openSettings"
       :index-name="indexName"
       :settings-type="settingsType"
-      :open="openSettings"
       @finished="search"
+      :open="openSettings"
       @close="closeSettings"
     />
     <mappings
@@ -607,20 +593,20 @@ size="mini"
 </template>
 
 <script>
-import { Finish, IsFinish } from '@/api/guid'
+import {Finish, IsFinish} from '@/api/guid'
 import Driver from 'driver.js' // import driver.js
 import 'driver.js/dist/driver.min.css' // import driver.js css
 import steps from '@/views/indices/guide'
-import { clone } from '@/utils/index'
-import { filterData } from '@/utils/table'
-import { CatAction, OptimizeAction, RecoverCanWrite } from '@/api/es'
-import { bigNumberTransform } from '@/utils/format'
-import { CreateAction, DeleteAction, GetSettingsAction, GetSettingsInfoAction, StatsAction } from '@/api/es-index'
-import { esSettingsWords } from '@/utils/base-data'
-import { ListAction, UpdateMappingAction } from '@/api/es-map'
+import {clone} from '@/utils/index'
+import {filterData} from '@/utils/table'
+import {CatAction, OptimizeAction, RecoverCanWrite} from '@/api/es'
+import {bigNumberTransform} from '@/utils/format'
+import {CreateAction, DeleteAction, GetSettingsAction, GetSettingsInfoAction, StatsAction} from '@/api/es-index'
+import {esSettingsWords} from '@/utils/base-data'
+import {ListAction, UpdateMappingAction} from '@/api/es-map'
 
 export default {
-  name: 'Indices',
+  name: 'indices',
 
   components: {
     'Settings': () => import('@/views/indices/components/settings'),
@@ -672,7 +658,7 @@ export default {
       selectIndexList: [],
       openMappings: false,
       allList: [],
-      max: 8
+      max: 8,
     }
   },
   destroyed() {
@@ -693,10 +679,10 @@ export default {
       this.openMappings = true
     },
     async finishGuid() {
-      const { data, code, msg } = await Finish({ 'guid_name': this.modName })
+      const {data, code, msg} = await Finish({'guid_name': this.modName})
     },
     async startGuid() {
-      const { data, code, msg } = await IsFinish({ 'guid_name': this.modName })
+      const {data, code, msg} = await IsFinish({'guid_name': this.modName})
 
       if (!data) {
         console.log('开始新手引导')
@@ -777,7 +763,7 @@ export default {
       }
 
       this.loadingGroup['saveMappinng'] = true
-      const { data, code, msg } = await UpdateMappingAction(input)
+      const {data, code, msg} = await UpdateMappingAction(input)
       this.loadingGroup['saveMappinng'] = false
       if (code == 0) {
         this.$message({
@@ -804,7 +790,7 @@ export default {
     async GetMapAction() {
       const input = {}
       input['es_connect'] = this.$store.state.baseData.EsConnectID
-      const { code, data, msg } = await ListAction(input)
+      const {code, data, msg} = await ListAction(input)
       if (code == 0) {
         this.mappings = data['list']
       } else {
@@ -923,7 +909,7 @@ export default {
 
         case 'editSettings':
 
-          const { data } = await GetSettingsAction(input)
+          const {data} = await GetSettingsAction(input)
 
           const deleteKeyArr = [
             'creation_date', 'version', 'provided_name', 'uuid', 'format', 'number_of_shards'
@@ -983,16 +969,18 @@ export default {
       })
     },
     querySearch(queryString, cb) {
+
       let queryData = JSON.parse(JSON.stringify(this.indexTishiList))
-      if (queryString == undefined) queryString = ''
+      if (queryString == undefined) queryString = ""
       if (queryString.trim() == '') {
         if (queryData.length > this.max) {
           cb(queryData.slice(0, this.max))
         } else {
           cb(queryData)
         }
-        return
+        return;
       }
+
 
       queryData = filterData(queryData, queryString.trim())
 
@@ -1008,7 +996,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       })
-        .then(async() => {
+        .then(async () => {
           const input = {}
           input['es_connect'] = this.$store.state.baseData.EsConnectID
           input['index_name'] = indexName
@@ -1095,7 +1083,7 @@ export default {
               }
               list[index][key.split('.').join('->')] = value
             }
-            this.indexTishiList.push({ 'value': obj['index'], 'data': obj['index'] })
+            this.indexTishiList.push({'value': obj["index"], 'data': obj["index"]})
           }
 
           let tmpList = []
@@ -1153,4 +1141,10 @@ export default {
 /deep/ :focus {
   outline: 0;
 }
+
+
+::v-deep .el-table .sort-caret.descending{
+  bottom: 0px;
+}
+
 </style>

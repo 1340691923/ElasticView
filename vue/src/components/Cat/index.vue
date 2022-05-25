@@ -3,13 +3,10 @@
 
     <div class="filter-container">
       <el-tag class="filter-item">{{ $t('请输入关键词') }}</el-tag>
-      <el-input v-model="input" class="filter-item" style="width: 300px" clearable @input="search" />
+      <el-input v-model="input" class="filter-item" style="width: 300px" clearable @input="search"/>
       <el-button
         size="mini"
-        type="primary"
-        class="filter-item"
-        @click="search"
-      >{{ $t('搜索') }}
+        type="primary" class="filter-item" @click="search">{{ $t('搜索') }}
       </el-button>
     </div>
 
@@ -28,15 +25,8 @@
         </template>
       </el-table-column>
 
-      <el-table-column
-        v-for="(info,index) in tableInfo"
-        :key="index"
-        align="center"
-        :label="tableInfo[index].desc"
-        :width="info.width"
-        :prop="info.data.toString()"
-        :sortable="info.sort"
-      >
+      <el-table-column v-for="(info,index) in tableInfo" :key="index" align="center" :label="tableInfo[index].desc"
+                       :width="info.width" :prop="info.data.toString()" :sortable="info.sort">
         <template slot-scope="scope">
           {{ scope.row[info.data.split('->').join('.')] }}
         </template>
@@ -58,8 +48,8 @@
 </template>
 
 <script>
-import { filterData } from '@/utils/table'
-import { CatAction } from '@/api/es'
+import {filterData} from '@/utils/table'
+import {CatAction} from '@/api/es'
 
 export default {
   name: 'Index',
@@ -143,6 +133,7 @@ export default {
           this.allList = list
           this.total = list.length
           this.pageLimit()
+
         } else {
           this.$message({
             type: 'error',
@@ -161,5 +152,7 @@ export default {
 </script>
 
 <style scoped>
-
+::v-deep .el-table .sort-caret.descending{
+  bottom: 0px;
+}
 </style>
