@@ -67,16 +67,45 @@
   -->
 
 ## ☁docker部署
-1. `docker run -d -p 8090:8090 1340691923/elastic_view:latest`
-2. `浏览器访问对应ip:8090，初始用户名：admin，初始密码：admin`
-   
-```shell
-# 启动程序
-docker run -d -p 8090:8090 1340691923/elastic_view:latest
 
-# 成功后, 访问Host:8090即可
-# 默认用户名与密码均为 admin
+图文教程：[https://4xx.me/archives/128.html](https://4xx.me/archives/128.html)
+
+- sqlite3存储
+```shell
+docker run --restart=unless-stopped -d -p 8090:8090 -v /data/elastic_view/data:/data -v /data/elastic_view/logs:/logs kecikeci/elastic_view:latest
 ```
+- mysql存储部署
+1. 新建数据库`es_view`
+2. 导入对应数据表`es_view.sql`
+3. 准备`config.yml`配置文件并修改对应连接信息
+```yaml
+log:
+   storageDays: 4          # 日志保留天数
+   logDir: "logs"         # 日志保留文件夹
+port: 8090              # 启动端口
+dbType: "mysql"       # 数据保留类型 分为 sqlite3 和 mysql
+sqlite:                 # dbType为sqlite3时填 dbPath为数据保存文件地址
+   dbPath: "es_view.db"
+mysql:                  # dbType为mysql时填
+   username: "root"
+   pwd: "123456"
+   ip: "127.0.01"
+   port: "3306"
+   dbName: "es_view"
+   maxOpenConns: 10
+   maxIdleConns: 10
+appSecret: "1340691923@qq.com" # jwt 加密密钥
+esPwdSecret: "concat_mail!!->1340691923@qq.com" # es密码加密密钥 加密方式为 AES
+version: "1.8.5"  # ES 版本号
+deBug: false      # 是否为测试模式 如果为 false则打开默认浏览器直接访问地址
+```
+   4. 挂载`config`目录或`config.yml`配置文件启动镜像
+```shell
+docker run --restart=unless-stopped -d -p 8090:8090 -v /data/elastic_view/data:/data -v /data/elastic_view/config:/config -v /data/elastic_view/logs:/logs kecikeci/elastic_view:latest
+```
+
+- 浏览器访问对应ip:8090，初始用户名：admin，初始密码：admin
+
 ## 🛠️手动构建
 ```shell
 # 拉取项目源代码

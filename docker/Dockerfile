@@ -1,19 +1,11 @@
-FROM mysql:5.7
+FROM alpine
+MAINTAINER "4xx.me"
 
-#设置免密登录
-ENV MYSQL_ALLOW_EMPTY_PASSWORD yes
+VOLUME /tmp
+ADD ElasticViewLinux/ /
 
-COPY setup.sh /mysql/setup.sh
+ENV TZ Asia/Shanghai
 
-COPY es_view.sql /mysql/es_view.sql
+RUN chmod +x /ElasticViewLinux
 
-COPY privileges.sql /mysql/privileges.sql
-
-COPY ElasticViewLinux /usr/local/ElasticViewLinux
-
-COPY config /usr/local/config
-
-COPY config/config.yml /usr/local/config/config.yml
-
-#设置容器启动时执行的命令
-CMD ["sh", "/mysql/setup.sh"]
+CMD ["/ElasticViewLinux","-configFileDir=config","-configFileName=config","-configFileExt=yml"]
