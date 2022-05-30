@@ -97,13 +97,28 @@
           <el-input v-model="link.ip" :placeholder="$t('例如:http://127.0.0.1:9200')" />
         </el-form-item>
         <el-form-item :label="$t('用户名')">
-          <el-input v-model="link.user" :placeholder="$t('用户名')" />
+          <el-autocomplete
+            v-model="link.user"
+            clearable
+            :fetch-suggestions="querySearch"
+            :placeholder="$t('用户名')"
+          >
+            <i
+              slot="suffix"
+              class="el-icon-user"
+            />
+            <template slot-scope="{ item }">
+              <span>{{ item.value }}</span>
+            </template>
+
+          </el-autocomplete>
+
         </el-form-item>
         <el-form-item :label="$t('密码')">
-          <el-input v-model="link.pwd" :placeholder="$t('密码')" />
+          <el-input clearable v-model="link.pwd" :placeholder="$t('密码')" />
         </el-form-item>
         <el-form-item :label="$t('备注')">
-          <el-input v-model="link.remark" :placeholder="$t('备注')" />
+          <el-input clearable v-model="link.remark" :placeholder="$t('备注')" />
         </el-form-item>
         <el-form-item :label="$t('版本')">
           <el-select v-model="link.version" :placeholder="$t('请选择版本')" filterable>
@@ -148,6 +163,7 @@
 import { deepClone } from '@/utils'
 import { DeleteAction, InsertAction, ListAction, UpdateAction } from '@/api/es-link'
 import { PingAction } from '@/api/es'
+import {filterData} from "@/utils/table";
 
 const defaultLink = {
   created: '',
@@ -166,6 +182,9 @@ export default {
   },
   data() {
     return {
+      usernameWord:[
+        { "value": "elastic" },
+      ],
       testConnectLoading: false,
       connectLoading: false,
       link: Object.assign({}, defaultLink),
@@ -184,6 +203,18 @@ export default {
     this.getList()
   },
   methods: {
+
+    querySearch(queryString, cb) {
+      var usernameWord = this.usernameWord;
+      var results = queryString ? usernameWord.filter(this.createFilter(queryString)) : usernameWord;
+      // 调用 callback 返回建议列表的数据
+      cb(results);
+    },
+    createFilter(queryString) {
+      return (usernameWord) => {
+        return (usernameWord.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+      };
+    },
     testConnectForm() {
       this.testConnectLoading = true
       PingAction(this.link).then(res => {

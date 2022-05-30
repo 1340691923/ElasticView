@@ -16,3 +16,5 @@
 /*.exe~
 /task/
 /es_view.db-journal
+/data/es_view.db
+/data/lock

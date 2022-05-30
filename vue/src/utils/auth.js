@@ -5,22 +5,24 @@ const UserName = 'UserName'
 
 export function getToken() {
   // return Cookies.get(TokenKey)
-  return sessionStorage.getItem(TokenKey)
+  return localStorage.getItem(TokenKey)
 }
 
 export function setToken(token) {
-  return sessionStorage.setItem(TokenKey, token)
+  return localStorage.setItem(TokenKey, token)
 }
+
+
+export function removeToken() {
+  return localStorage.removeItem(TokenKey)
+}
+
 
 export function getName() {
   // return Cookies.get(TokenKey)
-  return sessionStorage.getItem(UserName)
+  return localStorage.getItem(UserName)
 }
 
 export function setName(name) {
-  return sessionStorage.setItem(UserName, name)
-}
-
-export function removeToken() {
-  return sessionStorage.removeItem(TokenKey)
+  return localStorage.setItem(UserName, name)
 }
