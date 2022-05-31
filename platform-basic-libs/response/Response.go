@@ -2,12 +2,18 @@
 package response
 
 import (
+	"encoding/csv"
+	"fmt"
+	"github.com/xuri/excelize/v2"
+	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"reflect"
 	"runtime"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/1340691923/ElasticView/engine/logs"
 	"github.com/1340691923/ElasticView/platform-basic-libs/util"
@@ -161,4 +167,92 @@ func (this *Response) SliceReturnValOrNull(value []string, empty interface{}) in
 		return empty
 	}
 	return value
+}
+
+func(this *Response)  DownloadExcel(downloadFileName string,titleList []string,data [][]string,ctx *fiber.Ctx) (err error) {
+
+	var downloadUrl = fmt.Sprintf("data/%v.csv", time.Now().Format("20060102150405"))
+
+	file, err := os.OpenFile(downloadUrl, os.O_CREATE|os.O_RDWR, 0644)
+	if err != nil {
+		fmt.Println("open file is failed, err: ", err)
+		return
+	}
+	defer file.Close()
+	// 写入UTF-8 BOM，防止中文乱码
+	file.WriteString("\xEF\xBB\xBF")
+	w := csv.NewWriter(file)
+	w.Write(titleList)
+
+	for _,d := range data{
+		w.Write(d)
+	}
+	// 写文件需要flush，不然缓存满了，后面的就写不进去了，只会写一部分
+	w.Flush()
+
+	defer func() {
+		go func() {
+			time.Sleep(5 * time.Second)
+			err := os.Remove(downloadUrl)
+			if err!=nil{
+				logs.Logger.Sugar().Errorf("err",err)
+			}
+		}()
+	}()
+	f, err := os.Open(downloadUrl)
+	if err != nil {
+		logs.Logger.Sugar().Errorf("os.Open failed:", err)
+		return
+	}
+	defer f.Close()
+
+	// 将文件读取出来
+	filedata, err := ioutil.ReadAll(f)
+	if err != nil {
+		logs.Logger.Sugar().Errorf("ioutil.ReadAll failed:", err)
+		return
+	}
+	ctx.Response().Header.Set("Content-Disposition", `attachment; filename="`+downloadFileName+`.xlsx"`)
+	ctx.Write(filedata)
+	return
+}
+
+func(this *Response)  DownloadExcel2(downloadFileName string,titleList []interface{},data [][]interface{},ctx *fiber.Ctx) (err error) {
+	log.Println("download")
+	xlsx := excelize.NewFile()
+
+	for index, _ := range data {
+		if index == 0 {
+			// 如果为0写入新的excel 第一行为字段名称
+			xlsx.SetSheetRow("Sheet1", "A1", &titleList)
+		}
+
+		//因为index是从0开始，第一行被字段占用，从第二行开始写入整行数据
+		var lint = strconv.Itoa(index + 2)
+		log.Println("index",index)
+		xlsx.SetSheetRow("Sheet1", "A"+lint, &data[index])
+	}
+	log.Println("download2")
+	var downloadUrl = fmt.Sprintf("data/%v.xlsx", time.Now().Format("20060102150405"))
+
+	xlsx.SaveAs(downloadUrl)
+	log.Println("download3")
+	//defer os.Remove(downloadUrl)
+	f, err := os.Open(downloadUrl)
+	if err != nil {
+		logs.Logger.Sugar().Errorf("os.Open failed:", err)
+		return
+	}
+	defer f.Close()
+	log.Println("download4")
+	// 将文件读取出来
+	filedata, err := ioutil.ReadAll(f)
+	if err != nil {
+		logs.Logger.Sugar().Errorf("ioutil.ReadAll failed:", err)
+		return
+	}
+	log.Println("download5")
+	ctx.Response().Header.Set("Content-Disposition", `attachment; filename="`+downloadFileName+`.xlsx"`)
+	ctx.Write(filedata)
+	return
 }

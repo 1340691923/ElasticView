@@ -38,8 +38,9 @@ type EsInterface interface {
 	UpdateMapping(ctx *fiber.Ctx, mapping *escache.UpdateMapping) (err error)
 	TaskList(ctx *fiber.Ctx) (err error)
 	Cancel(ctx *fiber.Ctx, task *escache.CancelTask) (err error)
-	CrudGetList(ctx *fiber.Ctx, task *escache.CrudFilter) (err error)
-	CrudGetDSL(ctx *fiber.Ctx, task *escache.CrudFilter) (err error)
+	CrudGetList(ctx *fiber.Ctx, filter *escache.CrudFilter) (err error)
+	CrudGetDSL(ctx *fiber.Ctx, filter *escache.CrudFilter) (err error)
+	CrudDownload(ctx *fiber.Ctx, filter *escache.CrudFilter) (err error)
 }
 
 var VerError = errors.New("ES版本暂只支持6,7")

@@ -22,6 +22,11 @@ export function RunDslAction(data) {
   return request({
     url: api + `RunDslAction`,
     method: 'post',
+    transformResponse : [
+      data => {
+        return jsonlint.parse(data)
+      }
+    ],
     data
   })
 }
@@ -38,6 +43,11 @@ export function OptimizeAction(data) {
   return request({
     url: api + `OptimizeAction`,
     method: 'post',
+    transformResponse : [
+      data => {
+        return jsonlint.parse(data)
+      }
+    ],
     data
   })
 }

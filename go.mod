@@ -27,6 +27,7 @@ require (
 	github.com/sony/sonyflake v1.0.0
 	github.com/spf13/viper v1.7.1
 	github.com/valyala/fasthttp v1.33.0
+	github.com/xuri/excelize/v2 v2.6.0
 	go.uber.org/zap v1.17.0
 	golang.org/x/crypto v0.0.0-20220427172511-eb4f295cb31f // indirect
 	golang.org/x/text v0.3.7

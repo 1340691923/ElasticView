@@ -297,7 +297,7 @@ export default {
         if (resData.hasOwnProperty('hits')) {
           if (resData['hits']['hits'].length > 0) {
             this.ISDoc = true
-            if (resData['hits']['hits'].length > 500) {
+            if (resData['hits']['hits'].length > 1000) {
               this.$message({
                 type: 'error',
                 message: '请减少查詢的数据条数'

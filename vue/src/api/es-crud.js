@@ -6,7 +6,12 @@ export function GetList(data) {
   return request({
     url: api + 'GetList',
     method: 'post',
-    data
+    transformResponse : [
+      data => {
+        return jsonlint.parse(data)
+      }
+    ],
+    data,
   })
 }
 
@@ -17,3 +22,13 @@ export function GetDSL(data) {
     data
   })
 }
+
+export function Download(data) {
+  return request({
+    responseType: 'arraybuffer', // 必填
+    url: api + 'Download',
+    method: 'post',
+    data
+  })
+}
+

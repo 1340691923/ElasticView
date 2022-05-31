@@ -21,6 +21,7 @@ import (
 	elasticV6 "github.com/olivere/elastic"
 	"github.com/olivere/elastic/v7"
 	"net/url"
+	"sort"
 	"strconv"
 	"strings"
 	"sync"
@@ -765,4 +766,100 @@ func (this EsServiceV6) CrudGetDSL(ctx *fiber.Ctx, crudFilter *escache.CrudFilte
 		return this.Error(ctx, err)
 	}
 	return this.Success(ctx, response.SearchSuccess, util.Map{"list": res})
+}
+
+
+func (this EsServiceV6) CrudDownload(ctx *fiber.Ctx, filter *escache.CrudFilter) (err error){
+
+	fields,err := this.esClient.GetMapping().Index(filter.IndexName).Do(ctx.Context())
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+	fieldsArr := []string{"_index","_type","_id"}
+	data,ok := fields[filter.IndexName].(map[string]interface{})
+
+	if !ok{
+		return this.Error(ctx, errors.New("该索引没有映射结构"))
+	}
+	mappings,ok := data["mappings"].(map[string]interface{})
+	if !ok{
+		return this.Error(ctx, errors.New("该索引没有映射结构"))
+	}
+	typeName := ""
+
+	for key := range mappings{
+		typeName = key
+	}
+
+	typeObj := mappings[typeName].(map[string]interface{})
+
+	properties,ok := typeObj["properties"].(map[string]interface{})
+	if !ok{
+		return this.Error(ctx, errors.New("该索引没有映射结构"))
+	}
+	propertiesArr := []string{}
+	for key := range properties{
+		propertiesArr = append(propertiesArr, key)
+	}
+	sort.Strings(propertiesArr)
+	fieldsArr = append(fieldsArr,propertiesArr... )
+	q, err := es6_utils.GetWhereSql(filter.Relation)
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+	search := this.esClient.Search(filter.IndexName)
+	res,err := search.Query(q).Sort("_id",false).Size(8000).Do(ctx.Context())
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+
+	lastIdArr := res.Hits.Hits[len(res.Hits.Hits) - 1].Sort
+
+	llist := [][]string{}
+	var json = jsoniter.ConfigCompatibleWithStandardLibrary
+
+	flushHitsDataFn := func(hits []*elasticV6.SearchHit) {
+		for _,data := range hits{
+			list := []string{}
+			list = append(list, data.Index,data.Type,data.Id)
+			m := map[string]interface{}{}
+
+			json.Unmarshal(*data.Source,&m)
+
+			for _, field := range fieldsArr {
+				if field == "_index" || field == "_type"|| field == "_id"{
+					continue
+				}
+				if value,ok:=m[field];ok{
+					list = append(list, util.ToExcelData(value))
+				}else{
+					list = append(list, "")
+				}
+			}
+
+			llist = append(llist, list)
+		}
+	}
+
+	flushHitsDataFn(res.Hits.Hits)
+	haveData := true
+	for haveData {
+		search := this.esClient.Search(filter.IndexName)
+		res,err := search.Query(q).Sort("_id",false).Size(8000).SearchAfter(lastIdArr...).Do(ctx.Context())
+		if err!=nil{
+			return this.Error(ctx,err)
+		}
+		if len(res.Hits.Hits) == 0 {
+			break
+		}
+
+		lastIdArr = res.Hits.Hits[len(res.Hits.Hits) - 1].Sort
+		flushHitsDataFn(res.Hits.Hits)
+	}
+
+	return this.DownloadExcel(
+		"test",
+		fieldsArr,
+		llist,ctx)
+
 }

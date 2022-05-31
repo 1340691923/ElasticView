@@ -89,6 +89,12 @@
               size="mini"
               icon="el-icon-search" type="success" class="filter-item" @click="search(1)">查询
             </el-button>
+            <el-button
+              :disabled="downloadLoading"
+              :loading="downloadLoading"
+              size="mini"
+              icon="el-icon-download" type="primary" class="filter-item" @click="download()">下载
+            </el-button>
           </div>
           <el-table
 
@@ -268,7 +274,7 @@
 
 <script>
 
-import {GetDSL, GetList} from "@/api/es-crud"
+import {GetDSL, GetList,Download} from "@/api/es-crud"
 import {ListAction} from '@/api/es-map'
 import {DeleteRowByIDAction, InsertAction, UpdateByIDAction} from '@/api/es-doc'
 import {clone} from "../../utils";
@@ -320,13 +326,40 @@ export default {
       tableDataClone: [],
       drawerShow: false,
       queryDslShow: false,
-      queryDsl: {}
+      queryDsl: {},
+      downloadLoading:false
     }
   },
   mounted() {
     if (this.indexName != '') this.search(1)
   },
   methods: {
+    download() {
+
+      let form = {
+        index_name: this.indexName,
+        relation: this.whereFilter,
+        sort_list: this.sortList,
+        es_connect: this.$store.state.baseData.EsConnectID,
+      }
+      const link = document.createElement('a')
+      this.downloadLoading = true
+      Download(form).then(res => {
+        if (res) {
+          const blob = new Blob([res], { type: 'application/vnd.ms-excel' })
+          const objectUrl = URL.createObjectURL(blob) // 创建URL
+          link.href = objectUrl
+          link.download =  this.indexName+'.csv' // 自定义文件名
+          link.click() // 下载文件
+          URL.revokeObjectURL(objectUrl) // 释放内存
+        }
+        this.downloadLoading = false
+      })
+        .catch((err) => {
+          this.downloadLoading = false
+          console.error(err)
+        })
+    },
     drawerShowFn() {
       this.drawerShow = false // 先关闭，
       this.$nextTick(() => {
