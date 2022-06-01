@@ -14,7 +14,8 @@ require (
 	github.com/garyburd/redigo v1.6.2
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/go-xorm/xorm v0.7.9 // indirect
-	github.com/gofiber/fiber/v2 v2.27.0
+	github.com/gofiber/fiber/v2 v2.34.0
+	github.com/gofiber/websocket/v2 v2.0.22
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/jmoiron/sqlx v1.3.4
 	github.com/json-iterator/go v1.1.11
@@ -26,7 +27,7 @@ require (
 	github.com/robfig/cron v1.2.0
 	github.com/sony/sonyflake v1.0.0
 	github.com/spf13/viper v1.7.1
-	github.com/valyala/fasthttp v1.33.0
+	github.com/valyala/fasthttp v1.37.0
 	github.com/xuri/excelize/v2 v2.6.0
 	go.uber.org/zap v1.17.0
 	golang.org/x/crypto v0.0.0-20220427172511-eb4f295cb31f // indirect
