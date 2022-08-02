@@ -411,6 +411,9 @@ func (this EsServiceV8) RecoverCanWrite(ctx *fiber.Ctx) (err error) {
 			},
 		},
 	})
+	if err !=nil{
+		return this.Error(ctx,err)
+	}
 
 	if res.StatusCode != 200 && res.StatusCode != 201 {
 		return this.Output(ctx, util.Map{
@@ -519,7 +522,9 @@ func (this EsServiceV8) EsIndexGetAlias(ctx *fiber.Ctx, esAliasInfo *escache.EsA
 	}
 
 	aliasRes, err := this.esClient.Aliases().Index(esAliasInfo.IndexName).Do(ctx.Context())
-
+	if err !=nil{
+		return this.Error(ctx,err)
+	}
 	return this.Success(ctx, response.OperateSuccess, aliasRes.Indices[esAliasInfo.IndexName].Aliases)
 }
 

@@ -19,13 +19,12 @@
                     <div class="action-left">
                       <el-select
 
-                        class="filter-item"
                         v-model="sortList[index].col"
+                        class="filter-item"
                         filterable
                         size="mini"
                         style="width: 300px;margin-left: 30px"
                         :placeholder="$t('请选择')"
-
                       >
                         <el-option-group
                           v-for="group in eventAttrOptionsProp"
@@ -43,16 +42,22 @@
                           </el-option>
                         </el-option-group>
                       </el-select>
-                      <el-select class="filter-item" size="mini" style="width: 100px;margin-left: 30px"
-                                 :placeholder="$t('请选择排序规则')" filterable v-model="sortList[index].sortRule">
+                      <el-select
+                        v-model="sortList[index].sortRule"
+                        class="filter-item"
+                        size="mini"
+                        style="width: 100px;margin-left: 30px"
+                        :placeholder="$t('请选择排序规则')"
+                        filterable
+                      >
                         <el-option
                           :label="$t('正序排')"
                           value="asc"
-                        ></el-option>
+                        />
                         <el-option
                           :label="$t('倒序排')"
                           value="desc"
-                        ></el-option>
+                        />
                       </el-select>
                       <a-button
                         style="margin-left: 30px"
@@ -68,8 +73,8 @@
 
               </div>
               <div style="padding: 0 12px;">
-                <span @click="pushSort" style="color:#3d90ff" class="footadd___2D4YB">
-                  <a-icon type="filter"/>
+                <span style="color:#3d90ff" class="footadd___2D4YB" @click="pushSort">
+                  <a-icon type="filter" />
                   {{ $t('增加排序') }}
                 </span>
               </div>
@@ -83,22 +88,34 @@
  icon="el-icon-plus" type="primary" @click.native="openAddDialog = true" class="filter-item">添加文档</el-button>-->
             <el-button
               size="mini"
-              icon="el-icon-view" type="warning" class="filter-item" @click="getdsl(1)">查看查询语句
+              icon="el-icon-view"
+              type="warning"
+              class="filter-item"
+              @click="getdsl(1)"
+            >查看查询语句
             </el-button>
             <el-button
               size="mini"
-              icon="el-icon-search" type="success" class="filter-item" @click="search(1)">查询
+              icon="el-icon-search"
+              type="success"
+              class="filter-item"
+              @click="search(1)"
+            >查询
             </el-button>
             <el-button
               :disabled="downloadLoading"
               :loading="downloadLoading"
               size="mini"
-              icon="el-icon-download" type="primary" class="filter-item" @click="download()">下载
+              icon="el-icon-download"
+              type="primary"
+              class="filter-item"
+              @click="download()"
+            >下载
             </el-button>
           </div>
           <el-table
-            height="400"
             v-loading="tableLoading"
+            height="400"
             :data="tableData"
             use-virtual
             :row-height="30"
@@ -132,11 +149,13 @@
                               trigger="hover"
                 >
                   <div>{{ scope.row[val].toString() }}</div>
-                   <span v-if="scope.row[val].toString().length>=20"
-                          slot="reference">{{ scope.row[val].toString().substr(0, 20) + "..." }}
-              </span>
+                   <span
+                    v-if="scope.row[val].toString().length>=20"
+                     slot="reference"
+                  >{{ scope.row[val].toString().substr(0, 20) + "..." }}
+                  </span>
                    <span v-else slot="reference">{{ scope.row[val].toString() }}
-              </span>
+                  </span>
                 </el-popover>
               </template>
             </el-table-column>
@@ -154,7 +173,6 @@
                   </el-button>
 
                   <el-button
-
 
                     type="danger"
                     size="mini"
@@ -220,7 +238,11 @@
 
           <el-tag class="filter-item">操作</el-tag>
           <el-button
-            type="primary" class="filter-item" size="mini" @click="updateByID">修改
+            type="primary"
+            class="filter-item"
+            size="mini"
+            @click="updateByID"
+          >修改
           </el-button>
 
           <json-editor
@@ -267,28 +289,27 @@
         </a-empty>
       </div>
 
-
     </div>
   </div>
 </template>
 
 <script>
 
-import {GetDSL, GetList,Download} from "@/api/es-crud"
-import {ListAction} from '@/api/es-map'
-import {DeleteRowByIDAction, InsertAction, UpdateByIDAction} from '@/api/es-doc'
-import {clone} from "../../utils";
+import { GetDSL, GetList, Download } from '@/api/es-crud'
+import { ListAction } from '@/api/es-map'
+import { DeleteRowByIDAction, InsertAction, UpdateByIDAction } from '@/api/es-doc'
+import { clone } from '../../utils'
 
 export default {
-  name: "crud",
+  name: 'Crud',
   components: {
     'JsonEditor': () => import('@/components/JsonEditor/index'),
-    'FilterWhere': () => import('@/components/AnalyseTools/FilterWhere/index'),
+    'FilterWhere': () => import('@/components/AnalyseTools/FilterWhere/index')
   },
   props: {
     indexName: {
       type: String,
-      default: ""
+      default: ''
     },
     attrMapProp: {
       type: Array,
@@ -317,7 +338,7 @@ export default {
       sortList: [],
       input: {
         page: 1,
-        limit: 20,
+        limit: 20
       },
       count: 0,
       typName: '',
@@ -327,7 +348,7 @@ export default {
       drawerShow: false,
       queryDslShow: false,
       queryDsl: {},
-      downloadLoading:false
+      downloadLoading: false
     }
   },
   mounted() {
@@ -335,12 +356,11 @@ export default {
   },
   methods: {
     download() {
-
-      let form = {
+      const form = {
         index_name: this.indexName,
         relation: this.whereFilter,
         sort_list: this.sortList,
-        es_connect: this.$store.state.baseData.EsConnectID,
+        es_connect: this.$store.state.baseData.EsConnectID
       }
       const link = document.createElement('a')
       this.downloadLoading = true
@@ -349,7 +369,7 @@ export default {
           const blob = new Blob([res], { type: 'application/vnd.ms-excel' })
           const objectUrl = URL.createObjectURL(blob) // 创建URL
           link.href = objectUrl
-          link.download =  this.indexName+'.csv' // 自定义文件名
+          link.download = this.indexName + '.csv' // 自定义文件名
           link.click() // 下载文件
           URL.revokeObjectURL(objectUrl) // 释放内存
         }
@@ -368,12 +388,12 @@ export default {
     },
     look(index) {
       this.index = index
-      console.log("this.tableDataClone", this.tableDataClone)
+      console.log('this.tableDataClone', this.tableDataClone)
       this.jsonData = this.tableDataClone[index]
       this.drawerShowFn()
     },
     async updateByID() {
-      console.log("this.jsonData", this.jsonData)
+      console.log('this.jsonData', this.jsonData)
       const editData = this.jsonData
       const doc = editData['_source']
 
@@ -414,7 +434,6 @@ export default {
       }
     },
     async add() {
-
       const doc = this.newDoc
 
       const input = {}
@@ -446,7 +465,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       })
-        .then(async () => {
+        .then(async() => {
           const input = {}
           input['es_connect'] = this.$store.state.baseData.EsConnectID
           input['index_name'] = this.indexName
@@ -455,15 +474,13 @@ export default {
 
           const res = await DeleteRowByIDAction(input)
           if (res.code == 0) {
-            setTimeout(async () => {
+            setTimeout(async() => {
               await this.search(1)
               this.$message({
                 type: 'success',
                 message: res.msg
               })
             }, 1000)
-
-
           } else {
             this.$message({
               type: 'error',
@@ -501,7 +518,6 @@ export default {
           }
         }
       }
-
     },
 
     async getMapping() {
@@ -509,13 +525,17 @@ export default {
       input['es_connect'] = this.$store.state.baseData.EsConnectID
       input['index_name'] = this.indexName
 
-      const {data, code, msg} = await ListAction(input)
+      const { data, code, msg } = await ListAction(input)
 
       if (code == 0) {
-
         if (data.ver == 6) {
           const mappings = Object.keys(data.list[input['index_name']].mappings)
-
+          for (const k in mappings) {
+            if (mappings[k] == '_default_') {
+              mappings.splice(k, 1)
+              break
+            }
+          }
           const tableHeader = Object.keys(data.list[input['index_name']].mappings[mappings[0]].properties)
           this.properties = data.list[input['index_name']].mappings[mappings[0]].properties
           const tmpTableHeader = []
@@ -529,7 +549,7 @@ export default {
         } else if (data.ver == 7 || data.ver == 8) {
           const tableHeader = Object.keys(data.list[input['index_name']].mappings.properties)
           this.properties = data.list[input['index_name']].mappings.properties
-          console.log("properties", data.list[input['index_name']])
+          console.log('properties', data.list[input['index_name']])
           const tmpTableHeader = []
           tmpTableHeader.push('_id')
           for (const i in tableHeader) {
@@ -548,8 +568,8 @@ export default {
     },
     pushSort() {
       this.sortList.push({
-        col: "",
-        sortRule: "desc"
+        col: '',
+        sortRule: 'desc'
       })
     },
     deleteSort(index) {
@@ -561,7 +581,7 @@ export default {
       this.search(1)
     },
     async getdsl() {
-      let form = {
+      const form = {
         index_name: this.indexName,
         relation: this.whereFilter,
         sort_list: this.sortList,
@@ -569,7 +589,7 @@ export default {
         page: this.input.page,
         limit: this.input.limit
       }
-      let res = await GetDSL(form)
+      const res = await GetDSL(form)
       if (res.code != 0) {
         this.$message({
           type: 'error',
@@ -583,7 +603,7 @@ export default {
     async search(page) {
       this.tableLoading = true
       !page ? this.input.page = 1 : this.input.page = page
-      let form = {
+      const form = {
         index_name: this.indexName,
         relation: this.whereFilter,
         sort_list: this.sortList,
@@ -591,7 +611,7 @@ export default {
         page: this.input.page,
         limit: this.input.limit
       }
-      let res = await GetList(form)
+      const res = await GetList(form)
       if (res.code != 0) {
         this.$message({
           type: 'error',
@@ -606,7 +626,6 @@ export default {
       await this.getMapping()
 
       if (this.count > 0) {
-
         await this.initTableData(res.data.list)
       } else {
         this.tableData = []

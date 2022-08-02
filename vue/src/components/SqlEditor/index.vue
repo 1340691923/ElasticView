@@ -66,6 +66,7 @@ export default {
         enableSnippets: true,
         enableLiveAutocompletion: true,
         tabSize: 2,
+
         fontSize: 25,
         showPrintMargin: false // 去除编辑器里的竖线
       }

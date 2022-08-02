@@ -7,12 +7,18 @@
 </template>
 
 <script>
-
+import { getToken } from '@/utils/auth'
 export default {
   name: 'App',
   data() {
     return {
       isRouterAlive: true // 控制视图是否显示的变量
+    }
+  },
+  mounted() {
+    const token = getToken()
+    if (token) {
+      // this.$websocket.initWebSocket(token);
     }
   },
   created() {

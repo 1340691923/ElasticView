@@ -15,7 +15,6 @@
     "svgo": "svgo -f src/icons/svg --config=src/icons/svgo.yml",
     "new": "plop"
   },
-
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged"
@@ -67,6 +66,7 @@
     "less-loader": "^6.2.0",
     "lib-flexible": "^0.3.2",
     "moment": "^2.29.1",
+    "monaco-editor": "^0.20.0",
     "normalize.css": "7.0.0",
     "nprogress": "0.2.0",
     "path-to-regexp": "2.4.0",
@@ -110,6 +110,9 @@
     "chokidar": "2.1.5",
     "compression-webpack-plugin": "^1.1.12",
     "connect": "3.6.6",
+    "editor": "1.0.0",
+    "monaco-editor": "^0.20.0",
+    "monaco-editor-webpack-plugin": "^1.9.0",
     "eslint": "5.15.3",
     "eslint-plugin-vue": "5.2.2",
     "html-webpack-plugin": "3.2.0",

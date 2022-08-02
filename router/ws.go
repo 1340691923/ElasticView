@@ -16,5 +16,5 @@ func routerWebsocket(app *fiber.App) {
 		return fiber.ErrUpgradeRequired
 	})
 
-	app.Get("/ws", websocket.New(api.Ws))
+	app.Get("/ws/:token", websocket.New(api.Ws))
 }

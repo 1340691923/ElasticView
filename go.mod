@@ -12,6 +12,7 @@ require (
 	github.com/denisenkom/go-mssqldb v0.0.0-20190707035753-2be1aa521ff4
 	github.com/fsnotify/fsnotify v1.4.9
 	github.com/garyburd/redigo v1.6.2
+	github.com/go-mysql-org/go-mysql v1.5.0
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/go-xorm/xorm v0.7.9 // indirect
 	github.com/gofiber/fiber/v2 v2.34.0
@@ -25,10 +26,12 @@ require (
 	github.com/olivere/elastic v6.2.35+incompatible
 	github.com/olivere/elastic/v7 v7.0.24
 	github.com/robfig/cron v1.2.0
+	github.com/siddontang/go-log v0.0.0-20190221022429-1e957dd83bed
 	github.com/sony/sonyflake v1.0.0
 	github.com/spf13/viper v1.7.1
 	github.com/valyala/fasthttp v1.37.0
 	github.com/xuri/excelize/v2 v2.6.0
+	github.com/yuin/gopher-lua v0.0.0-20220504180219-658193537a64
 	go.uber.org/zap v1.17.0
 	golang.org/x/crypto v0.0.0-20220427172511-eb4f295cb31f // indirect
 	golang.org/x/text v0.3.7

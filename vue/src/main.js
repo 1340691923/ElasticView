@@ -4,6 +4,8 @@ import Cookies from 'js-cookie'
 
 import 'normalize.css/normalize.css' // a modern alternative to CSS resets
 
+import websocket from './utils/ws'
+
 import '@/styles/index.scss' // global css
 import 'lib-flexible/flexible.js'
 import VueIntro from 'vue-introjs'
@@ -62,6 +64,7 @@ Vue.config.productionTip = false
 
 import { message } from './utils/singleMsg.js'
 
+Vue.prototype.$websocket = websocket
 Vue.prototype.$message = message
 
 new Vue({

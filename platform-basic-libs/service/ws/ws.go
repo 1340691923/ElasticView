@@ -1,13 +1,16 @@
 package ws
 
 import (
+	"encoding/json"
 	"github.com/1340691923/ElasticView/engine/logs"
 	"github.com/1340691923/ElasticView/platform-basic-libs/jwt"
+	"github.com/1340691923/ElasticView/platform-basic-libs/service/gm_user"
 	"github.com/gofiber/websocket/v2"
 	"go.uber.org/zap"
 	"io"
 	"net"
 	"sync"
+	"time"
 )
 
 var ConnUUidMap sync.Map
@@ -46,18 +49,46 @@ func removeConns(deleteConn *websocket.Conn) {
 
 //长链接
 func Ws(c *websocket.Conn) {
-
+	var service gm_user.GmUserService
 	type ReqData struct {
 		UUid     string `json:"uuid"`
-		Token    string `json:"token"`
 		Ping     string `json:"ping"`
 		SendType string `json:"send_type"`
+	}
+	cliams, err := jwt.ParseToken(c.Params("token"))
+	if err != nil {
+		logs.Logger.Error("jwt.ParseToken", zap.Error(err))
+		return
+	}
+
+	if cliams.ID == 0 {
+		logs.Logger.Error("cliams.UserID = 0")
+		return
+	}
+
+	 if time.Now().Unix() > cliams.ExpiresAt {
+		 logs.Logger.Error("err")
+		 return
+	} else {
+		isExitUser, err := service.IsExitUser(cliams)
+		if err != nil {
+			logs.Logger.Sugar().Error("err",err)
+			return
+		}
+		if !isExitUser {
+			logs.Logger.Error("err")
+			return
+		}
 	}
 
 	for {
 		var reqData ReqData
 		reqData.UUid = ""
-		err := c.ReadJSON(&reqData)
+		_,data,err := c.ReadMessage()
+
+		if len(data) == 0{
+			continue
+		}
 
 		if err != nil {
 			logs.Logger.Error("ws ReadMessage", zap.Error(err))
@@ -65,19 +96,14 @@ func Ws(c *websocket.Conn) {
 			break
 		}
 
+		err = json.Unmarshal(data,&reqData)
+		if err != nil {
+			logs.Logger.Error("json.Unmarshal", zap.Error(err))
+			break
+		}
 		if reqData.UUid == "" {
 			logs.Logger.Sugar().Errorf("reqData.UUid = %v", reqData.UUid)
 			continue
-		}
-		cliams, err := jwt.ParseToken(reqData.Token)
-		if err != nil {
-			logs.Logger.Error("jwt.ParseToken", zap.Error(err))
-			break
-		}
-
-		if cliams.ID == 0 {
-			logs.Logger.Error("cliams.UserID = 0")
-			break
 		}
 
 		if data, found := ConnUUidMap.Load(reqData.UUid); !found {

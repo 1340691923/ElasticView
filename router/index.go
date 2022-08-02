@@ -28,7 +28,7 @@ func Init() *App {
 	}))
 
 	app.All("/api/gm_user/login", UserController{}.Login)
-
+	//routerWebsocket(app)
 	app.Use(Timer)
 	app.Use(JwtMiddleware)
 	app.Use(Rbac)
