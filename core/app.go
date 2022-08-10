@@ -1,10 +1,11 @@
 package core
 
 import (
-	"github.com/1340691923/ElasticView/model"
-	"github.com/1340691923/ElasticView/platform-basic-libs/util"
 	"log"
 	"path/filepath"
+
+	"github.com/1340691923/ElasticView/model"
+	"github.com/1340691923/ElasticView/platform-basic-libs/util"
 
 	"github.com/fsnotify/fsnotify"
 
@@ -124,11 +125,9 @@ func (this *App) NotifyInitFnObservers() *App {
 		this.deferFuncs = append(this.deferFuncs, fn)
 	}
 	return this
-
-	return this
 }
 
-//关闭app
+// 关闭app
 func (this *App) Close() {
 	for _, fn := range this.deferFuncs {
 		fn()

@@ -3,6 +3,7 @@ package es_optimize
 import (
 	"context"
 	"errors"
+
 	elasticV6 "github.com/olivere/elastic"
 	elasticV7 "github.com/olivere/elastic/v7"
 )
@@ -27,7 +28,6 @@ func (this *Empty) DoV6(client *elasticV6.Client) (err error) {
     }
   }
 }`).Do(context.Background())
-	return
 	return
 }
 
