@@ -1,7 +1,7 @@
 package api
 
 import (
-	"github.com/1340691923/ElasticView/platform-basic-libs/service/ws"
+	"github.com/1340691923/ElasticView/service/ws"
 	"github.com/gofiber/websocket/v2"
 )
 

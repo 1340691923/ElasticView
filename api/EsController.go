@@ -3,12 +3,15 @@ package api
 import (
 	"context"
 	"errors"
-	"github.com/1340691923/ElasticView/platform-basic-libs/escache"
-	"github.com/1340691923/ElasticView/platform-basic-libs/response"
-	es2 "github.com/1340691923/ElasticView/platform-basic-libs/service/es"
-	"github.com/1340691923/ElasticView/platform-basic-libs/util"
+	"github.com/1340691923/ElasticView/pkg/escache"
+	"github.com/1340691923/ElasticView/pkg/response"
+	"github.com/1340691923/ElasticView/pkg/util"
+	es2 "github.com/1340691923/ElasticView/service/es"
 	"github.com/cch123/elasticsql"
 	. "github.com/gofiber/fiber/v2"
+	elasticV6 "github.com/olivere/elastic"
+	elasticV7 "github.com/olivere/elastic/v7"
+	"strings"
 )
 
 //Es 基本操作
@@ -37,38 +40,49 @@ func (this EsController) PingAction(ctx *Ctx) error {
 		if err != nil {
 			return this.Error(ctx, err)
 		}
-		data, _, err := esClient.Ping(esConnect.Ip).Do(context.Background())
-		if err != nil {
-			return this.Error(ctx, err)
+		var data *elasticV6.PingResult
+		for _,ip := range strings.Split(esConnect.Ip,","){
+			data, _, err = esClient.Ping(esConnect.Ip).Do(context.Background())
+			if err != nil {
+				return this.Error(ctx, err)
+			}
+			if data.Version.Number == "" {
+				return this.Error(ctx, errors.New("["+ip+"]ES地址OK，但是密码验证失败"))
+			}
 		}
-		if data.Version.Number == "" {
-			return this.Error(ctx, errors.New("ES地址OK，但是密码验证失败"))
-		}
+
 		return this.Success(ctx, response.OperateSuccess, data)
 	case 7:
 		esClient, err := escache.NewEsClientV7(esConnect)
 		if err != nil {
 			return this.Error(ctx, err)
 		}
-		data, _, err := esClient.Ping(esConnect.Ip).Do(context.Background())
-		if err != nil {
-			return this.Error(ctx, err)
+		var data *elasticV7.PingResult
+		for _,ip := range strings.Split(esConnect.Ip,","){
+			data, _, err := esClient.Ping(ip).Do(context.Background())
+			if err != nil {
+				return this.Error(ctx, err)
+			}
+			if data.Version.Number == "" {
+				return this.Error(ctx, errors.New("["+ip+"]ES地址OK，但是密码验证失败"))
+			}
 		}
-		if data.Version.Number == "" {
-			return this.Error(ctx, errors.New("ES地址OK，但是密码验证失败"))
-		}
+
 		return this.Success(ctx, response.OperateSuccess, data)
 	case 8:
 		esClient, err := escache.NewEsClientV8(esConnect)
 		if err != nil {
 			return this.Error(ctx, err)
 		}
-		data, _, err := esClient.Ping(esConnect.Ip).Do(context.Background())
-		if err != nil {
-			return this.Error(ctx, err)
-		}
-		if data.Version.Number == "" {
-			return this.Error(ctx, errors.New("ES地址OK，但是密码验证失败"))
+		var data *elasticV7.PingResult
+		for _,ip := range strings.Split(esConnect.Ip,","){
+			data, _, err := esClient.Ping(ip).Do(context.Background())
+			if err != nil {
+				return this.Error(ctx, err)
+			}
+			if data.Version.Number == "" {
+				return this.Error(ctx, errors.New("["+ip+"]ES地址OK，但是密码验证失败"))
+			}
 		}
 		return this.Success(ctx, response.OperateSuccess, data)
 	default:

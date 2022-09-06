@@ -1,16 +1,17 @@
 package api
 
 import (
+	"github.com/1340691923/ElasticView/pkg/engine/rbac"
 	"strconv"
 
-	"github.com/1340691923/ElasticView/engine/db"
-	"github.com/1340691923/ElasticView/engine/logs"
 	"github.com/1340691923/ElasticView/model"
-	"github.com/1340691923/ElasticView/platform-basic-libs/rbac"
-	"github.com/1340691923/ElasticView/platform-basic-libs/request"
-	"github.com/1340691923/ElasticView/platform-basic-libs/response"
-	"github.com/1340691923/ElasticView/platform-basic-libs/service/gm_role"
-	"github.com/1340691923/ElasticView/platform-basic-libs/util"
+	"github.com/1340691923/ElasticView/pkg/engine/db"
+	"github.com/1340691923/ElasticView/pkg/engine/logs"
+
+	"github.com/1340691923/ElasticView/pkg/request"
+	"github.com/1340691923/ElasticView/pkg/response"
+	"github.com/1340691923/ElasticView/pkg/util"
+	"github.com/1340691923/ElasticView/service/gm_role"
 	. "github.com/gofiber/fiber/v2"
 )
 

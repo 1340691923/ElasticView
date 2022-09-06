@@ -1,8 +1,8 @@
 package api
 
 import (
-	"github.com/1340691923/ElasticView/platform-basic-libs/escache"
-	es2 "github.com/1340691923/ElasticView/platform-basic-libs/service/es"
+	"github.com/1340691923/ElasticView/pkg/escache"
+	es2 "github.com/1340691923/ElasticView/service/es"
 	"github.com/gofiber/fiber/v2"
 )
 

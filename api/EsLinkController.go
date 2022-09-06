@@ -2,13 +2,13 @@ package api
 
 import (
 	"encoding/json"
-	"github.com/1340691923/ElasticView/platform-basic-libs/escache"
-	"github.com/1340691923/ElasticView/platform-basic-libs/util"
+	"github.com/1340691923/ElasticView/pkg/escache"
+	"github.com/1340691923/ElasticView/pkg/util"
 	"time"
 
-	"github.com/1340691923/ElasticView/engine/db"
 	"github.com/1340691923/ElasticView/model"
-	"github.com/1340691923/ElasticView/platform-basic-libs/response"
+	"github.com/1340691923/ElasticView/pkg/engine/db"
+	"github.com/1340691923/ElasticView/pkg/response"
 	. "github.com/gofiber/fiber/v2"
 
 	jsoniter "github.com/json-iterator/go"

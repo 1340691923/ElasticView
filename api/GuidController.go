@@ -1,11 +1,11 @@
 package api
 
 import (
-	"github.com/1340691923/ElasticView/engine/db"
 	"github.com/1340691923/ElasticView/model"
-	"github.com/1340691923/ElasticView/platform-basic-libs/jwt"
-	"github.com/1340691923/ElasticView/platform-basic-libs/response"
-	"github.com/1340691923/ElasticView/platform-basic-libs/util"
+	"github.com/1340691923/ElasticView/pkg/engine/db"
+	"github.com/1340691923/ElasticView/pkg/jwt"
+	"github.com/1340691923/ElasticView/pkg/response"
+	"github.com/1340691923/ElasticView/pkg/util"
 	. "github.com/gofiber/fiber/v2"
 	"strings"
 	"time"

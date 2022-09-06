@@ -2,8 +2,8 @@
 package api
 
 import (
-	"github.com/1340691923/ElasticView/platform-basic-libs/request"
-	"github.com/1340691923/ElasticView/platform-basic-libs/response"
+	"github.com/1340691923/ElasticView/pkg/request"
+	"github.com/1340691923/ElasticView/pkg/response"
 )
 
 //父控制器结构体

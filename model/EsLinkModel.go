@@ -1,7 +1,7 @@
 package model
 
 import (
-	"github.com/1340691923/ElasticView/engine/db"
+	"github.com/1340691923/ElasticView/pkg/engine/db"
 )
 
 // EsLinkModel es连接信息表

@@ -1,8 +1,8 @@
 package api
 
 import (
-	"github.com/1340691923/ElasticView/platform-basic-libs/api_config"
-	"github.com/1340691923/ElasticView/platform-basic-libs/response"
+	"github.com/1340691923/ElasticView/pkg/api_config"
+	"github.com/1340691923/ElasticView/pkg/response"
 	fiber "github.com/gofiber/fiber/v2"
 )
 

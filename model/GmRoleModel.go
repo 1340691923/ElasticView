@@ -1,6 +1,6 @@
 package model
 
-import "github.com/1340691923/ElasticView/engine/db"
+import "github.com/1340691923/ElasticView/pkg/engine/db"
 
 // GmRoleModel
 type GmRoleModel struct {

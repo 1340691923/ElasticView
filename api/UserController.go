@@ -2,13 +2,13 @@ package api
 
 import (
 	"errors"
-	"github.com/1340691923/ElasticView/engine/logs"
 	"github.com/1340691923/ElasticView/model"
-	"github.com/1340691923/ElasticView/platform-basic-libs/jwt"
-	"github.com/1340691923/ElasticView/platform-basic-libs/my_error"
-	"github.com/1340691923/ElasticView/platform-basic-libs/response"
-	"github.com/1340691923/ElasticView/platform-basic-libs/service/gm_user"
-	"github.com/1340691923/ElasticView/platform-basic-libs/util"
+	"github.com/1340691923/ElasticView/pkg/engine/logs"
+	"github.com/1340691923/ElasticView/pkg/jwt"
+	"github.com/1340691923/ElasticView/pkg/my_error"
+	"github.com/1340691923/ElasticView/pkg/response"
+	"github.com/1340691923/ElasticView/pkg/util"
+	"github.com/1340691923/ElasticView/service/gm_user"
 	. "github.com/gofiber/fiber/v2"
 	"strings"
 )
