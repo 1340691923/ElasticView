@@ -32,6 +32,7 @@ type EsInterface interface {
 	EsIndexOperateAlias(ctx *fiber.Ctx, info *escache.EsAliasInfo) (err error)
 	EsIndexReindex(ctx *fiber.Ctx, info *escache.EsReIndexInfo) (err error)
 	EsIndexIndexNames(ctx *fiber.Ctx) (err error)
+	EsIndexCount(ctx *fiber.Ctx) (err error)
 	EsIndexStats(ctx *fiber.Ctx, info *escache.EsIndexInfo) (err error)
 	EsIndexCatStatus(ctx *fiber.Ctx, info *escache.EsIndexInfo) (err error)
 	EsMappingList(ctx *fiber.Ctx, properties *escache.EsMapGetProperties) (err error)

@@ -221,6 +221,16 @@ func (this EsServiceV7) Cat(ctx *fiber.Ctx, esCat *escache.EsCat) (err error) {
 	return this.Success(ctx, response.SearchSuccess, data)
 }
 
+func (this EsServiceV7) EsIndexCount(ctx *fiber.Ctx) (err error){
+	catIndicesResponse, err := this.esClient.CatIndices().Columns("status").Human(true).Do(ctx.Context())
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+
+	count := len(catIndicesResponse)
+	return this.Success(ctx, response.SearchSuccess, count)
+}
+
 func (this EsServiceV7) RunDsl(ctx *fiber.Ctx, esRest *escache.EsRest) (err error) {
 	esRest.Method = strings.ToUpper(esRest.Method)
 	if esRest.Method == "GET" {
@@ -519,12 +529,11 @@ func (this EsServiceV7) EsIndexReindex(ctx *fiber.Ctx, esReIndexInfo *escache.Es
 }
 
 func (this EsServiceV7) EsIndexIndexNames(ctx *fiber.Ctx) (err error) {
-	catIndicesResponse, err := this.esClient.CatIndices().Human(true).Do(ctx.Context())
+	catIndicesResponse, err := this.esClient.CatIndices().Columns("index").Human(true).Do(ctx.Context())
 	if err != nil {
 		return this.Error(ctx, err)
 	}
 	indexNames := []string{}
-
 	for _, catIndices := range catIndicesResponse {
 		indexNames = append(indexNames, catIndices.Index)
 	}

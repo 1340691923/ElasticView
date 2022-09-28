@@ -6,14 +6,16 @@ import (
 	"github.com/1340691923/ElasticView/pkg/core"
 	"github.com/1340691923/ElasticView/pkg/engine/config"
 	"github.com/1340691923/ElasticView/pkg/util"
+	_ "github.com/ClickHouse/clickhouse-go"
+	"github.com/Masterminds/squirrel"
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/jmoiron/sqlx"
 	jsoniter "github.com/json-iterator/go"
+	_ "github.com/logoove/sqlite"
 	"log"
 	"os"
 	"path/filepath"
 	"time"
-
-	"github.com/Masterminds/squirrel"
-	"github.com/jmoiron/sqlx"
 )
 
 func init() {

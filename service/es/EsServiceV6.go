@@ -580,6 +580,15 @@ func (this EsServiceV6) Cancel(ctx *fiber.Ctx, cancelTask *escache.CancelTask) (
 	return this.Success(ctx, response.OperateSuccess, res)
 }
 
+func (this EsServiceV6) EsIndexCount(ctx *fiber.Ctx) (err error){
+	catIndicesResponse, err := this.esClient.CatIndices().Human(true).Do(ctx.Context())
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+
+	return this.Success(ctx, response.SearchSuccess, len(catIndicesResponse))
+}
+
 func (this EsServiceV6) SnapshotRepositoryList(ctx *fiber.Ctx, esSnapshotInfo *escache.EsSnapshotInfo) (err error) {
 
 	clusterSettings, err := es_settings.NewSettingsByV6(this.esClient)
@@ -771,7 +780,6 @@ func (this EsServiceV6) CrudGetDSL(ctx *fiber.Ctx, crudFilter *escache.CrudFilte
 	}
 	return this.Success(ctx, response.SearchSuccess, util.Map{"list": res})
 }
-
 
 func (this EsServiceV6) CrudDownload(ctx *fiber.Ctx, filter *escache.CrudFilter) (err error){
 

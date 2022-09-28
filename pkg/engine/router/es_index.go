@@ -82,6 +82,10 @@ func runEsIndex(app *App) {
 			AbsolutePath: AbsolutePath,
 			RelativePath: "CatStatusAction",
 		}, esIndex.(*Group), true, esIndexController.CatStatusAction)
-
+		apiRouterConfig.MountApi(api_config.MountApiBasePramas{
+			Method:       api_config.MethodPost,
+			AbsolutePath: AbsolutePath,
+			RelativePath: "IndexsCountAction",
+		}, esIndex.(*Group), false, esIndexController.IndexsCountAction)
 	}
 }

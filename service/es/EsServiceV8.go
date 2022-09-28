@@ -144,6 +144,15 @@ func (this EsServiceV8) CrudDownload(ctx *fiber.Ctx, filter *escache.CrudFilter)
 
 }
 
+func (this EsServiceV8) EsIndexCount(ctx *fiber.Ctx) (err error){
+	catIndicesResponse, err := this.esClient.CatIndices().Human(true).Do(ctx.Context())
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+
+	return this.Success(ctx, response.SearchSuccess, len(catIndicesResponse))
+}
+
 func (this EsServiceV8) CreateSnapshot(ctx *fiber.Ctx, createSnapshot *escache.CreateSnapshot) (err error) {
 	snapshotCreateService := this.esClient.
 		SnapshotCreate(createSnapshot.RepositoryName, createSnapshot.SnapshotName)

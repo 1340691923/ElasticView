@@ -1,13 +1,13 @@
 # Created by .ignore support plugin (hsz.mobi)
-/views/node_modules/
-/views/dist/
+/resources/views/node_modules/
+/resources/views/dist/
 /logs/
 /.idea/
-/views/package-lock.json
+/resources/views/package-lock.json
 /test/
 /views/*.log
-/vue/node_modules/
-/vue/dist/
+/resources/vue/node_modules/
+/resources/vue/dist/
 /ElasticView.exe
 /ElasticViewLinux
 /ElasticViewMac
@@ -19,3 +19,4 @@
 /data/es_view.db
 /data/lock
 /resources/dist/
+/resources/vue/node_modules/

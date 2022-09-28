@@ -164,6 +164,24 @@ func (this EsIndexController) IndexNamesAction(ctx *Ctx) error {
 	return esService.EsIndexIndexNames(ctx)
 }
 
+// 得到所有的索引数量
+func (this EsIndexController) IndexsCountAction(ctx *Ctx) error {
+	esConnectID := new(escache.EsConnectID)
+	err := ctx.BodyParser(&esConnectID)
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+	esConnect, err := escache.GetEsClientByID(esConnectID.EsConnectID)
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+	esService, err := es2.NewEsService(esConnect)
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+	return esService.EsIndexCount(ctx)
+}
+
 // 获取索引的Stats
 func (this EsIndexController) StatsAction(ctx *Ctx) error {
 	esIndexInfo := new(escache.EsIndexInfo)

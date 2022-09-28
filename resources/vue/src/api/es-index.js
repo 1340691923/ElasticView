@@ -82,3 +82,11 @@ export function CatStatusAction(data) {
   })
 }
 
+export function IndexsCountAction(data) {
+  return request({
+    url: api + 'IndexsCountAction',
+    method: 'post',
+    data
+  })
+}
+

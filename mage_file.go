@@ -8,7 +8,7 @@ import (
 )
 
 func init()  {
-	build.Version = "1.8.9"
+	build.Version = "1.9.0"
 }
 
 // Default configures the default target.

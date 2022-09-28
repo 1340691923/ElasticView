@@ -98,7 +98,7 @@
 
 <script>
 import { CatAction } from '@/api/es'
-
+import { IndexsCountAction } from '@/api/es-index'
 export default {
   components: {
     'CountTo': () => import('vue-count-to')
@@ -133,15 +133,15 @@ export default {
 
     async getIndexCount() {
       const form = {
-        cat: 'CatIndices',
-        es_connect: this.$store.state.baseData.EsConnectID,
-        index_bytes_format: 'kb'
+        // cat: 'CatIndices',
+        es_connect: this.$store.state.baseData.EsConnectID
+        // index_bytes_format: 'kb'
       }
       this.loading1 = true
-      const { data, code, msg } = await CatAction(form)
+      const { data, code, msg } = await IndexsCountAction(form)
       this.loading1 = false
       if (code == 0) {
-        this.count.index = data.length
+        this.count.index = data
       }
     },
     async catAllocation() {
