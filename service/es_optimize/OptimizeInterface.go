@@ -9,6 +9,7 @@ type OptimizeInterface interface {
 	SetIndexName(indexName string)
 	DoV6(client *elasticV6.Client) (err error)
 	DoV7(client *elasticV7.Client) (err error)
+	CleanIndexName()
 }
 
 // 索引操作工厂

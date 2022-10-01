@@ -307,8 +307,8 @@ func (this EsServiceV7) Optimize(ctx *fiber.Ctx, esOptimize *escache.EsOptimize)
 
 	if optimize == nil {
 		return this.Error(ctx, errors.New("不支持该指令"))
-
 	}
+	optimize.CleanIndexName()
 	if esOptimize.IndexName != "" {
 		optimize.SetIndexName(esOptimize.IndexName)
 	}

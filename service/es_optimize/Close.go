@@ -12,6 +12,10 @@ type Close struct {
 	indexName []string
 }
 
+func (this *Close) CleanIndexName() {
+	this.indexName = []string{}
+}
+
 func (this *Close) SetIndexName(indexName string) {
 	this.indexName = append(this.indexName, indexName)
 }

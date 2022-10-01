@@ -12,8 +12,6 @@ import (
 	"github.com/1340691923/ElasticView/pkg/util"
 )
 
-
-
 // By 肖文龙
 func main() {
 	core.Run()

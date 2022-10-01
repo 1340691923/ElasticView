@@ -18,6 +18,9 @@ Vue.use(VueClipboard)
 import ProgressBar from 'vuejs-progress-bar'
 Vue.use(ProgressBar)
 
+import Plugin from 'v-fit-columns';
+Vue.use(Plugin);
+
 Vue.config.productionTip = false
 
 import ElementUI from 'element-ui'

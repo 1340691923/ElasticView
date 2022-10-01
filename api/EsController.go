@@ -59,7 +59,7 @@ func (this EsController) PingAction(ctx *Ctx) error {
 		}
 		var data *elasticV7.PingResult
 		for _,ip := range strings.Split(esConnect.Ip,","){
-			data, _, err := esClient.Ping(ip).Do(context.Background())
+			data, _, err = esClient.Ping(ip).Do(context.Background())
 			if err != nil {
 				return this.Error(ctx, err)
 			}
@@ -76,7 +76,7 @@ func (this EsController) PingAction(ctx *Ctx) error {
 		}
 		var data *elasticV7.PingResult
 		for _,ip := range strings.Split(esConnect.Ip,","){
-			data, _, err := esClient.Ping(ip).Do(context.Background())
+			data, _, err = esClient.Ping(ip).Do(context.Background())
 			if err != nil {
 				return this.Error(ctx, err)
 			}

@@ -118,6 +118,7 @@
             height="400"
             :data="tableData"
             use-virtual
+            ref="multipleTable"
             :row-height="30"
           >
             <el-table-column
@@ -518,6 +519,11 @@ export default {
           }
         }
       }
+      this.$nextTick(() => {
+        this.$refs.multipleTable.doLayout();
+
+        // table加ref="multipleTable"
+      })
     },
 
     async getMapping() {

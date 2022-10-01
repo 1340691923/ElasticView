@@ -11,6 +11,10 @@ type Refresh struct {
 	indexName []string
 }
 
+func (this *Refresh) CleanIndexName() {
+	this.indexName = []string{}
+}
+
 func (this *Refresh) SetIndexName(indexName string) {
 	this.indexName = append(this.indexName, indexName)
 }

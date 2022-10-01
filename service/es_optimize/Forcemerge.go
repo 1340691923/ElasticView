@@ -15,6 +15,10 @@ type Forcemerge struct {
 	indexName []string
 }
 
+func (this *Forcemerge) CleanIndexName() {
+	this.indexName = []string{}
+}
+
 func (this *Forcemerge) SetIndexName(indexName string) {
 	this.indexName = append(this.indexName, indexName)
 }

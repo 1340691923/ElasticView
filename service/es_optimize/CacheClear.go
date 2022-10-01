@@ -12,6 +12,11 @@ type CacheClear struct {
 	indexName []string
 }
 
+
+func (this *CacheClear) CleanIndexName() {
+	this.indexName = []string{}
+}
+
 func (this *CacheClear) SetIndexName(indexName string) {
 	this.indexName = append(this.indexName, indexName)
 }
