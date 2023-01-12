@@ -18,7 +18,7 @@ func GetEsClientByID(id int) (*EsConnect, error) {
 	}
 	esConnectTmp := EsConnect{}
 	sql, args, err := db.SqlBuilder.
-		Select("ip", "user", "pwd", "version").
+		Select("ip", "user", "pwd", "version", "rootpem", "certpem", "keypem").
 		From("es_link").
 		Where(db.Eq{"id": id}).
 		Limit(1).ToSql()

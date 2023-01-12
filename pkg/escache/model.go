@@ -126,6 +126,9 @@ type EsConnect struct {
 	User    string `json:"user" db:"user"`
 	Pwd     string `json:"pwd" db:"pwd"`
 	Version int    `json:"version" db:"version"`
+	RootPEM string `json:"rootpem" db:"rootpem"`
+	CertPEM string `json:"certpem" db:"certpem"`
+	KeyPEM  string `json:"keypem" db:"keypem"`
 }
 
 type EsCat struct {
