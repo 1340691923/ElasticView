@@ -7,10 +7,13 @@ CREATE TABLE `es_link`  (
                             `created` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,
                             `updated` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,
                             `remark` TEXT   DEFAULT '默认连接',
-                            `version` INTEGER NOT NULL DEFAULT 6
+                            `version` INTEGER NOT NULL DEFAULT 6,
+                            `rootpem` TEXT,
+                            `certpem` TEXT,
+                            `keypem` TEXT
 );
 CREATE UNIQUE INDEX es_remark on es_link ( `remark`);
-INSERT INTO `es_link` VALUES (10, 'http://127.0.0.1:9200', '', '', '2021-04-10 22:33:03', '2021-04-10 22:33:03', '测试', 6);
+INSERT INTO `es_link` VALUES (10, 'http://127.0.0.1:9200', '', '', '2021-04-10 22:33:03', '2021-04-10 22:33:03', '测试', 6, '', '', '');
 DROP TABLE IF EXISTS `gm_dsl_history`;
 CREATE TABLE `gm_dsl_history`  (
                                    `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,

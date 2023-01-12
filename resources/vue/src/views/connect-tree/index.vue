@@ -47,6 +47,21 @@
           {{ scope.row.version }}
         </template>
       </el-table-column>
+      <el-table-column align="center" :label="$t('root证书')" width="100" show-overflow-tooltip>
+        <template slot-scope="scope">
+          {{ scope.row.rootpem }}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" :label="$t('cert证书')" width="100" show-overflow-tooltip>
+        <template slot-scope="scope">
+          {{ scope.row.certpem }}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" :label="$t('key证书')" width="100" show-overflow-tooltip>
+        <template slot-scope="scope">
+          {{ scope.row.keypem }}
+        </template>
+      </el-table-column>
       <el-table-column align="center" :label="$t('创建时间')" width="220">
         <template slot-scope="scope">
           {{ scope.row.created }}
@@ -117,6 +132,15 @@
         <el-form-item :label="$t('密码')">
           <el-input clearable v-model="link.pwd" :placeholder="$t('密码')" />
         </el-form-item>
+        <el-form-item :label="$t('root证书')">
+          <el-input clearable v-model="link.rootpem" type="textarea" :placeholder="$t('root证书')" />
+        </el-form-item>
+        <el-form-item :label="$t('cert证书')">
+          <el-input clearable v-model="link.certpem" type="textarea" :placeholder="$t('cert证书')" />
+        </el-form-item>
+        <el-form-item :label="$t('key证书')">
+          <el-input clearable v-model="link.keypem" type="textarea" :placeholder="$t('key证书')" />
+        </el-form-item>
         <el-form-item :label="$t('备注')">
           <el-input clearable v-model="link.remark" :placeholder="$t('备注')" />
         </el-form-item>
@@ -173,6 +197,9 @@ const defaultLink = {
   remark: '',
   updated: '',
   user: '',
+  rootpem: '',
+  certpem: '',
+  keypem: '',
   version: 6
 }
 
