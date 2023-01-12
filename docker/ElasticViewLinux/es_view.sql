@@ -36,6 +36,9 @@ CREATE TABLE `es_link`  (
   `updated` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP(0),
   `remark` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '默认连接',
   `version` tinyint(10) NOT NULL DEFAULT 6,
+  `rootpem` text,
+  `certpem` text,
+  `keypem` text,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `es_remark`(`remark`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
@@ -43,7 +46,7 @@ CREATE TABLE `es_link`  (
 -- ----------------------------
 -- Records of es_link
 -- ----------------------------
-INSERT INTO `es_link` VALUES (10, 'http://127.0.0.1:9200', '', '', '2021-04-10 22:33:03', '2021-04-10 22:33:03', '测试', 6);
+INSERT INTO `es_link` VALUES (10, 'http://127.0.0.1:9200', '', '', '2021-04-10 22:33:03', '2021-04-10 22:33:03', '测试', 6, '', '', '');
 
 -- ----------------------------
 -- Table structure for gm_dsl_history

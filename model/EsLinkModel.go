@@ -14,6 +14,9 @@ type EsLinkModel struct {
 	Updated string `gorm:"column:updated" json:"updated" db:"updated"`
 	Remark  string `gorm:"column:remark" json:"remark" db:"remark"`
 	Version int    `json:"version" db:"version"`
+	RootPEM string `gorm:"column:rootpem" json:"rootpem" db:"rootpem"`
+	CertPEM string `gorm:"column:certpem" json:"certpem" db:"certpem"`
+	KeyPEM  string `gorm:"column:keypem" json:"keypem" db:"keypem"`
 }
 
 var EsLinkList = []EsLinkModel{}
