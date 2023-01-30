@@ -22,6 +22,12 @@
                 </template>
                 <el-tag type="primary"><i class="el-icon-star-on" />主节点</el-tag>
               </a-tooltip>
+              <a-tooltip v-else-if="v['node.role'].includes('m') && v['node.role'].includes('v')" placement="top" style="cursor: pointer">
+                <template slot="title">
+                  <span>仅选举节点</span>
+                </template>
+                <el-tag type="primary"><i class="el-icon-tickets" />仅选举节点</el-tag>
+              </a-tooltip>
               <a-tooltip v-else-if="v['node.role'].includes('m')" placement="top" style="cursor: pointer">
                 <template slot="title">
                   <span>主节点候选</span>
