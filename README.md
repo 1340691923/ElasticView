@@ -86,7 +86,6 @@ mysql:                  # dbType为mysql时填
    dbName: "es_view"
    maxOpenConns: 10
    maxIdleConns: 10
-appSecret: "1340691923@qq.com" # jwt 加密密钥
 esPwdSecret: "concat_mail!!->1340691923@qq.com" # es密码加密密钥 加密方式为 AES
 version: "1.8.5"  # ES 版本号
 deBug: false      # 是否为测试模式 如果为 false则打开默认浏览器直接访问地址
@@ -125,4 +124,4 @@ static/build/(根据你的系统选择构建脚本).bat
 
 ### QQ群
 
-<img src="https://gitee.com/cynthia520/elastic-view/raw/main/static/show_img/qq_group.jpg" style="width: 220px">
+<img src="https://raw.githubusercontent.com/1340691923/ElasticView/main/resources/show_img/qq_group.jpg" style="width: 220px">
