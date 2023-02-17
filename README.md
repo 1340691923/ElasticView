@@ -116,10 +116,10 @@ static/build/(根据你的系统选择构建脚本).bat
  * 铸龙用户行为分析系统     https://github.com/1340691923/xwl_bi
  * 软考成绩快查工具        https://github.com/1340691923/SoftTestMonitor
 
-<!--### 求职中，个人微信二维码-->
+### 求职中，个人微信二维码
 
 <!-- ![image](https://gitee.com/cynthia520/elastic-view/raw/main/static/show_img/weixin.jpg)   -->
-<!--<img src="https://raw.githubusercontent.com/1340691923/ElasticView/main/resources/show_img/weixin.jpg" style="width: 220px"> -->
+<img src="https://raw.githubusercontent.com/1340691923/ElasticView/main/resources/show_img/weixin.jpg" style="width: 220px"> 
 
 
 ### QQ群
