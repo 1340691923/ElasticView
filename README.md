@@ -39,19 +39,11 @@
 5. windows：双击ElasticView.exe  linux：chmod +x ElasticView && nohup ./ElasticView > ElasticView.log &
 6. 浏览器访问对应ip:端口，初始用户名：admin，初始密码：admin
 
-## ElasticView 部分截图
+## ElasticView 教学视频（来源：https://blog.csdn.net/dzcro/article/details/126918571?spm=1001.2014.3001.5502）
+https://www.bilibili.com/video/av473231184/?zw&spm_id_from=888.80996.embed_old
 
-![image](https://gitee.com/cynthia520/elastic-view/raw/main/static/show_img/1.png)
-![image](https://gitee.com/cynthia520/elastic-view/raw/main/static/show_img/3.png)
-![image](https://gitee.com/cynthia520/elastic-view/raw/main/static/show_img/4.png)
-![image](https://gitee.com/cynthia520/elastic-view/raw/main/static/show_img/5.png)
-![image](https://gitee.com/cynthia520/elastic-view/raw/main/static/show_img/6.png)
-![image](https://gitee.com/cynthia520/elastic-view/raw/main/static/show_img/7.png)
-![image](https://gitee.com/cynthia520/elastic-view/raw/main/static/show_img/8.png)
-![image](https://gitee.com/cynthia520/elastic-view/raw/main/static/show_img/9.png)
-![image](https://gitee.com/cynthia520/elastic-view/raw/main/static/show_img/10.png)
-![image](https://gitee.com/cynthia520/elastic-view/raw/main/static/show_img/11.png)
-![image](https://gitee.com/cynthia520/elastic-view/raw/main/static/show_img/12.png)
+## ElasticView 教学视
+
 
 
 ##支持操作系统：
