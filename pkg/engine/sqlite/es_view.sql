@@ -80,3 +80,13 @@ CREATE TABLE `datax_transfer_list`  (
                                   `created` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 CREATE UNIQUE INDEX datax_transfer_list_remark on datax_transfer_list ( `remark`, `es_connect`);
+DROP TABLE IF EXISTS `search_index_config`;
+CREATE TABLE `search_index_config`  (
+                                        `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                                        `index_name` TEXT   DEFAULT NULL,
+                                        `remark` TEXT NOT NULL DEFAULT '' ,
+                                        `es_connect` INTEGER NOT NULL DEFAULT '0',
+                                        `updated` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                                        `created` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+CREATE UNIQUE INDEX search_index_config_index_name on search_index_config ( `index_name`, `es_connect`);
