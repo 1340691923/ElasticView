@@ -138,7 +138,6 @@ export default {
         this.indexSelectLoading = false
         console.log(err)
       })
-    }
     },
     refreshPage() {
       this.pageshow = false
@@ -152,7 +151,7 @@ export default {
       this.refreshPage()
     },
     async add() {
-
+      console.log(123)
       const res = await setIndexCfg(this.form)
       if (res.code != 0) {
         this.$message({
@@ -168,11 +167,7 @@ export default {
       this.open = false
       this.search()
     },
-    closeDialog() {
-      this.open = false
-      this.form = Object.assign({}, defaultForm)
-      this.formLinkLoading = false
-    },
+
     async search() {
       this.tableLoading = true
       const input = this.input
@@ -197,7 +192,9 @@ export default {
       })
       this.tableLoading = false
 
-  }
+    }
+    },
+
 }
 </script>
 

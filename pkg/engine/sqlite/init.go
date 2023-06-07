@@ -30,14 +30,14 @@ func InitSqliteData() (fn func(), err error) {
 	return
 }
 
-//初始化sqlite数据
+// 初始化sqlite数据
 func Init() {
 
 	currDir := util.GetCurrentDirectory()
 
-	dataDir := filepath.Join(currDir,"data")
+	dataDir := filepath.Join(currDir, "data")
 
-	lockFile := filepath.Join(dataDir,"lock")
+	lockFile := filepath.Join(dataDir, "lock")
 
 	if util.CheckFileIsExist(lockFile) {
 		return
@@ -48,6 +48,7 @@ func Init() {
 	var err error
 
 	for _, execSql := range execSqlArr {
+		log.Println("insert sql", execSql)
 		_, err = db.Sqlx.Exec(execSql)
 		if err != nil {
 			log.Println(fmt.Sprintf("初始化 sqlite 执行建表语句sql:%v失败:%s", execSql, err.Error()))
@@ -56,8 +57,8 @@ func Init() {
 	}
 
 	log.Println("初始化sqlite数据完成！")
-	if !util.CheckFileIsExist(dataDir){
-		os.MkdirAll(dataDir,os.ModePerm)
+	if !util.CheckFileIsExist(dataDir) {
+		os.MkdirAll(dataDir, os.ModePerm)
 	}
 	os.Create(lockFile)
 }
