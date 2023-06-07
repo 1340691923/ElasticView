@@ -6,7 +6,7 @@ import (
 	elasticV7 "github.com/olivere/elastic/v7"
 )
 
-//刷新索引
+// 刷新索引
 type Refresh struct {
 	indexName []string
 }

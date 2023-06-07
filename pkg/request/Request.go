@@ -8,7 +8,7 @@ import (
 	fiber "github.com/gofiber/fiber/v2"
 )
 
-//自定义请求 辅助方法
+// 自定义请求 辅助方法
 type Request struct {
 }
 
@@ -17,7 +17,7 @@ type CheckConfigStruct struct {
 	Key  string
 }
 
-//检查请求参数
+// 检查请求参数
 func (this Request) CheckParameter(checkConfig []CheckConfigStruct, ctx *fiber.Ctx) (err error) {
 	method := strings.ToUpper(ctx.Method())
 	for _, config := range checkConfig {
@@ -45,7 +45,7 @@ func (this Request) FormIntDefault(ctx *fiber.Ctx, key string, def int) int {
 	return i
 }
 
-//获取用户token信息
+// 获取用户token信息
 func (this Request) GetToken(ctx *fiber.Ctx) (token string) {
 	return ctx.Get("X-Token")
 }

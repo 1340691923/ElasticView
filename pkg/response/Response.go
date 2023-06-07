@@ -1,8 +1,9 @@
-//自定义响应 辅助方法层
+// 自定义响应 辅助方法层
 package response
 
 import (
 	"encoding/csv"
+	"encoding/json"
 	"fmt"
 	"github.com/xuri/excelize/v2"
 	"io/ioutil"
@@ -21,11 +22,10 @@ import (
 
 	. "github.com/1340691923/ElasticView/pkg/my_error"
 
-	jsoniter "github.com/json-iterator/go"
 	"go.uber.org/zap"
 )
 
-//自定义响应方法
+// 自定义响应方法
 type Response struct {
 	Code int         `json:"code"`
 	Msg  string      `json:"msg"`
@@ -66,12 +66,12 @@ var resMap = map[string]map[string]string{
 }
 
 func (this *Response) JsonDealErr(err error) string {
-	var json = jsoniter.ConfigCompatibleWithStandardLibrary
+
 	b, _ := json.Marshal(this.DealErr(err))
 	return util.BytesToStr(b)
 }
 
-//trace
+// trace
 func (this *Response) DealErr(err error) (errorTrace []string) {
 	errorTrace = append(errorTrace, err.Error())
 	if err != nil {
@@ -90,13 +90,13 @@ func (this *Response) DealErr(err error) (errorTrace []string) {
 	return errorTrace
 }
 
-//正确信息
+// 正确信息
 func (this *Response) Success(ctx *fiber.Ctx, msg string, data interface{}) error {
 	this.send(ctx, msg, SUCCESS, data)
 	return nil
 }
 
-//错误信息
+// 错误信息
 func (this *Response) Error(ctx *fiber.Ctx, err error) error {
 	errorTrace := this.getTrace(err)
 
@@ -108,7 +108,7 @@ func (this *Response) Error(ctx *fiber.Ctx, err error) error {
 	return nil
 }
 
-//输出
+// 输出
 func (this *Response) send(ctx *fiber.Ctx, msg string, code int, data interface{}) error {
 	var res Response
 	res.Code = code
@@ -125,13 +125,13 @@ func (this *Response) send(ctx *fiber.Ctx, msg string, code int, data interface{
 	return nil
 }
 
-//输出
+// 输出
 func (this *Response) Output(ctx *fiber.Ctx, data interface{}) error {
 	ctx.Status(http.StatusOK).JSON(data)
 	return nil
 }
 
-//得到trace信息
+// 得到trace信息
 func (this *Response) getTrace(err error) []string {
 	goEnv := os.Getenv("GO_ENV")
 	errorTrace := []string{}
@@ -141,7 +141,7 @@ func (this *Response) getTrace(err error) []string {
 	return errorTrace
 }
 
-//处理异常（业务异常和默认异常）
+// 处理异常（业务异常和默认异常）
 func ErrorToErrorCode(err error) *MyError {
 	if err == nil {
 		return nil
@@ -169,7 +169,7 @@ func (this *Response) SliceReturnValOrNull(value []string, empty interface{}) in
 	return value
 }
 
-func(this *Response)  DownloadExcel(downloadFileName string,titleList []string,data [][]string,ctx *fiber.Ctx) (err error) {
+func (this *Response) DownloadExcel(downloadFileName string, titleList []string, data [][]string, ctx *fiber.Ctx) (err error) {
 
 	var downloadUrl = fmt.Sprintf("data/%v.csv", time.Now().Format("20060102150405"))
 
@@ -184,7 +184,7 @@ func(this *Response)  DownloadExcel(downloadFileName string,titleList []string,d
 	w := csv.NewWriter(file)
 	w.Write(titleList)
 
-	for _,d := range data{
+	for _, d := range data {
 		w.Write(d)
 	}
 	// 写文件需要flush，不然缓存满了，后面的就写不进去了，只会写一部分
@@ -194,8 +194,8 @@ func(this *Response)  DownloadExcel(downloadFileName string,titleList []string,d
 		go func() {
 			time.Sleep(5 * time.Second)
 			err := os.Remove(downloadUrl)
-			if err!=nil{
-				logs.Logger.Sugar().Errorf("err",err)
+			if err != nil {
+				logs.Logger.Sugar().Errorf("err", err)
 			}
 		}()
 	}()
@@ -217,7 +217,7 @@ func(this *Response)  DownloadExcel(downloadFileName string,titleList []string,d
 	return
 }
 
-func(this *Response)  DownloadExcel2(downloadFileName string,titleList []interface{},data [][]interface{},ctx *fiber.Ctx) (err error) {
+func (this *Response) DownloadExcel2(downloadFileName string, titleList []interface{}, data [][]interface{}, ctx *fiber.Ctx) (err error) {
 	log.Println("download")
 	xlsx := excelize.NewFile()
 
@@ -229,7 +229,7 @@ func(this *Response)  DownloadExcel2(downloadFileName string,titleList []interfa
 
 		//因为index是从0开始，第一行被字段占用，从第二行开始写入整行数据
 		var lint = strconv.Itoa(index + 2)
-		log.Println("index",index)
+		log.Println("index", index)
 		xlsx.SetSheetRow("Sheet1", "A"+lint, &data[index])
 	}
 	log.Println("download2")

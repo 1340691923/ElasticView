@@ -50,7 +50,7 @@ func NewEsClientV7(esConnectConfig *EsConnect) (esClient *elasticV7.Client, err 
 	optList := []elasticV7.ClientOptionFunc{
 		elasticV7.SetSniff(false),
 		elasticV7.SetHealthcheck(false),
-		elasticV7.SetURL(strings.Split(esConnectConfig.Ip,",")...),
+		elasticV7.SetURL(strings.Split(esConnectConfig.Ip, ",")...),
 		elasticV7.SetHttpClient(httpClient),
 	}
 
@@ -102,7 +102,7 @@ func NewEsClientV8(esConnectConfig *EsConnect) (esClient *elasticV7.Client, err 
 	optList := []elasticV7.ClientOptionFunc{
 		elasticV7.SetSniff(false),
 		elasticV7.SetHealthcheck(false),
-		elasticV7.SetURL(strings.Split(esConnectConfig.Ip,",")...),
+		elasticV7.SetURL(strings.Split(esConnectConfig.Ip, ",")...),
 		elasticV7.SetHttpClient(httpClient),
 	}
 

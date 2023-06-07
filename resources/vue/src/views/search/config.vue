@@ -53,11 +53,11 @@
               filterable
               style="width: 180px"
             >
-              <el-option v-for="(v,k,index) in indexList" :key="index" :lable="v" :value="v" />
+              <el-option v-for="(v,k,index) in indexList" :key="index" :lable="v" :value="v"/>
             </el-select>
           </el-form-item>
           <el-form-item :label="$t('备注')">
-            <el-input v-model="form.remark" placeholder="备注" />
+            <el-input v-model="form.remark" placeholder="备注"/>
           </el-form-item>
         </el-form>
         <div style="text-align:right;">
@@ -84,7 +84,6 @@
 
 <script>
 
-import {  InsertLink, LinkInfoList } from '@/api/datax'
 import {IndexNamesAction} from "@/api/es-index";
 import {getIndexCfg, setIndexCfg} from "@/api/search";
 
@@ -97,7 +96,7 @@ export default {
   name: 'Link',
   data() {
     return {
-      indexList:[],
+      indexList: [],
       count: 0,
       pageshow: true,
       tableData: [],
@@ -107,7 +106,7 @@ export default {
         limit: 10
       },
       tableLoading: false,
-      indexSelectLoading:false,
+      indexSelectLoading: false,
       open: false
     }
   },
@@ -120,7 +119,7 @@ export default {
       this.open = false
       this.form = Object.assign({}, defaultForm)
     },
-    getIndexList(){
+    getIndexList() {
       this.indexSelectLoading = true
       const input = {}
       input['es_connect'] = this.$store.state.baseData.EsConnectID
@@ -193,7 +192,7 @@ export default {
       this.tableLoading = false
 
     }
-    },
+  },
 
 }
 </script>

@@ -1,4 +1,4 @@
-//索引基本操作层
+// 索引基本操作层
 package es_optimize
 
 import (
@@ -11,7 +11,6 @@ import (
 type CacheClear struct {
 	indexName []string
 }
-
 
 func (this *CacheClear) CleanIndexName() {
 	this.indexName = []string{}

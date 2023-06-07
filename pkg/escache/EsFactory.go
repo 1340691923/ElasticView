@@ -8,7 +8,7 @@ import (
 	"github.com/1340691923/ElasticView/pkg/util"
 )
 
-//获取es配置信息
+// 获取es配置信息
 func GetEsClientByID(id int) (*EsConnect, error) {
 	var err error
 	esCache := NewEsCache()
@@ -33,8 +33,8 @@ func GetEsClientByID(id int) (*EsConnect, error) {
 	if esConnectTmp.Ip == "" {
 		return nil, errors.New("请先选择ES连接")
 	}
-	if esConnectTmp.Pwd != ""{
-		esConnectTmp.Pwd,err = EsPwdESBDecrypt(esConnectTmp.Pwd)
+	if esConnectTmp.Pwd != "" {
+		esConnectTmp.Pwd, err = EsPwdESBDecrypt(esConnectTmp.Pwd)
 		if err != nil {
 			return nil, err
 		}
@@ -43,21 +43,21 @@ func GetEsClientByID(id int) (*EsConnect, error) {
 	return &esConnectTmp, nil
 }
 
-func  EsPwdESBDecrypt(cryptedStr string) (string,error) {
-	pwdByte,err := base64.StdEncoding.DecodeString(cryptedStr)
-	if err!=nil{
+func EsPwdESBDecrypt(cryptedStr string) (string, error) {
+	pwdByte, err := base64.StdEncoding.DecodeString(cryptedStr)
+	if err != nil {
 		return "", err
 	}
-	b,err := util.ECBDecrypt(pwdByte, config.GlobConfig.EsPwdSecret)
-	if err!=nil{
+	b, err := util.ECBDecrypt(pwdByte, config.GlobConfig.EsPwdSecret)
+	if err != nil {
 		return "", err
 	}
 	return string(b), nil
 }
 
-func EsPwdESBEncrypt(pwd string) (string,error) {
-	b,err := util.ECBEncrypt(pwd, config.GlobConfig.EsPwdSecret)
-	if err!=nil{
+func EsPwdESBEncrypt(pwd string) (string, error) {
+	b, err := util.ECBEncrypt(pwd, config.GlobConfig.EsPwdSecret)
+	if err != nil {
 		return "", err
 	}
 

@@ -1,7 +1,8 @@
-//MySql引擎层
+// MySql引擎层
 package db
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/1340691923/ElasticView/pkg/core"
 	"github.com/1340691923/ElasticView/pkg/engine/config"
@@ -10,7 +11,6 @@ import (
 	"github.com/Masterminds/squirrel"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
-	jsoniter "github.com/json-iterator/go"
 	_ "github.com/logoove/sqlite"
 	"log"
 	"os"
@@ -136,7 +136,7 @@ type Model2MapParmas struct {
 
 func Model2Map(m Model2MapParmas) (res map[string]interface{}) {
 	res = map[string]interface{}{}
-	var json = jsoniter.ConfigCompatibleWithStandardLibrary
+
 	b, _ := json.Marshal(m.M)
 	json.Unmarshal(b, &res)
 	for k, v := range res {

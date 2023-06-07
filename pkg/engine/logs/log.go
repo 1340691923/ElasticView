@@ -1,4 +1,4 @@
-//日志引擎层
+// 日志引擎层
 package logs
 
 import (
@@ -44,24 +44,24 @@ type Log struct {
 	storageDays int
 }
 
-//Options方法
+// Options方法
 type NewLogOptions func(log *Log)
 
-//设置日志目录
+// 设置日志目录
 func WithLogPath(logPath string) NewLogOptions {
 	return func(log *Log) {
 		log.logPath = logPath
 	}
 }
 
-//设置日志存活天数
+// 设置日志存活天数
 func WithStorageDays(storageDays int) NewLogOptions {
 	return func(log *Log) {
 		log.storageDays = storageDays
 	}
 }
 
-//App 构造方法
+// App 构造方法
 func NewLog(opts ...NewLogOptions) *Log {
 	log := &Log{
 		logPath:     filepath.Join(util.GetCurrentDirectory(), "logs"),

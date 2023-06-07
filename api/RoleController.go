@@ -20,7 +20,7 @@ type RoleController struct {
 	BaseController
 }
 
-//获取所有的GM 角色
+// 获取所有的GM 角色
 func (this RoleController) RolesAction(ctx *Ctx) error {
 	var service gm_role.GmRoleService
 	roles, err := service.Select()
@@ -63,7 +63,7 @@ func (this RoleController) RolesAction(ctx *Ctx) error {
 	return this.Success(ctx, response.SearchSuccess, list)
 }
 
-//新增GM角色
+// 新增GM角色
 func (this RoleController) RolesAddAction(ctx *Ctx) error {
 
 	var model2 request.GmRoleModel

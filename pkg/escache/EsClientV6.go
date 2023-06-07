@@ -45,7 +45,7 @@ func NewEsClientV6(esConnectConfig *EsConnect) (esClient *elasticV6.Client, err 
 	optList := []elasticV6.ClientOptionFunc{
 		elasticV6.SetSniff(false),
 		elasticV6.SetHealthcheck(false),
-		elasticV6.SetURL(strings.Split(esConnectConfig.Ip,",")...),
+		elasticV6.SetURL(strings.Split(esConnectConfig.Ip, ",")...),
 		elasticV6.SetHttpClient(httpClient),
 	}
 

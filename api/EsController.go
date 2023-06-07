@@ -14,7 +14,7 @@ import (
 	"strings"
 )
 
-//Es 基本操作
+// Es 基本操作
 type EsController struct {
 	BaseController
 }
@@ -27,9 +27,9 @@ func (this EsController) PingAction(ctx *Ctx) error {
 		return this.Error(ctx, err)
 	}
 
-	if esConnect.Pwd != ""{
-		pwd,decrptErr := escache.EsPwdESBDecrypt(esConnect.Pwd)
-		if decrptErr == nil{
+	if esConnect.Pwd != "" {
+		pwd, decrptErr := escache.EsPwdESBDecrypt(esConnect.Pwd)
+		if decrptErr == nil {
 			esConnect.Pwd = pwd
 		}
 	}
@@ -41,7 +41,7 @@ func (this EsController) PingAction(ctx *Ctx) error {
 			return this.Error(ctx, err)
 		}
 		var data *elasticV6.PingResult
-		for _,ip := range strings.Split(esConnect.Ip,","){
+		for _, ip := range strings.Split(esConnect.Ip, ",") {
 			data, _, err = esClient.Ping(esConnect.Ip).Do(context.Background())
 			if err != nil {
 				return this.Error(ctx, err)
@@ -58,7 +58,7 @@ func (this EsController) PingAction(ctx *Ctx) error {
 			return this.Error(ctx, err)
 		}
 		var data *elasticV7.PingResult
-		for _,ip := range strings.Split(esConnect.Ip,","){
+		for _, ip := range strings.Split(esConnect.Ip, ",") {
 			data, _, err = esClient.Ping(ip).Do(context.Background())
 			if err != nil {
 				return this.Error(ctx, err)
@@ -75,7 +75,7 @@ func (this EsController) PingAction(ctx *Ctx) error {
 			return this.Error(ctx, err)
 		}
 		var data *elasticV7.PingResult
-		for _,ip := range strings.Split(esConnect.Ip,","){
+		for _, ip := range strings.Split(esConnect.Ip, ",") {
 			data, _, err = esClient.Ping(ip).Do(context.Background())
 			if err != nil {
 				return this.Error(ctx, err)

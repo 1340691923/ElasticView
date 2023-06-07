@@ -21,7 +21,7 @@ const (
 
 func init() {
 	flag.StringVar(&appName, "appName", "ElasticView", "应用名")
-	flag.StringVar(&configFileDir, "configFileDir",  "resources/config","配置文件夹名")
+	flag.StringVar(&configFileDir, "configFileDir", "resources/config", "配置文件夹名")
 	flag.StringVar(&configFileName, "configFileName", "config", "配置文件名")
 	flag.StringVar(&configFileExt, "configFileExt", "yml", "配置文件后缀")
 	flag.Parse()
@@ -44,7 +44,7 @@ func initConfig() (deferFn func(), err error) {
 	return deferFn, nil
 }
 
-//全局配置结构体
+// 全局配置结构体
 type Config struct {
 	Log struct {
 		StorageDays int    `json:"storageDays"`

@@ -88,13 +88,13 @@ func (this *Mysql) Transfer(id int, transferReq *request.TransferReq) (err error
 		return err
 	}
 
-	if transferReq.EsDocID != ""{
+	if transferReq.EsDocID != "" {
 		transferReq.Cols.TableCols = append(transferReq.Cols.TableCols, transferReq.EsDocID)
 	}
 	go func() {
 
-		var sqlFn  func(offset uint64, limit int) string
-		if transferReq.AutoIncrementId != ""{
+		var sqlFn func(offset uint64, limit int) string
+		if transferReq.AutoIncrementId != "" {
 			sqlFn = func(offset uint64, limit int) string {
 				sql := fmt.Sprintf(`SELECT %s FROM %s WHERE %s >= (select %s from %s limit %v, 1) limit %v`,
 					strings.Join(transferReq.Cols.TableCols, ","),
@@ -107,7 +107,7 @@ func (this *Mysql) Transfer(id int, transferReq *request.TransferReq) (err error
 				)
 				return sql
 			}
-		}else{
+		} else {
 			sqlFn = func(offset uint64, limit int) string {
 				sql := fmt.Sprintf(`SELECT %s FROM %s limit %v,%v`,
 					strings.Join(transferReq.Cols.TableCols, ","),
@@ -118,8 +118,6 @@ func (this *Mysql) Transfer(id int, transferReq *request.TransferReq) (err error
 				return sql
 			}
 		}
-
-
 
 		switch esConnect.Version {
 		case 6:

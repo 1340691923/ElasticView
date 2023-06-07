@@ -47,7 +47,7 @@ func removeConns(deleteConn *websocket.Conn) {
 	deleteConn.Close()
 }
 
-//长链接
+// 长链接
 func Ws(c *websocket.Conn) {
 	var service gm_user.GmUserService
 	type ReqData struct {
@@ -66,13 +66,13 @@ func Ws(c *websocket.Conn) {
 		return
 	}
 
-	 if time.Now().Unix() > cliams.ExpiresAt {
-		 logs.Logger.Error("err")
-		 return
+	if time.Now().Unix() > cliams.ExpiresAt {
+		logs.Logger.Error("err")
+		return
 	} else {
 		isExitUser, err := service.IsExitUser(cliams)
 		if err != nil {
-			logs.Logger.Sugar().Error("err",err)
+			logs.Logger.Sugar().Error("err", err)
 			return
 		}
 		if !isExitUser {
@@ -84,9 +84,9 @@ func Ws(c *websocket.Conn) {
 	for {
 		var reqData ReqData
 		reqData.UUid = ""
-		_,data,err := c.ReadMessage()
+		_, data, err := c.ReadMessage()
 
-		if len(data) == 0{
+		if len(data) == 0 {
 			continue
 		}
 
@@ -96,7 +96,7 @@ func Ws(c *websocket.Conn) {
 			break
 		}
 
-		err = json.Unmarshal(data,&reqData)
+		err = json.Unmarshal(data, &reqData)
 		if err != nil {
 			logs.Logger.Error("json.Unmarshal", zap.Error(err))
 			break

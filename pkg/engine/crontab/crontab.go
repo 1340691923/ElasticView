@@ -1,12 +1,12 @@
 package crontab
 
 import (
+	"encoding/json"
 	"github.com/1340691923/ElasticView/model"
 	"github.com/1340691923/ElasticView/pkg/core"
 	"github.com/1340691923/ElasticView/pkg/engine/db"
 	"github.com/1340691923/ElasticView/pkg/request"
 	"github.com/1340691923/ElasticView/service/data_conversion"
-	jsoniter "github.com/json-iterator/go"
 	"github.com/robfig/cron"
 	"log"
 )
@@ -86,9 +86,9 @@ func InitCrontab() (crontab *cron.Cron, err error) {
 
 	for _, v := range list {
 		tempV := v
-		var json = jsoniter.ConfigCompatibleWithStandardLibrary
+
 		var reqData request.TransferReq
-		err := json.UnmarshalFromString(tempV.FormData, &reqData)
+		err := json.Unmarshal([]byte(tempV.FormData), &reqData)
 		if err != nil {
 			return crontab, err
 		}

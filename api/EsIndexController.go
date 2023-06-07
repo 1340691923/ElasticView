@@ -11,7 +11,7 @@ type EsIndexController struct {
 	BaseController
 }
 
-//创建索引
+// 创建索引
 func (this EsIndexController) CreateAction(ctx *Ctx) error {
 	esIndexInfo := new(escache.EsIndexInfo)
 	err := ctx.BodyParser(&esIndexInfo)
@@ -50,7 +50,7 @@ func (this EsIndexController) DeleteAction(ctx *Ctx) error {
 
 }
 
-//获取索引配置信息
+// 获取索引配置信息
 func (this EsIndexController) GetSettingsAction(ctx *Ctx) error {
 	esIndexInfo := new(escache.EsIndexInfo)
 	err := ctx.BodyParser(&esIndexInfo)
@@ -70,7 +70,7 @@ func (this EsIndexController) GetSettingsAction(ctx *Ctx) error {
 
 }
 
-//获取所有的索引配置信息
+// 获取所有的索引配置信息
 func (this EsIndexController) GetSettingsInfoAction(ctx *Ctx) error {
 	esIndexInfo := new(escache.EsIndexInfo)
 	err := ctx.BodyParser(&esIndexInfo)

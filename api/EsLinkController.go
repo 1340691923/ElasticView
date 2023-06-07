@@ -10,8 +10,6 @@ import (
 	"github.com/1340691923/ElasticView/pkg/engine/db"
 	"github.com/1340691923/ElasticView/pkg/response"
 	. "github.com/gofiber/fiber/v2"
-
-	jsoniter "github.com/json-iterator/go"
 )
 
 // Es 连接管理控制器
@@ -56,7 +54,7 @@ func (this EsLinkController) InsertAction(ctx *Ctx) error {
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	var json = jsoniter.ConfigCompatibleWithStandardLibrary
+
 	esB, err := json.Marshal(esLinkModel)
 
 	if err != nil {
@@ -73,7 +71,7 @@ func (this EsLinkController) InsertAction(ctx *Ctx) error {
 	delete(insertMap, "id")
 	insertMap["created"] = time.Now().Format(util.TimeFormat)
 	insertMap["updated"] = time.Now().Format(util.TimeFormat)
-	if insertMap["pwd"] != ""{
+	if insertMap["pwd"] != "" {
 		insertMap["pwd"], err = escache.EsPwdESBEncrypt(insertMap["pwd"].(string))
 		if err != nil {
 			return this.Error(ctx, err)
@@ -118,7 +116,7 @@ func (this EsLinkController) UpdateAction(ctx *Ctx) error {
 	delete(insertMap, "created")
 	delete(insertMap, "updated")
 	insertMap["updated"] = time.Now().Format(util.TimeFormat)
-	if insertMap["pwd"] != ""{
+	if insertMap["pwd"] != "" {
 		insertMap["pwd"], err = escache.EsPwdESBEncrypt(insertMap["pwd"].(string))
 		if err != nil {
 			return this.Error(ctx, err)

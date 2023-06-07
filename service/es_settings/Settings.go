@@ -1,9 +1,9 @@
-//节点配置层
+// 节点配置层
 package es_settings
 
 import (
 	"context"
-	jsoniter "github.com/json-iterator/go"
+	"encoding/json"
 	elasticV6 "github.com/olivere/elastic"
 	elasticV7 "github.com/olivere/elastic/v7"
 )
@@ -14,7 +14,7 @@ type Settings struct {
 	ver        int
 }
 
-//节点设置
+// 节点设置
 func NewSettingsByV6(client *elasticV6.Client) (*Settings, error) {
 	settings := &Settings{}
 
@@ -26,7 +26,6 @@ func NewSettingsByV6(client *elasticV6.Client) (*Settings, error) {
 		return nil, err
 	}
 
-	var json = jsoniter.ConfigCompatibleWithStandardLibrary
 	err = json.Unmarshal(res.Body, &settings.settingsV6)
 	if err != nil {
 		return nil, err
@@ -47,7 +46,6 @@ func NewSettingsByV7(client *elasticV7.Client) (*Settings, error) {
 		return nil, err
 	}
 
-	var json = jsoniter.ConfigCompatibleWithStandardLibrary
 	err = json.Unmarshal(res.Body, &settings.settingsV7)
 	if err != nil {
 		return nil, err

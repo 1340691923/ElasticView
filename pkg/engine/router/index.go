@@ -2,6 +2,7 @@
 package router
 
 import (
+	"encoding/json"
 	"fmt"
 	. "github.com/1340691923/ElasticView/api"
 	"github.com/1340691923/ElasticView/pkg/core"
@@ -14,7 +15,6 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/compress"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/filesystem"
-	jsoniter "github.com/json-iterator/go"
 	"go.uber.org/zap"
 	"log"
 	"strconv"
@@ -49,7 +49,7 @@ func InitOpenWinBrowser() {
 }
 
 func Init() *App {
-	var json = jsoniter.ConfigCompatibleWithStandardLibrary
+
 	app := New(Config{
 		AppName:     "ElasticView",
 		JSONDecoder: json.Unmarshal,

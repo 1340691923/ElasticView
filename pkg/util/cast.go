@@ -1,7 +1,7 @@
 package util
 
 import (
-	jsoniter "github.com/json-iterator/go"
+	"encoding/json"
 	"strconv"
 	"time"
 )
@@ -53,52 +53,52 @@ func ToExcelData(any interface{}) string {
 		}
 		return value.String()
 	case []int:
-		var json = jsoniter.ConfigCompatibleWithStandardLibrary
-		b,_:=json.Marshal(value)
+
+		b, _ := json.Marshal(value)
 		return string(b)
 	case []int32:
-		var json = jsoniter.ConfigCompatibleWithStandardLibrary
-		b,_:=json.Marshal(value)
+
+		b, _ := json.Marshal(value)
 		return string(b)
 	case []int16:
-		var json = jsoniter.ConfigCompatibleWithStandardLibrary
-		b,_:=json.Marshal(value)
+
+		b, _ := json.Marshal(value)
 		return string(b)
 	case []int8:
-		var json = jsoniter.ConfigCompatibleWithStandardLibrary
-		b,_:=json.Marshal(value)
+
+		b, _ := json.Marshal(value)
 		return string(b)
 	case []int64:
-		var json = jsoniter.ConfigCompatibleWithStandardLibrary
-		b,_:=json.Marshal(value)
+
+		b, _ := json.Marshal(value)
 		return string(b)
 	case []float64:
-		var json = jsoniter.ConfigCompatibleWithStandardLibrary
-		b,_:=json.Marshal(value)
+
+		b, _ := json.Marshal(value)
 		return string(b)
 	case []float32:
-		var json = jsoniter.ConfigCompatibleWithStandardLibrary
-		b,_:=json.Marshal(value)
+
+		b, _ := json.Marshal(value)
 		return string(b)
 	case []uint64:
-		var json = jsoniter.ConfigCompatibleWithStandardLibrary
-		b,_:=json.Marshal(value)
+
+		b, _ := json.Marshal(value)
 		return string(b)
 	case []uint16:
-		var json = jsoniter.ConfigCompatibleWithStandardLibrary
-		b,_:=json.Marshal(value)
+
+		b, _ := json.Marshal(value)
 		return string(b)
 	case []string:
-		var json = jsoniter.ConfigCompatibleWithStandardLibrary
-		b,_:=json.Marshal(value)
+
+		b, _ := json.Marshal(value)
 		return string(b)
 	case []interface{}:
-		var json = jsoniter.ConfigCompatibleWithStandardLibrary
-		b,_:=json.Marshal(value)
+
+		b, _ := json.Marshal(value)
 		return string(b)
 	case map[string]interface{}:
-		var json = jsoniter.ConfigCompatibleWithStandardLibrary
-		b,_:=json.Marshal(value)
+
+		b, _ := json.Marshal(value)
 		return string(b)
 	default:
 		return ""

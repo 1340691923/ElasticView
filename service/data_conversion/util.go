@@ -38,7 +38,7 @@ func queryRows(table2EsMap map[string]string, db *sqlx.DB, sqlStr string, val ..
 	}
 
 	for index := range columns {
-		if _,ok:=table2EsMap[columns[index]];ok{
+		if _, ok := table2EsMap[columns[index]]; ok {
 			columns[index] = table2EsMap[columns[index]]
 		}
 	}
@@ -144,19 +144,19 @@ func transferEsV6(
 				return
 			case data := <-InputC:
 				var err error
-				if transferReq.EsDocID != ""{
+				if transferReq.EsDocID != "" {
 
 					var esDocId string
 
-					if _,ok:=table2EsColMap[transferReq.EsDocID];ok{
+					if _, ok := table2EsColMap[transferReq.EsDocID]; ok {
 						esDocId = strval(data[table2EsColMap[transferReq.EsDocID]])
-					}else{
+					} else {
 						esDocId = strval(data[transferReq.EsDocID])
-						delete(data,transferReq.EsDocID)
+						delete(data, transferReq.EsDocID)
 					}
 
 					err = realTimeWarehousing.Add(elasticV6.NewBulkIndexRequest().Index(transferReq.IndexName).Type(transferReq.TypeName).Doc(data).Id(esDocId))
-				}else{
+				} else {
 					err = realTimeWarehousing.Add(elasticV6.NewBulkIndexRequest().Index(transferReq.IndexName).Type(transferReq.TypeName).Doc(data))
 				}
 				if err != nil {
@@ -258,18 +258,18 @@ func transferEsV7(
 			case data := <-InputC:
 				var err error
 
-				if transferReq.EsDocID != ""{
+				if transferReq.EsDocID != "" {
 					var esDocId string
 
-					if _,ok:=table2EsColMap[transferReq.EsDocID];ok{
+					if _, ok := table2EsColMap[transferReq.EsDocID]; ok {
 						esDocId = strval(data[table2EsColMap[transferReq.EsDocID]])
-					}else{
+					} else {
 						esDocId = strval(data[transferReq.EsDocID])
-						delete(data,transferReq.EsDocID)
+						delete(data, transferReq.EsDocID)
 					}
 
 					err = realTimeWarehousing.Add(elasticV7.NewBulkIndexRequest().Index(transferReq.IndexName).Doc(data).Id(esDocId))
-				}else{
+				} else {
 					err = realTimeWarehousing.Add(elasticV7.NewBulkIndexRequest().Index(transferReq.IndexName).Doc(data))
 				}
 				if err != nil {

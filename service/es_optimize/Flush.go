@@ -10,6 +10,7 @@ import (
 type Flush struct {
 	indexName []string
 }
+
 func (this *Flush) CleanIndexName() {
 	this.indexName = []string{}
 }

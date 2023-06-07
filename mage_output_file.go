@@ -1,3 +1,4 @@
+//go:build ignore
 // +build ignore
 
 package main
@@ -6,6 +7,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	build_mageimport "github.com/1340691923/ElasticView/pkg/build"
 	"io/ioutil"
 	"log"
 	"os"
@@ -15,25 +17,23 @@ import (
 	"strings"
 	"text/tabwriter"
 	"time"
-	build_mageimport "github.com/1340691923/ElasticView/pkg/build"
-	
 )
 
 func main() {
 	// Use local types and functions in order to avoid name conflicts with additional magefiles.
 	type arguments struct {
-		Verbose       bool          // print out log statements
-		List          bool          // print out a list of targets
-		Help          bool          // print out help for a specific target
-		Timeout       time.Duration // set a timeout to running the targets
-		Args          []string      // args contain the non-flag command-line arguments
+		Verbose bool          // print out log statements
+		List    bool          // print out a list of targets
+		Help    bool          // print out help for a specific target
+		Timeout time.Duration // set a timeout to running the targets
+		Args    []string      // args contain the non-flag command-line arguments
 	}
 
 	parseBool := func(env string) bool {
 		val := os.Getenv(env)
 		if val == "" {
 			return false
-		}		
+		}
 		b, err := strconv.ParseBool(val)
 		if err != nil {
 			log.Printf("warning: environment variable %s is not a valid bool value: %v", env, val)
@@ -46,7 +46,7 @@ func main() {
 		val := os.Getenv(env)
 		if val == "" {
 			return 0
-		}		
+		}
 		d, err := time.ParseDuration(val)
 		if err != nil {
 			log.Printf("warning: environment variable %s is not a valid duration value: %v", env, val)
@@ -87,7 +87,7 @@ Options:
 		fs.Usage()
 		return
 	}
-		
+
 	// color is ANSI color type
 	type color int
 
@@ -132,12 +132,12 @@ Options:
 		brightcyan:    "\u001b[36;1m",
 		brightwhite:   "\u001b[37;1m",
 	}
-	
+
 	const _color_name = "blackredgreenyellowbluemagentacyanwhitebrightblackbrightredbrightgreenbrightyellowbrightbluebrightmagentabrightcyanbrightwhite"
 
 	var _color_index = [...]uint8{0, 5, 8, 13, 19, 23, 30, 34, 39, 50, 59, 70, 82, 92, 105, 115, 126}
 
-	colorToLowerString := func (i color) string {
+	colorToLowerString := func(i color) string {
 		if i < 0 || i >= color(len(_color_index)-1) {
 			return "color(" + strconv.FormatInt(int64(i), 10) + ")"
 		}
@@ -166,7 +166,7 @@ Options:
 	// 	TERM=vt100
 	// 	TERM=cygwin
 	// 	TERM=xterm-mono
-    var noColorTerms = map[string]bool{
+	var noColorTerms = map[string]bool{
 		"vt100":      false,
 		"cygwin":     false,
 		"xterm-mono": false,
@@ -216,16 +216,16 @@ Options:
 	}
 
 	list := func() error {
-		
+
 		targets := map[string]string{
-			"build:backend": "build a production build for the current platform",
-			"build:darwin": "builds the back-end plugin for OSX.",
+			"build:backend":     "build a production build for the current platform",
+			"build:darwin":      "builds the back-end plugin for OSX.",
 			"build:darwinARM64": "builds the back-end plugin for OSX on ARM (M1).",
-			"build:linux": "builds the back-end plugin for Linux.",
-			"build:linuxARM": "builds the back-end plugin for Linux on ARM.",
-			"build:linuxARM64": "builds the back-end plugin for Linux on ARM64.",
-			"build:windows": "builds the back-end plugin for Windows.",
-			"buildAll*": "builds production executables for all supported platforms.",
+			"build:linux":       "builds the back-end plugin for Linux.",
+			"build:linuxARM":    "builds the back-end plugin for Linux on ARM.",
+			"build:linuxARM64":  "builds the back-end plugin for Linux on ARM64.",
+			"build:windows":     "builds the back-end plugin for Windows.",
+			"buildAll*":         "builds production executables for all supported platforms.",
 		}
 
 		keys := make([]string, 0, len(targets))
@@ -240,9 +240,9 @@ Options:
 			fmt.Fprintf(w, "  %v\t%v\n", printName(name), targets[name])
 		}
 		err := w.Flush()
-			if err == nil {
-				fmt.Println("\n* default target")
-			}
+		if err == nil {
+			fmt.Println("\n* default target")
+		}
 		return err
 	}
 
@@ -330,89 +330,89 @@ Options:
 			os.Exit(2)
 		}
 		switch strings.ToLower(args.Args[0]) {
-			case "build:backend":
-				fmt.Println("Backend build a production build for the current platform")
-				fmt.Println()
-				
-				fmt.Print("Usage:\n\n\tmage build:backend\n\n")
-				var aliases []string
-				if len(aliases) > 0 {
-					fmt.Printf("Aliases: %s\n\n", strings.Join(aliases, ", "))
-				}
-				return
-				case "build:darwin":
-				fmt.Println("Darwin builds the back-end plugin for OSX.")
-				fmt.Println()
-				
-				fmt.Print("Usage:\n\n\tmage build:darwin\n\n")
-				var aliases []string
-				if len(aliases) > 0 {
-					fmt.Printf("Aliases: %s\n\n", strings.Join(aliases, ", "))
-				}
-				return
-				case "build:darwinarm64":
-				fmt.Println("DarwinARM64 builds the back-end plugin for OSX on ARM (M1).")
-				fmt.Println()
-				
-				fmt.Print("Usage:\n\n\tmage build:darwinarm64\n\n")
-				var aliases []string
-				if len(aliases) > 0 {
-					fmt.Printf("Aliases: %s\n\n", strings.Join(aliases, ", "))
-				}
-				return
-				case "build:linux":
-				fmt.Println("Linux builds the back-end plugin for Linux.")
-				fmt.Println()
-				
-				fmt.Print("Usage:\n\n\tmage build:linux\n\n")
-				var aliases []string
-				if len(aliases) > 0 {
-					fmt.Printf("Aliases: %s\n\n", strings.Join(aliases, ", "))
-				}
-				return
-				case "build:linuxarm":
-				fmt.Println("LinuxARM builds the back-end plugin for Linux on ARM.")
-				fmt.Println()
-				
-				fmt.Print("Usage:\n\n\tmage build:linuxarm\n\n")
-				var aliases []string
-				if len(aliases) > 0 {
-					fmt.Printf("Aliases: %s\n\n", strings.Join(aliases, ", "))
-				}
-				return
-				case "build:linuxarm64":
-				fmt.Println("LinuxARM64 builds the back-end plugin for Linux on ARM64.")
-				fmt.Println()
-				
-				fmt.Print("Usage:\n\n\tmage build:linuxarm64\n\n")
-				var aliases []string
-				if len(aliases) > 0 {
-					fmt.Printf("Aliases: %s\n\n", strings.Join(aliases, ", "))
-				}
-				return
-				case "build:windows":
-				fmt.Println("Windows builds the back-end plugin for Windows.")
-				fmt.Println()
-				
-				fmt.Print("Usage:\n\n\tmage build:windows\n\n")
-				var aliases []string
-				if len(aliases) > 0 {
-					fmt.Printf("Aliases: %s\n\n", strings.Join(aliases, ", "))
-				}
-				return
-				case "buildall":
-				fmt.Println("BuildAll builds production executables for all supported platforms.")
-				fmt.Println()
-				
-				fmt.Print("Usage:\n\n\tmage buildall\n\n")
-				var aliases []string
-				if len(aliases) > 0 {
-					fmt.Printf("Aliases: %s\n\n", strings.Join(aliases, ", "))
-				}
-				return
-				default:
-				logger.Printf("Unknown target: %q\n", args.Args[0])
-				os.Exit(2)
+		case "build:backend":
+			fmt.Println("Backend build a production build for the current platform")
+			fmt.Println()
+
+			fmt.Print("Usage:\n\n\tmage build:backend\n\n")
+			var aliases []string
+			if len(aliases) > 0 {
+				fmt.Printf("Aliases: %s\n\n", strings.Join(aliases, ", "))
+			}
+			return
+		case "build:darwin":
+			fmt.Println("Darwin builds the back-end plugin for OSX.")
+			fmt.Println()
+
+			fmt.Print("Usage:\n\n\tmage build:darwin\n\n")
+			var aliases []string
+			if len(aliases) > 0 {
+				fmt.Printf("Aliases: %s\n\n", strings.Join(aliases, ", "))
+			}
+			return
+		case "build:darwinarm64":
+			fmt.Println("DarwinARM64 builds the back-end plugin for OSX on ARM (M1).")
+			fmt.Println()
+
+			fmt.Print("Usage:\n\n\tmage build:darwinarm64\n\n")
+			var aliases []string
+			if len(aliases) > 0 {
+				fmt.Printf("Aliases: %s\n\n", strings.Join(aliases, ", "))
+			}
+			return
+		case "build:linux":
+			fmt.Println("Linux builds the back-end plugin for Linux.")
+			fmt.Println()
+
+			fmt.Print("Usage:\n\n\tmage build:linux\n\n")
+			var aliases []string
+			if len(aliases) > 0 {
+				fmt.Printf("Aliases: %s\n\n", strings.Join(aliases, ", "))
+			}
+			return
+		case "build:linuxarm":
+			fmt.Println("LinuxARM builds the back-end plugin for Linux on ARM.")
+			fmt.Println()
+
+			fmt.Print("Usage:\n\n\tmage build:linuxarm\n\n")
+			var aliases []string
+			if len(aliases) > 0 {
+				fmt.Printf("Aliases: %s\n\n", strings.Join(aliases, ", "))
+			}
+			return
+		case "build:linuxarm64":
+			fmt.Println("LinuxARM64 builds the back-end plugin for Linux on ARM64.")
+			fmt.Println()
+
+			fmt.Print("Usage:\n\n\tmage build:linuxarm64\n\n")
+			var aliases []string
+			if len(aliases) > 0 {
+				fmt.Printf("Aliases: %s\n\n", strings.Join(aliases, ", "))
+			}
+			return
+		case "build:windows":
+			fmt.Println("Windows builds the back-end plugin for Windows.")
+			fmt.Println()
+
+			fmt.Print("Usage:\n\n\tmage build:windows\n\n")
+			var aliases []string
+			if len(aliases) > 0 {
+				fmt.Printf("Aliases: %s\n\n", strings.Join(aliases, ", "))
+			}
+			return
+		case "buildall":
+			fmt.Println("BuildAll builds production executables for all supported platforms.")
+			fmt.Println()
+
+			fmt.Print("Usage:\n\n\tmage buildall\n\n")
+			var aliases []string
+			if len(aliases) > 0 {
+				fmt.Printf("Aliases: %s\n\n", strings.Join(aliases, ", "))
+			}
+			return
+		default:
+			logger.Printf("Unknown target: %q\n", args.Args[0])
+			os.Exit(2)
 		}
 	}
 	if len(args.Args) < 1 {
@@ -424,12 +424,12 @@ Options:
 			}
 			return
 		}
-		
-				wrapFn := func(ctx context.Context) error {
-					build_mageimport.BuildAll()
-					return nil
-				}
-				ret := runTarget(wrapFn)
+
+		wrapFn := func(ctx context.Context) error {
+			build_mageimport.BuildAll()
+			return nil
+		}
+		ret := runTarget(wrapFn)
 		handleError(logger, ret)
 		return
 	}
@@ -439,158 +439,151 @@ Options:
 
 		// resolve aliases
 		switch strings.ToLower(target) {
-		
+
 		}
 
 		switch strings.ToLower(target) {
-		
-		
-		
-			
-				case "build:backend":
-					expected := x + 0
-					if expected > len(args.Args) {
-						// note that expected and args at this point include the arg for the target itself
-						// so we subtract 1 here to show the number of args without the target.
-						logger.Printf("not enough arguments for target \"Build:Backend\", expected %v, got %v\n", expected-1, len(args.Args)-1)
-						os.Exit(2)
-					}
-					if args.Verbose {
-						logger.Println("Running target:", "Build:Backend")
-					}
-					
-				wrapFn := func(ctx context.Context) error {
-					return build_mageimport.Build{}.Backend()
-				}
-				ret := runTarget(wrapFn)
-					handleError(logger, ret)
-				case "build:darwin":
-					expected := x + 0
-					if expected > len(args.Args) {
-						// note that expected and args at this point include the arg for the target itself
-						// so we subtract 1 here to show the number of args without the target.
-						logger.Printf("not enough arguments for target \"Build:Darwin\", expected %v, got %v\n", expected-1, len(args.Args)-1)
-						os.Exit(2)
-					}
-					if args.Verbose {
-						logger.Println("Running target:", "Build:Darwin")
-					}
-					
-				wrapFn := func(ctx context.Context) error {
-					return build_mageimport.Build{}.Darwin()
-				}
-				ret := runTarget(wrapFn)
-					handleError(logger, ret)
-				case "build:darwinarm64":
-					expected := x + 0
-					if expected > len(args.Args) {
-						// note that expected and args at this point include the arg for the target itself
-						// so we subtract 1 here to show the number of args without the target.
-						logger.Printf("not enough arguments for target \"Build:DarwinARM64\", expected %v, got %v\n", expected-1, len(args.Args)-1)
-						os.Exit(2)
-					}
-					if args.Verbose {
-						logger.Println("Running target:", "Build:DarwinARM64")
-					}
-					
-				wrapFn := func(ctx context.Context) error {
-					return build_mageimport.Build{}.DarwinARM64()
-				}
-				ret := runTarget(wrapFn)
-					handleError(logger, ret)
-				case "build:linux":
-					expected := x + 0
-					if expected > len(args.Args) {
-						// note that expected and args at this point include the arg for the target itself
-						// so we subtract 1 here to show the number of args without the target.
-						logger.Printf("not enough arguments for target \"Build:Linux\", expected %v, got %v\n", expected-1, len(args.Args)-1)
-						os.Exit(2)
-					}
-					if args.Verbose {
-						logger.Println("Running target:", "Build:Linux")
-					}
-					
-				wrapFn := func(ctx context.Context) error {
-					return build_mageimport.Build{}.Linux()
-				}
-				ret := runTarget(wrapFn)
-					handleError(logger, ret)
-				case "build:linuxarm":
-					expected := x + 0
-					if expected > len(args.Args) {
-						// note that expected and args at this point include the arg for the target itself
-						// so we subtract 1 here to show the number of args without the target.
-						logger.Printf("not enough arguments for target \"Build:LinuxARM\", expected %v, got %v\n", expected-1, len(args.Args)-1)
-						os.Exit(2)
-					}
-					if args.Verbose {
-						logger.Println("Running target:", "Build:LinuxARM")
-					}
-					
-				wrapFn := func(ctx context.Context) error {
-					return build_mageimport.Build{}.LinuxARM()
-				}
-				ret := runTarget(wrapFn)
-					handleError(logger, ret)
-				case "build:linuxarm64":
-					expected := x + 0
-					if expected > len(args.Args) {
-						// note that expected and args at this point include the arg for the target itself
-						// so we subtract 1 here to show the number of args without the target.
-						logger.Printf("not enough arguments for target \"Build:LinuxARM64\", expected %v, got %v\n", expected-1, len(args.Args)-1)
-						os.Exit(2)
-					}
-					if args.Verbose {
-						logger.Println("Running target:", "Build:LinuxARM64")
-					}
-					
-				wrapFn := func(ctx context.Context) error {
-					return build_mageimport.Build{}.LinuxARM64()
-				}
-				ret := runTarget(wrapFn)
-					handleError(logger, ret)
-				case "build:windows":
-					expected := x + 0
-					if expected > len(args.Args) {
-						// note that expected and args at this point include the arg for the target itself
-						// so we subtract 1 here to show the number of args without the target.
-						logger.Printf("not enough arguments for target \"Build:Windows\", expected %v, got %v\n", expected-1, len(args.Args)-1)
-						os.Exit(2)
-					}
-					if args.Verbose {
-						logger.Println("Running target:", "Build:Windows")
-					}
-					
-				wrapFn := func(ctx context.Context) error {
-					return build_mageimport.Build{}.Windows()
-				}
-				ret := runTarget(wrapFn)
-					handleError(logger, ret)
-				case "buildall":
-					expected := x + 0
-					if expected > len(args.Args) {
-						// note that expected and args at this point include the arg for the target itself
-						// so we subtract 1 here to show the number of args without the target.
-						logger.Printf("not enough arguments for target \"BuildAll\", expected %v, got %v\n", expected-1, len(args.Args)-1)
-						os.Exit(2)
-					}
-					if args.Verbose {
-						logger.Println("Running target:", "BuildAll")
-					}
-					
-				wrapFn := func(ctx context.Context) error {
-					build_mageimport.BuildAll()
-					return nil
-				}
-				ret := runTarget(wrapFn)
-					handleError(logger, ret)
+
+		case "build:backend":
+			expected := x + 0
+			if expected > len(args.Args) {
+				// note that expected and args at this point include the arg for the target itself
+				// so we subtract 1 here to show the number of args without the target.
+				logger.Printf("not enough arguments for target \"Build:Backend\", expected %v, got %v\n", expected-1, len(args.Args)-1)
+				os.Exit(2)
+			}
+			if args.Verbose {
+				logger.Println("Running target:", "Build:Backend")
+			}
+
+			wrapFn := func(ctx context.Context) error {
+				return build_mageimport.Build{}.Backend()
+			}
+			ret := runTarget(wrapFn)
+			handleError(logger, ret)
+		case "build:darwin":
+			expected := x + 0
+			if expected > len(args.Args) {
+				// note that expected and args at this point include the arg for the target itself
+				// so we subtract 1 here to show the number of args without the target.
+				logger.Printf("not enough arguments for target \"Build:Darwin\", expected %v, got %v\n", expected-1, len(args.Args)-1)
+				os.Exit(2)
+			}
+			if args.Verbose {
+				logger.Println("Running target:", "Build:Darwin")
+			}
+
+			wrapFn := func(ctx context.Context) error {
+				return build_mageimport.Build{}.Darwin()
+			}
+			ret := runTarget(wrapFn)
+			handleError(logger, ret)
+		case "build:darwinarm64":
+			expected := x + 0
+			if expected > len(args.Args) {
+				// note that expected and args at this point include the arg for the target itself
+				// so we subtract 1 here to show the number of args without the target.
+				logger.Printf("not enough arguments for target \"Build:DarwinARM64\", expected %v, got %v\n", expected-1, len(args.Args)-1)
+				os.Exit(2)
+			}
+			if args.Verbose {
+				logger.Println("Running target:", "Build:DarwinARM64")
+			}
+
+			wrapFn := func(ctx context.Context) error {
+				return build_mageimport.Build{}.DarwinARM64()
+			}
+			ret := runTarget(wrapFn)
+			handleError(logger, ret)
+		case "build:linux":
+			expected := x + 0
+			if expected > len(args.Args) {
+				// note that expected and args at this point include the arg for the target itself
+				// so we subtract 1 here to show the number of args without the target.
+				logger.Printf("not enough arguments for target \"Build:Linux\", expected %v, got %v\n", expected-1, len(args.Args)-1)
+				os.Exit(2)
+			}
+			if args.Verbose {
+				logger.Println("Running target:", "Build:Linux")
+			}
+
+			wrapFn := func(ctx context.Context) error {
+				return build_mageimport.Build{}.Linux()
+			}
+			ret := runTarget(wrapFn)
+			handleError(logger, ret)
+		case "build:linuxarm":
+			expected := x + 0
+			if expected > len(args.Args) {
+				// note that expected and args at this point include the arg for the target itself
+				// so we subtract 1 here to show the number of args without the target.
+				logger.Printf("not enough arguments for target \"Build:LinuxARM\", expected %v, got %v\n", expected-1, len(args.Args)-1)
+				os.Exit(2)
+			}
+			if args.Verbose {
+				logger.Println("Running target:", "Build:LinuxARM")
+			}
+
+			wrapFn := func(ctx context.Context) error {
+				return build_mageimport.Build{}.LinuxARM()
+			}
+			ret := runTarget(wrapFn)
+			handleError(logger, ret)
+		case "build:linuxarm64":
+			expected := x + 0
+			if expected > len(args.Args) {
+				// note that expected and args at this point include the arg for the target itself
+				// so we subtract 1 here to show the number of args without the target.
+				logger.Printf("not enough arguments for target \"Build:LinuxARM64\", expected %v, got %v\n", expected-1, len(args.Args)-1)
+				os.Exit(2)
+			}
+			if args.Verbose {
+				logger.Println("Running target:", "Build:LinuxARM64")
+			}
+
+			wrapFn := func(ctx context.Context) error {
+				return build_mageimport.Build{}.LinuxARM64()
+			}
+			ret := runTarget(wrapFn)
+			handleError(logger, ret)
+		case "build:windows":
+			expected := x + 0
+			if expected > len(args.Args) {
+				// note that expected and args at this point include the arg for the target itself
+				// so we subtract 1 here to show the number of args without the target.
+				logger.Printf("not enough arguments for target \"Build:Windows\", expected %v, got %v\n", expected-1, len(args.Args)-1)
+				os.Exit(2)
+			}
+			if args.Verbose {
+				logger.Println("Running target:", "Build:Windows")
+			}
+
+			wrapFn := func(ctx context.Context) error {
+				return build_mageimport.Build{}.Windows()
+			}
+			ret := runTarget(wrapFn)
+			handleError(logger, ret)
+		case "buildall":
+			expected := x + 0
+			if expected > len(args.Args) {
+				// note that expected and args at this point include the arg for the target itself
+				// so we subtract 1 here to show the number of args without the target.
+				logger.Printf("not enough arguments for target \"BuildAll\", expected %v, got %v\n", expected-1, len(args.Args)-1)
+				os.Exit(2)
+			}
+			if args.Verbose {
+				logger.Println("Running target:", "BuildAll")
+			}
+
+			wrapFn := func(ctx context.Context) error {
+				build_mageimport.BuildAll()
+				return nil
+			}
+			ret := runTarget(wrapFn)
+			handleError(logger, ret)
 		default:
 			logger.Printf("Unknown target specified: %q\n", target)
 			os.Exit(2)
 		}
 	}
 }
-
-
-
-

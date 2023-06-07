@@ -1,4 +1,5 @@
-//+build mage
+//go:build mage
+// +build mage
 
 package main
 
@@ -7,7 +8,7 @@ import (
 	"github.com/1340691923/ElasticView/pkg/build"
 )
 
-func init()  {
+func init() {
 	build.Version = "1.9.0"
 }
 

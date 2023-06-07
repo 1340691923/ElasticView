@@ -46,7 +46,7 @@ func buildBackend(cfg Config) error {
 
 	outputPath := cfg.OutputBinaryPath
 	if outputPath == "" {
-		outputPath = fmt.Sprintf("resources/dist/%s",Version)
+		outputPath = fmt.Sprintf("resources/dist/%s", Version)
 	}
 	args := []string{
 		"build", "-o", filepath.Join(outputPath, exeName),
@@ -68,9 +68,9 @@ func buildBackend(cfg Config) error {
 
 func newBuildConfig(os string, arch string) Config {
 	return Config{
-		OS:          os,
-		Arch:        arch,
-		Env:         map[string]string{},
+		OS:   os,
+		Arch: arch,
+		Env:  map[string]string{},
 	}
 }
 

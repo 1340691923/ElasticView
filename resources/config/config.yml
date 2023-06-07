@@ -3,9 +3,9 @@ log:
   logDir: "logs"         # 日志保留文件夹
 port: 8090              # 启动端口
 dbType: "sqlite3"       # 数据保留类型 分为 sqlite3 和 mysql
-sqlite:                 # dbType为sqlite3时填 dbPath为数据保存文件地址
+sqlite: # dbType为sqlite3时填 dbPath为数据保存文件地址
   dbPath: "es_view.db"
-mysql:                  # dbType为mysql时填
+mysql: # dbType为mysql时填
   username: "root"
   pwd: "123456"
   ip: "127.0.01"

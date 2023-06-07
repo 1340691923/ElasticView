@@ -1,4 +1,4 @@
-//ES引擎层
+// ES引擎层
 package escache
 
 import (

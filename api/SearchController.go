@@ -33,7 +33,7 @@ func (this SearchController) SetIndexConfig(ctx *Ctx) error {
 		return this.Error(ctx, err)
 	}
 	m := model.SearchConfig{}
-	
+
 	_, err = db.Sqlx.Exec("insert into "+m.TableName()+" (index_name, remark, es_connect) values   (?,?,?) "+
 		"  on duplicate key update remark = ?", req.IndexName, req.Remark, req.EsConnectID, req.Remark)
 

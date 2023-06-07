@@ -36,8 +36,8 @@ func InMap(maps map[string]int, column string) (ok bool) {
 	return
 }
 
-//替换string与byte转换时性能损耗的代码  ！！！ 只可用于不可修改字符串变量
-func Str2bytes(s string) (b []byte)  {
+// 替换string与byte转换时性能损耗的代码  ！！！ 只可用于不可修改字符串变量
+func Str2bytes(s string) (b []byte) {
 	/* #nosec G103 */
 	bh := (*reflect.SliceHeader)(unsafe.Pointer(&b))
 	/* #nosec G103 */

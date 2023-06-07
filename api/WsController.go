@@ -5,7 +5,7 @@ import (
 	"github.com/gofiber/websocket/v2"
 )
 
-//长链接
+// 长链接
 func Ws(c *websocket.Conn) {
 	ws.Ws(c)
 }

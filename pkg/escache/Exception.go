@@ -2,7 +2,7 @@ package escache
 
 import "errors"
 
-//默认异常
+// 默认异常
 var ReqParmasValid = errors.New("请求参数无效")
 
 const (

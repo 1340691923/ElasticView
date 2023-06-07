@@ -1,4 +1,4 @@
-//GM用户层
+// GM用户层
 package gm_user
 
 import (

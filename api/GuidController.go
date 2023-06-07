@@ -42,7 +42,7 @@ func (this GuidController) Finish(ctx *Ctx) error {
 	return this.Success(ctx, response.OperateSuccess, nil)
 }
 
-//是否完成新手引导
+// 是否完成新手引导
 func (this GuidController) IsFinish(ctx *Ctx) error {
 	c, err := jwt.ParseToken(ctx.Get("X-Token"))
 	if err != nil {

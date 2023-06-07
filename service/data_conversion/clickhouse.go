@@ -21,7 +21,7 @@ type Clickhouse struct {
 }
 
 func (this *Clickhouse) Transfer(id int, transferReq *request.TransferReq) (err error) {
-	var page  = 1
+	var page = 1
 
 	ctx, cancel := context.WithCancel(context.Background())
 

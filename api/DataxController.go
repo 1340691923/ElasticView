@@ -1,6 +1,7 @@
 package api
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/1340691923/ElasticView/model"
@@ -11,7 +12,6 @@ import (
 	"github.com/1340691923/ElasticView/pkg/util"
 	"github.com/1340691923/ElasticView/service/data_conversion"
 	"github.com/gofiber/fiber/v2"
-	jsoniter "github.com/json-iterator/go"
 	"time"
 )
 
@@ -278,14 +278,14 @@ func (this DataxController) Transfer(ctx *fiber.Ctx) error {
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	var json = jsoniter.ConfigCompatibleWithStandardLibrary
-	formData, _ := json.MarshalToString(reqData)
+
+	formData, _ := json.Marshal(reqData)
 	now := time.Now().Format(util.TimeFormat)
 
 	rlt, err := db.SqlBuilder.
 		Insert("datax_transfer_list").
 		Columns("form_data", "remark", "table_name", "index_name", "error_msg", "status", "updated", "created", "crontab_spec", "es_connect").
-		Values(formData, reqData.Remark, reqData.SelectTable, reqData.IndexName, "无", "正在运行中...", now, now, reqData.CrontabSpec, reqData.EsConnect).RunWith(db.Sqlx).Exec()
+		Values(string(formData), reqData.Remark, reqData.SelectTable, reqData.IndexName, "无", "正在运行中...", now, now, reqData.CrontabSpec, reqData.EsConnect).RunWith(db.Sqlx).Exec()
 	if err != nil {
 		return this.Error(ctx, err)
 	}

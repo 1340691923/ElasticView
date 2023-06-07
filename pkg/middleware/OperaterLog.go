@@ -2,12 +2,12 @@
 package middleware
 
 import (
+	"encoding/json"
 	"github.com/1340691923/ElasticView/model"
 	"github.com/1340691923/ElasticView/pkg/engine/logs"
 	"github.com/1340691923/ElasticView/pkg/jwt"
 	"github.com/1340691923/ElasticView/pkg/util"
 	fiber "github.com/gofiber/fiber/v2"
-	jsoniter "github.com/json-iterator/go"
 )
 
 func OperaterLog(ctx *fiber.Ctx) error {
@@ -31,18 +31,17 @@ func OperaterLog(ctx *fiber.Ctx) error {
 	if err != nil {
 		logs.Logger.Sugar().Errorf("ctx.QueryParser err:%s", err.Error())
 	}
-	var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
-	parmas, _ := json.MarshalToString(parmasMap)
-	body, _ := json.MarshalToString(bodyMap)
+	parmas, _ := json.Marshal(parmasMap)
+	body, _ := json.Marshal(bodyMap)
 
 	gmOperaterLog := model.GmOperaterLog{
 		OperaterName:   claims.Username,
 		OperaterId:     int64(claims.ID),
 		OperaterAction: ctx.Path(),
 		Method:         ctx.Method(),
-		Parmas:         parmas,
-		Body:           body,
+		Parmas:         string(parmas),
+		Body:           string(body),
 		OperaterRoleId: int(claims.RoleId),
 	}
 

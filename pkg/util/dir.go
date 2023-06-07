@@ -39,10 +39,8 @@ func GetCurrentDirectory() string {
 	return strings.Replace(dir, "\\", "/", -1)
 }
 
-
-
 func DirCopy(src string, dest string) error {
-	log.Println(src,dest)
+	log.Println(src, dest)
 	// 遍历原文件夹内部所有item
 	items, _ := ioutil.ReadDir(src)
 	for _, item := range items {
@@ -81,4 +79,3 @@ func cpoyFile2(src, dest string) error {
 	_, err = io.Copy(dstFp, srcFp)
 	return err
 }
-

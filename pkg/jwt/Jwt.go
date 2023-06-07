@@ -20,7 +20,7 @@ type Claims struct {
 	jwt.StandardClaims
 }
 
-//生成token
+// 生成token
 func GenerateToken(gmUser model.GmUserModel) (string, error) {
 	nowTime := time.Now()
 	expireTime := nowTime.Add(24 * time.Hour) //token过期时间24小时
@@ -46,7 +46,7 @@ func GenerateToken(gmUser model.GmUserModel) (string, error) {
 	return token, err
 }
 
-//解析token
+// 解析token
 func ParseToken(token string) (*Claims, error) {
 	tokenClaims, err := jwt.ParseWithClaims(token, &Claims{}, func(token *jwt.Token) (interface{}, error) { //ParseWithClaims   用于解析鉴权的声明，方法内部主要是具体的解码和校验的过程，最终返回*Token
 		return jwtSecret, nil

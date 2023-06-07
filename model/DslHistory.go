@@ -7,8 +7,11 @@ import (
 	"time"
 )
 
-/* http://sql2struct.atotoa.com 根据表结构生成 go结构体
-GmDslHistoryModel DSL历史记录*/
+/*
+	http://sql2struct.atotoa.com 根据表结构生成 go结构体
+
+GmDslHistoryModel DSL历史记录
+*/
 type GmDslHistoryModel struct {
 	ID         int      `gorm:"column:id" json:"id" form:"id" db:"id"`
 	Uid        int      `gorm:"column:uid" json:"uid" form:"uid" db:"uid"`
@@ -22,7 +25,7 @@ type GmDslHistoryModel struct {
 	Limit      int      `json:"limit"`
 }
 
-//表名
+// 表名
 func (this *GmDslHistoryModel) TableName() string {
 	return "gm_dsl_history"
 }

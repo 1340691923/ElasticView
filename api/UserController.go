@@ -13,7 +13,7 @@ import (
 	"strings"
 )
 
-//GM用户控制器
+// GM用户控制器
 type UserController struct {
 	BaseController
 }
@@ -59,7 +59,7 @@ func (this UserController) UserInfo(ctx *Ctx) error {
 	return this.Success(ctx, "登录成功", util.Map{"roles": []string{"admin"}, "introduction": info.Description, "name": info.RoleName, "list": info.RoleList, "avatar": ""})
 }
 
-//退出登录
+// 退出登录
 func (this UserController) LogoutAction(ctx *Ctx) error {
 	token := this.GetToken(ctx)
 	var claims *jwt.Claims
@@ -73,7 +73,7 @@ func (this UserController) LogoutAction(ctx *Ctx) error {
 	return this.Success(ctx, response.LogoutSuccess, nil)
 }
 
-//GM 用户列表
+// GM 用户列表
 func (this UserController) UserListAction(ctx *Ctx) error {
 	var userModel model.GmUserModel
 	list, err := userModel.Select()
@@ -123,7 +123,7 @@ func (this UserController) UserUpdateAction(ctx *Ctx) error {
 	return this.Success(ctx, response.OperateSuccess, nil)
 }
 
-//新增GM用户
+// 新增GM用户
 func (this UserController) UserAddAction(ctx *Ctx) error {
 	var userModel model.GmUserModel
 

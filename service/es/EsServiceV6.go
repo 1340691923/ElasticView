@@ -2,6 +2,7 @@ package es
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/1340691923/ElasticView/model"
@@ -17,7 +18,7 @@ import (
 	"github.com/1340691923/ElasticView/service/es_optimize"
 	"github.com/1340691923/ElasticView/service/es_settings"
 	"github.com/gofiber/fiber/v2"
-	jsoniter "github.com/json-iterator/go"
+
 	elasticV6 "github.com/olivere/elastic"
 	"github.com/olivere/elastic/v7"
 	"net/url"
@@ -177,14 +178,14 @@ func (this EsServiceV6) Cat(ctx *fiber.Ctx, esCat *escache.EsCat) (err error) {
 		data, err = this.esClient.ClusterStats().Human(true).Do(ctx.Context())
 	case "Node":
 		parmas := url.Values{}
-		parmas.Set("h","ip,name,heap.percent,heap.current,heap.max,ram.percent,ram.current,ram.max,node.role,master,cpu,load_1m,load_5m,load_15m,disk.used_percent,disk.used,disk.total")
+		parmas.Set("h", "ip,name,heap.percent,heap.current,heap.max,ram.percent,ram.current,ram.max,node.role,master,cpu,load_1m,load_5m,load_15m,disk.used_percent,disk.used,disk.total")
 		var res *elasticV6.Response
 		res, err = this.esClient.PerformRequest(ctx.Context(), elasticV6.PerformRequestOptions{
 			Method: "GET",
 			Params: parmas,
-			Path: "/_cat/nodes",
+			Path:   "/_cat/nodes",
 		})
-		if err!=nil{
+		if err != nil {
 			return this.Error(ctx, err)
 		}
 		data = res.Body
@@ -219,16 +220,15 @@ func (this EsServiceV6) RunDsl(ctx *fiber.Ctx, esRest *escache.EsRest) (err erro
 		}
 	}
 
+	u, err := url.Parse(esRest.Path)
 
-	u,err:=url.Parse(esRest.Path)
-
-	if err!=nil{
+	if err != nil {
 		return this.Error(ctx, err)
 	}
 
-	path := strings.Split(esRest.Path,"?")[0]
+	path := strings.Split(esRest.Path, "?")[0]
 
-	per :=  elasticV6.PerformRequestOptions{
+	per := elasticV6.PerformRequestOptions{
 		Method: esRest.Method,
 		Path:   path,
 		Body:   esRest.Body,
@@ -284,8 +284,8 @@ func (this EsServiceV6) RecoverCanWrite(ctx *fiber.Ctx) (err error) {
 			},
 		},
 	})
-	if err !=nil{
-		return this.Error(ctx,err)
+	if err != nil {
+		return this.Error(ctx, err)
 	}
 	if res.StatusCode != 200 && res.StatusCode != 201 {
 		return this.Output(ctx, util.Map{
@@ -397,8 +397,8 @@ func (this EsServiceV6) EsIndexGetAlias(ctx *fiber.Ctx, esAliasInfo *escache.EsA
 	}
 
 	aliasRes, err := this.esClient.Aliases().Index(esAliasInfo.IndexName).Do(ctx.Context())
-	if err !=nil{
-		return this.Error(ctx,err)
+	if err != nil {
+		return this.Error(ctx, err)
 	}
 	return this.Success(ctx, response.OperateSuccess, aliasRes.Indices[esAliasInfo.IndexName].Aliases)
 }
@@ -581,7 +581,7 @@ func (this EsServiceV6) Cancel(ctx *fiber.Ctx, cancelTask *escache.CancelTask) (
 	return this.Success(ctx, response.OperateSuccess, res)
 }
 
-func (this EsServiceV6) EsIndexCount(ctx *fiber.Ctx) (err error){
+func (this EsServiceV6) EsIndexCount(ctx *fiber.Ctx) (err error) {
 	catIndicesResponse, err := this.esClient.CatIndices().Human(true).Do(ctx.Context())
 	if err != nil {
 		return this.Error(ctx, err)
@@ -618,7 +618,7 @@ func (this EsServiceV6) SnapshotRepositoryList(ctx *fiber.Ctx, esSnapshotInfo *e
 		Readonly               string `json:"readonly"`
 	}
 	list := []tmp{}
-	var json = jsoniter.ConfigCompatibleWithStandardLibrary
+
 	for name, settings := range res {
 		var t tmp
 		t.Type = settings.Type
@@ -782,70 +782,69 @@ func (this EsServiceV6) CrudGetDSL(ctx *fiber.Ctx, crudFilter *escache.CrudFilte
 	return this.Success(ctx, response.SearchSuccess, util.Map{"list": res})
 }
 
-func (this EsServiceV6) CrudDownload(ctx *fiber.Ctx, filter *escache.CrudFilter) (err error){
+func (this EsServiceV6) CrudDownload(ctx *fiber.Ctx, filter *escache.CrudFilter) (err error) {
 
-	fields,err := this.esClient.GetMapping().Index(filter.IndexName).Do(ctx.Context())
+	fields, err := this.esClient.GetMapping().Index(filter.IndexName).Do(ctx.Context())
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	fieldsArr := []string{"_index","_type","_id"}
-	data,ok := fields[filter.IndexName].(map[string]interface{})
+	fieldsArr := []string{"_index", "_type", "_id"}
+	data, ok := fields[filter.IndexName].(map[string]interface{})
 
-	if !ok{
+	if !ok {
 		return this.Error(ctx, errors.New("该索引没有映射结构"))
 	}
-	mappings,ok := data["mappings"].(map[string]interface{})
-	if !ok{
+	mappings, ok := data["mappings"].(map[string]interface{})
+	if !ok {
 		return this.Error(ctx, errors.New("该索引没有映射结构"))
 	}
 	typeName := ""
 
-	for key := range mappings{
+	for key := range mappings {
 		typeName = key
 	}
 
 	typeObj := mappings[typeName].(map[string]interface{})
 
-	properties,ok := typeObj["properties"].(map[string]interface{})
-	if !ok{
+	properties, ok := typeObj["properties"].(map[string]interface{})
+	if !ok {
 		return this.Error(ctx, errors.New("该索引没有映射结构"))
 	}
 	propertiesArr := []string{}
-	for key := range properties{
+	for key := range properties {
 		propertiesArr = append(propertiesArr, key)
 	}
 	sort.Strings(propertiesArr)
-	fieldsArr = append(fieldsArr,propertiesArr... )
+	fieldsArr = append(fieldsArr, propertiesArr...)
 	q, err := es6_utils.GetWhereSql(filter.Relation)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
 	search := this.esClient.Search(filter.IndexName)
-	res,err := search.Query(q).Sort("_id",false).Size(8000).Do(ctx.Context())
+	res, err := search.Query(q).Sort("_id", false).Size(8000).Do(ctx.Context())
 	if err != nil {
 		return this.Error(ctx, err)
 	}
 
-	lastIdArr := res.Hits.Hits[len(res.Hits.Hits) - 1].Sort
+	lastIdArr := res.Hits.Hits[len(res.Hits.Hits)-1].Sort
 
 	llist := [][]string{}
-	var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
 	flushHitsDataFn := func(hits []*elasticV6.SearchHit) {
-		for _,data := range hits{
+		for _, data := range hits {
 			list := []string{}
-			list = append(list, data.Index,data.Type,data.Id)
+			list = append(list, data.Index, data.Type, data.Id)
 			m := map[string]interface{}{}
 
-			json.Unmarshal(*data.Source,&m)
+			json.Unmarshal(*data.Source, &m)
 
 			for _, field := range fieldsArr {
-				if field == "_index" || field == "_type"|| field == "_id"{
+				if field == "_index" || field == "_type" || field == "_id" {
 					continue
 				}
-				if value,ok:=m[field];ok{
+				if value, ok := m[field]; ok {
 					list = append(list, util.ToExcelData(value))
-				}else{
+				} else {
 					list = append(list, "")
 				}
 			}
@@ -858,21 +857,21 @@ func (this EsServiceV6) CrudDownload(ctx *fiber.Ctx, filter *escache.CrudFilter)
 	haveData := true
 	for haveData {
 		search := this.esClient.Search(filter.IndexName)
-		res,err := search.Query(q).Sort("_id",false).Size(8000).SearchAfter(lastIdArr...).Do(ctx.Context())
-		if err!=nil{
-			return this.Error(ctx,err)
+		res, err := search.Query(q).Sort("_id", false).Size(8000).SearchAfter(lastIdArr...).Do(ctx.Context())
+		if err != nil {
+			return this.Error(ctx, err)
 		}
 		if len(res.Hits.Hits) == 0 {
 			break
 		}
 
-		lastIdArr = res.Hits.Hits[len(res.Hits.Hits) - 1].Sort
+		lastIdArr = res.Hits.Hits[len(res.Hits.Hits)-1].Sort
 		flushHitsDataFn(res.Hits.Hits)
 	}
 
 	return this.DownloadExcel(
 		"test",
 		fieldsArr,
-		llist,ctx)
+		llist, ctx)
 
 }

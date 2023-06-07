@@ -2,6 +2,7 @@ package util
 
 import (
 	"bytes"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/gofiber/fiber/v2"
@@ -14,11 +15,10 @@ import (
 	"strconv"
 	"strings"
 
-	jsoniter "github.com/json-iterator/go"
 	"github.com/valyala/fasthttp"
 )
 
-//获取真实的IP  1.1.1.1, 2.2.2.2, 3.3.3.3
+// 获取真实的IP  1.1.1.1, 2.2.2.2, 3.3.3.3
 func CtxClientIP(ctx *fasthttp.RequestCtx) string {
 	clientIP := string(ctx.Request.Header.Peek("X-Forwarded-For"))
 	if index := strings.IndexByte(clientIP, ','); index >= 0 {
@@ -132,7 +132,7 @@ func GetURLReceiveJSON(URL string, params url.Values, receive interface{}) error
 	if err != nil {
 		return err
 	}
-	var json = jsoniter.ConfigCompatibleWithStandardLibrary
+
 	err = json.Unmarshal(body, receive)
 	if err != nil {
 		return fmt.Errorf("json.Unmarshal failed: %s, %v", body, err)
@@ -145,7 +145,7 @@ func CtxGetURLReceiveJSON(URL string, params url.Values, receive interface{}) er
 	if err != nil {
 		return err
 	}
-	var json = jsoniter.ConfigCompatibleWithStandardLibrary
+
 	err = json.Unmarshal(body, receive)
 	if err != nil {
 		return fmt.Errorf("json.Unmarshal failed: %s, %v", body, err)
@@ -196,7 +196,6 @@ func PostURLReceiveJSON(URL string, params url.Values, receive interface{}) erro
 		return err
 	}
 
-	var json = jsoniter.ConfigCompatibleWithStandardLibrary
 	err = json.Unmarshal(body, receive)
 	if err != nil {
 		return fmt.Errorf("body:%v,err:%v", string(body), err)
@@ -214,7 +213,7 @@ func PostMapReceiveJSON(URL string, maps map[string]string, receive interface{})
 	if err != nil {
 		return err
 	}
-	var json = jsoniter.ConfigCompatibleWithStandardLibrary
+
 	err = json.Unmarshal(body, receive)
 	if err != nil {
 		return fmt.Errorf("body:%v,err:%v", string(body), err)
@@ -224,7 +223,7 @@ func PostMapReceiveJSON(URL string, maps map[string]string, receive interface{})
 
 // PostJSON POST请求 BODY为JSON格式 ContentType=application/json
 func PostJSON(URL string, v interface{}) ([]byte, error) {
-	var json = jsoniter.ConfigCompatibleWithStandardLibrary
+
 	b, err := json.Marshal(v)
 	if err != nil {
 		return nil, err
@@ -240,7 +239,7 @@ func PostJSON(URL string, v interface{}) ([]byte, error) {
 
 // PostJSON POST请求 BODY为JSON格式 ContentType=application/json
 func GetJSON(URL string, v interface{}) ([]byte, error) {
-	var json = jsoniter.ConfigCompatibleWithStandardLibrary
+
 	b, err := json.Marshal(v)
 	if err != nil {
 		return nil, err
@@ -266,7 +265,6 @@ func PostJSONReceiveJSON(URL string, send, receive interface{}) error {
 		return err
 	}
 
-	var json = jsoniter.ConfigCompatibleWithStandardLibrary
 	err = json.Unmarshal(body, receive)
 	if err != nil {
 		return fmt.Errorf("error:%v,body{%s}", err, body)
@@ -277,7 +275,7 @@ func PostJSONReceiveJSON(URL string, send, receive interface{}) error {
 // PostToJSON POST请求 BODY为json格式
 // Deprecated: Please use PostJSON to replace
 func PostToJSON(URL string, v interface{}) ([]byte, error) {
-	var json = jsoniter.ConfigCompatibleWithStandardLibrary
+
 	b, err := json.Marshal(v)
 	if err != nil {
 		return nil, err
@@ -335,7 +333,7 @@ func StringIsEmpty(s ...string) bool {
 
 // WriteJSON 写入json字符串
 func WriteJSON(w io.Writer, v interface{}) (int, error) {
-	var json = jsoniter.ConfigCompatibleWithStandardLibrary
+
 	b, err := json.Marshal(v)
 	if err != nil {
 		return 0, err

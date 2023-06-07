@@ -11,7 +11,7 @@ type EsBackUpController struct {
 	BaseController
 }
 
-//快照仓库列表
+// 快照仓库列表
 func (this EsBackUpController) SnapshotRepositoryListAction(ctx *Ctx) error {
 	esSnapshotInfo := new(escache.EsSnapshotInfo)
 	err := ctx.BodyParser(esSnapshotInfo)
@@ -30,7 +30,7 @@ func (this EsBackUpController) SnapshotRepositoryListAction(ctx *Ctx) error {
 	return esService.SnapshotRepositoryList(ctx, esSnapshotInfo)
 }
 
-//新建快照仓库
+// 新建快照仓库
 func (this EsBackUpController) SnapshotCreateRepositoryAction(ctx *Ctx) error {
 	snapshotCreateRepository := new(escache.SnapshotCreateRepository)
 	err := ctx.BodyParser(snapshotCreateRepository)
@@ -48,7 +48,7 @@ func (this EsBackUpController) SnapshotCreateRepositoryAction(ctx *Ctx) error {
 	return esService.SnapshotCreateRepository(ctx, snapshotCreateRepository)
 }
 
-//清理快照仓库
+// 清理快照仓库
 func (this EsBackUpController) CleanupeRepositoryAction(ctx *Ctx) error {
 	cleanupeRepository := new(escache.CleanupeRepository)
 	err := ctx.BodyParser(cleanupeRepository)
@@ -67,7 +67,7 @@ func (this EsBackUpController) CleanupeRepositoryAction(ctx *Ctx) error {
 	return esService.CleanupeRepository(ctx, cleanupeRepository)
 }
 
-//删除快照仓库
+// 删除快照仓库
 func (this EsBackUpController) SnapshotDeleteRepositoryAction(ctx *Ctx) error {
 	snapshotDeleteRepository := new(escache.SnapshotDeleteRepository)
 	err := ctx.BodyParser(snapshotDeleteRepository)
@@ -87,7 +87,7 @@ func (this EsBackUpController) SnapshotDeleteRepositoryAction(ctx *Ctx) error {
 	return esService.SnapshotDeleteRepository(ctx, snapshotDeleteRepository)
 }
 
-//创建快照
+// 创建快照
 func (this EsBackUpController) CreateSnapshotAction(ctx *Ctx) error {
 	createSnapshot := new(escache.CreateSnapshot)
 	err := ctx.BodyParser(createSnapshot)
@@ -107,7 +107,7 @@ func (this EsBackUpController) CreateSnapshotAction(ctx *Ctx) error {
 	return esService.CreateSnapshot(ctx, createSnapshot)
 }
 
-//快照列表
+// 快照列表
 func (this EsBackUpController) SnapshotListAction(ctx *Ctx) error {
 	snapshotList := new(escache.SnapshotList)
 	err := ctx.BodyParser(snapshotList)
@@ -125,7 +125,7 @@ func (this EsBackUpController) SnapshotListAction(ctx *Ctx) error {
 	return esService.SnapshotList(ctx, snapshotList)
 }
 
-//删除快照
+// 删除快照
 func (this EsBackUpController) SnapshotDeleteAction(ctx *Ctx) error {
 	snapshotDelete := new(escache.SnapshotDelete)
 	err := ctx.BodyParser(snapshotDelete)
@@ -143,7 +143,7 @@ func (this EsBackUpController) SnapshotDeleteAction(ctx *Ctx) error {
 	return esService.SnapshotDelete(ctx, snapshotDelete)
 }
 
-//快照详情
+// 快照详情
 func (this EsBackUpController) SnapshotDetailAction(ctx *Ctx) error {
 	snapshotDetail := new(escache.SnapshotDetail)
 	err := ctx.BodyParser(snapshotDetail)
@@ -181,7 +181,7 @@ func (this EsBackUpController) SnapshotRestoreAction(ctx *Ctx) error {
 	return esService.SnapshotRestore(ctx, snapshotRestore)
 }
 
-//得到快照状态
+// 得到快照状态
 func (this EsBackUpController) SnapshotStatusAction(ctx *Ctx) error {
 	snapshotStatus := new(escache.SnapshotStatus)
 	err := ctx.BodyParser(snapshotStatus)
