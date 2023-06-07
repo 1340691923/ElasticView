@@ -229,6 +229,36 @@ export const asyncRoutes = [
       }
     ]
   },
+  {
+    path: '/search',
+    component: 'layout',
+    redirect: '/search/search',
+    alwaysShow: true,
+    meta: {
+      title: '日志查询',
+      icon: 'el-icon-copy-document'
+    },
+    children: [
+      {
+        path: 'search',
+        component: 'views/search/search',
+        name: 'search',
+        meta: {
+          title: '日志查询',
+          icon: 'el-icon-shopping-bag-2'
+        }
+      },
+      {
+        path: 'config',
+        component: 'views/search/config',
+        name: 'config',
+        meta: {
+          title: '配置',
+          icon: 'el-icon-shopping-bag-2'
+        }
+      }
+    ]
+  },
 ]
 // todo ...    映射增删改查    查询可视化   监控数据可视化
 
@@ -248,6 +278,7 @@ export const RoutesComponentmaps = {
   'views/back-up/snapshot': () => import('@/views/back-up/snapshot'),
   'views/navicat/index': () => import('@/views/navicat/index'),
   'views/datax/link': () => import('@/views/datax/link'),
-  'views/datax/list': () => import('@/views/datax/list'),
+  'views/search/search': () => import('@/views/search/search'),
+  'views/search/config': () => import('@/views/search/config'),
 }
 

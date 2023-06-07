@@ -1,4 +1,4 @@
-//路由层
+// 路由层
 package router
 
 import (
@@ -83,6 +83,7 @@ func Init() *App {
 		runEsDoc,
 		runEsCrud,
 		runDatax,
+		runSearch,
 	)
 }
 
