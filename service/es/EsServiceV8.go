@@ -882,3 +882,37 @@ func (this EsServiceV8) CrudGetDSL(ctx *fiber.Ctx, crudFilter *escache.CrudFilte
 	}
 	return this.Success(ctx, response.SearchSuccess, util.Map{"list": res})
 }
+
+func (this EsServiceV8) SearchLog(ctx *fiber.Ctx, req *escache.SearchlogReq) (err error) {
+	var search *elasticV7.SearchService
+
+	if len(req.IndexNames) == 0 {
+		return this.Error(ctx, errors.New("索引不能为空"))
+	}
+
+	for _, indexName := range req.IndexNames {
+		if strings.TrimSpace(indexName) == "" {
+			return this.Error(ctx, errors.New("索引不能为空"))
+		}
+	}
+
+	if req.Mode == 0 {
+		search = this.esClient.Search(req.IndexNames...)
+	} else {
+		search = this.esClient.Search("*" + req.IndexNames[0] + "*")
+	}
+
+	if req.SearchCol == "" {
+		req.SearchCol = "ip"
+	}
+
+	if req.SearchText != "" {
+		search = search.Query(elastic.NewWildcardQuery(req.SearchCol, "*"+req.SearchText+"*"))
+	}
+
+	res, err := search.From(int(db.CreatePage(req.Page, req.Limit))).Size(req.Limit).Do(context.Background())
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+	return this.Success(ctx, response.SearchSuccess, util.Map{"list": res, "count": res.Hits.TotalHits})
+}

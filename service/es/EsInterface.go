@@ -42,9 +42,10 @@ type EsInterface interface {
 	CrudGetList(ctx *fiber.Ctx, filter *escache.CrudFilter) (err error)
 	CrudGetDSL(ctx *fiber.Ctx, filter *escache.CrudFilter) (err error)
 	CrudDownload(ctx *fiber.Ctx, filter *escache.CrudFilter) (err error)
+	SearchLog(ctx *fiber.Ctx, status *escache.SearchlogReq) (err error)
 }
 
-var VerError = errors.New("ES版本暂只支持6,7")
+var VerError = errors.New("ES版本暂只支持6,7,8")
 
 var EsServiceMap = map[int]func(conn *escache.EsConnect) (EsInterface, error){
 	6: NewEsServiceV6,

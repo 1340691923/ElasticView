@@ -27,5 +27,12 @@ func runSearch(app *App) {
 			RelativePath: "getIndexCfg",
 		}, gmUser.(*Group), true, c.GetIndexConfigs)
 
+		apiRouterConfig.MountApi(api_config.MountApiBasePramas{
+			Remark:       "查询索引日志数据",
+			Method:       api_config.MethodAny,
+			AbsolutePath: AbsolutePath,
+			RelativePath: "SearchLog",
+		}, gmUser.(*Group), true, c.SearchLog)
+
 	}
 }

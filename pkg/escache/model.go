@@ -121,6 +121,16 @@ type SnapshotStatus struct {
 	EsConnect      int    `json:"es_connect"`
 }
 
+type SearchlogReq struct {
+	IndexNames []string `json:"index_names"` //索引名列表
+	SearchCol  string   `json:"search_col"`  //查询字段
+	SearchText string   `json:"search_text"` //搜索内容
+	Mode       int      `json:"mode"`        // 0 为索引列表,1 为模糊查询索引
+	EsConnect  int      `json:"es_connect"`  //es连接id
+	Page       int      `json:"page"`
+	Limit      int      `json:"limit"`
+}
+
 type EsConnect struct {
 	Ip      string `json:"ip" db:"ip"`
 	User    string `json:"user" db:"user"`

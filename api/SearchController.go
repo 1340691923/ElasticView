@@ -3,9 +3,10 @@ package api
 import (
 	"github.com/1340691923/ElasticView/model"
 	"github.com/1340691923/ElasticView/pkg/engine/db"
-	"github.com/1340691923/ElasticView/pkg/jwt"
+	"github.com/1340691923/ElasticView/pkg/escache"
 	"github.com/1340691923/ElasticView/pkg/response"
 	"github.com/1340691923/ElasticView/pkg/util"
+	es2 "github.com/1340691923/ElasticView/service/es"
 	. "github.com/gofiber/fiber/v2"
 )
 
@@ -80,31 +81,20 @@ func (this SearchController) GetIndexConfigs(ctx *Ctx) error {
 }
 
 func (this SearchController) SearchLog(ctx *Ctx) error {
-	c, err := jwt.ParseToken(ctx.Get("X-Token"))
+
+	esIndexInfo := new(escache.SearchlogReq)
+	err := ctx.BodyParser(&esIndexInfo)
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+	esConnect, err := escache.GetEsClientByID(esIndexInfo.EsConnect)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
 
-	gmGuidModel := model.GmGuidModel{}
-	err = ctx.BodyParser(&gmGuidModel)
+	esService, err := es2.NewEsService(esConnect)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	sql, args, err := db.SqlBuilder.
-		Select("count(*)").
-		From(gmGuidModel.TableName()).
-		Where(db.Eq{
-			"uid":       c.ID,
-			"guid_name": gmGuidModel.GuidName,
-		}).ToSql()
-
-	if err != nil {
-		return this.Error(ctx, err)
-	}
-	var count int
-	err = db.Sqlx.Get(&count, sql, args...)
-	if util.FilterMysqlNilErr(err) {
-		return this.Error(ctx, err)
-	}
-	return this.Success(ctx, response.SearchSuccess, count > 0)
+	return esService.SearchLog(ctx, esIndexInfo)
 }
