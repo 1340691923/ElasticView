@@ -10,6 +10,13 @@
         @click="open = true"
       >{{ $t('新增配置') }}
       </el-button>
+      <el-button
+        size="mini"
+        type="success"
+        class="filter-item"
+        @click="search"
+      >{{ $t('刷新') }}
+      </el-button>
 
     </div>
 
@@ -17,7 +24,7 @@
 
       <el-table-column
         align="center"
-        prop="config"
+        prop="indexName"
         label="索引"
 
       />
@@ -150,8 +157,11 @@ export default {
       this.refreshPage()
     },
     async add() {
-      console.log(123)
-      const res = await setIndexCfg(this.form)
+
+      const form = this.form
+      form['es_connect'] = this.$store.state.baseData.EsConnectID
+
+      const res = await setIndexCfg(form)
       if (res.code != 0) {
         this.$message({
           type: 'error',
@@ -179,7 +189,7 @@ export default {
         })
         return
       }
-      this.tableData = res.data.data
+      this.tableData = res.data.list
       this.count = res.data.count
       if (this.tableData == null) {
         this.tableData = []

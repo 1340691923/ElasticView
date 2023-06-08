@@ -14,14 +14,15 @@ type SearchController struct {
 }
 
 type GetIndexConfigsReq struct {
-	EsConnectID int `json:"es_connect"`
-	Limit       int `json:"limit"`
-	Page        int `json:"page"`
+	EsConnectID int  `json:"es_connect"`
+	Limit       int  `json:"limit"`
+	Page        int  `json:"page"`
+	All         bool `json:"all"`
 }
 
 type SetIndexConfigReq struct {
 	EsConnectID int    `json:"es_connect"`
-	IndexName   string `json:"index_name"`
+	IndexName   string `json:"indexName"`
 	Remark      string `json:"remark"`
 }
 
@@ -34,12 +35,15 @@ func (this SearchController) SetIndexConfig(ctx *Ctx) error {
 	}
 	m := model.SearchConfig{}
 
-	_, err = db.Sqlx.Exec("insert into "+m.TableName()+" (index_name, remark, es_connect) values   (?,?,?) "+
-		"  on duplicate key update remark = ?", req.IndexName, req.Remark, req.EsConnectID, req.Remark)
+	//REPLACE INTO `visits` (ip, VALUE) VALUES ($ip, 0);
+
+	_, err = db.Sqlx.Exec("REPLACE into "+m.TableName()+" (index_name, remark, es_connect) values   (?,?,?)",
+		req.IndexName, req.Remark, req.EsConnectID)
 
 	if err != nil {
 		return this.Error(ctx, err)
 	}
+
 	return this.Success(ctx, response.OperateSuccess, nil)
 }
 
@@ -51,9 +55,18 @@ func (this SearchController) GetIndexConfigs(ctx *Ctx) error {
 		return this.Error(ctx, err)
 	}
 	m := model.SearchConfig{}
+	m.EsConnect = req.EsConnectID
+
+	if req.All {
+		list, err := m.All()
+		if err != nil {
+			return this.Error(ctx, err)
+		}
+		return this.Success(ctx, response.SearchSuccess, util.Map{"list": list})
+	}
+
 	m.Limit = req.Limit
 	m.Page = req.Page
-	m.EsConnect = req.EsConnectID
 
 	list, err := m.List()
 	if err != nil {

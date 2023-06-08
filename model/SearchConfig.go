@@ -41,9 +41,30 @@ func (this *SearchConfig) List() (res []SearchConfig, err error) {
 	builder := db.SqlBuilder.
 		Select("*").
 		From(this.TableName()).
+		Where(db.Eq{"es_connect": this.EsConnect}).
 		OrderBy("id desc").
 		Limit(uint64(this.Limit)).Offset(db.CreatePage(this.Page, this.Limit))
 
+	sql, args, err := builder.ToSql()
+
+	if err != nil {
+		return
+	}
+	err = db.Sqlx.Select(&res, sql, args...)
+
+	if err != nil {
+		return
+	}
+
+	return
+}
+
+func (this *SearchConfig) All() (res []SearchConfig, err error) {
+	builder := db.SqlBuilder.
+		Select("*").
+		From(this.TableName()).
+		Where(db.Eq{"es_connect": this.EsConnect}).
+		OrderBy("id desc")
 	sql, args, err := builder.ToSql()
 
 	if err != nil {
