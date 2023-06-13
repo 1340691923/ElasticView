@@ -11,9 +11,12 @@ import (
 GmDslHistoryModel DSL历史记录
 */
 type SearchConfig struct {
-	ID        int    `db:"id" json:"id"`
-	IndexName string `db:"index_name" json:"indexName"`
-	Remark    string `db:"remark" json:"remark"`
+	ID         int    `db:"id" json:"id"`
+	IndexName  string `db:"index_name" json:"indexName"`
+	Remark     string `db:"remark" json:"remark"`
+	InputCols  string `json:"input_cols" db:"input_cols"`
+	OutputCols string `json:"output_cols" db:"output_cols"`
+
 	EsConnect int    `db:"es_connect" json:"-"`
 	Updated   string `db:"updated" json:"updated"`
 	Created   string `db:"created" json:"created"`

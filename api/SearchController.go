@@ -1,6 +1,7 @@
 package api
 
 import (
+	"encoding/json"
 	"github.com/1340691923/ElasticView/model"
 	"github.com/1340691923/ElasticView/pkg/engine/db"
 	"github.com/1340691923/ElasticView/pkg/escache"
@@ -8,38 +9,25 @@ import (
 	"github.com/1340691923/ElasticView/pkg/util"
 	es2 "github.com/1340691923/ElasticView/service/es"
 	. "github.com/gofiber/fiber/v2"
+	"strings"
 )
 
 type SearchController struct {
 	BaseController
 }
 
-type GetIndexConfigsReq struct {
-	EsConnectID int  `json:"es_connect"`
-	Limit       int  `json:"limit"`
-	Page        int  `json:"page"`
-	All         bool `json:"all"`
-}
-
-type SetIndexConfigReq struct {
-	EsConnectID int    `json:"es_connect"`
-	IndexName   string `json:"indexName"`
-	Remark      string `json:"remark"`
-}
-
 func (this SearchController) SetIndexConfig(ctx *Ctx) error {
 
-	req := SetIndexConfigReq{}
+	req := escache.SetIndexConfigReq{}
 	err := ctx.BodyParser(&req)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
 	m := model.SearchConfig{}
 
-	//REPLACE INTO `visits` (ip, VALUE) VALUES ($ip, 0);
-
-	_, err = db.Sqlx.Exec("REPLACE into "+m.TableName()+" (index_name, remark, es_connect) values   (?,?,?)",
-		req.IndexName, req.Remark, req.EsConnectID)
+	_, err = db.Sqlx.Exec("REPLACE into "+m.TableName()+" (index_name, remark, es_connect,input_cols,output_cols)"+
+		" values   (?,?,?,?,?)",
+		req.IndexName, req.Remark, req.EsConnectID, strings.Join(req.InputCols, ","), strings.Join(req.OutputCols, ","))
 
 	if err != nil {
 		return this.Error(ctx, err)
@@ -50,7 +38,7 @@ func (this SearchController) SetIndexConfig(ctx *Ctx) error {
 
 func (this SearchController) GetIndexConfigs(ctx *Ctx) error {
 
-	req := GetIndexConfigsReq{}
+	req := escache.GetIndexConfigsReq{}
 	err := ctx.BodyParser(&req)
 	if err != nil {
 		return this.Error(ctx, err)
@@ -63,7 +51,8 @@ func (this SearchController) GetIndexConfigs(ctx *Ctx) error {
 		if err != nil {
 			return this.Error(ctx, err)
 		}
-		return this.Success(ctx, response.SearchSuccess, util.Map{"list": list})
+
+		return this.Success(ctx, response.SearchSuccess, util.Map{"list": response.ToSearchConfig(list)})
 	}
 
 	m.Limit = req.Limit
@@ -77,7 +66,7 @@ func (this SearchController) GetIndexConfigs(ctx *Ctx) error {
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	return this.Success(ctx, response.SearchSuccess, util.Map{"list": list, "count": count})
+	return this.Success(ctx, response.SearchSuccess, util.Map{"list": response.ToSearchConfig(list), "count": count})
 }
 
 func (this SearchController) SearchLog(ctx *Ctx) error {
@@ -97,4 +86,46 @@ func (this SearchController) SearchLog(ctx *Ctx) error {
 		return this.Error(ctx, err)
 	}
 	return esService.SearchLog(ctx, esIndexInfo)
+}
+
+func (this SearchController) SetMappingAlias(ctx *Ctx) error {
+
+	req := escache.SetMappingAliasReq{}
+	err := ctx.BodyParser(&req)
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+	mpCfg, _ := json.Marshal(req.MappingCfg)
+
+	_, err = db.Sqlx.Exec("REPLACE into mapping_alias_config (index_name, es_connect,col_alias_map)"+
+		" values (?,?,?)",
+		req.IndexName, req.EsConnect, string(mpCfg))
+
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+
+	return this.Success(ctx, response.OperateSuccess, nil)
+}
+
+func (this SearchController) GetMappingAlias(ctx *Ctx) error {
+
+	req := escache.GetMappingAliasReq{}
+	err := ctx.BodyParser(&req)
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+	res := map[string]string{}
+
+	mappingCfgStr := ""
+
+	err = db.Sqlx.QueryRow("select col_alias_map from mapping_alias_config where es_connect = ? and index_name = ?;",
+		req.EsConnectID, req.IndexName).Scan(&mappingCfgStr)
+
+	if util.FilterMysqlNilErr(err) {
+		return this.Error(ctx, err)
+	}
+	json.Unmarshal([]byte(mappingCfgStr), &res)
+
+	return this.Success(ctx, response.SearchSuccess, util.Map{"res": res})
 }

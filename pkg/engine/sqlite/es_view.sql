@@ -97,8 +97,21 @@ CREATE TABLE `search_index_config`
     `id`         INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     `index_name` TEXT                  DEFAULT NULL,
     `remark`     TEXT         NOT NULL DEFAULT '',
+    `input_cols`     TEXT         NOT NULL DEFAULT '',
+    `output_cols`     TEXT         NOT NULL DEFAULT '',
     `es_connect` INTEGER      NOT NULL DEFAULT '0',
     `updated`    timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `created`    timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 CREATE UNIQUE INDEX search_index_config_index_name on search_index_config (`index_name`, `es_connect`);
+DROP TABLE IF EXISTS `mapping_alias_config`;
+CREATE TABLE `mapping_alias_config`
+(
+    `id`         INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    `index_name` TEXT                  DEFAULT NULL,
+    `col_alias_map`     TEXT         NOT NULL DEFAULT '',
+    `es_connect` INTEGER      NOT NULL DEFAULT '0',
+    `updated`    timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `created`    timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+CREATE UNIQUE INDEX mapping_alias_config_cols on mapping_alias_config (`index_name`, `es_connect`, `col_alias_map`);

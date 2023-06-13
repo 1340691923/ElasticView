@@ -121,14 +121,56 @@ type SnapshotStatus struct {
 	EsConnect      int    `json:"es_connect"`
 }
 
+type SearchLogFilter struct {
+	SearchCol  string `json:"search_col"`  //查询字段
+	SearchText string `json:"search_text"` //搜索内容
+}
+
 type SearchlogReq struct {
-	IndexNames []string `json:"index_names"` //索引名列表
-	SearchCol  string   `json:"search_col"`  //查询字段
-	SearchText string   `json:"search_text"` //搜索内容
-	Mode       int      `json:"mode"`        // 0 为索引列表,1 为模糊查询索引
+	IndexNames      []string          `json:"index_names"` //索引名列表
+	SearchLogFilter []SearchLogFilter `json:"search_log_filter"`
+	Mode            int               `json:"mode"`       // 0 为索引列表,1 为模糊查询索引
+	EsConnect       int               `json:"es_connect"` //es连接id
+	Page            int               `json:"page"`
+	Limit           int               `json:"limit"`
+}
+
+type SetMappingAliasReq struct {
+	IndexName  string            `json:"index_name"` //索引名列表
+	MappingCfg map[string]string `json:"mapping_cfg"`
+	EsConnect  int               `json:"es_connect"` //es连接id
+}
+
+type SetInputOutputCfgReq struct {
 	EsConnect  int      `json:"es_connect"`  //es连接id
-	Page       int      `json:"page"`
-	Limit      int      `json:"limit"`
+	IndexNames string   `json:"index_names"` //索引名列表
+	InputCols  []string `json:"input_cols"`
+	OutputCols []string `json:"output_cols"`
+}
+
+type GetIndexConfigsReq struct {
+	EsConnectID int  `json:"es_connect"`
+	Limit       int  `json:"limit"`
+	Page        int  `json:"page"`
+	All         bool `json:"all"`
+}
+
+type GetMappingAliasReq struct {
+	EsConnectID int    `json:"es_connect"`
+	IndexName   string `json:"index_name"` //索引名列表
+}
+
+type SetIndexConfigReq struct {
+	EsConnectID int      `json:"es_connect"`
+	IndexName   string   `json:"indexName"`
+	Remark      string   `json:"remark"`
+	InputCols   []string `json:"input_cols"`
+	OutputCols  []string `json:"output_cols"`
+}
+
+type GetInputOutputCfgReq struct {
+	EsConnect  int    `json:"es_connect"`  //es连接id
+	IndexNames string `json:"index_names"` //索引名列表
 }
 
 type EsConnect struct {

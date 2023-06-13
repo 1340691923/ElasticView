@@ -34,5 +34,19 @@ func runSearch(app *App) {
 			RelativePath: "SearchLog",
 		}, gmUser.(*Group), true, c.SearchLog)
 
+		apiRouterConfig.MountApi(api_config.MountApiBasePramas{
+			Remark:       "获取映射字段别名",
+			Method:       api_config.MethodAny,
+			AbsolutePath: AbsolutePath,
+			RelativePath: "GetMappingAlias",
+		}, gmUser.(*Group), true, c.GetMappingAlias)
+
+		apiRouterConfig.MountApi(api_config.MountApiBasePramas{
+			Remark:       "修改映射字段别名",
+			Method:       api_config.MethodAny,
+			AbsolutePath: AbsolutePath,
+			RelativePath: "SetMappingAlias",
+		}, gmUser.(*Group), true, c.SetMappingAlias)
+
 	}
 }

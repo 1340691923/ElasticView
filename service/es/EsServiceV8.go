@@ -901,13 +901,41 @@ func (this EsServiceV8) SearchLog(ctx *fiber.Ctx, req *escache.SearchlogReq) (er
 	} else {
 		search = this.esClient.Search("*" + req.IndexNames[0] + "*")
 	}
+	source := []string{}
 
-	if req.SearchCol == "" {
-		req.SearchCol = "ip"
+	searchCfgs := []model.SearchConfig{}
+	builder := db.SqlBuilder.
+		Select("*").
+		From("search_index_config").
+		Where(db.Eq{"es_connect": req.EsConnect}).
+		Where(db.Eq{"index_name": req.IndexNames})
+	sql, args, err := builder.ToSql()
+
+	if err != nil {
+		return
+	}
+	err = db.Sqlx.Select(&searchCfgs, sql, args...)
+
+	if util.FilterMysqlNilErr(err) {
+		return
+	}
+	outputCol := map[string]struct{}{}
+
+	for _, v := range searchCfgs {
+		arr := strings.Split(v.OutputCols, ",")
+		for _, col := range arr {
+			outputCol[col] = struct{}{}
+		}
 	}
 
-	if req.SearchText != "" {
-		search = search.Query(elastic.NewWildcardQuery(req.SearchCol, "*"+req.SearchText+"*"))
+	for k := range outputCol {
+		source = append(source, k)
+	}
+
+	search = search.Source(source)
+
+	for _, v := range req.SearchLogFilter {
+		search = search.Query(elastic.NewWildcardQuery(v.SearchCol, "*"+v.SearchText+"*"))
 	}
 
 	res, err := search.From(int(db.CreatePage(req.Page, req.Limit))).Size(req.Limit).Do(context.Background())
