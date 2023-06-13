@@ -19,7 +19,6 @@ import (
 	"github.com/1340691923/ElasticView/service/es_optimize"
 	"github.com/1340691923/ElasticView/service/es_settings"
 	"github.com/gofiber/fiber/v2"
-	"github.com/olivere/elastic/v7"
 	elasticV7 "github.com/olivere/elastic/v7"
 	"net/url"
 	"sort"
@@ -553,7 +552,7 @@ func (this EsServiceV8) EsIndexOperateAlias(ctx *fiber.Ctx, esAliasInfo *escache
 		}
 		res, err = this.esClient.Alias().Remove(esAliasInfo.IndexName, esAliasInfo.AliasName).Do(ctx.Context())
 	case MoveToAnotherIndex:
-		res, err = this.esClient.Alias().Action(elastic.NewAliasAddAction(esAliasInfo.AliasName).Index(esAliasInfo.NewIndexList...)).Do(ctx.Context())
+		res, err = this.esClient.Alias().Action(elasticV7.NewAliasAddAction(esAliasInfo.AliasName).Index(esAliasInfo.NewIndexList...)).Do(ctx.Context())
 	case PatchAdd:
 		if esAliasInfo.IndexName == "" {
 			return this.Error(ctx, my_error.NewBusiness(escache.ParmasNullError, escache.IndexNameNullError))
@@ -932,10 +931,13 @@ func (this EsServiceV8) SearchLog(ctx *fiber.Ctx, req *escache.SearchlogReq) (er
 		source = append(source, k)
 	}
 
-	search = search.Source(source)
+	search = search.Source(elasticV7.NewFetchSourceContext(true).Include(source...))
 
 	for _, v := range req.SearchLogFilter {
-		search = search.Query(elastic.NewWildcardQuery(v.SearchCol, "*"+v.SearchText+"*"))
+		if v.SearchText != "" {
+			search = search.Query(elasticV7.NewWildcardQuery(v.SearchCol, "*"+v.SearchText+"*"))
+
+		}
 	}
 
 	res, err := search.From(int(db.CreatePage(req.Page, req.Limit))).Size(req.Limit).Do(context.Background())
