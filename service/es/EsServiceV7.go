@@ -920,18 +920,23 @@ func (this EsServiceV7) SearchLog(ctx *fiber.Ctx, req *escache.SearchlogReq) (er
 	for k := range outputCol {
 		source = append(source, k)
 	}
-
-	search = search.Source(elasticV7.NewFetchSourceContext(true).Include(source...))
-
+	s := elasticV7.NewSearchSource().FetchSourceIncludeExclude(source, nil)
+	var queryList []elasticV7.Query
 	for _, v := range req.SearchLogFilter {
-		search = search.Query(elasticV7.NewWildcardQuery(v.SearchCol, "*"+v.SearchText+"*"))
+		if v.SearchText != "" {
+			queryList = append(queryList, elasticV7.NewMatchQuery(v.SearchCol, v.SearchText))
+		}
 	}
-	search = search.From(int(db.CreatePage(req.Page, req.Limit))).Size(req.Limit)
+
+	s = s.Query(elasticV7.NewBoolQuery().Should(queryList...))
+
+	search = search.From(int(db.CreatePage(req.Page, req.Limit))).Size(req.Limit).SearchSource(s)
 
 	res, err := search.
 		Do(context.Background())
 	if err != nil {
 		return this.Error(ctx, err)
 	}
+
 	return this.Success(ctx, response.SearchSuccess, util.Map{"list": res, "count": res.Hits.TotalHits})
 }

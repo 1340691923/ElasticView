@@ -19,7 +19,7 @@
       :placeholder="$t('请选择ES连接')"
       @change="change"
     >
-      <el-option :value="Number(0)" :label="$t('请选择ES连接')" />
+      <!-- <el-option :value="Number(0)" :label="$t('请选择ES连接')" /> -->
       <el-option v-for="item in opt" :key="item.id" :value="Number(item.id)" :label="item.remark" />
     </el-select>
     <el-button
@@ -45,7 +45,7 @@ export default {
       linkID: '',
       Esi18n: localStorage.getItem('lang') || 'zh',
       time: null,
-      timeSecend: 60
+      timeSecend: 60,
     }
   },
   computed: {},
@@ -72,6 +72,15 @@ export default {
     async getEsOpt() {
       const res = await OptAction({ 'getByLocal': 1 })
       this.opt = res.data
+      const obj = this.$store.state.baseData.EsConnectID
+      if (res.data.list.length > 0) {
+        if (Number(obj) == 0) {
+          this.linkID = res.data.list[0].id
+          this.change(this.linkID)
+        }
+      } else {
+        this.change(0)
+      }
     },
     refresh() {
       this.getEsOpt()
@@ -81,6 +90,7 @@ export default {
       })
     },
     change(link) {
+      localStorage.setItem('EsConnect', link)
       this.$store.dispatch('baseData/SetEsConnect', link)
       this.reload()
     },

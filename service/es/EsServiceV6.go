@@ -18,7 +18,6 @@ import (
 	"github.com/1340691923/ElasticView/service/es_optimize"
 	"github.com/1340691923/ElasticView/service/es_settings"
 	"github.com/gofiber/fiber/v2"
-
 	elasticV6 "github.com/olivere/elastic"
 	"net/url"
 	"sort"
@@ -876,7 +875,6 @@ func (this EsServiceV6) CrudDownload(ctx *fiber.Ctx, filter *escache.CrudFilter)
 }
 
 func (this EsServiceV6) SearchLog(ctx *fiber.Ctx, req *escache.SearchlogReq) (err error) {
-
 	var search *elasticV6.SearchService
 
 	if len(req.IndexNames) == 0 {
@@ -923,16 +921,23 @@ func (this EsServiceV6) SearchLog(ctx *fiber.Ctx, req *escache.SearchlogReq) (er
 	for k := range outputCol {
 		source = append(source, k)
 	}
-
-	search = search.Source(elasticV6.NewFetchSourceContext(true).Include(source...))
-
+	s := elasticV6.NewSearchSource().FetchSourceIncludeExclude(source, nil)
+	var queryList []elasticV6.Query
 	for _, v := range req.SearchLogFilter {
-		search = search.Query(elasticV6.NewWildcardQuery(v.SearchCol, "*"+v.SearchText+"*"))
+		if v.SearchText != "" {
+			queryList = append(queryList, elasticV6.NewMatchQuery(v.SearchCol, v.SearchText))
+		}
 	}
 
-	res, err := search.From(int(db.CreatePage(req.Page, req.Limit))).Size(req.Limit).Do(context.Background())
+	s = s.Query(elasticV6.NewBoolQuery().Should(queryList...))
+
+	search = search.From(int(db.CreatePage(req.Page, req.Limit))).Size(req.Limit).SearchSource(s)
+
+	res, err := search.
+		Do(context.Background())
 	if err != nil {
 		return this.Error(ctx, err)
 	}
+
 	return this.Success(ctx, response.SearchSuccess, util.Map{"list": res, "count": res.Hits.TotalHits})
 }

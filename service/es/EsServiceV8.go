@@ -900,6 +900,7 @@ func (this EsServiceV8) SearchLog(ctx *fiber.Ctx, req *escache.SearchlogReq) (er
 	} else {
 		search = this.esClient.Search("*" + req.IndexNames[0] + "*")
 	}
+
 	source := []string{}
 
 	searchCfgs := []model.SearchConfig{}
@@ -919,30 +920,32 @@ func (this EsServiceV8) SearchLog(ctx *fiber.Ctx, req *escache.SearchlogReq) (er
 		return
 	}
 	outputCol := map[string]struct{}{}
-
 	for _, v := range searchCfgs {
 		arr := strings.Split(v.OutputCols, ",")
 		for _, col := range arr {
 			outputCol[col] = struct{}{}
 		}
 	}
-
 	for k := range outputCol {
 		source = append(source, k)
 	}
-
-	search = search.Source(elasticV7.NewFetchSourceContext(true).Include(source...))
-
+	s := elasticV7.NewSearchSource().FetchSourceIncludeExclude(source, nil)
+	var queryList []elasticV7.Query
 	for _, v := range req.SearchLogFilter {
 		if v.SearchText != "" {
-			search = search.Query(elasticV7.NewWildcardQuery(v.SearchCol, "*"+v.SearchText+"*"))
-
+			queryList = append(queryList, elasticV7.NewMatchQuery(v.SearchCol, v.SearchText))
 		}
 	}
 
-	res, err := search.From(int(db.CreatePage(req.Page, req.Limit))).Size(req.Limit).Do(context.Background())
+	s = s.Query(elasticV7.NewBoolQuery().Should(queryList...))
+
+	search = search.From(int(db.CreatePage(req.Page, req.Limit))).Size(req.Limit).SearchSource(s)
+
+	res, err := search.
+		Do(context.Background())
 	if err != nil {
 		return this.Error(ctx, err)
 	}
+
 	return this.Success(ctx, response.SearchSuccess, util.Map{"list": res, "count": res.Hits.TotalHits})
 }
