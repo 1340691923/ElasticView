@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"io"
-	"io/ioutil"
 	"net"
 	"net/http"
 	"net/url"
@@ -58,7 +57,7 @@ func DoURL(method, url string, body []byte) ([]byte, error) {
 	}
 	defer resp.Body.Close()
 
-	return ioutil.ReadAll(resp.Body)
+	return io.ReadAll(resp.Body)
 }
 
 // GetURL 请求URL
@@ -69,7 +68,7 @@ func GetURL(URL string) ([]byte, error) {
 	}
 	defer resp.Body.Close()
 
-	return ioutil.ReadAll(resp.Body)
+	return io.ReadAll(resp.Body)
 }
 
 // GetURL 请求URL
@@ -102,7 +101,7 @@ func GetValueURL(URL string, params url.Values) ([]byte, error) {
 	}
 	defer resp.Body.Close()
 
-	return ioutil.ReadAll(resp.Body)
+	return io.ReadAll(resp.Body)
 }
 
 func CtxGetValueURL(URL string, params url.Values) ([]byte, error) {
@@ -161,7 +160,7 @@ func PostURL(URL string, params url.Values) ([]byte, error) {
 	}
 	defer resp.Body.Close()
 
-	return ioutil.ReadAll(resp.Body)
+	return io.ReadAll(resp.Body)
 }
 
 // 检查http请求中是否包含所需参数
@@ -234,7 +233,7 @@ func PostJSON(URL string, v interface{}) ([]byte, error) {
 	}
 	defer resp.Body.Close()
 
-	return ioutil.ReadAll(resp.Body)
+	return io.ReadAll(resp.Body)
 }
 
 // PostJSON POST请求 BODY为JSON格式 ContentType=application/json
@@ -255,7 +254,7 @@ func GetJSON(URL string, v interface{}) ([]byte, error) {
 	}
 	defer resp.Body.Close()
 
-	return ioutil.ReadAll(resp.Body)
+	return io.ReadAll(resp.Body)
 }
 
 // PostJSONReceiveJSON POST请求 BODY为JSON格式 ContentType=application/json 自动解析JSON
@@ -290,7 +289,7 @@ func PostToJSON(URL string, v interface{}) ([]byte, error) {
 	}
 	defer resp.Body.Close()
 
-	return ioutil.ReadAll(resp.Body)
+	return io.ReadAll(resp.Body)
 }
 
 // CheckNotNil 检查HTTP参数是否为空
@@ -421,7 +420,7 @@ func FormFileValue(r *http.Request, key string) (string, error) {
 		return "", err
 	}
 	defer f.Close()
-	b, err := ioutil.ReadAll(f)
+	b, err := io.ReadAll(f)
 	if err != nil {
 		return "", err
 	}
@@ -446,7 +445,7 @@ func FormFileValues(r *http.Request, key string) ([]string, error) {
 					return nil, err
 				}
 
-				b, err := ioutil.ReadAll(f)
+				b, err := io.ReadAll(f)
 				f.Close()
 				if err != nil {
 					return nil, err

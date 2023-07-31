@@ -2,14 +2,14 @@ package util
 
 import (
 	"encoding/json"
-	"io/ioutil"
+	"os"
 	"strconv"
 	"strings"
 )
 
 // LoadJSONConfig 读取配置文件 json格式
 func LoadJSONConfig(filename string, v interface{}) error {
-	b, err := ioutil.ReadFile(filename)
+	b, err := os.ReadFile(filename)
 	if err != nil {
 		return err
 	}

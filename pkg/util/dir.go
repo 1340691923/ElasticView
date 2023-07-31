@@ -2,7 +2,6 @@ package util
 
 import (
 	"io"
-	"io/ioutil"
 	"log"
 	"os"
 	"path"
@@ -42,7 +41,7 @@ func GetCurrentDirectory() string {
 func DirCopy(src string, dest string) error {
 	log.Println(src, dest)
 	// 遍历原文件夹内部所有item
-	items, _ := ioutil.ReadDir(src)
+	items, _ := os.ReadDir(src)
 	for _, item := range items {
 
 		// 文件

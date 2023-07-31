@@ -3,7 +3,7 @@ package util
 import (
 	"bytes"
 	"compress/gzip"
-	"io/ioutil"
+	"io"
 )
 
 func GzipCompress(data string) ([]byte, error) {
@@ -22,6 +22,6 @@ func GzipUnCompress(data []byte) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	b, err := ioutil.ReadAll(gzR)
+	b, err := io.ReadAll(gzR)
 	return b, err
 }

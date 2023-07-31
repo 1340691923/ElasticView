@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/xuri/excelize/v2"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -207,9 +207,9 @@ func (this *Response) DownloadExcel(downloadFileName string, titleList []string,
 	defer f.Close()
 
 	// 将文件读取出来
-	filedata, err := ioutil.ReadAll(f)
+	filedata, err := io.ReadAll(f)
 	if err != nil {
-		logs.Logger.Sugar().Errorf("ioutil.ReadAll failed:", err)
+		logs.Logger.Sugar().Errorf("io.ReadAll failed:", err)
 		return
 	}
 	ctx.Response().Header.Set("Content-Disposition", `attachment; filename="`+downloadFileName+`.xlsx"`)
@@ -246,9 +246,9 @@ func (this *Response) DownloadExcel2(downloadFileName string, titleList []interf
 	defer f.Close()
 	log.Println("download4")
 	// 将文件读取出来
-	filedata, err := ioutil.ReadAll(f)
+	filedata, err := io.ReadAll(f)
 	if err != nil {
-		logs.Logger.Sugar().Errorf("ioutil.ReadAll failed:", err)
+		logs.Logger.Sugar().Errorf("io.ReadAll failed:", err)
 		return
 	}
 	log.Println("download5")
