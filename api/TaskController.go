@@ -1,9 +1,15 @@
 package api
 
 import (
+	"fmt"
+	"github.com/1340691923/ElasticView/es_sdk/pkg/factory"
+	"github.com/1340691923/ElasticView/pkg/engine/logs"
 	"github.com/1340691923/ElasticView/pkg/escache"
-	es2 "github.com/1340691923/ElasticView/service/es"
+	"github.com/1340691923/ElasticView/pkg/response"
+	"github.com/1340691923/ElasticView/service/task_service"
 	. "github.com/gofiber/fiber/v2"
+	"log"
+	"runtime"
 )
 
 // Es 任务控制器
@@ -13,6 +19,17 @@ type TaskController struct {
 
 // 任务列表
 func (this TaskController) ListAction(ctx *Ctx) error {
+	defer func() {
+		if r := recover(); r != nil {
+			//打印调用栈信息
+			buf := make([]byte, 2048)
+			n := runtime.Stack(buf, false)
+			stackInfo := fmt.Sprintf("%s", buf[:n])
+			logs.Logger.Sugar().Errorf("panic stack info %s", stackInfo)
+			logs.Logger.Sugar().Errorf("--->HaveLoginUserSign Error:", r)
+			log.Println(stackInfo)
+		}
+	}()
 	taskListReq := new(escache.TaskList)
 	err := ctx.BodyParser(&taskListReq)
 	if err != nil {
@@ -22,12 +39,18 @@ func (this TaskController) ListAction(ctx *Ctx) error {
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	esService, err := es2.NewEsService(esConnect)
 
+	esI, err := factory.NewEsService(esConnect.ToEsSdkCfg())
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	return esService.TaskList(ctx)
+
+	res, err := task_service.NewTaskService(esI).TaskList(ctx.Context())
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+
+	return this.Success(ctx, response.SearchSuccess, res)
 }
 
 // 取消任务
@@ -42,11 +65,16 @@ func (this TaskController) CancelAction(ctx *Ctx) error {
 		return this.Error(ctx, err)
 	}
 
-	esService, err := es2.NewEsService(esConnect)
-
+	esI, err := factory.NewEsService(esConnect.ToEsSdkCfg())
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	return esService.Cancel(ctx, cancelTask)
+
+	err = task_service.NewTaskService(esI).Cancel(ctx.Context(), cancelTask)
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+
+	return this.Success(ctx, response.OperateSuccess, nil)
 
 }

@@ -1,9 +1,10 @@
 package api
 
 import (
+	"github.com/1340691923/ElasticView/es_sdk/pkg/factory"
 	"github.com/1340691923/ElasticView/pkg/escache"
-	es2 "github.com/1340691923/ElasticView/service/es"
-
+	"github.com/1340691923/ElasticView/pkg/response"
+	"github.com/1340691923/ElasticView/service/es_doc_service"
 	. "github.com/gofiber/fiber/v2"
 )
 
@@ -24,11 +25,16 @@ func (this EsDocController) DeleteRowByIDAction(ctx *Ctx) error {
 		return this.Error(ctx, err)
 	}
 
-	esService, err := es2.NewEsService(esConnect)
+	esI, err := factory.NewEsService(esConnect.ToEsSdkCfg())
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	return esService.EsDocDeleteRowByID(ctx, esDocDeleteRowByID)
+
+	err = es_doc_service.NewEsDocService(esI).DeleteRowByIDAction(ctx.Context(), esDocDeleteRowByID)
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+	return this.Success(ctx, response.OperateSuccess, nil)
 }
 
 // 修改文档
@@ -42,11 +48,16 @@ func (this EsDocController) UpdateByIDAction(ctx *Ctx) error {
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	esService, err := es2.NewEsService(esConnect)
+	esI, err := factory.NewEsService(esConnect.ToEsSdkCfg())
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	return esService.EsDocUpdateByID(ctx, esDocUpdateByID)
+
+	err = es_doc_service.NewEsDocService(esI).EsDocUpdateByID(ctx.Context(), esDocUpdateByID)
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+	return this.Success(ctx, response.OperateSuccess, nil)
 }
 
 // 新增文档
@@ -60,10 +71,15 @@ func (this EsDocController) InsertAction(ctx *Ctx) error {
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	esService, err := es2.NewEsService(esConnect)
+	esI, err := factory.NewEsService(esConnect.ToEsSdkCfg())
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	return esService.EsDocInsert(ctx, esDocUpdateByID)
+
+	res, err := es_doc_service.NewEsDocService(esI).EsDocInsert(ctx.Context(), esDocUpdateByID)
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+	return this.Success(ctx, response.OperateSuccess, res)
 
 }

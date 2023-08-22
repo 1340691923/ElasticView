@@ -8,6 +8,11 @@ require (
 	github.com/casbin/casbin v1.9.1
 	github.com/casbin/xorm-adapter v1.0.0
 	github.com/cch123/elasticsql v1.0.1
+	github.com/davecgh/go-spew v1.1.1
+	github.com/elastic/elastic-transport-go/v8 v8.3.0
+	github.com/elastic/go-elasticsearch/v6 v6.8.10
+	github.com/elastic/go-elasticsearch/v7 v7.17.10
+	github.com/elastic/go-elasticsearch/v8 v8.9.0
 	github.com/garyburd/redigo v1.6.2
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/gofiber/fiber/v2 v2.34.0
@@ -21,10 +26,13 @@ require (
 	github.com/olivere/elastic/v7 v7.0.24
 	github.com/robfig/cron v1.2.0
 	github.com/sony/sonyflake v1.0.0
+	github.com/spf13/cast v1.3.0
 	github.com/spf13/viper v1.7.1
+	github.com/tidwall/gjson v1.16.0
 	github.com/valyala/fasthttp v1.37.0
 	github.com/xuri/excelize/v2 v2.6.0
 	go.uber.org/zap v1.17.0
+	golang.org/x/sync v0.0.0-20201020160332-67f06af15bc9
 	golang.org/x/text v0.3.7
 )
 
@@ -57,10 +65,11 @@ require (
 	github.com/richardlehane/msoleps v1.0.1 // indirect
 	github.com/savsgio/gotils v0.0.0-20211223103454-d0aaa54c5899 // indirect
 	github.com/spf13/afero v1.1.2 // indirect
-	github.com/spf13/cast v1.3.0 // indirect
 	github.com/spf13/jwalterweatherman v1.0.0 // indirect
 	github.com/spf13/pflag v1.0.3 // indirect
 	github.com/subosito/gotenv v1.2.0 // indirect
+	github.com/tidwall/match v1.1.1 // indirect
+	github.com/tidwall/pretty v1.2.0 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
 	github.com/xuri/efp v0.0.0-20220407160117-ad0f7a785be8 // indirect

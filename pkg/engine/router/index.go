@@ -83,7 +83,6 @@ func Init() *App {
 		runEsDoc,
 		runEsCrud,
 		runDatax,
-		runSearch,
 	)
 }
 

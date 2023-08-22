@@ -290,7 +290,9 @@ export default {
         })
         return
       } else {
-        this.search()
+        setTimeout(() => {
+          this.search()
+        }, 3000)
         this.$message({
           type: 'success',
           message: msg

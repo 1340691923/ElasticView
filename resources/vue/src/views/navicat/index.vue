@@ -188,12 +188,10 @@ export default {
     await this.init()
   },
   async mounted() {
-    this.toggleSideBar()
+
   },
   methods: {
-    toggleSideBar() {
-      this.$store.dispatch('app/toggleSideBar')
-    },
+
     reloadTab() {
       this.refreshTab = false // 先关闭，
       this.$nextTick(() => {
@@ -242,6 +240,7 @@ export default {
       const Int = 1
       const Float = 2
       const String = 3
+      const Text = 5
       // const DateTime = 4
       const propertiesObjKeys = Object.keys(propertiesObj)
       for (const k in propertiesObjKeys) {
@@ -251,23 +250,22 @@ export default {
           const obj = { 'attribute_name': propertiesObjKeys[k], 'show_name': propertiesObjKeys[k] }
           switch (propertiesObj[propertiesObjKeys[k]].type) {
             case 'text':
+              obj['data_type'] = Text
+              break
             case 'keyword':
               obj['data_type'] = String
-
               break
             case 'byte':
             case 'short':
             case 'integer':
             case 'long':
               obj['data_type'] = Int
-
               break
             case 'float':
             case 'half_float':
             case 'scaled_float':
             case 'double':
               obj['data_type'] = Float
-
               break
           }
           attrMap['2'].push(obj)

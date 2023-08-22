@@ -1,8 +1,12 @@
 package api
 
 import (
+	"github.com/1340691923/ElasticView/es_sdk/pkg/factory"
 	"github.com/1340691923/ElasticView/pkg/escache"
-	es2 "github.com/1340691923/ElasticView/service/es"
+	"github.com/1340691923/ElasticView/pkg/response"
+	"github.com/1340691923/ElasticView/pkg/util"
+	"github.com/1340691923/ElasticView/service/cluser_settings_service"
+	"github.com/1340691923/ElasticView/service/es_backup"
 	. "github.com/gofiber/fiber/v2"
 )
 
@@ -23,11 +27,22 @@ func (this EsBackUpController) SnapshotRepositoryListAction(ctx *Ctx) error {
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	esService, err := es2.NewEsService(esConnect)
+	esI, err := factory.NewEsService(esConnect.ToEsSdkCfg())
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	return esService.SnapshotRepositoryList(ctx, esSnapshotInfo)
+	list, res, pathRepo, err := es_backup.NewEsBackUpService(
+		esI, cluser_settings_service.NewClusterSettingsService(esI),
+	).SnapshotRepositoryList(ctx.Context(), esSnapshotInfo)
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+
+	return this.Success(ctx, response.SearchSuccess, util.Map{
+		"list":     list,
+		"res":      res,
+		"pathRepo": pathRepo,
+	})
 }
 
 // 新建快照仓库
@@ -41,11 +56,18 @@ func (this EsBackUpController) SnapshotCreateRepositoryAction(ctx *Ctx) error {
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	esService, err := es2.NewEsService(esConnect)
+	esI, err := factory.NewEsService(esConnect.ToEsSdkCfg())
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	return esService.SnapshotCreateRepository(ctx, snapshotCreateRepository)
+	err = es_backup.NewEsBackUpService(
+		esI, cluser_settings_service.NewClusterSettingsService(esI),
+	).SnapshotCreateRepository(ctx.Context(), snapshotCreateRepository)
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+
+	return this.Success(ctx, response.OperateSuccess, nil)
 }
 
 // 清理快照仓库
@@ -60,11 +82,18 @@ func (this EsBackUpController) CleanupeRepositoryAction(ctx *Ctx) error {
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	esService, err := es2.NewEsService(esConnect)
+	esI, err := factory.NewEsService(esConnect.ToEsSdkCfg())
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	return esService.CleanupeRepository(ctx, cleanupeRepository)
+	err = es_backup.NewEsBackUpService(
+		esI, cluser_settings_service.NewClusterSettingsService(esI),
+	).CleanUp(ctx.Context(), cleanupeRepository)
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+
+	return this.Success(ctx, response.OperateSuccess, nil)
 }
 
 // 删除快照仓库
@@ -79,12 +108,18 @@ func (this EsBackUpController) SnapshotDeleteRepositoryAction(ctx *Ctx) error {
 		return this.Error(ctx, err)
 	}
 
-	esService, err := es2.NewEsService(esConnect)
+	esI, err := factory.NewEsService(esConnect.ToEsSdkCfg())
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+	err = es_backup.NewEsBackUpService(
+		esI, cluser_settings_service.NewClusterSettingsService(esI),
+	).SnapshotDeleteRepository(ctx.Context(), snapshotDeleteRepository)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
 
-	return esService.SnapshotDeleteRepository(ctx, snapshotDeleteRepository)
+	return this.Success(ctx, response.OperateSuccess, nil)
 }
 
 // 创建快照
@@ -99,12 +134,18 @@ func (this EsBackUpController) CreateSnapshotAction(ctx *Ctx) error {
 		return this.Error(ctx, err)
 	}
 
-	esService, err := es2.NewEsService(esConnect)
+	esI, err := factory.NewEsService(esConnect.ToEsSdkCfg())
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+	err = es_backup.NewEsBackUpService(
+		esI, cluser_settings_service.NewClusterSettingsService(esI),
+	).CreateSnapshot(ctx.Context(), createSnapshot)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
 
-	return esService.CreateSnapshot(ctx, createSnapshot)
+	return this.Success(ctx, response.OperateSuccess, nil)
 }
 
 // 快照列表
@@ -118,11 +159,18 @@ func (this EsBackUpController) SnapshotListAction(ctx *Ctx) error {
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	esService, err := es2.NewEsService(esConnect)
+	esI, err := factory.NewEsService(esConnect.ToEsSdkCfg())
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	return esService.SnapshotList(ctx, snapshotList)
+	res, err := es_backup.NewEsBackUpService(
+		esI, cluser_settings_service.NewClusterSettingsService(esI),
+	).SnapshotList(ctx.Context(), snapshotList)
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+
+	return this.Success(ctx, response.SearchSuccess, res)
 }
 
 // 删除快照
@@ -136,11 +184,18 @@ func (this EsBackUpController) SnapshotDeleteAction(ctx *Ctx) error {
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	esService, err := es2.NewEsService(esConnect)
+	esI, err := factory.NewEsService(esConnect.ToEsSdkCfg())
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	return esService.SnapshotDelete(ctx, snapshotDelete)
+	err = es_backup.NewEsBackUpService(
+		esI, cluser_settings_service.NewClusterSettingsService(esI),
+	).SnapshotDelete(ctx.Context(), snapshotDelete)
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+
+	return this.Success(ctx, response.OperateSuccess, nil)
 }
 
 // 快照详情
@@ -156,11 +211,18 @@ func (this EsBackUpController) SnapshotDetailAction(ctx *Ctx) error {
 		return this.Error(ctx, err)
 	}
 
-	esService, err := es2.NewEsService(esConnect)
+	esI, err := factory.NewEsService(esConnect.ToEsSdkCfg())
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	return esService.SnapshotDetail(ctx, snapshotDetail)
+	res, err := es_backup.NewEsBackUpService(
+		esI, cluser_settings_service.NewClusterSettingsService(esI),
+	).SnapshotDetail(ctx.Context(), snapshotDetail)
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+
+	return this.Success(ctx, response.SearchSuccess, res)
 }
 
 // 将索引恢复至快照时状态
@@ -174,11 +236,18 @@ func (this EsBackUpController) SnapshotRestoreAction(ctx *Ctx) error {
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	esService, err := es2.NewEsService(esConnect)
+	esI, err := factory.NewEsService(esConnect.ToEsSdkCfg())
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	return esService.SnapshotRestore(ctx, snapshotRestore)
+	err = es_backup.NewEsBackUpService(
+		esI, cluser_settings_service.NewClusterSettingsService(esI),
+	).SnapshotRestore(ctx.Context(), snapshotRestore)
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+
+	return this.Success(ctx, response.OperateSuccess, nil)
 }
 
 // 得到快照状态
@@ -193,9 +262,16 @@ func (this EsBackUpController) SnapshotStatusAction(ctx *Ctx) error {
 		return this.Error(ctx, err)
 	}
 
-	esService, err := es2.NewEsService(esConnect)
+	esI, err := factory.NewEsService(esConnect.ToEsSdkCfg())
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	return esService.SnapshotStatus(ctx, snapshotStatus)
+	res, err := es_backup.NewEsBackUpService(
+		esI, cluser_settings_service.NewClusterSettingsService(esI),
+	).SnapshotStatus(ctx.Context(), snapshotStatus)
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+
+	return this.Success(ctx, response.SearchSuccess, res)
 }

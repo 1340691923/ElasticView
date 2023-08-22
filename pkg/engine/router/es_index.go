@@ -56,11 +56,32 @@ func runEsIndex(app *App) {
 		}, esIndex.(*Group), true, esIndexController.GetAliasAction)
 
 		apiRouterConfig.MountApi(api_config.MountApiBasePramas{
-			Remark:       "操作别名",
+			Remark:       "迁移别名到其他索引",
 			Method:       api_config.MethodPost,
 			AbsolutePath: AbsolutePath,
-			RelativePath: "OperateAliasAction",
-		}, esIndex.(*Group), true, esIndexController.OperateAliasAction)
+			RelativePath: "MoveAliasToIndex",
+		}, esIndex.(*Group), true, esIndexController.MoveAliasToIndex)
+
+		apiRouterConfig.MountApi(api_config.MountApiBasePramas{
+			Remark:       "添加别名",
+			Method:       api_config.MethodPost,
+			AbsolutePath: AbsolutePath,
+			RelativePath: "AddAliasToIndex",
+		}, esIndex.(*Group), true, esIndexController.AddAliasToIndex)
+
+		apiRouterConfig.MountApi(api_config.MountApiBasePramas{
+			Remark:       "批量添加别名",
+			Method:       api_config.MethodPost,
+			AbsolutePath: AbsolutePath,
+			RelativePath: "BatchAddAliasToIndex",
+		}, esIndex.(*Group), true, esIndexController.BatchAddAliasToIndex)
+
+		apiRouterConfig.MountApi(api_config.MountApiBasePramas{
+			Remark:       "移除别名",
+			Method:       api_config.MethodPost,
+			AbsolutePath: AbsolutePath,
+			RelativePath: "RemoveAlias",
+		}, esIndex.(*Group), true, esIndexController.RemoveAlias)
 
 		apiRouterConfig.MountApi(api_config.MountApiBasePramas{
 			Remark:       "获取所有的索引配置信息",
@@ -76,12 +97,6 @@ func runEsIndex(app *App) {
 			RelativePath: "StatsAction",
 		}, esIndex.(*Group), true, esIndexController.StatsAction)
 
-		apiRouterConfig.MountApi(api_config.MountApiBasePramas{
-			Remark:       "查看索引的Stats",
-			Method:       api_config.MethodPost,
-			AbsolutePath: AbsolutePath,
-			RelativePath: "CatStatusAction",
-		}, esIndex.(*Group), true, esIndexController.CatStatusAction)
 		apiRouterConfig.MountApi(api_config.MountApiBasePramas{
 			Method:       api_config.MethodPost,
 			AbsolutePath: AbsolutePath,

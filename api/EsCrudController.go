@@ -1,8 +1,11 @@
 package api
 
 import (
+	"github.com/1340691923/ElasticView/es_sdk/pkg/factory"
 	"github.com/1340691923/ElasticView/pkg/escache"
-	es2 "github.com/1340691923/ElasticView/service/es"
+	"github.com/1340691923/ElasticView/pkg/response"
+	"github.com/1340691923/ElasticView/pkg/util"
+	"github.com/1340691923/ElasticView/service/navicat_service"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -23,12 +26,19 @@ func (this EsCrudController) GetList(ctx *fiber.Ctx) error {
 		return this.Error(ctx, err)
 	}
 
-	esService, err := es2.NewEsService(esConnect)
+	esI, err := factory.NewEsService(esConnect.ToEsSdkCfg())
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+	navicatSvr := navicat_service.NewNavicatService(esI)
+
+	res, count, err := navicatSvr.CrudGetList(ctx.Context(), crudFilter)
+
 	if err != nil {
 		return this.Error(ctx, err)
 	}
 
-	return esService.CrudGetList(ctx, crudFilter)
+	return this.Success(ctx, response.SearchSuccess, util.Map{"list": res, "count": count})
 }
 
 // 可视化GetDSL
@@ -43,12 +53,19 @@ func (this EsCrudController) GetDSL(ctx *fiber.Ctx) error {
 		return this.Error(ctx, err)
 	}
 
-	esService, err := es2.NewEsService(esConnect)
+	esI, err := factory.NewEsService(esConnect.ToEsSdkCfg())
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+	navicatSvr := navicat_service.NewNavicatService(esI)
+
+	res, err := navicatSvr.CrudGetDSL(ctx.Context(), crudFilter)
+
 	if err != nil {
 		return this.Error(ctx, err)
 	}
 
-	return esService.CrudGetDSL(ctx, crudFilter)
+	return this.Success(ctx, response.SearchSuccess, util.Map{"list": res})
 }
 
 // 下载
@@ -64,10 +81,17 @@ func (this EsCrudController) Download(ctx *fiber.Ctx) error {
 		return this.Error(ctx, err)
 	}
 
-	esService, err := es2.NewEsService(esConnect)
+	esI, err := factory.NewEsService(esConnect.ToEsSdkCfg())
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+	navicatSvr := navicat_service.NewNavicatService(esI)
+
+	downloadFileName, titleList, searchData, err := navicatSvr.CrudDownload(ctx.Context(), crudFilter)
+
 	if err != nil {
 		return this.Error(ctx, err)
 	}
 
-	return esService.CrudDownload(ctx, crudFilter)
+	return this.DownloadExcel(downloadFileName, titleList, searchData, ctx)
 }

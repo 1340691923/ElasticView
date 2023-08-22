@@ -1,6 +1,10 @@
 package escache
 
-import "github.com/1340691923/ElasticView/pkg/util"
+import (
+	"github.com/1340691923/ElasticView/es_sdk/pkg/proto"
+	"github.com/1340691923/ElasticView/pkg/util"
+	"strings"
+)
 
 //一些需要用到的结构
 
@@ -183,6 +187,38 @@ type EsConnect struct {
 	KeyPEM  string `json:"keypem" db:"keypem"`
 }
 
+func (this *EsConnect) ToEsSdkCfg() proto.Config {
+	return proto.Config{
+		Version:                 this.Version,
+		Addresses:               strings.Split(this.Ip, ","),
+		Username:                this.User,
+		Password:                this.Pwd,
+		CloudID:                 "",
+		APIKey:                  "",
+		ServiceToken:            "",
+		CertificateFingerprint:  "",
+		Header:                  nil,
+		CACert:                  nil,
+		RetryOnStatus:           nil,
+		DisableRetry:            false,
+		EnableRetryOnTimeout:    false,
+		MaxRetries:              0,
+		CompressRequestBody:     false,
+		DiscoverNodesOnStart:    false,
+		DiscoverNodesInterval:   0,
+		EnableMetrics:           false,
+		EnableDebugLogger:       false,
+		EnableCompatibilityMode: false,
+		DisableMetaHeader:       false,
+		UseResponseCheckOnly:    false,
+		RetryBackoff:            nil,
+		Transport:               nil,
+		RootPEM:                 this.RootPEM,
+		CertPEM:                 this.CertPEM,
+		KeyPEM:                  this.KeyPEM,
+	}
+}
+
 type EsCat struct {
 	EsConnect        int    `json:"es_connect"`
 	Cat              string `json:"cat"`
@@ -284,12 +320,12 @@ type EsAliasInfo struct {
 type EsReIndexInfo struct {
 	EsConnect int `json:"es_connect"`
 	UrlValues struct {
-		Timeout             string `json:"timeout"`
+		Timeout             int    `json:"timeout"`
 		RequestsPerSecond   int    `json:"requests_per_second"`
 		Slices              int    `json:"slices"`
 		Scroll              string `json:"scroll"`
 		WaitForActiveShards string `json:"wait_for_active_shards"`
-		Refresh             string `json:"refresh"`
+		Refresh             *bool  `json:"refresh"`
 		WaitForCompletion   *bool  `json:"wait_for_completion"`
 	} `json:"url_values"`
 	Body util.Map `json:"body"`

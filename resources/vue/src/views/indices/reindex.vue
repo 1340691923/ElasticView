@@ -54,13 +54,13 @@
               <el-select v-model="form.urlParmas.refresh" filterable>
                 <el-option label="true" :value="true" />
                 <el-option label="false" :value="false" />
-                <el-option label="wait_for" value="wait_for" />
 
               </el-select>
             </el-form-item>
 
-            <el-form-item v-if="urlParmasConfig.indexOf('timeout') != -1" label="timeout (指定等待响应的时间段)">
-              <el-input v-model="form.urlParmas.timeout" clearable />
+            <el-form-item v-if="urlParmasConfig.indexOf('timeout') != -1" label="timeout (指定等待响应的时间段，单位秒)">
+              <el-input v-model.number="form.urlParmas.timeout" style="width: 300px" clearable />
+              <el-tag>秒</el-tag>
             </el-form-item>
             <el-form-item
               v-if="urlParmasConfig.indexOf('wait_for_completion') != -1"
@@ -341,12 +341,12 @@ export default {
       indexNameList: [],
       form: {
         urlParmas: {
-          timeout: '30s',
+          timeout: 30,
           requests_per_second: -1,
           slices: 5,
           scroll: '',
           wait_for_active_shards: '',
-          refresh: '',
+          refresh: false,
           wait_for_completion: true
         },
         source: {
@@ -496,6 +496,20 @@ export default {
 
       const { data, code, msg } = await ReindexAction(input)
       if (code == 0) {
+        if (data.hasOwnProperty('task')) {
+          this.$notify({
+            offset: 100,
+            position: 'top-left',
+            title: 'Success',
+            dangerouslyUseHTMLString: true,
+            message: `
+                        <div>异步任务id: ${data.task}</div>
+                      `,
+            type: 'success'
+          })
+          return
+        }
+
         this.$notify({
           offset: 100,
           position: 'top-left',

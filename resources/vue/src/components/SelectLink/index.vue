@@ -1,19 +1,20 @@
 <template>
-  <div class="header-search">
+  <div class="right-menu-item">
     <el-select
       v-model="Esi18n"
+      style="width:60px"
       filterable
       default-first-option
       placeholder="I18N"
       @change="changeI18n"
     >
-      <el-option value="zh" label="I18N-Chinese" />
-      <el-option value="en" label="I18N-English" />
+      <el-option value="zh" label="中文" />
+      <el-option value="en" label="English" />
     </el-select>
 
     <el-select
       v-model="linkID"
-      style="margin-left: 10px"
+      style="width:100px"
       filterable
       default-first-option
       :placeholder="$t('请选择ES连接')"
@@ -25,10 +26,11 @@
     <el-button
       size="mini"
       type="primary"
-      style="margin-left: 10px"
+
       @click="refresh"
     > {{ $t('刷新') }}
     </el-button>
+    <slot name="avatar" />
   </div>
 </template>
 
@@ -45,7 +47,7 @@ export default {
       linkID: '',
       Esi18n: localStorage.getItem('lang') || 'zh',
       time: null,
-      timeSecend: 60,
+      timeSecend: 60
     }
   },
   computed: {},
@@ -71,11 +73,12 @@ export default {
     },
     async getEsOpt() {
       const res = await OptAction({ 'getByLocal': 1 })
+      if (res.data == null) res.data = []
       this.opt = res.data
       const obj = this.$store.state.baseData.EsConnectID
-      if (res.data.list.length > 0) {
+      if (res.data.length > 0) {
         if (Number(obj) == 0) {
-          this.linkID = res.data.list[0].id
+          this.linkID = res.data[0].id
           this.change(this.linkID)
         }
       } else {

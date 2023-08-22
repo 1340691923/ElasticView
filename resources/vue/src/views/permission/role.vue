@@ -135,7 +135,7 @@
 <script>
 import path from 'path'
 import { deepClone } from '@/utils'
-import { asyncRoutes } from '@/utils/router'
+import { asyncRoutes } from '@/router'
 import { addRole, deleteRole, getRoles, updateRole } from '@/api/role'
 import { UrlConfig } from '@/api/api-rbac'
 
@@ -208,14 +208,12 @@ export default {
       this.$refs.tree.setCheckedNodes(this.routes)
     },
     async getRoutes() {
-      var routers = asyncRoutes
-      this.serviceRoutes = routers
+      var routers = JSON.parse(JSON.stringify(asyncRoutes))
       this.routes = this.generateRoutes(routers)
     },
     async getRoles() {
       const res = await getRoles()
       for (var k in res.data) {
-        console.log(res.data[k])
         res.data[k]['routes'] = JSON.parse(res.data[k]['routes'])
       }
       this.rolesList = res.data
@@ -274,7 +272,6 @@ export default {
       this.dialogVisible = true
     },
     handleEdit(row) {
-      console.log(row, 'row')
       this.dialogType = 'edit'
       this.dialogVisible = true
       this.checkStrictly = true
@@ -306,15 +303,12 @@ export default {
     },
     generateTree(routes, basePath = '/', checkedKeys) {
       const res = []
-
       for (const route of routes) {
-        const routePath = path.resolve(basePath, route.path)
-
         if (route.children) {
-          route.children = this.generateTree(route.children, routePath, checkedKeys)
+          route.children = this.generateTree(route.children, path.resolve(basePath, route.path), checkedKeys)
         }
 
-        if (checkedKeys.includes(routePath) || (route.children && route.children.length >= 1)) {
+        if (checkedKeys.includes(path.resolve(basePath, route.path)) || (route.children && route.children.length >= 1)) {
           res.push(route)
         }
       }
@@ -323,7 +317,8 @@ export default {
     async confirmRole() {
       const isEdit = this.dialogType === 'edit'
       const checkedKeys = this.$refs.tree.getCheckedKeys()
-      this.role.routes = this.generateTree(deepClone(this.serviceRoutes), '/', checkedKeys)
+
+      this.role.routes = this.generateTree(deepClone(asyncRoutes), '/', checkedKeys)
       var roleModel = this.role
       roleModel.routes = JSON.stringify(roleModel.routes)
       if (isEdit) {

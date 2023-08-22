@@ -121,14 +121,16 @@ func (this *Response) send(ctx *fiber.Ctx, msg string, code int, data interface{
 	}
 
 	res.Data = data
-	ctx.Status(http.StatusOK).JSON(res)
+	err := ctx.Status(http.StatusOK).JSON(res)
+	if err != nil {
+		log.Println("err", err)
+	}
 	return nil
 }
 
 // 输出
 func (this *Response) Output(ctx *fiber.Ctx, data interface{}) error {
-	ctx.Status(http.StatusOK).JSON(data)
-	return nil
+	return ctx.Status(http.StatusOK).JSON(data)
 }
 
 // 得到trace信息
@@ -172,6 +174,10 @@ func (this *Response) SliceReturnValOrNull(value []string, empty interface{}) in
 func (this *Response) DownloadExcel(downloadFileName string, titleList []string, data [][]string, ctx *fiber.Ctx) (err error) {
 
 	var downloadUrl = fmt.Sprintf("data/%v.csv", time.Now().Format("20060102150405"))
+
+	if !util.FileIsExist(downloadUrl) {
+		os.Create(downloadUrl)
+	}
 
 	file, err := os.OpenFile(downloadUrl, os.O_CREATE|os.O_RDWR, 0644)
 	if err != nil {

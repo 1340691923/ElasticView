@@ -1,8 +1,12 @@
 package api
 
 import (
+	"github.com/1340691923/ElasticView/es_sdk/pkg/factory"
+	"github.com/1340691923/ElasticView/pkg/dto"
 	"github.com/1340691923/ElasticView/pkg/escache"
-	es2 "github.com/1340691923/ElasticView/service/es"
+	"github.com/1340691923/ElasticView/pkg/response"
+	"github.com/1340691923/ElasticView/service/alias_service"
+	"github.com/1340691923/ElasticView/service/index_service"
 	. "github.com/gofiber/fiber/v2"
 )
 
@@ -13,21 +17,28 @@ type EsIndexController struct {
 
 // 创建索引
 func (this EsIndexController) CreateAction(ctx *Ctx) error {
-	esIndexInfo := new(escache.EsIndexInfo)
+	esIndexInfo := new(dto.EsIndexInfo)
 	err := ctx.BodyParser(&esIndexInfo)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
+
 	esConnect, err := escache.GetEsClientByID(esIndexInfo.EsConnect)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
 
-	esService, err := es2.NewEsService(esConnect)
+	esI, err := factory.NewEsService(esConnect.ToEsSdkCfg())
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	return esService.EsIndexCreate(ctx, esIndexInfo)
+
+	err = index_service.NewIndexService(esI).EsIndexCreate(ctx.Context(), esIndexInfo)
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+
+	return this.Success(ctx, response.OperateSuccess, nil)
 }
 
 // 删除索引
@@ -42,11 +53,17 @@ func (this EsIndexController) DeleteAction(ctx *Ctx) error {
 		return this.Error(ctx, err)
 	}
 
-	esService, err := es2.NewEsService(esConnect)
+	esI, err := factory.NewEsService(esConnect.ToEsSdkCfg())
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	return esService.EsIndexDelete(ctx, esIndexInfo)
+
+	err = index_service.NewIndexService(esI).EsIndexDelete(ctx.Context(), esIndexInfo)
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+
+	return this.Success(ctx, response.OperateSuccess, nil)
 
 }
 
@@ -62,11 +79,17 @@ func (this EsIndexController) GetSettingsAction(ctx *Ctx) error {
 		return this.Error(ctx, err)
 	}
 
-	esService, err := es2.NewEsService(esConnect)
+	esI, err := factory.NewEsService(esConnect.ToEsSdkCfg())
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	return esService.EsIndexGetSettings(ctx, esIndexInfo)
+
+	res, err := index_service.NewIndexService(esI).EsIndexGetSettings(ctx.Context(), esIndexInfo)
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+
+	return this.Success(ctx, response.SearchSuccess, res)
 
 }
 
@@ -82,12 +105,17 @@ func (this EsIndexController) GetSettingsInfoAction(ctx *Ctx) error {
 		return this.Error(ctx, err)
 	}
 
-	esService, err := es2.NewEsService(esConnect)
+	esI, err := factory.NewEsService(esConnect.ToEsSdkCfg())
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	return esService.EsIndexGetSettingsInfo(ctx, esIndexInfo)
 
+	res, err := index_service.NewIndexService(esI).EsIndexGetSettingsInfo(ctx.Context(), esIndexInfo)
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+
+	return this.Success(ctx, response.SearchSuccess, res)
 }
 
 // 获取别名
@@ -102,16 +130,21 @@ func (this EsIndexController) GetAliasAction(ctx *Ctx) error {
 		return this.Error(ctx, err)
 	}
 
-	esService, err := es2.NewEsService(esConnect)
+	esI, err := factory.NewEsService(esConnect.ToEsSdkCfg())
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	return esService.EsIndexGetAlias(ctx, esAliasInfo)
+
+	res, err := alias_service.NewAliasService(esI).EsIndexGetAlias(ctx.Context(), esAliasInfo)
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+
+	return this.Success(ctx, response.SearchSuccess, res)
 
 }
 
-// 操作别名
-func (this EsIndexController) OperateAliasAction(ctx *Ctx) error {
+func (this EsIndexController) MoveAliasToIndex(ctx *Ctx) error {
 	esAliasInfo := new(escache.EsAliasInfo)
 	err := ctx.BodyParser(&esAliasInfo)
 	if err != nil {
@@ -121,11 +154,86 @@ func (this EsIndexController) OperateAliasAction(ctx *Ctx) error {
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	esService, err := es2.NewEsService(esConnect)
+	esI, err := factory.NewEsService(esConnect.ToEsSdkCfg())
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	return esService.EsIndexOperateAlias(ctx, esAliasInfo)
+
+	err = alias_service.NewAliasService(esI).MoveAliasToIndex(ctx.Context(), esAliasInfo)
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+
+	return this.Success(ctx, response.OperateSuccess, nil)
+}
+
+func (this EsIndexController) AddAliasToIndex(ctx *Ctx) error {
+	esAliasInfo := new(escache.EsAliasInfo)
+	err := ctx.BodyParser(&esAliasInfo)
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+	esConnect, err := escache.GetEsClientByID(esAliasInfo.EsConnect)
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+	esI, err := factory.NewEsService(esConnect.ToEsSdkCfg())
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+
+	err = alias_service.NewAliasService(esI).AddAliasToIndex(ctx.Context(), esAliasInfo)
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+
+	return this.Success(ctx, response.OperateSuccess, nil)
+}
+
+func (this EsIndexController) BatchAddAliasToIndex(ctx *Ctx) error {
+	esAliasInfo := new(escache.EsAliasInfo)
+	err := ctx.BodyParser(&esAliasInfo)
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+	esConnect, err := escache.GetEsClientByID(esAliasInfo.EsConnect)
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+	esI, err := factory.NewEsService(esConnect.ToEsSdkCfg())
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+
+	err = alias_service.NewAliasService(esI).BatchAddAliasToIndex(ctx.Context(), esAliasInfo)
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+
+	return this.Success(ctx, response.OperateSuccess, nil)
+}
+
+func (this EsIndexController) RemoveAlias(ctx *Ctx) error {
+	esAliasInfo := new(escache.EsAliasInfo)
+	err := ctx.BodyParser(&esAliasInfo)
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+	esConnect, err := escache.GetEsClientByID(esAliasInfo.EsConnect)
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+	esI, err := factory.NewEsService(esConnect.ToEsSdkCfg())
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+
+	err = alias_service.NewAliasService(esI).RemoveAlias(ctx.Context(), esAliasInfo)
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+
+	return this.Success(ctx, response.OperateSuccess, nil)
 }
 
 // 重建索引
@@ -139,11 +247,16 @@ func (this EsIndexController) ReindexAction(ctx *Ctx) error {
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	esService, err := es2.NewEsService(esConnect)
+	esI, err := factory.NewEsService(esConnect.ToEsSdkCfg())
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	return esService.EsIndexReindex(ctx, esReIndexInfo)
+
+	res, err := index_service.NewIndexService(esI).EsIndexReindex(ctx.Context(), esReIndexInfo)
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+	return this.Success(ctx, response.SearchSuccess, res)
 }
 
 // 得到所有的索引名
@@ -157,11 +270,15 @@ func (this EsIndexController) IndexNamesAction(ctx *Ctx) error {
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	esService, err := es2.NewEsService(esConnect)
+	esI, err := factory.NewEsService(esConnect.ToEsSdkCfg())
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	return esService.EsIndexIndexNames(ctx)
+	res, err := index_service.NewIndexService(esI).EsIndexNames(ctx.Context())
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+	return this.Success(ctx, response.SearchSuccess, res)
 }
 
 // 得到所有的索引数量
@@ -175,11 +292,15 @@ func (this EsIndexController) IndexsCountAction(ctx *Ctx) error {
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	esService, err := es2.NewEsService(esConnect)
+	esI, err := factory.NewEsService(esConnect.ToEsSdkCfg())
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	return esService.EsIndexCount(ctx)
+	res, err := index_service.NewIndexService(esI).EsIndexCount(ctx.Context())
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+	return this.Success(ctx, response.SearchSuccess, res)
 }
 
 // 获取索引的Stats
@@ -194,27 +315,13 @@ func (this EsIndexController) StatsAction(ctx *Ctx) error {
 		return this.Error(ctx, err)
 	}
 
-	esService, err := es2.NewEsService(esConnect)
+	esI, err := factory.NewEsService(esConnect.ToEsSdkCfg())
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	return esService.EsIndexCatStatus(ctx, esIndexInfo)
-}
-
-func (this EsIndexController) CatStatusAction(ctx *Ctx) error {
-	esIndexInfo := new(escache.EsIndexInfo)
-	err := ctx.BodyParser(&esIndexInfo)
+	res, err := index_service.NewIndexService(esI).EsIndexStats(ctx.Context(), esIndexInfo.IndexName)
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	esConnect, err := escache.GetEsClientByID(esIndexInfo.EsConnect)
-	if err != nil {
-		return this.Error(ctx, err)
-	}
-
-	esService, err := es2.NewEsService(esConnect)
-	if err != nil {
-		return this.Error(ctx, err)
-	}
-	return esService.EsIndexCatStatus(ctx, esIndexInfo)
+	return this.Success(ctx, response.SearchSuccess, res)
 }

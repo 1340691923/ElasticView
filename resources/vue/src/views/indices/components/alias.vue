@@ -75,8 +75,7 @@
 </template>
 
 <script>
-import { GetAliasAction } from '@/api/es-index'
-import { OperateAliasAction } from '../../../api/es-index'
+import { AddAliasToIndex, BatchAddAliasToIndex, GetAliasAction, MoveAliasToIndex, RemoveAlias } from '@/api/es-index'
 
 export default {
   name: 'Alias',
@@ -106,7 +105,8 @@ export default {
       input['new_index_list'] = this.anotherIndex
       input['alias_name'] = alias.trim()
       input['es_connect'] = this.$store.state.baseData.EsConnectID
-      const { data, code, msg } = await OperateAliasAction(input)
+
+      const { data, code, msg } = await MoveAliasToIndex(input)
       console.log(data, code, msg)
       if (code == 0) {
         this.$message({
@@ -162,7 +162,7 @@ export default {
       input['index_name'] = this.indexName
       input['alias_name'] = alias.trim()
       input['es_connect'] = this.$store.state.baseData.EsConnectID
-      const { data, code, msg } = await OperateAliasAction(input)
+      const { data, code, msg } = await AddAliasToIndex(input)
       console.log(data, code, msg)
       if (code == 0) {
         this.$message({
@@ -190,7 +190,7 @@ export default {
       input['index_name'] = this.indexName
       input['new_alias_name_list'] = aliasList
       input['es_connect'] = this.$store.state.baseData.EsConnectID
-      const { data, code, msg } = await OperateAliasAction(input)
+      const { data, code, msg } = await BatchAddAliasToIndex(input)
       if (code == 0) {
         this.$message({
           type: 'success',
@@ -215,7 +215,7 @@ export default {
         input['index_name'] = this.indexName
         input['alias_name'] = alias.trim()
         input['es_connect'] = this.$store.state.baseData.EsConnectID
-        const { data, code, msg } = await OperateAliasAction(input)
+        const { data, code, msg } = await RemoveAlias(input)
         if (code == 0) {
           this.$message({
             type: 'success',

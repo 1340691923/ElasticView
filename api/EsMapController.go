@@ -1,8 +1,11 @@
 package api
 
 import (
+	"github.com/1340691923/ElasticView/es_sdk/pkg/factory"
 	"github.com/1340691923/ElasticView/pkg/escache"
-	es2 "github.com/1340691923/ElasticView/service/es"
+	"github.com/1340691923/ElasticView/pkg/response"
+	"github.com/1340691923/ElasticView/pkg/util"
+	"github.com/1340691923/ElasticView/service/index_service"
 
 	. "github.com/gofiber/fiber/v2"
 )
@@ -24,11 +27,17 @@ func (this EsMappingController) ListAction(ctx *Ctx) error {
 		return this.Error(ctx, err)
 	}
 
-	esService, err := es2.NewEsService(esConnect)
+	esI, err := factory.NewEsService(esConnect.ToEsSdkCfg())
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	return esService.EsMappingList(ctx, esMapGetProperties)
+
+	res, err := index_service.NewIndexService(esI).EsMappingList(ctx.Context(), esMapGetProperties)
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+
+	return this.Success(ctx, response.SearchSuccess, util.Map{"list": res, "ver": esI.Version()})
 }
 
 // 修改映射
@@ -42,9 +51,15 @@ func (this EsMappingController) UpdateMappingAction(ctx *Ctx) error {
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	esService, err := es2.NewEsService(esConnect)
+	esI, err := factory.NewEsService(esConnect.ToEsSdkCfg())
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	return esService.UpdateMapping(ctx, updateMapping)
+
+	res, err := index_service.NewIndexService(esI).UpdateMapping(ctx.Context(), updateMapping)
+	if err != nil {
+		return this.Error(ctx, err)
+	}
+
+	return this.Success(ctx, response.SearchSuccess, res)
 }

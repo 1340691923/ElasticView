@@ -31,7 +31,7 @@
             />
           </el-form-item>
 
-          <el-form-item
+          <!--          <el-form-item
             :label="$t('ignore_unavailable   【把这个选项设置为 true 的时候在创建快照的过程中会忽略不存在的索引,如果没有设置ignore_unavailable，在索引不存在的情况下快照请求将会失败。】')"
           >
             <el-select v-model="form.ignore_unavailable" filterable>
@@ -39,7 +39,7 @@
               <el-option :label="$t('是')" :value="true" />
               <el-option :label="$t('否')" :value="false" />
             </el-select>
-          </el-form-item>
+          </el-form-item>-->
           <el-form-item
             :label="$t('include_global_state 【通过设置 include_global_state 为false 能够防止 集群的全局状态被作为快照的一部分存储起来】')"
           >
@@ -90,7 +90,6 @@ import { CreateSnapshotAction, SnapshotRepositoryListAction } from '@/api/es-bac
 
 export default {
   name: 'Add',
-  components: {},
   components: {
     'IndexSelect': () => import('@/components/index/select')
   },

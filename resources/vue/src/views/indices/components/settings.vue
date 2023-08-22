@@ -135,7 +135,7 @@
 
 <script>
 
-import { CatStatusAction, CreateAction, GetSettingsAction } from '@/api/es-index'
+import { StatsAction, CreateAction, GetSettingsAction } from '@/api/es-index'
 import { clone } from '@/utils/index'
 
 export default {
@@ -359,7 +359,7 @@ export default {
       input['es_connect'] = this.$store.state.baseData.EsConnectID
       input['index_name'] = this.indexName
 
-      CatStatusAction(input).then(res => {
+      StatsAction(input).then(res => {
         if (res.code == 0 || res.code == 200) {
           console.log(res)
           this.isOpen = (res.data[0].status == 'open')

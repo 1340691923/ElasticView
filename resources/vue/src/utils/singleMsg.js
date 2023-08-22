@@ -1,5 +1,6 @@
 /** 重置message，防止重复点击重复弹出message弹框 */
-import ElementUI from 'element-ui';
+
+import ElementUI from 'element-ui'
 
 let messageInstance = null
 const mainMessage = function DoneMessage(options) {
@@ -7,11 +8,15 @@ const mainMessage = function DoneMessage(options) {
   if (messageInstance) {
     messageInstance.close()
   }
+  options['offset'] = 100
+
+  options['showClose'] = true
+
   messageInstance = ElementUI.Message(options)
 }
 const arr = ['success', 'warning', 'info', 'error']
-arr.forEach(function (type) {
-  mainMessage[type] = function (options) {
+arr.forEach(function(type) {
+  mainMessage[type] = function(options) {
     if (typeof options === 'string') {
       options = {
         message: options

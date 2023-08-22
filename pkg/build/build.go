@@ -35,14 +35,7 @@ func buildBackend(cfg Config) error {
 		return err
 	}
 
-	ldFlags := `-extldflags "-static"`
-
-	// Add linker flags to drop debug information
-	prefix := ""
-	if ldFlags != "" {
-		prefix = " "
-	}
-	ldFlags = fmt.Sprintf("-w -s%s%s", prefix, ldFlags)
+	ldFlags := fmt.Sprintf("-w -s%s%s -H windowsgui", " ", `-extldflags "-static"`)
 
 	outputPath := cfg.OutputBinaryPath
 	if outputPath == "" {

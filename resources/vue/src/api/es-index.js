@@ -50,9 +50,32 @@ export function DeleteAction(data) {
   })
 }
 
-export function OperateAliasAction(data) {
+export function MoveAliasToIndex(data) {
   return request({
-    url: api + 'OperateAliasAction',
+    url: api + 'MoveAliasToIndex',
+    method: 'post',
+    data
+  })
+}
+
+export function AddAliasToIndex(data) {
+  return request({
+    url: api + 'AddAliasToIndex',
+    method: 'post',
+    data
+  })
+}
+export function BatchAddAliasToIndex(data) {
+  return request({
+    url: api + 'BatchAddAliasToIndex',
+    method: 'post',
+    data
+  })
+}
+
+export function RemoveAlias(data) {
+  return request({
+    url: api + 'RemoveAlias',
     method: 'post',
     data
   })
