@@ -25,7 +25,18 @@ func InitSqliteData() (fn func(), err error) {
 	fn = func() {}
 	driverType := config.GlobConfig.DbType
 	if driverType == "sqlite3" {
+		db.Sqlx.Exec("alter table es_link add column `rootpem` TEXT NOT NULL")
+
+		db.Sqlx.Exec("alter table es_link add column `certpem` TEXT NOT NULL")
+
+		db.Sqlx.Exec("alter table es_link add column `keypem`  TEXT NOT NULL")
 		Init()
+	} else if driverType == "mysql" {
+		db.Sqlx.Exec("alter table es_link add column `rootpem` varchar(1000) NOT NULL default ''")
+
+		db.Sqlx.Exec("alter table es_link add column `certpem` varchar(1000)  NOT NULL default ''")
+
+		db.Sqlx.Exec("alter table es_link add column `keypem`   varchar(1000) NOT NULL default ''")
 	}
 	return
 }
