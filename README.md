@@ -114,13 +114,13 @@ docker run --restart=unless-stopped -d -p 8090:8090 -v /data/elastic_view/data:/
 git clone https://github.com/1340691923/ElasticView
 
 # 同步前端项目依赖
-cd vue && npm install
+cd resources/vue && npm install
 
 # 构建前端包
-static/build/vue_build.bat
+npm run build
 
 # 构建项目二进制程序
-static/build/(根据你的系统选择构建脚本).bat
+go build -o ev cmd/ev
 ```
 
 ## 更多
