@@ -68,7 +68,7 @@ export default {
         uniqueId: 1,
         input: {
           body: '{}',
-          method: 'GET',
+          method: 'post',
           path: ''
         },
         sqlStr: 'select * from '
@@ -134,7 +134,7 @@ export default {
           uniqueId: timestamp,
           input: {
             body: '{}',
-            method: 'GET',
+            method: 'post',
             path: ''
           },
           sqlStr: ''

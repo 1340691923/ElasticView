@@ -2,19 +2,19 @@ package util
 
 import (
 	"database/sql"
-
-	"github.com/garyburd/redigo/redis"
+	"errors"
+	"strings"
 )
 
 func FilterMysqlNilErr(err error) bool {
-	if err != nil && err != sql.ErrNoRows {
+	if err != nil && !errors.Is(err, sql.ErrNoRows) {
 		return true
 	}
 	return false
 }
 
-func FilterRedisNilErr(err error) bool {
-	if err != nil && err != redis.ErrNil {
+func IsMysqlRepeatError(err error) bool {
+	if err != nil && strings.Contains(err.Error(), "Error 1062") {
 		return true
 	}
 	return false

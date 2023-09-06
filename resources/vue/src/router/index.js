@@ -67,7 +67,7 @@ export const asyncRoutes = [
       {
         path: 'role',
         component: 'views/permission/role',
-        name: 'RolePermission',
+        name: 'role',
         meta: {
           title: '角色管理',
           icon: 'el-icon-s-check'
@@ -80,6 +80,15 @@ export const asyncRoutes = [
         meta: {
           title: '用户管理',
           icon: 'el-icon-user'
+        }
+      },
+      {
+        path: 'operater_log',
+        component: 'views/permission/operater_log',
+        name: 'operater_log',
+        meta: {
+          title: '操作日志列表',
+          icon: 'el-icon-s-order'
         }
       }
     ]
@@ -250,36 +259,6 @@ export const asyncRoutes = [
       }
     ]
   },
-  {
-    path: '/tools',
-    component: 'layout',
-    redirect: '/datax/index',
-    alwaysShow: true,
-    meta: {
-      title: '数据抽取',
-      icon: 'el-icon-copy-document'
-    },
-    children: [
-      {
-        path: 'list',
-        component: 'views/datax/list',
-        name: 'list',
-        meta: {
-          title: '操作列表',
-          icon: 'el-icon-shopping-bag-2'
-        }
-      },
-      {
-        path: 'link',
-        component: 'views/datax/link',
-        name: 'link',
-        meta: {
-          title: '数据源',
-          icon: 'el-icon-shopping-bag-2'
-        }
-      }
-    ]
-  }
 ]
 
 const createRouter = () => new Router({

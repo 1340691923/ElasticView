@@ -3,14 +3,14 @@ import request from '@/utils/request'
 export function getRoutes() {
   return request({
     url: '/api/gm_user/routes',
-    method: 'get'
+    method: 'post'
   })
 }
 
 export function getRoles() {
   return request({
     url: '/api/gm_user/roles',
-    method: 'get'
+    method: 'post'
   })
 }
 
@@ -33,7 +33,7 @@ export function updateRole(data) {
 export function deleteRole(id) {
   return request({
     url: `/api/gm_user/role/delete`,
-    method: 'get',
-    params: id
+    method: 'post',
+     id
   })
 }

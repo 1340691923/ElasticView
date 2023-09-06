@@ -5,9 +5,11 @@ import (
 	"encoding/csv"
 	"encoding/json"
 	"fmt"
-	"github.com/xuri/excelize/v2"
+	"github.com/1340691923/ElasticView/pkg/infrastructure/logger"
+	. "github.com/1340691923/ElasticView/pkg/my_error"
+	"github.com/1340691923/ElasticView/pkg/util"
+	"github.com/gin-gonic/gin"
 	"io"
-	"log"
 	"net/http"
 	"os"
 	"reflect"
@@ -15,12 +17,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-
-	"github.com/1340691923/ElasticView/pkg/engine/logs"
-	"github.com/1340691923/ElasticView/pkg/util"
-	fiber "github.com/gofiber/fiber/v2"
-
-	. "github.com/1340691923/ElasticView/pkg/my_error"
 
 	"go.uber.org/zap"
 )
@@ -30,6 +26,11 @@ type Response struct {
 	Code int         `json:"code"`
 	Msg  string      `json:"msg"`
 	Data interface{} `json:"data"`
+	log  *logger.AppLogger
+}
+
+func NewResponse(log *logger.AppLogger) *Response {
+	return &Response{log: log.Named("response")}
 }
 
 const (
@@ -38,37 +39,16 @@ const (
 )
 
 const (
-	SearchSuccess  = "SearchSuccess"
-	DeleteSuccess  = "DeleteSuccess"
-	OperateSuccess = "OperateSuccess"
-	LogoutSuccess  = "LogoutSuccess"
-	LinkSuccess    = "LinkSuccess"
-	LoginSuccess   = "LoginSuccess"
+	SearchSuccess       = "查询成功"
+	DeleteSuccess       = "删除成功"
+	OperateSuccess      = "操作成功"
+	LogoutSuccess       = "注销成功"
+	ChangeLayoutSuccess = "修改布局成功"
 )
 
-var resMap = map[string]map[string]string{
-	"en": {
-		SearchSuccess:  "query was successful",
-		DeleteSuccess:  "Deleted successfully",
-		OperateSuccess: "Operation successful",
-		LogoutSuccess:  "Logout successful",
-		LinkSuccess:    "Connection successful",
-		LoginSuccess:   "Login successful",
-	},
-	"zh": {
-		SearchSuccess:  "查询成功",
-		DeleteSuccess:  "删除成功",
-		OperateSuccess: "操作成功",
-		LogoutSuccess:  "注销成功",
-		LinkSuccess:    "连接成功",
-		LoginSuccess:   "登录成功",
-	},
-}
-
 func (this *Response) JsonDealErr(err error) string {
-
 	b, _ := json.Marshal(this.DealErr(err))
-	return util.BytesToStr(b)
+	return string(b)
 }
 
 // trace
@@ -91,52 +71,65 @@ func (this *Response) DealErr(err error) (errorTrace []string) {
 }
 
 // 正确信息
-func (this *Response) Success(ctx *fiber.Ctx, msg string, data interface{}) error {
-	this.send(ctx, msg, SUCCESS, data)
+func (this *Response) Success(ctx *gin.Context, msg string, data interface{}) error {
+	this.Msg = msg
+	this.Data = data
+	this.send(ctx, SUCCESS)
 	return nil
 }
 
 // 错误信息
-func (this *Response) Error(ctx *fiber.Ctx, err error) error {
+func (this *Response) FastError(write io.Writer, err error) error {
+	myErr := ErrorToErrorCode(err)
+
+	this.Output(write, map[string]interface{}{
+		"code": myErr.Code(),
+		"msg":  myErr.Error(),
+	})
+	return nil
+}
+
+// 错误信息
+func (this *Response) Error(ctx *gin.Context, err error) error {
 	errorTrace := this.getTrace(err)
 
 	myErr := ErrorToErrorCode(err)
 
-	logs.Logger.Error("Error", zap.Strings("err", this.DealErr(myErr)))
+	this.log.Error("Error", zap.Strings("err", this.DealErr(myErr)))
 
-	this.send(ctx, myErr.Error(), myErr.Code(), errorTrace)
+	this.Msg = myErr.Error()
+	this.Data = errorTrace
+	this.send(ctx, myErr.Code())
 	return nil
 }
 
 // 输出
-func (this *Response) send(ctx *fiber.Ctx, msg string, code int, data interface{}) error {
-	var res Response
-	res.Code = code
-	_, ok := resMap[ctx.Get("Current-Language", "zh")][msg]
-
-	if ok {
-		res.Msg = resMap[ctx.Get("Current-Language", "zh")][msg]
+func (this *Response) send(ctx *gin.Context, code int) error {
+	this.Code = code
+	var err error
+	if this.Code != 0 {
+		ctx.JSON(http.StatusAccepted, this)
 	} else {
-		res.Msg = msg
+		ctx.JSON(http.StatusOK, this)
 	}
 
-	res.Data = data
-	err := ctx.Status(http.StatusOK).JSON(res)
 	if err != nil {
-		log.Println("err", err)
+		ctx.JSON(http.StatusAccepted, map[string]interface{}{"msg": err, "code": 500})
 	}
 	return nil
 }
 
 // 输出
-func (this *Response) Output(ctx *fiber.Ctx, data interface{}) error {
-	return ctx.Status(http.StatusOK).JSON(data)
+func (this *Response) Output(write io.Writer, data map[string]interface{}) error {
+	b, _ := json.Marshal(data)
+	write.Write(b)
+	return nil
 }
 
 // 得到trace信息
 func (this *Response) getTrace(err error) []string {
 	goEnv := os.Getenv("GO_ENV")
-	errorTrace := []string{}
+	var errorTrace []string
 	if goEnv == "product" {
 		errorTrace = this.DealErr(err)
 	}
@@ -171,11 +164,11 @@ func (this *Response) SliceReturnValOrNull(value []string, empty interface{}) in
 	return value
 }
 
-func (this *Response) DownloadExcel(downloadFileName string, titleList []string, data [][]string, ctx *fiber.Ctx) (err error) {
+func (this *Response) DownloadExcel(downloadFileName string, titleList []string, data [][]string, ctx *gin.Context, log *logger.AppLogger) (err error) {
 
 	var downloadUrl = fmt.Sprintf("data/%v.csv", time.Now().Format("20060102150405"))
 
-	if !util.FileIsExist(downloadUrl) {
+	if !util.CheckFileIsExist(downloadUrl) {
 		os.Create(downloadUrl)
 	}
 
@@ -201,13 +194,13 @@ func (this *Response) DownloadExcel(downloadFileName string, titleList []string,
 			time.Sleep(5 * time.Second)
 			err := os.Remove(downloadUrl)
 			if err != nil {
-				logs.Logger.Sugar().Errorf("err", err)
+				log.Sugar().Errorf("err", err)
 			}
 		}()
 	}()
 	f, err := os.Open(downloadUrl)
 	if err != nil {
-		logs.Logger.Sugar().Errorf("os.Open failed:", err)
+		log.Sugar().Errorf("os.Open failed:", err)
 		return
 	}
 	defer f.Close()
@@ -215,50 +208,10 @@ func (this *Response) DownloadExcel(downloadFileName string, titleList []string,
 	// 将文件读取出来
 	filedata, err := io.ReadAll(f)
 	if err != nil {
-		logs.Logger.Sugar().Errorf("io.ReadAll failed:", err)
+		log.Sugar().Errorf("io.ReadAll failed:", err)
 		return
 	}
-	ctx.Response().Header.Set("Content-Disposition", `attachment; filename="`+downloadFileName+`.xlsx"`)
-	ctx.Write(filedata)
-	return
-}
-
-func (this *Response) DownloadExcel2(downloadFileName string, titleList []interface{}, data [][]interface{}, ctx *fiber.Ctx) (err error) {
-	log.Println("download")
-	xlsx := excelize.NewFile()
-
-	for index, _ := range data {
-		if index == 0 {
-			// 如果为0写入新的excel 第一行为字段名称
-			xlsx.SetSheetRow("Sheet1", "A1", &titleList)
-		}
-
-		//因为index是从0开始，第一行被字段占用，从第二行开始写入整行数据
-		var lint = strconv.Itoa(index + 2)
-		log.Println("index", index)
-		xlsx.SetSheetRow("Sheet1", "A"+lint, &data[index])
-	}
-	log.Println("download2")
-	var downloadUrl = fmt.Sprintf("data/%v.xlsx", time.Now().Format("20060102150405"))
-
-	xlsx.SaveAs(downloadUrl)
-	log.Println("download3")
-	//defer os.Remove(downloadUrl)
-	f, err := os.Open(downloadUrl)
-	if err != nil {
-		logs.Logger.Sugar().Errorf("os.Open failed:", err)
-		return
-	}
-	defer f.Close()
-	log.Println("download4")
-	// 将文件读取出来
-	filedata, err := io.ReadAll(f)
-	if err != nil {
-		logs.Logger.Sugar().Errorf("io.ReadAll failed:", err)
-		return
-	}
-	log.Println("download5")
-	ctx.Response().Header.Set("Content-Disposition", `attachment; filename="`+downloadFileName+`.xlsx"`)
-	ctx.Write(filedata)
+	ctx.Header("Content-Disposition", `attachment; filename="`+downloadFileName+`.xlsx"`)
+	ctx.Writer.Write(filedata)
 	return
 }

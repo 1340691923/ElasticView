@@ -22,7 +22,8 @@ func InArr(array []int, column int) bool {
 
 func InstrArr(array []string, column string) bool {
 	i := 0
-	for i < len(array) {
+	l := len(array)
+	for i < l {
 		if array[i] == column {
 			return true
 		}
@@ -36,7 +37,37 @@ func InMap(maps map[string]int, column string) (ok bool) {
 	return
 }
 
-// 替换string与byte转换时性能损耗的代码  ！！！ 只可用于不可修改字符串变量
+func RemoveRepeatedElement(arr []string) (newArr []interface{}) {
+	newArr = make([]interface{}, 0)
+	for i := 0; i < len(arr); i++ {
+		repeat := false
+		for j := i + 1; j < len(arr); j++ {
+			if arr[i] == arr[j] {
+				repeat = true
+				break
+			}
+		}
+		if !repeat {
+			newArr = append(newArr, arr[i])
+		}
+	}
+	return
+}
+
+// b2s converts byte slice to a string without memory allocation.
+// See https://groups.google.com/forum/#!msg/Golang-Nuts/ENgbUzYvCuU/90yGx7GUAgAJ .
+//
+// Note it may break if string and/or slice header will change
+// in the future go versions.
+func Bytes2str(b []byte) string {
+	/* #nosec G103 */
+	return *(*string)(unsafe.Pointer(&b))
+}
+
+// s2b converts string to a byte slice without memory allocation.
+//
+// Note it may break if string and/or slice header will change
+// in the future go versions.
 func Str2bytes(s string) (b []byte) {
 	/* #nosec G103 */
 	bh := (*reflect.SliceHeader)(unsafe.Pointer(&b))
@@ -46,10 +77,6 @@ func Str2bytes(s string) (b []byte) {
 	bh.Cap = sh.Len
 	bh.Len = sh.Len
 	return b
-}
-
-func Bytes2str(b []byte) string {
-	return *(*string)(unsafe.Pointer(&b))
 }
 
 // SplitInt 分割字符串并转为INT

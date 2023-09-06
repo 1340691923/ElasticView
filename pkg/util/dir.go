@@ -1,8 +1,8 @@
 package util
 
 import (
-	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"os"
 	"path"
@@ -40,13 +40,13 @@ func GetCurrentDirectory() string {
 }
 
 func DirCopy(src string, dest string) error {
-	log.Println(src, dest)
 	// 遍历原文件夹内部所有item
-	items, _ := os.ReadDir(src)
+	items, _ := ioutil.ReadDir(src)
 	for _, item := range items {
 
 		// 文件
 		if !item.IsDir() {
+			log.Println(path.Join(src, item.Name()), path.Join(dest, item.Name()))
 			cpoyFile2(path.Join(src, item.Name()), path.Join(dest, item.Name()))
 			continue
 		}
@@ -78,19 +78,4 @@ func cpoyFile2(src, dest string) error {
 	// copy
 	_, err = io.Copy(dstFp, srcFp)
 	return err
-}
-
-func FileIsExist(path string) bool {
-	_, err := os.Stat(path)
-	if err != nil {
-		if os.IsExist(err) {
-			return true
-		}
-		if os.IsNotExist(err) {
-			return false
-		}
-		fmt.Println(err)
-		return false
-	}
-	return true
 }

@@ -13,16 +13,16 @@ export function DeleteAction(data) {
 export function ListAction(data) {
   return request({
     url: api + 'ListAction',
-    method: 'get',
-    params: data
+    method: 'post',
+     data
   })
 }
 
 export function OptAction(data) {
   return request({
     url: api + 'OptAction',
-    method: 'get',
-    params: data
+    method: 'post',
+     data
   })
 }
 

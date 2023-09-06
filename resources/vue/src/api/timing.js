@@ -13,7 +13,7 @@ export function ListAction(data) {
 export function CancelAction(data) {
   return request({
     url: api + 'CancelAction',
-    method: 'get',
-    params: data
+    method: 'post',
+     data
   })
 }

@@ -5,35 +5,16 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/gofiber/fiber/v2"
+	"github.com/gin-gonic/gin"
 	"io"
+	"io/ioutil"
 	"net"
 	"net/http"
 	"net/url"
 	"regexp"
 	"strconv"
 	"strings"
-
-	"github.com/valyala/fasthttp"
 )
-
-// 获取真实的IP  1.1.1.1, 2.2.2.2, 3.3.3.3
-func CtxClientIP(ctx *fasthttp.RequestCtx) string {
-	clientIP := string(ctx.Request.Header.Peek("X-Forwarded-For"))
-	if index := strings.IndexByte(clientIP, ','); index >= 0 {
-		clientIP = clientIP[0:index]
-		//获取最开始的一个 即 1.1.1.1
-	}
-	clientIP = strings.TrimSpace(clientIP)
-	if len(clientIP) > 0 {
-		return clientIP
-	}
-	clientIP = strings.TrimSpace(string(ctx.Request.Header.Peek("X-Real-Ip")))
-	if len(clientIP) > 0 {
-		return clientIP
-	}
-	return ctx.RemoteIP().String()
-}
 
 func GetIp(r *http.Request) string {
 	// var r *http.Request
@@ -57,7 +38,7 @@ func DoURL(method, url string, body []byte) ([]byte, error) {
 	}
 	defer resp.Body.Close()
 
-	return io.ReadAll(resp.Body)
+	return ioutil.ReadAll(resp.Body)
 }
 
 // GetURL 请求URL
@@ -68,26 +49,7 @@ func GetURL(URL string) ([]byte, error) {
 	}
 	defer resp.Body.Close()
 
-	return io.ReadAll(resp.Body)
-}
-
-// GetURL 请求URL
-func CtxGetURL(URL string) ([]byte, error) {
-	req := fasthttp.AcquireRequest()
-	defer fasthttp.ReleaseRequest(req) // 用完需要释放资源
-
-	// 默认是application/x-www-form-urlencoded
-	req.Header.SetMethod("GET")
-
-	req.SetRequestURI(URL)
-
-	resp := fasthttp.AcquireResponse()
-	defer fasthttp.ReleaseResponse(resp) // 用完需要释放资源
-	if err := fasthttp.Do(req, resp); err != nil {
-		return nil, err
-	}
-	b := resp.Body()
-	return b, nil
+	return ioutil.ReadAll(resp.Body)
 }
 
 // GetValueURL 请求URL 附带参数
@@ -101,46 +63,12 @@ func GetValueURL(URL string, params url.Values) ([]byte, error) {
 	}
 	defer resp.Body.Close()
 
-	return io.ReadAll(resp.Body)
-}
-
-func CtxGetValueURL(URL string, params url.Values) ([]byte, error) {
-	if params == nil {
-		return CtxGetURL(URL)
-	}
-	req := fasthttp.AcquireRequest()
-	defer fasthttp.ReleaseRequest(req) // 用完需要释放资源
-
-	// 默认是application/x-www-form-urlencoded
-	req.Header.SetMethod("GET")
-
-	req.SetRequestURI(fmt.Sprint(URL, "?", params.Encode()))
-
-	resp := fasthttp.AcquireResponse()
-	defer fasthttp.ReleaseResponse(resp) // 用完需要释放资源
-	if err := fasthttp.Do(req, resp); err != nil {
-		return nil, err
-	}
-	b := resp.Body()
-	return b, nil
+	return ioutil.ReadAll(resp.Body)
 }
 
 // GetURLReceiveJSON GET请求 自动解析JSON
 func GetURLReceiveJSON(URL string, params url.Values, receive interface{}) error {
 	body, err := GetValueURL(URL, params)
-	if err != nil {
-		return err
-	}
-
-	err = json.Unmarshal(body, receive)
-	if err != nil {
-		return fmt.Errorf("json.Unmarshal failed: %s, %v", body, err)
-	}
-	return nil
-}
-
-func CtxGetURLReceiveJSON(URL string, params url.Values, receive interface{}) error {
-	body, err := CtxGetValueURL(URL, params)
 	if err != nil {
 		return err
 	}
@@ -160,7 +88,7 @@ func PostURL(URL string, params url.Values) ([]byte, error) {
 	}
 	defer resp.Body.Close()
 
-	return io.ReadAll(resp.Body)
+	return ioutil.ReadAll(resp.Body)
 }
 
 // 检查http请求中是否包含所需参数
@@ -233,7 +161,7 @@ func PostJSON(URL string, v interface{}) ([]byte, error) {
 	}
 	defer resp.Body.Close()
 
-	return io.ReadAll(resp.Body)
+	return ioutil.ReadAll(resp.Body)
 }
 
 // PostJSON POST请求 BODY为JSON格式 ContentType=application/json
@@ -254,7 +182,7 @@ func GetJSON(URL string, v interface{}) ([]byte, error) {
 	}
 	defer resp.Body.Close()
 
-	return io.ReadAll(resp.Body)
+	return ioutil.ReadAll(resp.Body)
 }
 
 // PostJSONReceiveJSON POST请求 BODY为JSON格式 ContentType=application/json 自动解析JSON
@@ -289,7 +217,7 @@ func PostToJSON(URL string, v interface{}) ([]byte, error) {
 	}
 	defer resp.Body.Close()
 
-	return io.ReadAll(resp.Body)
+	return ioutil.ReadAll(resp.Body)
 }
 
 // CheckNotNil 检查HTTP参数是否为空
@@ -385,15 +313,6 @@ func FormIntDefault(r *http.Request, key string, def int) int {
 	return i
 }
 
-// FormIntDefault 获取Form参数 如果出错则返回默认值
-func CtxFormIntDefault(ctx *fiber.Ctx, key string, def int) int {
-	i, err := strconv.Atoi(ctx.FormValue(key))
-	if err != nil {
-		return def
-	}
-	return i
-}
-
 // FormIntSliceDefault 获取Form参数 如果出错则返回默认值
 func FormIntSliceDefault(r *http.Request, key, sep string, def []int) []int {
 	var i int
@@ -420,7 +339,7 @@ func FormFileValue(r *http.Request, key string) (string, error) {
 		return "", err
 	}
 	defer f.Close()
-	b, err := io.ReadAll(f)
+	b, err := ioutil.ReadAll(f)
 	if err != nil {
 		return "", err
 	}
@@ -445,7 +364,7 @@ func FormFileValues(r *http.Request, key string) ([]string, error) {
 					return nil, err
 				}
 
-				b, err := io.ReadAll(f)
+				b, err := ioutil.ReadAll(f)
 				f.Close()
 				if err != nil {
 					return nil, err
@@ -458,6 +377,6 @@ func FormFileValues(r *http.Request, key string) ([]string, error) {
 	return nil, http.ErrMissingFile
 }
 
-func GetToken(ctx *fiber.Ctx) (token string) {
-	return ctx.Get("X-Token")
+func GetToken(ctx *gin.Context) (token string) {
+	return ctx.GetHeader("X-Token")
 }

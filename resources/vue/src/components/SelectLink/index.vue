@@ -75,15 +75,7 @@ export default {
       const res = await OptAction({ 'getByLocal': 1 })
       if (res.data == null) res.data = []
       this.opt = res.data
-      const obj = this.$store.state.baseData.EsConnectID
-      if (res.data.length > 0) {
-        if (Number(obj) == 0) {
-          this.linkID = res.data[0].id
-          this.change(this.linkID)
-        }
-      } else {
-        this.change(0)
-      }
+      
     },
     refresh() {
       this.getEsOpt()

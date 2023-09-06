@@ -7,6 +7,7 @@ const (
 	ERROR_AUTH_CHECK_TOKEN_TIMEOUT int = 40003
 	ERROR_RBAC_LOAD                int = 40004
 	ERROR_RBAC_AUTH                int = 40005
+	ERROR_Will_TIMEOUT             int = 40006
 )
 
 // 内置异常表 TOKEN_ERROR
@@ -16,4 +17,5 @@ var TOKEN_ERROR = map[int]string{
 	ERROR_AUTH_CHECK_TOKEN_TIMEOUT: "Token已超时",
 	ERROR_RBAC_LOAD:                "读取rdbc权限列表失败",
 	ERROR_RBAC_AUTH:                "您没有该资源的访问权限",
+	ERROR_Will_TIMEOUT:             "Token即将超时，已续约",
 }

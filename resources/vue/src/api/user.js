@@ -11,8 +11,7 @@ export function login(data) {
 export function getInfo() {
   return request({
     url: '/api/gm_user/info',
-    method: 'get',
-    params: {}
+    method: 'post',
   })
 }
 
@@ -40,32 +39,32 @@ export function roleOption() {
 export function getUserById(data) {
   return request({
     url: '/api/gm_user/getUserById',
-    method: 'get',
-    params: data
+    method: 'post',
+     data
   })
 }
 
 export function UpdateUser(data) {
   return request({
     url: '/api/gm_user/UpdateUser',
-    method: 'get',
-    params: data
+    method: 'post',
+     data
   })
 }
 
 export function InsertUser(data) {
   return request({
     url: '/api/gm_user/InsertUser',
-    method: 'get',
-    params: data
+    method: 'post',
+     data
   })
 }
 
 export function DelUser(id) {
   return request({
     url: '/api/gm_user/DelUser',
-    method: 'get',
-    params: id
+    method: 'post',
+     id
   })
 }
 

@@ -6,11 +6,11 @@ import (
 	"fmt"
 )
 
-// ECB模式解密
+//ECB模式解密
 func ECBDecrypt(crypted []byte, keyStr string) ([]byte, error) {
 	key := []byte(keyStr)
 	if !validKey(key) {
-		return nil, fmt.Errorf("秘钥长度错误,当前传入长度为 %d", len(key))
+		return nil, fmt.Errorf("秘钥长度错误,当前传入长度为 %d",len(key))
 	}
 	if len(crypted) < 1 {
 		return nil, fmt.Errorf("源数据长度不能为0")
@@ -20,7 +20,7 @@ func ECBDecrypt(crypted []byte, keyStr string) ([]byte, error) {
 		return nil, err
 	}
 	if len(crypted)%block.BlockSize() != 0 {
-		return nil, fmt.Errorf("源数据长度必须是 %d 的整数倍，当前长度为：%d", block.BlockSize(), len(crypted))
+		return nil, fmt.Errorf("源数据长度必须是 %d 的整数倍，当前长度为：%d",block.BlockSize(), len(crypted))
 	}
 	var dst []byte
 	tmpData := make([]byte, block.BlockSize())
@@ -36,12 +36,12 @@ func ECBDecrypt(crypted []byte, keyStr string) ([]byte, error) {
 	return dst, nil
 }
 
-// ECB模式加密
+//ECB模式加密
 func ECBEncrypt(srcStr, keyStr string) ([]byte, error) {
 	key := []byte(keyStr)
 	src := []byte(srcStr)
 	if !validKey(key) {
-		return nil, fmt.Errorf("秘钥长度错误, 当前传入长度为 %d", len(key))
+		return nil, fmt.Errorf("秘钥长度错误, 当前传入长度为 %d",len(key))
 	}
 	block, err := aes.NewCipher(key)
 	if err != nil {
@@ -52,7 +52,7 @@ func ECBEncrypt(srcStr, keyStr string) ([]byte, error) {
 	}
 	src = PKCS5Padding(src, block.BlockSize())
 	if len(src)%block.BlockSize() != 0 {
-		return nil, fmt.Errorf("源数据长度必须是 %d 的整数倍，当前长度为：%d", block.BlockSize(), len(src))
+		return nil, fmt.Errorf("源数据长度必须是 %d 的整数倍，当前长度为：%d",block.BlockSize(), len(src))
 	}
 	var dst []byte
 	tmpData := make([]byte, block.BlockSize())
