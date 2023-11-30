@@ -1,4 +1,7 @@
 ﻿<h1 align="center">
+   作者求工作，tel：13298692154
+</h1>
+ <h1 align="center">
    <br>
    <img src="https://gitee.com/cynthia520/elastic-view/raw/main/static/show_img/2.png"/>
    <br>
