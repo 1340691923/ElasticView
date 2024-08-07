@@ -75,7 +75,7 @@ export default {
       const res = await OptAction({ 'getByLocal': 1 })
       if (res.data == null) res.data = []
       this.opt = res.data
-      
+
     },
     refresh() {
       this.getEsOpt()
@@ -118,7 +118,7 @@ export default {
   display: inline-block;
   vertical-align: middle;
 
-/deep/ .el-input__inner {
+  ::v-deep .el-input__inner {
   border-radius: 0;
   border: 0;
   padding-left: 0;

@@ -41,6 +41,10 @@
         size="mini"
         id="index-search" type="primary" class="filter-item" icon="el-icon-search" @click="search">{{ $t('搜索') }}
       </el-button>
+      <el-button
+        size="mini"
+        id="index-export" type="primary" class="filter-item" icon="el-icon-export" @click="exportXlsx">{{ $t('导出') }}
+      </el-button>
       <el-button-group>
 
         <el-button
@@ -605,6 +609,8 @@ import {CreateAction, DeleteAction, GetSettingsAction, GetSettingsInfoAction, St
 import {esSettingsWords} from '@/utils/base-data'
 import {ListAction, UpdateMappingAction} from '@/api/es-map'
 
+import writeXlsxFile from "write-excel-file";
+
 export default {
   name: 'indices',
 
@@ -1112,6 +1118,85 @@ export default {
 
         this.connectLoading = false
       })
+    },
+    exportXlsx() {
+      this.page = 1
+      this.pageshow = false
+      this.exportXlsxData()
+      this.$nextTick(() => {
+        this.pageshow = true
+      })
+    },
+    exportXlsxData() {
+      this.connectLoading = true
+      const form = {
+        cat: 'CatIndices',
+        es_connect: this.$store.state.baseData.EsConnectID
+      }
+      this.indexTishiList = []
+      CatAction(form).then(res => {
+        if (res.code == 0) {
+          const list = res.data
+
+          for (const index in list) {
+            const obj = list[index]
+            // 把 . 转成 ->
+            for (const key in obj) {
+              let value = parseInt(obj[key])
+              if (isNaN(value)) {
+                value = obj[key]
+              }
+              list[index][key.split('.').join('->')] = value
+            }
+            this.indexTishiList.push({'value': obj["index"], 'data': obj["index"]})
+          }
+
+          let tmpList = []
+          if (this.status.trim() != '') {
+            for (const v of list) {
+              if (v['health'] == this.status.trim()) {
+                tmpList.push(v)
+              }
+            }
+          } else {
+            tmpList = list
+          }
+          tmpList = filterData(tmpList, this.input.trim())
+          this.allList = tmpList
+          this.total = tmpList.length
+          this.pageLimit()
+          writeXlsxFile(this.allList, {
+             schema:[{
+              column: this.$t("索引健康状态"),
+              type: String,
+              value: (row) => {return row.health},
+             },{
+              column: this.$t("索引名称"),
+              type: String,
+              value: (row) => {return row.index},
+             },{
+              column: this.$t("主分片的大小"),
+              type: String,
+              value: (row) => {return row["pri.store.size"]},
+             },{
+              column: this.$t("主分片+副本分分片的大小"),
+              type: String,
+              value: (row) => {return row["store.size"]},
+             }],
+             fileName: "indexes.xlsx",
+          }).then(res => {});
+        } else {
+          this.$message({
+            type: 'error',
+            message: res.msg
+          })
+        }
+        this.connectLoading = false
+      }).catch(err => {
+        console.log(err)
+
+        this.connectLoading = false
+      })
     }
   }
 }
@@ -1138,7 +1223,7 @@ export default {
   width: 150px;
 }
 
-/deep/ :focus {
+::v-deep :focus {
   outline: 0;
 }
 

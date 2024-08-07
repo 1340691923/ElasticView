@@ -554,7 +554,7 @@ export default {
   font-size: 8px;
 }
 
-/deep/ :focus {
+::v-deep :focus {
   outline: 0;
 }
 </style>
