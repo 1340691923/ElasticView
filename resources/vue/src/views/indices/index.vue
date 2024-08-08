@@ -1175,6 +1175,30 @@ export default {
               type: String,
               value: (row) => {return row.index},
              },{
+              column: this.$t("索引uuid"),
+              type: String,
+              value: (row) => {return row.uuid.toString()},
+             },{
+              column: this.$t("索引主分片数"),
+              type: Number,
+              value: (row) => {return row.pri},
+             },{
+              column: this.$t("索引副本分片数量"),
+              type: Number,
+              value: (row) => {return row.rep},
+             },{
+              column: this.$t("索引副本分片数量"),
+              type: Number,
+              value: (row) => {return row.rep},
+             },{
+              column: this.$t("索引文档总数"),
+              type: String,
+              value: (row) => {return row["docs.count"].toString()},
+             },{
+              column: this.$t("索引中删除状态的文档"),
+              type: String,
+              value: (row) => {return row["docs.deleted"].toString()},
+             },{
               column: this.$t("主分片的大小"),
               type: String,
               value: (row) => {return row["pri.store.size"]},
@@ -1184,14 +1208,15 @@ export default {
               value: (row) => {return row["store.size"]},
              }],
              fileName: "indexes.xlsx",
-          }).then(res => {});
+          }).then(res => {this.connectLoading = false}).catch(err => {this.connectLoading = false;this.$message({ type: 'error',message: err.toString()}); })
         } else {
+          this.connectLoading = false
           this.$message({
             type: 'error',
             message: res.msg
           })
         }
-        this.connectLoading = false
+
       }).catch(err => {
         console.log(err)
 

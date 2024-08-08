@@ -120,7 +120,7 @@ git clone https://github.com/1340691923/ElasticView
 cd resources/vue && npm install
 
 # 构建前端包
-npm run build
+npm run build:prod
 
 # 构建项目二进制程序
 go build -o ev cmd/ev
