@@ -123,7 +123,7 @@ cd resources/vue && npm install
 npm run build:prod
 
 # 构建项目二进制程序
-go build -o ev cmd/ev
+CGO_ENABLED=0 GOOS=linux go build -ldflags '-w -s' -o ev cmd/ev/main.go
 ```
 
 ## 更多
