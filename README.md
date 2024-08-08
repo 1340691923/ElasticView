@@ -61,8 +61,8 @@ https://www.bilibili.com/video/av473231184/?zw&spm_id_from=888.80996.embed_old
 <!-- ## 手动编译
  1. `git clone git@github.com:1340691923/ElasticView.git`
  2. `cd vue && cnpm install (安装前端依赖)`
- 3. `执行static/build 下的vue_build.bat （打前端正式包）`
- 4. `执行static/build 下的win_build.bat(linux则为linux_build.bat)  (编译二进制可执行程序)`
+ 3. `执行resource/vue 下的 npm run build:prod）`
+ 4. `执行根目录下 go run cmd/build/main.go --homePath=$(pwd) --configFile=$(pwd)/config/config.yml )  (编译二进制可执行程序)`
   -->
 
 ## ☁docker部署
@@ -120,10 +120,10 @@ git clone https://github.com/1340691923/ElasticView
 cd resources/vue && npm install
 
 # 构建前端包
-npm run build
+npm run build:prod
 
 # 构建项目二进制程序
-go build -o ev cmd/ev
+CGO_ENABLED=0 GOOS=linux go build -ldflags '-w -s' -o ev cmd/ev/main.go
 ```
 
 ## 更多

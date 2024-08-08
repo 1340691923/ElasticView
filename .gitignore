@@ -1,2 +1,3 @@
-resources/vue/node_moudules
+resources/vue/node_modules
 /logs/
+dist
