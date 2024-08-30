@@ -67,6 +67,7 @@ export default {
       IndexNamesAction(input).then(res => {
         if (res.code == 0) {
           this.indexList = res.data
+          this.$emit('mount')
         } else {
           this.$message({
             type: 'error',
@@ -76,6 +77,9 @@ export default {
       }).catch(err => {
         console.log(err)
       })
+    },
+    setIndexList(newIndexList){
+      this.indexList = newIndexList
     }
   }
 }

@@ -53,6 +53,8 @@
   "仓库名": "Warehouse name",
   "快照名": "Snapshot name",
   "需要备份的索引": "Index to be backed up",
+  "需要恢复的索引": "Index to be recovery",
+  "选择需要恢复的索引": "Select Indexs to be recovery",
   "迁移别名到多个索引上": "Migrate aliases to multiple indexes",
   "不设置": "Not set",
   "是": "yes",
