@@ -9,13 +9,15 @@
           <el-form-item :label="$t('快照名')">
             <el-input v-model="snapshot" readonly />
           </el-form-item>
-          <el-form-item :label="$t('需要备份的索引')">
+          <el-form-item :label="$t('需要恢复的索引')">
             <index-select
               :multiple="true"
               :have-all="true"
               :clearable="true"
-              :placeholder="$t('迁移别名到多个索引上')"
+              :placeholder="$t('选择需要恢复的索引')"
               @change="changeIndex"
+              @mount="initIndexSelected"
+              ref="indexSelect"
             />
           </el-form-item>
           <el-form-item :label="$t('rename_pattern 【正则表达式】')">
@@ -80,7 +82,7 @@
 </template>
 
 <script>
-import { SnapshotRestoreAction } from '@/api/es-backup'
+import { SnapshotRestoreAction,SnapshotDetailAction } from '@/api/es-backup'
 import { OptimizeAction } from '@/api/es'
 
 export default {
@@ -172,6 +174,29 @@ export default {
           type: 'error',
           message: msg
         })
+      }
+    },
+    //自动加载快照中的索引列表
+    async initIndexSelected(){
+      const input = {}
+      input['es_connect'] = this.$store.state.baseData.EsConnectID
+      input['repository'] = this.form.repositoryName
+      input['snapshot'] = this.form.snapshotName
+
+      const { data, code, msg } = await SnapshotDetailAction(input)
+      if (code != 0) {
+        this.$message({
+          type: 'error',
+          message: msg
+        })
+        return
+      } else {
+        this.form.indexList = []
+        if(data.snapshots && data.snapshots.length>0){
+          this.$nextTick(() => {
+           this.$refs.indexSelect.setIndexList(  data.snapshots[0].indices )
+          })
+        }
       }
     }
   }
