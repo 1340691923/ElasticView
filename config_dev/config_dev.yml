@@ -19,10 +19,10 @@ mysql:
     username: root
 oauth:
     workwechat:
-        agentid: 
-        corpid: 
-        enable: 
-        secert: 
+        agentid:
+        corpid:
+        enable:
+        secert:
 plugin:
     loadpath: plugins
     storepath: plugins_store
@@ -32,7 +32,7 @@ rooturl: http://localhost:8090/
 sqlite:
     dbname: es_view.db
 translation:
-    cfgdir: ev-i18n
+    cfgdir: config_dev/ev-i18n
     lang: zh-cn
 version: 0.0.5
 watermarkcontent:

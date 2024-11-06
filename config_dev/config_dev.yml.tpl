@@ -19,7 +19,7 @@ mysql: # dbType为mysql时填
   maxIdleConns: 10
 appSecret: "1340691923@qq.com" # jwt 加密密钥
 esPwdSecret: "concat_mail!!->1340691923@qq.com" # es密码加密密钥 加密方式为 AES
-version: "0.0.3"  # EV 版本号
+version: "0.0.5"  # EV 版本号
 deBug: false      # 是否为测试模式 如果为 false则打开默认浏览器直接访问地址
 checkForevUpdates: true #是否自动检测ev更新
 checkForPluginUpdates: true  #是否自动检测ev插件更新
@@ -31,4 +31,4 @@ plugin:
 watermarkContent: ElasticView #水印
 translation:
   lang: zh-cn # zh-cn or en
-  cfgDir: config/ev-i18n  #i18n文件存放目录
+  cfgDir: config_dev/ev-i18n  #i18n文件存放目录
