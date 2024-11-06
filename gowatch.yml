@@ -1,0 +1,27 @@
+# gowatch.yml 配置示例
+
+# 当前目录执行下生成的可执行文件的名字，默认是当前目录名
+appname: "ev"
+# 是否对当前目录下相关依赖执行 ‘go install’命令，将会执行安装依赖
+go_install: true
+# 需要监听的文件名后缀，默认只有'.go'文件
+watch_exts:
+  - .go
+  - .yml
+# 在执行命令时，需要增加的其他参数
+cmd_args:
+  - -configFile=config_dev/config_dev.yml
+# 需要增加环境变量，默认已加载当前环境变量
+#envs:
+#  - a=b
+# 是否监听 ‘vendor’ 文件夹下的文件改变
+vendor_watch: false
+# 不需要监听的目录名字
+excluded_paths:
+  - resources
+  - config
+  - config_dev
+# build tags
+build_tags: ""
+# main 包路径，也可以是单个文件，多个文件使用逗号分隔
+build_pkg: "cmd/ev/main.go"

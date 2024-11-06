@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta content="ElasticView - Elasticsearch 可视化客户端" name="description">
+
+    <meta content="elasticsearch, 可视化客户端, docker, navicat, 方便,易用" name="keywords">
+    <script>
+
+        window["appUrl"] = '<%= VITE_APPURL %>'
+        window["appSubUrl"] = '<%= VITE_APPSubUrl %>'
+        window["appVersion"] = '<%= VITE_APPVersion %>'
+        window["lang"] = '<%= VITE_Lang %>'
+        window["watermarkContent"] = '<%= VITE_WatermarkContent%>'
+    </script>
+    <title><%= title %></title>
+  </head>
+
+  <body>
+    <div id="app">
+      <div class="loader"></div>
+    </div>
+  </body>
+  <script type="module" src="/src/main.ts"></script>
+
+  <style>
+    html,
+    body,
+    #app {
+      position: relative;
+      /*display: flex;*/
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+    }
+
+    .loader {
+      --d: 22px;
+
+      width: 4px;
+      height: 4px;
+      color: #25b09b;
+      border-radius: 50%;
+      box-shadow:
+        calc(1 * var(--d)) calc(0 * var(--d)) 0 0,
+        calc(0.707 * var(--d)) calc(0.707 * var(--d)) 0 1px,
+        calc(0 * var(--d)) calc(1 * var(--d)) 0 2px,
+        calc(-0.707 * var(--d)) calc(0.707 * var(--d)) 0 3px,
+        calc(-1 * var(--d)) calc(0 * var(--d)) 0 4px,
+        calc(-0.707 * var(--d)) calc(-0.707 * var(--d)) 0 5px,
+        calc(0 * var(--d)) calc(-1 * var(--d)) 0 6px;
+      animation: l27 1s infinite steps(8);
+    }
+
+    @keyframes l27 {
+      100% {
+        transform: rotate(1turn);
+      }
+    }
+  </style>
+</html>

@@ -1,0 +1,39 @@
+appsecret: 1340691923@qq.com
+checkforevupdates: true
+checkforpluginupdates: true
+dbtype: sqlite3
+debug: true
+enableloges: false
+enablelogesres: false
+espwdsecret: concat_mail!!->1340691923@qq.com
+log:
+    logdir: logs
+    storagedays: 4
+mysql:
+    dbname: test
+    ip: localhost
+    maxidleconns: 10
+    maxopenconns: 10
+    port: "3306"
+    pwd: ""
+    username: root
+oauth:
+    workwechat:
+        agentid: 
+        corpid: 
+        enable: 
+        secert: 
+plugin:
+    loadpath: plugins
+    storepath: plugins_store
+pluginrpcport: 8091
+port: 8090
+rooturl: http://localhost:8090/
+sqlite:
+    dbname: es_view.db
+translation:
+    cfgdir: ev-i18n
+    lang: zh-cn
+version: 0.0.5
+watermarkcontent:
+storeFileDir: #临时文件存放目录 例如下载的excel
