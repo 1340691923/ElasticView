@@ -34,7 +34,7 @@
 
 ### 1.1 Project Introduction
 
-> ElasticView is a full-stack front-end and back-end separated data source management plug-in platform developed based on [vue](https://vuejs.org) and [gin](https://gin-gonic.com), integrating jwt authentication, dynamic routing, dynamic menu, casbin authentication, data source management, plug-in market and other functions.
+> ElasticView is a full-stack front-end and back-end separated data source management plugin platform developed based on [vue](https://vuejs.org) and [gin](https://gin-gonic.com), integrating jwt authentication, dynamic routing, dynamic menu, casbin authentication, data source management, plugin market and other functions.
 
 
 ## 2. Main functions
@@ -95,16 +95,16 @@ npm run dev
 - Configuration file: Use [viper](https://github.com/spf13/viper) to implement configuration files in `yaml` format.
 - Log: Use [zap](https://github.com/uber-go/zap) to implement logging.
 
-## 4. Plug-in related
+## 4. Plugin related
 
-### 4.1 Official plug-in
-- [ev tools](https://github.com/1340691923/ev-tools): plug-in for managing elasticsearch6, 7, 8 version index
+### 4.1 Official plugin
+- [ev tools](https://github.com/1340691923/ev-tools): plugin for managing elasticsearch6, 7, 8 version index
 
-### 4.2 Community plug-in
+### 4.2 Community plugin
 - To be improved
 
-### 4.3 Release plug-in
-- [Developer Backend](http://dev.elastic-view.cn): used to publish your own plug-in for ElasticView users
+### 4.3 Release plugin
+- [Developer Backend](http://dev.elastic-view.cn): used to publish your own plugin for ElasticView users
 
 
 ## 5. Contact information
