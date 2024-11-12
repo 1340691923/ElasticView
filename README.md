@@ -98,13 +98,13 @@ npm run dev
 ## 4. Plug-in related
 
 ### 4.1 Official plug-in
-- [ev toolbox](https://github.com/1340691923/ev-tools): plug-in for managing elasticsearch6, 7, 8 version index
+- [ev tools](https://github.com/1340691923/ev-tools): plug-in for managing elasticsearch6, 7, 8 version index
 
 ### 4.2 Community plug-in
 - To be improved
 
 ### 4.3 Release plug-in
-- [ev plug-in developer backend](http://dev.elastic-view.cn): used to publish your own plug-in for ElasticView users
+- [Developer Backend](http://dev.elastic-view.cn): used to publish your own plug-in for ElasticView users
 
 
 ## 5. Contact information
