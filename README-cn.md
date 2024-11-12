@@ -95,7 +95,8 @@ npm run dev
 
 ### 4.1 官方插件
 -  [ev工具箱](https://github.com/1340691923/ev-tools)：用于管理elasticsearch6，7，8版本索引的插件
-
+-  [插件开发模板](https://github.com/1340691923/eve-plugin-vue3-template)：这是用于快速开发插件的模板工程
+-  
 ### 4.2 社区插件
 - 待完善
 
