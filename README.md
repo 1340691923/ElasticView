@@ -10,118 +10,120 @@
 <img src="https://img.shields.io/badge/gorm-1.25.7-red"/>
 </div>
 
-<!-----[English](./README-en.md) | 简体中文 -->
+[简体中文](./README-cn.md) | English
 
-# 项目文档
-[官网](http://www.elastic-view.cn) 
+# Project Documentation
+[Official Website](http://www.elastic-view.cn) 
 
-[视频教程](https://www.bilibili.com/video/BV12tDDYWEP2/?vd_source=d03eb2249d8310afce3f5b90c6081bb3)
+[Video Tutorial](https://www.bilibili.com/video/BV12tDDYWEP2/?vd_source=d03eb2249d8310afce3f5b90c6081bb3)
 
-[交流社区](https://txc.qq.com/products/666253)
-
-
-# 重要提示
-
-1.本项目从起步到开发到部署均有文档和详细视频教程
-
-2.二开本项目需要您有一定的golang和vue3基础
-
-3.您完全可以通过我们的教程和文档完成一切操作，因此我们不再提供免费的技术服务，如需服务请进行[加作者付费支持](https://raw.githubusercontent.com/1340691923/ElasticView/main/resources/show_img/weixin.jpg)
+[Communication community](https://txc.qq.com/products/666253)
 
 
+# Important Tips
 
-## 1. 基本介绍
+1. This project has documents and detailed video tutorials from start-up to development to deployment
 
-### 1.1 项目介绍
+2. This project requires you to have a certain foundation in golang and vue3
 
-> ElasticView是一个基于 [vue](https://vuejs.org) 和 [gin](https://gin-gonic.com) 开发的全栈前后端分离的数据源管理插件平台，集成jwt鉴权，动态路由，动态菜单，casbin鉴权，数据源管理，插件市场等功能。
+3. You can complete all operations through our tutorials and documents, so we no longer provide free technical services. If you need services, please [add the author's paid support](https://raw.githubusercontent.com/1340691923/ElasticView/main/resources/show_img/weixin.jpg)
 
 
-## 2. 主要功能
 
-- 权限管理：基于`jwt`和`casbin`实现的权限管理。
-- 用户管理：系统管理员分配用户角色和角色权限。
-- 角色管理：创建权限控制的主要对象，可以给角色分配不同api权限和菜单权限。
-- 数据源管理：可进行设置需要管理的数据源，已集成 elasticsearch(6,7,8),mysql,redis,clickhouse,postgres,mongodb数据源
-- 插件市场：可安装操作数据源的各种插件。
+## 1. Basic Introduction
 
-## 3. 二开使用说明
+### 1.1 Project Introduction
+
+> ElasticView is a full-stack front-end and back-end separated data source management plug-in platform developed based on [vue](https://vuejs.org) and [gin](https://gin-gonic.com), integrating jwt authentication, dynamic routing, dynamic menu, casbin authentication, data source management, plug-in market and other functions.
+
+
+## 2. Main functions
+
+- Permission management: Permission management based on `jwt` and `casbin`.
+
+- User management: System administrators assign user roles and role permissions.
+
+- Role management: Create the main object of permission control, and assign different api permissions and menu permissions to roles.
+
+- Data source management: You can set the data source to be managed, and have integrated elasticsearch (6, 7, 8), mysql, redis, clickhouse, postgres, mongodb data sources
+
+- Plugin market: You can install various plugins for operating data sources.
+
+## 3. Secondary Development
 
 ```
-- node版本 >= v20.14.0
-- golang版本 >= v1.23
-- IDE推荐：Goland
+- node version >= v20.14.0
+- golang version >= v1.23
+- IDE：Goland
 ```
 
-### 3.1 后端工程
+### 3.1 run golang
 
 
 ```bash
 
-# 克隆项目
+# git clone
 git clone https://github.com:1340691923/ElasticView.git
 
-# 安装gowatch
+# install gowatch
 go install github.com/silenceper/gowatch@latest
 
-# 运行
+# run
 gowatch
 
 ```
 
-### 3.2 前端工程
+### 3.2 run vue
 
 ```bash
-# 进入web文件夹
+
 cd resources\vue
 
-# 安装依赖
+# Install Dependencies
 pnpm install
 
-# 启动web项目
+# run
 npm run dev
 ```
 
-### 3.3. 技术选型
+### 3.3. Technology selection
 
-- 前端：用基于 [Vue](https://vuejs.org) 的 [Element](https://github.com/ElemeFE/element) 构建基础页面。
-- 后端：用 [Gin](https://gin-gonic.com/) 快速搭建基础API，[Gin](https://gin-gonic.com/) 是一个go语言编写的Web框架。
-- 数据库：使用 [gorm](http://gorm.cn) 实现对数据库的基本操作。
-- API文档：使用`Swagger`构建自动化文档。
-- 配置文件：使用 [viper](https://github.com/spf13/viper) 实现`yaml`格式的配置文件。
-- 日志：使用 [zap](https://github.com/uber-go/zap) 实现日志记录。
+- Front-end: Use [Element](https://github.com/ElemeFE/element) based on [Vue](https://vuejs.org) to build basic pages.
+- Back-end: Use [Gin](https://gin-gonic.com/) to quickly build basic APIs. [Gin](https://gin-gonic.com/) is a web framework written in go language.
+- Database: Use [gorm](http://gorm.cn) to implement basic database operations.
+- API documentation: Use `Swagger` to build automated documentation.
+- Configuration file: Use [viper](https://github.com/spf13/viper) to implement configuration files in `yaml` format.
+- Log: Use [zap](https://github.com/uber-go/zap) to implement logging.
 
-## 4.插件相关
+## 4. Plug-in related
 
-### 4.1 官方插件
--  [ev工具箱](https://github.com/1340691923/ev-tools)：用于管理elasticsearch6，7，8版本索引的插件
+### 4.1 Official plug-in
+- [ev toolbox](https://github.com/1340691923/ev-tools): plug-in for managing elasticsearch6, 7, 8 version index
 
-### 4.2 社区插件
-- 待完善
+### 4.2 Community plug-in
+- To be improved
 
-### 4.3 发布插件
--  [ev插件开发者后台](http://dev.elastic-view.cn)：用于发布自己的插件提供给ElasticView用户使用
-
-
-## 5. 联系方式
+### 4.3 Release plug-in
+- [ev plug-in developer backend](http://dev.elastic-view.cn): used to publish your own plug-in for ElasticView users
 
 
+## 5. Contact information
 
-### QQ交流群：685549060
+### QQ communication group: 685549060
 
-### 微信公众号：gh_7247127deece
+### WeChat public account: gh_7247127deece
 
-### 微信交流群
-| 微信 |
-|  :---:  | 
-| <img width="150" src="https://raw.githubusercontent.com/1340691923/ElasticView/main/resources/show_img/weixin.jpg"> 
+### WeChat communication group
+| WeChat |
+| :---: |
+| <img width="150" src="https://raw.githubusercontent.com/1340691923/ElasticView/main/resources/show_img/weixin.jpg">
 
 
 
-## 6. 捐赠
+## 6. Donation
 
-如果你觉得这个项目对你有帮助，你可以请作者喝饮料 :tropical_drink: [点我](http://www.elastic-view.cn/suporrt.html)
+If you think this project is helpful to you, you can buy the author a drink :tropical_drink: [click me](http://www.elastic-view.cn/suporrt.html)
 
-## 7. 商用注意事项
+## 7. Commercial precautions
 
-如果您将此项目用于商业用途，请遵守Apache2.0协议并保留作者技术支持声明。
+If you use this project for commercial purposes, please comply with the Apache2.0 agreement and keep the author's technical support statement.
