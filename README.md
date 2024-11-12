@@ -99,7 +99,8 @@ npm run dev
 
 ### 4.1 Official plugin
 - [ev tools](https://github.com/1340691923/ev-tools): plugin for managing elasticsearch6, 7, 8 version index
-
+- [Plugin development template](https://github.com/1340691923/eve-plugin-vue3-template): This is a template project for rapid development of plugins
+- 
 ### 4.2 Community plugin
 - To be improved
 
