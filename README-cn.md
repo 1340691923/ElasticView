@@ -117,6 +117,10 @@ npm run dev
 |  :---:  | 
 | <img width="150" src="https://raw.githubusercontent.com/1340691923/ElasticView/main/resources/show_img/weixin.jpg"> 
 
+### 知识星球
+| 知识星球 |
+|  :---:  | 
+| <img width="150" src="https://raw.githubusercontent.com/1340691923/ElasticView/refs/heads/master/resources/vue/src/assets/zsxq.jpg"> 
 
 
 ## 6. 捐赠
