@@ -28,7 +28,7 @@
 
 3.您完全可以通过我们的教程和文档完成一切操作，因此我们不再提供免费的技术服务，如需服务请进行[加作者付费支持](https://raw.githubusercontent.com/1340691923/ElasticView/main/resources/show_img/weixin.jpg)
 
-
+4.您可通过[交流社区](https://txc.qq.com/products/666253)来进行反馈需求和bug，谢谢
 
 ## 1. 基本介绍
 
