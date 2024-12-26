@@ -1,0 +1,649 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "励志成为陪伴你一生的elasticsearch可视化客户端",
+        "title": "ElasticView",
+        "contact": {
+            "name": "肖文龙",
+            "url": "http://www.elastic-view.cn/suporrt.html",
+            "email": "1340691923@qq.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        }
+    },
+    "paths": {
+        "/api/es/PingAction": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ES"
+                ],
+                "summary": "测试es连接",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "用户令牌",
+                        "name": "X-Token",
+                        "in": "header"
+                    },
+                    {
+                        "description": "查询参数",
+                        "name": "object",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/model.EsConnect"
+                        }
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResponseData"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/es_index/DeleteAction": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "es连接信息"
+                ],
+                "summary": "删除es连接",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "用户令牌",
+                        "name": "X-Token",
+                        "in": "header"
+                    },
+                    {
+                        "description": "查询参数",
+                        "name": "object",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/dto.DeleteEsLink"
+                        }
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResponseData"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/es_index/IndexsCountAction": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "es索引"
+                ],
+                "summary": "得到所有的索引数量",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "用户令牌",
+                        "name": "X-Token",
+                        "in": "header"
+                    },
+                    {
+                        "description": "查询参数",
+                        "name": "object",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/common.EsConnectID"
+                        }
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/es_index/InsertAction": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "es连接信息"
+                ],
+                "summary": "新增连接信息",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "用户令牌",
+                        "name": "X-Token",
+                        "in": "header"
+                    },
+                    {
+                        "description": "查询参数",
+                        "name": "object",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/dto.InsertEsLink"
+                        }
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResponseData"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/es_index/UpdateAction": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "es连接信息"
+                ],
+                "summary": "修改连接信息",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "用户令牌",
+                        "name": "X-Token",
+                        "in": "header"
+                    },
+                    {
+                        "description": "查询参数",
+                        "name": "object",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateEsLink"
+                        }
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResponseData"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/es_link/ListAction": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "es连接信息"
+                ],
+                "summary": "获取Es连接列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "用户令牌",
+                        "name": "X-Token",
+                        "in": "header"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/vo.EsLink"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/es_link/OptAction": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "es连接信息"
+                ],
+                "summary": "查看ES连接配置下拉选",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "用户令牌",
+                        "name": "X-Token",
+                        "in": "header"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/vo.EsLinkOpt"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/gm_user/login": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "EV用户登录",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "用户令牌",
+                        "name": "X-Token",
+                        "in": "header"
+                    },
+                    {
+                        "description": "查询参数",
+                        "name": "object",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/dto.User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/vo.User"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/operater_log/ListAction": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ev后台操作日志"
+                ],
+                "summary": "查看后台操作日志",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "用户令牌",
+                        "name": "X-Token",
+                        "in": "header"
+                    },
+                    {
+                        "description": "查询参数",
+                        "name": "object",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/dto.GmOperaterLogList"
+                        }
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/vo.GmOperaterLog"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "common.EsConnectID": {
+            "type": "object",
+            "properties": {
+                "es_connect": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.DeleteEsLink": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.GmOperaterLogList": {
+            "type": "object",
+            "properties": {
+                "date": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "limit": {
+                    "type": "integer"
+                },
+                "operater_action": {
+                    "type": "string"
+                },
+                "operater_id": {
+                    "type": "integer"
+                },
+                "page": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.InsertEsLink": {
+            "type": "object",
+            "properties": {
+                "cfgIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "ip": {
+                    "type": "string"
+                },
+                "remark": {
+                    "type": "string"
+                },
+                "version": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.UpdateEsLink": {
+            "type": "object",
+            "properties": {
+                "cfgIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "ip": {
+                    "type": "string"
+                },
+                "remark": {
+                    "type": "string"
+                },
+                "version": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.User": {
+            "type": "object",
+            "properties": {
+                "oauth_code": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "state": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.EsConnect": {
+            "type": "object",
+            "properties": {
+                "certpem": {
+                    "type": "string"
+                },
+                "header": {
+                    "type": "string"
+                },
+                "ip": {
+                    "type": "string"
+                },
+                "keypem": {
+                    "type": "string"
+                },
+                "pwd": {
+                    "type": "string"
+                },
+                "rootpem": {
+                    "type": "string"
+                },
+                "user": {
+                    "type": "string"
+                },
+                "version": {
+                    "type": "string"
+                }
+            }
+        },
+        "response.ResponseData": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "description": "消息码",
+                    "type": "integer"
+                },
+                "data": {
+                    "description": "附加信息"
+                },
+                "msg": {
+                    "description": "消息提示",
+                    "type": "string"
+                }
+            }
+        },
+        "vo.EsLink": {
+            "type": "object",
+            "properties": {
+                "create_by_id": {
+                    "type": "integer"
+                },
+                "create_by_user_name": {
+                    "type": "string"
+                },
+                "created": {
+                    "type": "string"
+                },
+                "es_link_configs": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/vo.EsLinkConfig"
+                    }
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "ip": {
+                    "type": "string"
+                },
+                "remark": {
+                    "type": "string"
+                },
+                "updated": {
+                    "type": "string"
+                },
+                "version": {
+                    "type": "string"
+                }
+            }
+        },
+        "vo.EsLinkConfig": {
+            "type": "object",
+            "properties": {
+                "certpem": {
+                    "type": "string"
+                },
+                "cfg_relation_id": {
+                    "type": "integer"
+                },
+                "created": {
+                    "type": "string"
+                },
+                "es_link_id": {
+                    "type": "integer"
+                },
+                "header": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/vo.HeaderKv"
+                    }
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "ip": {
+                    "type": "string"
+                },
+                "keypem": {
+                    "type": "string"
+                },
+                "pwd": {
+                    "type": "string"
+                },
+                "remark": {
+                    "type": "string"
+                },
+                "rootpem": {
+                    "type": "string"
+                },
+                "share_roles": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "updated": {
+                    "type": "string"
+                },
+                "user": {
+                    "type": "string"
+                },
+                "version": {
+                    "type": "string"
+                }
+            }
+        },
+        "vo.EsLinkOpt": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "remark": {
+                    "type": "string"
+                },
+                "version": {
+                    "type": "string"
+                }
+            }
+        },
+        "vo.GmOperaterLog": {
+            "type": "object",
+            "properties": {
+                "body_str": {
+                    "type": "string"
+                },
+                "created": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "method": {
+                    "type": "string"
+                },
+                "operater_action": {
+                    "type": "string"
+                },
+                "operater_id": {
+                    "type": "integer"
+                },
+                "operater_name": {
+                    "type": "string"
+                },
+                "operater_role_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "vo.HeaderKv": {
+            "type": "object",
+            "properties": {
+                "key": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "string"
+                }
+            }
+        },
+        "vo.User": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string"
+                },
+                "unix_time": {
+                    "type": "integer"
+                }
+            }
+        }
+    }
+}

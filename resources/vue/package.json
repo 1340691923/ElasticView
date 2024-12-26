@@ -1,0 +1,139 @@
+{
+  "name": "ElasticView",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build --mode production --emptyOutDir",
+    "preview": "vite preview",
+    "build-only": "vite build",
+    "type-check": "vue-tsc --noEmit",
+    "lint:eslint": "eslint  --fix --ext .ts,.js,.vue ./src ",
+    "lint:prettier": "prettier --write \"**/*.{js,cjs,ts,json,tsx,css,less,scss,vue,html,md}\"",
+    "lint:stylelint": "stylelint  \"**/*.{css,scss,vue}\" --fix",
+    "lint:lint-staged": "lint-staged",
+    "preinstall": "npx only-allow pnpm",
+    "prepare": "husky",
+    "commit": "git-cz"
+  },
+  "config": {
+    "commitizen": {
+      "path": "node_modules/cz-git"
+    }
+  },
+  "lint-staged": {
+    "*.{js,ts}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{cjs,json}": [
+      "prettier --write"
+    ],
+    "*.{vue,html}": [
+      "eslint --fix",
+      "prettier --write",
+      "stylelint --fix"
+    ],
+    "*.{scss,css}": [
+      "stylelint --fix",
+      "prettier --write"
+    ],
+    "*.md": [
+      "prettier --write"
+    ]
+  },
+  "dependencies": {
+    "@element-plus/icons-vue": "^2.3.1",
+    "@vavt/cm-extension": "^1.5.0",
+    "@vueuse/core": "^10.11.0",
+    "@wangeditor/editor": "^5.1.23",
+    "@wangeditor/editor-for-vue": "5.1.10",
+    "animate.css": "^4.1.1",
+    "axios": "^1.7.2",
+    "color": "^4.2.3",
+    "dayjs": "^1.11.12",
+    "echarts": "^5.5.0",
+    "element-plus": "^2.7.6",
+    "exceljs": "^4.4.0",
+    "lodash-es": "^4.17.21",
+    "md-editor-v3": "^4.20.1",
+    "monaco-editor": "^0.50.0",
+    "net": "^1.0.2",
+    "nprogress": "^0.2.0",
+    "path-browserify": "^1.0.1",
+    "path-to-regexp": "^6.2.2",
+    "pinia": "^2.1.7",
+    "qiankun": "^2.10.16",
+    "sockjs-client": "1.6.1",
+    "sortablejs": "^1.15.2",
+    "sql-formatter": "^15.4.0",
+    "stompjs": "^2.3.3",
+    "vite-plugin-dynamic-base": "^1.1.0",
+    "vite-plugin-html": "^3.2.2",
+    "vue": "^3.4.31",
+    "vue-i18n": "9.9.1",
+    "vue-router": "^4.4.0",
+    "vue3-json-viewer": "^2.2.2",
+    "vue3-markdown-it": "^1.0.10"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^18.6.1",
+    "@commitlint/config-conventional": "^18.6.3",
+    "@iconify-json/ep": "^1.1.15",
+    "@types/color": "^3.0.6",
+    "@types/lodash": "^4.17.6",
+    "@types/node": "^20.14.10",
+    "@types/nprogress": "^0.2.3",
+    "@types/path-browserify": "^1.0.2",
+    "@types/sockjs-client": "^1.5.4",
+    "@types/sortablejs": "^1.15.8",
+    "@types/stompjs": "^2.3.9",
+    "@typescript-eslint/eslint-plugin": "^7.15.0",
+    "@typescript-eslint/parser": "^7.15.0",
+    "@vitejs/plugin-vue": "^5.0.5",
+    "@vitejs/plugin-vue-jsx": "^3.1.0",
+    "autoprefixer": "^10.4.19",
+    "commitizen": "^4.3.0",
+    "cz-git": "^1.9.3",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-prettier": "^5.1.3",
+    "eslint-plugin-vue": "^9.27.0",
+    "fast-glob": "^3.3.2",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.7",
+    "postcss": "^8.4.39",
+    "postcss-html": "^1.7.0",
+    "postcss-scss": "^4.0.9",
+    "prettier": "^3.3.2",
+    "sass": "^1.77.6",
+    "stylelint": "^16.6.1",
+    "stylelint-config-html": "^1.1.0",
+    "stylelint-config-recess-order": "^4.6.0",
+    "stylelint-config-recommended-scss": "^14.0.0",
+    "stylelint-config-recommended-vue": "^1.5.0",
+    "stylelint-config-standard": "^36.0.1",
+    "terser": "^5.31.1",
+    "typescript": "^5.5.3",
+    "unocss": "^0.58.9",
+    "unplugin-auto-import": "^0.17.6",
+    "unplugin-icons": "^0.18.5",
+    "unplugin-vue-components": "^0.26.0",
+    "vite": "^5.3.3",
+    "vite-plugin-mock-dev-server": "^1.5.1",
+    "vite-plugin-monaco-editor": "^1.1.0",
+    "vite-plugin-svg-icons": "^2.0.1",
+    "vite-plugin-vue-devtools": "^7.3.5",
+    "vue-tsc": "^2.0.26"
+  },
+  "repository": "https://gitee.com/youlaiorg/vue3-element-admin.git",
+  "author": "有来开源组织",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "packageManager": "pnpm@9.1.3+sha512.7c2ea089e1a6af306409c4fc8c4f0897bdac32b772016196c469d9428f1fe2d5a21daf8ad6512762654ac645b5d9136bb210ec9a00afa8dbc4677843ba362ecd",
+  "__npminstall_done": false
+}

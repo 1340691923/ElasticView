@@ -1,0 +1,417 @@
+definitions:
+  common.EsConnectID:
+    properties:
+      es_connect:
+        type: integer
+    type: object
+  dto.DeleteEsLink:
+    properties:
+      id:
+        type: integer
+    type: object
+  dto.GmOperaterLogList:
+    properties:
+      date:
+        items:
+          type: string
+        type: array
+      limit:
+        type: integer
+      operater_action:
+        type: string
+      operater_id:
+        type: integer
+      page:
+        type: integer
+    type: object
+  dto.InsertEsLink:
+    properties:
+      cfgIds:
+        items:
+          type: integer
+        type: array
+      ip:
+        type: string
+      remark:
+        type: string
+      version:
+        type: string
+    type: object
+  dto.UpdateEsLink:
+    properties:
+      cfgIds:
+        items:
+          type: integer
+        type: array
+      id:
+        type: integer
+      ip:
+        type: string
+      remark:
+        type: string
+      version:
+        type: string
+    type: object
+  dto.User:
+    properties:
+      oauth_code:
+        type: string
+      password:
+        type: string
+      state:
+        type: string
+      username:
+        type: string
+    type: object
+  model.EsConnect:
+    properties:
+      certpem:
+        type: string
+      header:
+        type: string
+      ip:
+        type: string
+      keypem:
+        type: string
+      pwd:
+        type: string
+      rootpem:
+        type: string
+      user:
+        type: string
+      version:
+        type: string
+    type: object
+  response.ResponseData:
+    properties:
+      code:
+        description: 消息码
+        type: integer
+      data:
+        description: 附加信息
+      msg:
+        description: 消息提示
+        type: string
+    type: object
+  vo.EsLink:
+    properties:
+      create_by_id:
+        type: integer
+      create_by_user_name:
+        type: string
+      created:
+        type: string
+      es_link_configs:
+        items:
+          $ref: '#/definitions/vo.EsLinkConfig'
+        type: array
+      id:
+        type: integer
+      ip:
+        type: string
+      remark:
+        type: string
+      updated:
+        type: string
+      version:
+        type: string
+    type: object
+  vo.EsLinkConfig:
+    properties:
+      certpem:
+        type: string
+      cfg_relation_id:
+        type: integer
+      created:
+        type: string
+      es_link_id:
+        type: integer
+      header:
+        items:
+          $ref: '#/definitions/vo.HeaderKv'
+        type: array
+      id:
+        type: integer
+      ip:
+        type: string
+      keypem:
+        type: string
+      pwd:
+        type: string
+      remark:
+        type: string
+      rootpem:
+        type: string
+      share_roles:
+        items:
+          type: string
+        type: array
+      updated:
+        type: string
+      user:
+        type: string
+      version:
+        type: string
+    type: object
+  vo.EsLinkOpt:
+    properties:
+      id:
+        type: integer
+      remark:
+        type: string
+      version:
+        type: string
+    type: object
+  vo.GmOperaterLog:
+    properties:
+      body_str:
+        type: string
+      created:
+        type: string
+      id:
+        type: integer
+      method:
+        type: string
+      operater_action:
+        type: string
+      operater_id:
+        type: integer
+      operater_name:
+        type: string
+      operater_role_id:
+        type: integer
+    type: object
+  vo.HeaderKv:
+    properties:
+      key:
+        type: string
+      value:
+        type: string
+    type: object
+  vo.User:
+    properties:
+      token:
+        type: string
+      unix_time:
+        type: integer
+    type: object
+info:
+  contact:
+    email: 1340691923@qq.com
+    name: 肖文龙
+    url: http://www.elastic-view.cn/suporrt.html
+  description: 励志成为陪伴你一生的elasticsearch可视化客户端
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: ElasticView
+paths:
+  /api/es/PingAction:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 用户令牌
+        in: header
+        name: X-Token
+        type: string
+      - description: 查询参数
+        in: body
+        name: object
+        schema:
+          $ref: '#/definitions/model.EsConnect'
+      produces:
+      - application/json
+      responses:
+        "0":
+          description: ""
+          schema:
+            $ref: '#/definitions/response.ResponseData'
+      summary: 测试es连接
+      tags:
+      - ES
+  /api/es_index/DeleteAction:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 用户令牌
+        in: header
+        name: X-Token
+        type: string
+      - description: 查询参数
+        in: body
+        name: object
+        schema:
+          $ref: '#/definitions/dto.DeleteEsLink'
+      produces:
+      - application/json
+      responses:
+        "0":
+          description: ""
+          schema:
+            $ref: '#/definitions/response.ResponseData'
+      summary: 删除es连接
+      tags:
+      - es连接信息
+  /api/es_index/IndexsCountAction:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 用户令牌
+        in: header
+        name: X-Token
+        type: string
+      - description: 查询参数
+        in: body
+        name: object
+        schema:
+          $ref: '#/definitions/common.EsConnectID'
+      produces:
+      - application/json
+      responses:
+        "0":
+          description: ""
+          schema:
+            type: integer
+      summary: 得到所有的索引数量
+      tags:
+      - es索引
+  /api/es_index/InsertAction:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 用户令牌
+        in: header
+        name: X-Token
+        type: string
+      - description: 查询参数
+        in: body
+        name: object
+        schema:
+          $ref: '#/definitions/dto.InsertEsLink'
+      produces:
+      - application/json
+      responses:
+        "0":
+          description: ""
+          schema:
+            $ref: '#/definitions/response.ResponseData'
+      summary: 新增连接信息
+      tags:
+      - es连接信息
+  /api/es_index/UpdateAction:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 用户令牌
+        in: header
+        name: X-Token
+        type: string
+      - description: 查询参数
+        in: body
+        name: object
+        schema:
+          $ref: '#/definitions/dto.UpdateEsLink'
+      produces:
+      - application/json
+      responses:
+        "0":
+          description: ""
+          schema:
+            $ref: '#/definitions/response.ResponseData'
+      summary: 修改连接信息
+      tags:
+      - es连接信息
+  /api/es_link/ListAction:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 用户令牌
+        in: header
+        name: X-Token
+        type: string
+      produces:
+      - application/json
+      responses:
+        "0":
+          description: ""
+          schema:
+            items:
+              $ref: '#/definitions/vo.EsLink'
+            type: array
+      summary: 获取Es连接列表
+      tags:
+      - es连接信息
+  /api/es_link/OptAction:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 用户令牌
+        in: header
+        name: X-Token
+        type: string
+      produces:
+      - application/json
+      responses:
+        "0":
+          description: ""
+          schema:
+            items:
+              $ref: '#/definitions/vo.EsLinkOpt'
+            type: array
+      summary: 查看ES连接配置下拉选
+      tags:
+      - es连接信息
+  /api/gm_user/login:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 用户令牌
+        in: header
+        name: X-Token
+        type: string
+      - description: 查询参数
+        in: body
+        name: object
+        schema:
+          $ref: '#/definitions/dto.User'
+      produces:
+      - application/json
+      responses:
+        "0":
+          description: ""
+          schema:
+            $ref: '#/definitions/vo.User'
+      summary: EV用户登录
+  /api/operater_log/ListAction:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 用户令牌
+        in: header
+        name: X-Token
+        type: string
+      - description: 查询参数
+        in: body
+        name: object
+        schema:
+          $ref: '#/definitions/dto.GmOperaterLogList'
+      produces:
+      - application/json
+      responses:
+        "0":
+          description: ""
+          schema:
+            $ref: '#/definitions/vo.GmOperaterLog'
+      summary: 查看后台操作日志
+      tags:
+      - ev后台操作日志
+swagger: "2.0"
