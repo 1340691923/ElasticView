@@ -94,6 +94,7 @@ const sendBigModelQuery = async ()=>{
   bigModelLoading.value = true
   let res =  await  SearchBigMode({content:bigModelInput.value})
   if(res.code != 0){
+    bigModelLoading.value = false
     ElMessage.error(res.msg);
     return
   }
