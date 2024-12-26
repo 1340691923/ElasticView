@@ -1,0 +1,15 @@
+2024-10-22 17:11:32	sqlstore/orm.go:42	sqlStore组件初始化成功
+2024-10-22 17:12:28	sqlstore/orm.go:42	sqlStore组件初始化成功
+2024-10-22 17:12:28	svr_log/svr_log.go:70	D:/eve/ev2/pkg/infrastructure/dao/gm_role_eslink_cfg_v2.go:36
+[1.097ms] [rows:0] SELECT * FROM `gm_role_eslink_cfg_v2` WHERE role_id = 1
+2024-10-22 17:13:48	sqlstore/orm.go:42	sqlStore组件初始化成功
+2024-10-22 17:13:48	svr_log/svr_log.go:70	D:/eve/ev2/pkg/infrastructure/dao/gm_role_eslink_cfg_v2.go:36
+[0.519ms] [rows:0] SELECT * FROM `gm_role_eslink_cfg_v2` WHERE role_id = 1
+2024-10-22 17:14:55	sqlstore/orm.go:42	sqlStore组件初始化成功
+2024-10-22 17:14:55	svr_log/svr_log.go:70	D:/eve/ev2/pkg/infrastructure/dao/gm_role_eslink_cfg_v2.go:36
+[1.594ms] [rows:0] SELECT * FROM `gm_role_eslink_cfg_v2` WHERE role_id = 1
+2024-10-22 17:16:14	sqlstore/orm.go:42	sqlStore组件初始化成功
+2024-10-22 17:16:14	svr_log/svr_log.go:68	D:/eve/ev2/pkg/infrastructure/dao/gm_role_eslink_cfg_v2.go:37
+[0.000ms] [rows:-] show tables
+2024-10-22 17:16:14	svr_log/svr_log.go:70	D:/eve/ev2/pkg/infrastructure/dao/gm_role_eslink_cfg_v2.go:39
+[1.143ms] [rows:0] SELECT * FROM `gm_role_eslink_cfg_v2` WHERE role_id = 1
