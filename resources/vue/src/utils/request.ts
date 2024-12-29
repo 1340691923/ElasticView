@@ -80,6 +80,7 @@ const handleData = (response) => {
         setToken(newToken)
         config._retry = true
         config.headers["X-Token"] = getToken()
+        config.headers["X-Version"] = window["appVersion"]
         return axios(config);
       }
 
@@ -120,7 +121,7 @@ export default service;
 export function getBaseURL(){
   if(import.meta.env.PROD) {
     if(window.location.href.indexOf(":8090/#/")!==-1){
-      return ''
+      return '/'
     }
     return window["appUrl"]
   }

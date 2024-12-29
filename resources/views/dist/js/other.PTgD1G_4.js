@@ -1,1 +1,0 @@
-import{d as e,aL as t,e as s,h as a,F as r,g as n}from"./index.DMBpWXpT.js";const o=e({name:"Other",inheritAttrs:!1,__name:"other",setup(e){const o=t().query.type;return(e,t)=>(s(),a("div",null,"路由参数："+r(n(o)),1))}});export{o as default};

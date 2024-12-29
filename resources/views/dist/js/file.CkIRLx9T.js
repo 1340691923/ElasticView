@@ -1,1 +1,0 @@
-import{bC as t}from"./index.DMBpWXpT.js";const e=class{static upload(e){const a=new FormData;return a.append("file",e),t({url:"/api/v1/files",method:"post",data:a,headers:{"Content-Type":"multipart/form-data"}})}static deleteByPath(e){return t({url:"/api/v1/files",method:"delete",params:{filePath:e}})}};export{e as F};

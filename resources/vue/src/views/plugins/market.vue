@@ -524,10 +524,6 @@ const handleCloseDialog = () => {
 import { ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
-import type { UploadProps, UploadUserFile } from 'element-plus'
-import {getBaseURL} from "@/utils/request";
-
-
 onMounted(() => {
   getPluginMarket()
 })
