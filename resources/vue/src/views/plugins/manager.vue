@@ -237,7 +237,7 @@ const getLocalPluginList = async ()=>{
 const installLoading = ref(false)
 
 const gotoPProf = (pluginId)=>{
-  const url = `${getBaseURL()}/api/call_plugin/${pluginId}/debug/pprof/`; // 替换为目标链接
+  const url = `${getBaseURL()}api/call_plugin/${pluginId}/debug/pprof/`; // 替换为目标链接
   const target = "_blank"; // 在新窗口打开
   window.open(url, target);
 }
@@ -264,11 +264,12 @@ const installPlugin = async (pluginId,version) => {
 }
 
 const uploadHeader = {
-  "X-Token":getToken()
+  "X-Token":getToken(),
+  "X-Version":window["appVersion"]
 }
 
 const uploadFileAction = ()=>{
-  return getBaseURL() + "/api/plugins/UploadPlugin"
+  return getBaseURL() + "api/plugins/UploadPlugin"
 }
 
 const uploadRef = ref(null);

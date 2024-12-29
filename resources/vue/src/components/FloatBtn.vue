@@ -201,14 +201,6 @@ export default defineComponent({
 });
 </script>
 
-
-
-<style>
-  html,
-  body {
-      overflow: hidden;
-    }
-</style>
 <style scoped lang="scss">
 
 .float-position:hover{

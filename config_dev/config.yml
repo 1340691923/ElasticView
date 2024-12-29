@@ -9,12 +9,12 @@ sqlite: # dbType为sqlite3时填 dbPath为数据保存文件地址
     dbName: "es_view.db"
 mysql: # dbType为mysql时填
     username: "root"
-    pwd: "Ww5201314!"
+    pwd: ""
     ip: "127.0.0.1"
     port: "3306"
     dbName: "test"
 esPwdSecret: "concat_mail!!->1340691923@qq.com" # es密码加密密钥 加密方式为 AES
-version: "0.0.9"  # EV 版本号
+version: "0.0.10"  # EV 版本号
 deBug: true      # 是否为测试模式 如果为 false则打开默认浏览器直接访问地址
 checkForevUpdates: true #是否自动检测ev更新
 checkForPluginUpdates: true  #是否自动检测ev插件更新

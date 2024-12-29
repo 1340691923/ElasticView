@@ -36,7 +36,7 @@ type WebServer struct {
 	esLinkController      *api.EsLinkController
 	managerUserController *api.ManagerUserController
 	esController          *api.EsController
-	aiController *api.AiController
+	aiController          *api.AiController
 	//wsController          *api.WsController
 	indexController  *api.IndexController
 	pluginController *api.PluginController
@@ -45,7 +45,6 @@ type WebServer struct {
 func NewWebServer(engine *web_engine.WebEngine, log *logger.AppLogger, cfg *config.Config, rbac *access_control.Rbac, middleWareService *middleware.MiddleWareService, gmOperaterController *api.GmOperaterController, managerRoleController *api.ManagerRoleController, esLinkController *api.EsLinkController, managerUserController *api.ManagerUserController, esController *api.EsController, aiController *api.AiController, indexController *api.IndexController, pluginController *api.PluginController) *WebServer {
 	return &WebServer{engine: engine, log: log, cfg: cfg, rbac: rbac, middleWareService: middleWareService, gmOperaterController: gmOperaterController, managerRoleController: managerRoleController, esLinkController: esLinkController, managerUserController: managerUserController, esController: esController, aiController: aiController, indexController: indexController, pluginController: pluginController}
 }
-
 
 type Config struct {
 	Name string
@@ -121,16 +120,14 @@ func (this *WebServer) runRouter() {
 	this.engine.GetGinEngine().Any("/api/call_plugin_views/:plugin_id/*action",
 		this.pluginController.CallPluginViews)
 
-	this.engine.GetGinEngine().Use(
-		this.middleWareService.CheckVersion,
-	)
-
 	this.engine.GetGinEngine().POST("/api/gm_user/login", this.managerUserController.Login)
-
-	this.runNoVerificationRouter()
 
 	this.engine.GetGinEngine().Any("/api/call_plugin/:plugin_id/*action",
 		this.pluginController.CallPlugin)
+
+	this.engine.GetGinEngine().Use(
+		this.middleWareService.CheckVersion,
+	)
 
 	this.engine.GetGinEngine().Use(
 		this.middleWareService.JwtMiddleware,
