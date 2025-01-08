@@ -81,7 +81,7 @@ type Config struct {
 }
 
 const (
-	EV_ROOT_URL          = "EV_ROOT_URL"
+	EV_ROOT_URL          = "EV_ROOT_URL" //项目web访问地址
 	EV_STORE_FILE_DIR    = "EV_STORE_FILE_DIR"
 	EV_LOG_STORAGE_DAYS  = "EV_LOG_STORAGE_DAYS"
 	EV_LOG_DIR           = "EV_LOG_DIR"
@@ -297,7 +297,7 @@ func (cfg *Config) CreateDbDSN() string {
 		}
 
 		DSN = filepath.Join(dataDir, cfg.Sqlite.DbName) + "?_pragma=charset(utf8)&_pragma=parse_time(true)&_pragma=_busy_timeout(9999999)&mode=wal"
-	} else {
+	} else if cfg.DbType == MysqlDbTyp {
 		DSN = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true",
 			cfg.Mysql.Username,
 			cfg.Mysql.Pwd,

@@ -56,8 +56,6 @@ func (this *PluginService) ExecSql(ctx context.Context, pluginID string, sql str
 	if !b {
 		return 0, errors.New(fmt.Sprintf("没有找到该插件信息:%s", pluginID))
 	}
-	p.DbLock()
-	defer p.DbUnlock()
 
 	result := p.Gorm().WithContext(ctx).Exec(sql, args...)
 	if result.Error != nil {
@@ -190,9 +188,7 @@ func (this *PluginService) CallPlugin(ctx *gin.Context, pluginID string) (err er
 			}
 
 			this.gmOperaterLogSvr.Save(gmOperaterLog)
-
 		}
-
 	}
 
 	return nil
@@ -230,8 +226,10 @@ func (this *PluginService) LoadDebugPlugin(ctx context.Context, pluginID string,
 		TestAddr:       addr,
 		TestPid:        pid,
 		PluginFileName: "调试插件",
-		ExecArgs:       []string{},
-	}, this.cfg)
+		ExecArgs: []string{
+			fmt.Sprintf("-dbType=%s", this.cfg.DbType),
+		},
+	}, this.cfg, this.orm)
 
 	err = p.Start(ctx)
 	if err != nil {
@@ -315,7 +313,12 @@ func (this *PluginService) PluginList(ctx context.Context) (res []*PluginVo) {
 		backendDebug := pluginData.BackendDebug
 		frontendDebug := pluginData.FrontendDebug
 		frontendDevPort := pluginData.FrontendDevPort
-		storePath := v.GetStorePath()
+
+		storePath := fmt.Sprintf("SQLITE3_DB:%s", v.GetStorePath())
+
+		if this.cfg.DbType == config.MysqlDbTyp {
+			storePath = fmt.Sprintf("MYSQL_DB:%s", v.GetMysqlDbPath())
+		}
 		pid := client.GetPid()
 		cpuPercentStr := ""
 		memoryPercentStr := ""

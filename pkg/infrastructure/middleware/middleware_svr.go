@@ -2,10 +2,6 @@ package middleware
 
 import (
 	"bytes"
-	"context"
-	"crypto/hmac"
-	"crypto/sha256"
-	"encoding/base64"
 	"fmt"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/access_control"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/config"
@@ -106,7 +102,6 @@ func (this *MiddleWareService) JwtMiddleware(c *gin.Context) {
 
 	c.Set("userName", claims.Username)
 	c.Set("userId", claims.UserID)
-	//c.Set("roleId", claims.RoleId)
 
 	c.Next()
 	return
@@ -211,45 +206,6 @@ func (this *MiddleWareService) Rbac(ctx *gin.Context) {
 	return
 }
 
-func (this *MiddleWareService) ValidatePluginSign(ctx *gin.Context) {
-
-	pluginID := ctx.GetHeader("X-Plugin-ID")
-	pluginSign := ctx.GetHeader("X-Plugin-Signature")
-	p, hasPlugin := this.pluginRegistry.Plugin(context.Background(), pluginID)
-	if !hasPlugin {
-		this.res.Error(ctx, errors.New(fmt.Sprintf("没有找到该插件信息:%s", pluginID)))
-		ctx.Abort()
-		return
-	}
-	if !p.PluginData().PluginJsonData.BackendDebug {
-		var b []byte
-		b, _ = ctx.GetRawData()
-		ctx.Request.Body = ioutil.NopCloser(bytes.NewBuffer(b))
-
-		if !verifySignature(pluginSign, p.SignKey, string(b)) {
-			this.res.Error(ctx, errors.New(fmt.Sprintf("插件签名校验失败:%s", pluginID)))
-			ctx.Abort()
-			return
-		}
-	}
-
-	ctx.Next()
-	return
-}
-
-func verifySignature(signature, signatureKey, jsonString string) bool {
-	// 计算 HMAC-SHA256 签名
-	mac := hmac.New(sha256.New, []byte(signatureKey))
-	mac.Write([]byte(jsonString))
-	expectedSignatureBytes := mac.Sum(nil)
-
-	// 将期望的签名转换为 Base64 编码的字符串
-	expectedSignature := base64.StdEncoding.EncodeToString(expectedSignatureBytes)
-
-	// 比较期望的签名与实际签名是否相同
-	return signature == expectedSignature
-}
-
 func (this *MiddleWareService) CheckVersion(c *gin.Context) {
 	if !this.cfg.DeBug && config.GetVersion() != c.GetHeader("X-Version") && c.GetHeader("X-Version") != "test" {
 		err := my_error.NewError(fmt.Sprintf("后台已更新版本（新版本：%s,您的版本：%s），请刷新页面", config.GetVersion(), c.GetHeader("X-Version")), ERROR_CEHCK_VERSION_FAIL)
@@ -261,21 +217,3 @@ func (this *MiddleWareService) CheckVersion(c *gin.Context) {
 	// 处理请求
 	c.Next()
 }
-
-/*func (this *MiddleWareService) Timer(ctx *gin.Context) {
-
-	// start timer
-	start := time.Now()
-	// next routes
-	err := ctx.Next()
-	// stop timer
-	stop := time.Now()
-
-	this.log.Info("时间拦截器",
-		zap.String("访问资源", ctx.Path()),
-		zap.Reflect("body", string(this.getPostBody(ctx))),
-		zap.String("消耗时间：", stop.Sub(start).String()))
-	return err
-
-}
-*/

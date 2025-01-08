@@ -64,8 +64,8 @@ func (this *EvEApi) GetAccessToken() string {
 }
 
 func (this *EvEApi) GetEvBackDomain() string {
-	if this.isDebug {
+	/*if this.isDebug {
 		return "http://127.0.0.1:8199/v1/api/"
-	}
+	}*/
 	return "http://dev.elastic-view.cn/v1/api/"
 }
