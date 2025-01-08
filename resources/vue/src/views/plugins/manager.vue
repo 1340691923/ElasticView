@@ -58,9 +58,17 @@
           {{ scope.row.plugin_file_name }}
         </template>
       </el-table-column>
-      <el-table-column align="center" :label="$t('版本')" width="100">
+      <el-table-column align="center" :label="$t('版本')" width="150">
         <template #default="scope">
-          {{ scope.row.version }}
+          <template v-if="scope.row.has_update">
+            <el-tag type="danger">{{ scope.row.version }}</el-tag>
+            <el-icon><Right /></el-icon>
+            <el-tag type="success">{{ scope.row.update_version }}</el-tag>
+          </template>
+          <template v-else>
+            <el-tag  type="success">{{ scope.row.version }}</el-tag>
+          </template>
+
         </template>
       </el-table-column>
       <el-table-column align="center" :label="$t('db存储路径')" width="300">
@@ -126,10 +134,10 @@
       </el-table-column>
 
 
-      <el-table-column align="center" :label="$t('操作')" fixed="right" :width="isMobile?100:200">
+      <el-table-column align="center" :label="$t('操作')" fixed="right" :width="isMobile?100:250">
         <template #default="scope">
           <template v-if="!isMobile">
-            <el-button v-if="scope.row.hasUpdate" @click="installPlugin(scope.row.plugin_id,
+            <el-button v-if="scope.row.has_update" @click="installPlugin(scope.row.plugin_id,
             scope.row.update_version)" v-loading="installLoading" type="warning">
               更新
             </el-button>
@@ -148,7 +156,7 @@
               <template #dropdown>
                 <el-dropdown-menu>
                   <el-dropdown-item  command="1">
-                    <el-button v-if="scope.row.hasUpdate" @click.stop="installPlugin(item.plugin_id,item.update_version)" v-loading="installLoading" type="warning">
+                    <el-button v-if="scope.row.has_update" @click.stop="installPlugin(item.plugin_id,item.update_version)" v-loading="installLoading" type="warning">
                       更新
                     </el-button>
                   </el-dropdown-item>

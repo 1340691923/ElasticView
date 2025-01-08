@@ -2,10 +2,10 @@ module github.com/1340691923/ElasticView
 
 go 1.23
 
-replace github.com/1340691923/eve-plugin-sdk-go => ../eve-plugin-sdk-go
+//replace github.com/1340691923/eve-plugin-sdk-go => ../eve-plugin-sdk-go
 
 require (
-	github.com/1340691923/eve-plugin-sdk-go v0.0.7
+	github.com/1340691923/eve-plugin-sdk-go v0.0.8
 	github.com/casbin/casbin/v2 v2.77.2
 	github.com/casbin/gorm-adapter/v3 v3.20.0
 	github.com/davecgh/go-spew v1.1.1

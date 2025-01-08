@@ -7,6 +7,8 @@ VOLUME /app/ev_store
 # 设置工作目录
 WORKDIR /app
 
+RUN mkdir -p /app/ev_store
+
 # 将本地的二进制文件和配置文件复制到容器中
 COPY ev_linux_amd64 /app/
 COPY config /app/config/

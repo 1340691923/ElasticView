@@ -100,7 +100,7 @@ func Initialize(args *config.CommandLineArgs) (*Server, error) {
 	aiController := api.NewAiController(baseController, v, bigMode)
 	indexController := api.NewIndexController(configConfig)
 	service := process.ProvideService(v)
-	pluginStoreService := pluginstore.NewPluginStoreService(pluginManager, configConfig, service, v)
+	pluginStoreService := pluginstore.NewPluginStoreService(pluginManager, configConfig, service, v, gorm)
 	pluginsService, err := updatechecker.ProvidePluginsService(v, configConfig, evBackDao, pluginManager)
 	if err != nil {
 		return nil, err
@@ -177,7 +177,11 @@ func InitializeProvideInstaller(args *config.CommandLineArgs) (*plugin_install_s
 	evEApi := eve_api.NewEvApi(configConfig, v)
 	evBackDao := dao.NewEvBackDao(v, evEApi)
 	service := process.ProvideService(v)
-	pluginStoreService := pluginstore.NewPluginStoreService(pluginManager, configConfig, service, v)
+	gorm, err := orm.NewGorm(configConfig, v)
+	if err != nil {
+		return nil, err
+	}
+	pluginStoreService := pluginstore.NewPluginStoreService(pluginManager, configConfig, service, v, gorm)
 	pluginsService, err := updatechecker.ProvidePluginsService(v, configConfig, evBackDao, pluginManager)
 	if err != nil {
 		return nil, err

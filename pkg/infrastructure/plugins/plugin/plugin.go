@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/config"
-	"github.com/1340691923/ElasticView/pkg/infrastructure/plugins/backendplugin"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/orm"
+	"github.com/1340691923/ElasticView/pkg/infrastructure/plugins/backendplugin"
 	"github.com/1340691923/eve-plugin-sdk-go/backend"
 	"github.com/1340691923/eve-plugin-sdk-go/build"
 	"github.com/1340691923/eve-plugin-sdk-go/util"
@@ -17,6 +17,7 @@ import (
 	"gorm.io/gorm"
 	"path/filepath"
 	"sort"
+	"strings"
 	"sync"
 	"time"
 )
@@ -24,15 +25,14 @@ import (
 type Plugin struct {
 	ID             string
 	mu             sync.Mutex
-	sqlExecLock    sync.Mutex
 	PluginDir      string
 	PluginFileName string
 	log            hclog.Logger
 	client         backendplugin.Plugin
 	orm            *orm.Gorm
+	EvOrm          *orm.Gorm
 	Cfg            *config.Config
 	pluginData     *build.PluginInitRespData
-	SignKey        string
 	LogFilePath    string //日志文件存放地址
 	StartTime      time.Time
 	StopTime       time.Time
@@ -58,23 +58,16 @@ func (p *Plugin) Gorm() *orm.Gorm {
 	return p.orm
 }
 
-func (p *Plugin) DbLock() {
-	p.sqlExecLock.Lock()
-}
-
-func (p *Plugin) DbUnlock() {
-	p.sqlExecLock.Unlock()
-}
-
 func (p *Plugin) SetLogger(l hclog.Logger) {
 	p.log = l
 }
 
 func (p *Plugin) getSqlLiteDbName() string {
+	pluginID := p.ID
 	if p.PluginData().PluginJsonData.BackendDebug {
-		return fmt.Sprintf("%s-test", p.ID)
+		return fmt.Sprintf("%s-test", pluginID)
 	}
-	return p.ID
+	return pluginID
 }
 
 func (p *Plugin) Start(ctx context.Context) error {
@@ -108,7 +101,9 @@ func (p *Plugin) Start(ctx context.Context) error {
 
 	var pluginOrm *orm.Gorm
 
-	pluginOrm, err = orm.NewPluginGorm(p.GetStorePath(), p.Logger())
+	pluginOrm, err = orm.NewPluginGorm(p.EvOrm, p.Cfg,
+		p.GetMysqlDbPath(),
+		p.GetStorePath(), p.Logger())
 
 	if err != nil {
 		return errors.WithStack(err)
@@ -125,6 +120,10 @@ func (p *Plugin) Start(ctx context.Context) error {
 
 func (p *Plugin) GetStorePath() string {
 	return filepath.Join(p.Cfg.Plugin.StorePath, fmt.Sprintf("%s.db", p.getSqlLiteDbName()))
+}
+
+func (p *Plugin) GetMysqlDbPath() string {
+	return strings.ToLower(strings.ReplaceAll(p.ID, "-", "_"))
 }
 
 func (p *Plugin) Stop(ctx context.Context) error {
@@ -289,7 +288,11 @@ func (p *Plugin) Migrator() {
 		mig := &gormigrate.Migration{
 			ID: v.Id,
 			Migrate: func(tx *gorm.DB) error {
-				for _, migrateSql := range migration.MigrateSqls {
+				migrateSqls := migration.SqliteMigrateSqls
+				if p.Cfg.DbType == config.MysqlDbTyp {
+					migrateSqls = migration.MysqlMigrateSqls
+				}
+				for _, migrateSql := range migrateSqls {
 					err := tx.Exec(migrateSql.Sql, migrateSql.Args...).Error
 					if err != nil {
 						p.Logger().Error("err", zap.Error(err))
@@ -298,7 +301,13 @@ func (p *Plugin) Migrator() {
 				return nil
 			},
 			Rollback: func(tx *gorm.DB) error {
-				for _, sql := range migration.Rollback {
+
+				rollbackSqls := migration.SqliteRollback
+				if p.Cfg.DbType == config.MysqlDbTyp {
+					rollbackSqls = migration.MysqlRollback
+				}
+
+				for _, sql := range rollbackSqls {
 
 					err := tx.Exec(sql.Sql, sql.Args...).Error
 					if err != nil {

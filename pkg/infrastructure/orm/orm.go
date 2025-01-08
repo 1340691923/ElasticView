@@ -69,12 +69,33 @@ func createDbDialector(dbTyp string, dbSource string) gorm.Dialector {
 	return dialector
 }
 
-func NewPluginGorm(pluginStorePath string, log hclog.Logger) (db *Gorm, err error) {
+func NewPluginGorm(evOrm *Gorm, cfg *config.Config, dbName string, pluginStorePath string, hlog hclog.Logger) (db *Gorm, err error) {
+	var dsn string
+	var dialector gorm.Dialector
+	if cfg.DbType == config.SqliteDbTyp {
+		dsn = pluginStorePath + "?_pragma=charset(utf8)&_pragma=parse_time(true)&_pragma=_busy_timeout(9999999)"
+		dialector = sqlite.Open(dsn)
 
-	dsn := pluginStorePath + "?_pragma=charset(utf8)&_pragma=parse_time(true)&_pragma=_busy_timeout(9999999)"
+	} else if cfg.DbType == config.MysqlDbTyp {
+		err = evOrm.Exec("CREATE DATABASE IF NOT EXISTS " + dbName).Error
+		if err != nil {
+			return
+		}
+		dsn = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true",
+			cfg.Mysql.Username,
+			cfg.Mysql.Pwd,
+			cfg.Mysql.IP,
+			cfg.Mysql.Port,
+			dbName,
+		)
+		dialector = mysql.Open(dsn)
+	} else {
+		errors.New("未知db类型")
+		return
+	}
 
-	orm, err := gorm.Open(sqlite.Open(dsn), &gorm.Config{
-		Logger: NewGormLogI(log),
+	orm, err := gorm.Open(dialector, &gorm.Config{
+		Logger: NewGormLogI(hlog),
 	})
 
 	if err != nil {
@@ -91,11 +112,16 @@ func NewPluginGorm(pluginStorePath string, log hclog.Logger) (db *Gorm, err erro
 	}
 
 	// 设置连接池参数
-	sqlDB.SetMaxOpenConns(1)    // 设置最大打开连接数为 1
-	sqlDB.SetMaxIdleConns(1)    // 设置最大空闲连接数为 1
-	sqlDB.SetConnMaxLifetime(0) // 禁用连接过期时间
+	if cfg.DbType == config.SqliteDbTyp {
+		sqlDB.SetMaxOpenConns(1)    // 设置最大打开连接数为 1
+		sqlDB.SetMaxIdleConns(1)    // 设置最大空闲连接数为 1
+		sqlDB.SetConnMaxLifetime(0) // 禁用连接过期时间
+	} else if cfg.DbType == config.MysqlDbTyp {
+		sqlDB.SetMaxOpenConns(10) // 设置最大打开连接数为 10
+		sqlDB.SetMaxIdleConns(10) // 设置最大空闲连接数为 10
+	}
 
-	log.Debug(fmt.Sprintf("插件存储系统：%s连接成功", pluginStorePath))
+	hlog.Debug(fmt.Sprintf("插件存储系统：%s连接成功", pluginStorePath))
 
 	return
 }

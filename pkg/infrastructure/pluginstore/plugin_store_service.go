@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/config"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/logger"
+	"github.com/1340691923/ElasticView/pkg/infrastructure/orm"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/plugins/backendplugin/provider"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/plugins/manager"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/plugins/manager/process"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/plugins/plugin"
-	"github.com/1340691923/ElasticView/pkg/util"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 	"os"
@@ -24,10 +24,11 @@ type PluginStoreService struct {
 	cfg            *config.Config
 	progressSvr    *process.Service
 	log            *logger.AppLogger
+	orm            *orm.Gorm
 }
 
-func NewPluginStoreService(pluginRegistry manager.Service, cfg *config.Config, progressSvr *process.Service, log *logger.AppLogger) *PluginStoreService {
-	return &PluginStoreService{pluginRegistry: pluginRegistry, cfg: cfg, progressSvr: progressSvr, log: log.Named("pluginStore")}
+func NewPluginStoreService(pluginRegistry manager.Service, cfg *config.Config, progressSvr *process.Service, log *logger.AppLogger, orm *orm.Gorm) *PluginStoreService {
+	return &PluginStoreService{pluginRegistry: pluginRegistry, cfg: cfg, progressSvr: progressSvr, orm: orm, log: log.Named("pluginStore")}
 }
 
 func (this *PluginStoreService) Run(ctx context.Context) error {
@@ -99,8 +100,6 @@ func (this *PluginStoreService) FastInitPlugin(ctx context.Context, fileName str
 		return errors.WithStack(err)
 	}
 
-	signKey := pluginAlias + util.GetUUid()
-
 	p := provider.DefaultProvider(ctx, pluginLog, pluginLogPath, closeLogWrite, &provider.Config{
 		ID:             pluginAlias,
 		PluginDir:      this.cfg.Plugin.LoadPath,
@@ -109,8 +108,7 @@ func (this *PluginStoreService) FastInitPlugin(ctx context.Context, fileName str
 			fmt.Sprintf("-tmpFileStorePath=%s", this.cfg.GetStorePath(pluginAlias)),
 			fmt.Sprintf("-evRpcPort=%d", this.cfg.PluginRpcPort),
 		},
-		SignKey: signKey,
-	}, this.cfg)
+	}, this.cfg, this.orm)
 	err = this.progressSvr.Start(ctx, p)
 	if err != nil {
 		this.log.Error("插件启动失败", zap.Error(err))

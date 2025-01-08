@@ -14,7 +14,7 @@ mysql: # dbType为mysql时填
   port: "3306"
   dbName: "test"
 esPwdSecret: "concat_mail!!->1340691923@qq.com" # 数据源认证密码的加密密钥 加密方式为 AES
-version: "0.0.10"  # EV 版本号
+version: "0.0.11"  # EV 版本号
 checkForevUpdates: true #是否自动检测ev更新
 checkForPluginUpdates: true  #是否自动检测ev插件更新
 evKey: #evKey 需要到插件者后台注册获取
