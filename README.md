@@ -86,7 +86,23 @@ pnpm install
 npm run dev
 ```
 
-### 3.3. Technology selection
+### 3.3 run build
+
+```bash
+
+# install build tools
+
+go install github.com/1340691923/ElasticView/cmd/ev_plugin_builder@v0.0.12
+
+# start build
+
+./ev_plugin_builder
+
+# then look at resource/dist
+
+```
+
+### 3.4. Technology selection
 
 - Front-end: Use [Element](https://github.com/ElemeFE/element) based on [Vue](https://vuejs.org) to build basic pages.
 - Back-end: Use [Gin](https://gin-gonic.com/) to quickly build basic APIs. [Gin](https://gin-gonic.com/) is a web framework written in go language.
