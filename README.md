@@ -71,6 +71,10 @@ go install github.com/silenceper/gowatch@latest
 # run
 gowatch
 
+# default port
+0.0.0.0:8090
+
+
 ```
 
 ### 3.2 run vue
