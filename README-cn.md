@@ -67,6 +67,9 @@ go install github.com/silenceper/gowatch@latest
 # 运行
 gowatch
 
+# 后台默认端口
+0.0.0.0:8090
+
 ```
 
 ### 3.2 前端工程
