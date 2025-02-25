@@ -96,11 +96,11 @@ npm run dev
 
 # install build tools
 
-go install github.com/1340691923/ElasticView/cmd/ev_plugin_builder@v0.0.12
+go install github.com/1340691923/ElasticView/cmd/ev_builder@v0.0.12
 
 # start build
 
-./ev_plugin_builder
+./ev_builder
 
 # then look at resource/dist
 
