@@ -90,11 +90,11 @@ npm run dev
 
 # 安装打包工具
 
-go install github.com/1340691923/ElasticView/cmd/ev_plugin_builder@v0.0.12
+go install github.com/1340691923/ElasticView/cmd/ev_builder@v0.0.12
 
 # 执行打包命令
 
-./ev_plugin_builder
+./ev_builder
 
 # 生成于 resource/dist 文件夹内
 
