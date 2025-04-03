@@ -67,6 +67,9 @@ go install github.com/silenceper/gowatch@latest
 # 运行
 gowatch
 
+# 后台默认端口
+0.0.0.0:8090
+
 ```
 
 ### 3.2 前端工程
@@ -81,8 +84,23 @@ pnpm install
 # 启动web项目
 npm run dev
 ```
+### 3.3 进行打包
 
-### 3.3. 技术选型
+```bash
+
+# 安装打包工具
+
+go install github.com/1340691923/ElasticView/cmd/ev_builder@v0.0.12
+
+# 执行打包命令
+
+./ev_builder
+
+# 生成于 resource/dist 文件夹内
+
+```
+
+### 3.4. 技术选型
 
 - 前端：用基于 [Vue](https://vuejs.org) 的 [Element](https://github.com/ElemeFE/element) 构建基础页面。
 - 后端：用 [Gin](https://gin-gonic.com/) 快速搭建基础API，[Gin](https://gin-gonic.com/) 是一个go语言编写的Web框架。
