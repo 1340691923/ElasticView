@@ -2,7 +2,7 @@ ai:
     bigmodekey: ""
 checkforevupdates: true
 checkforpluginupdates: true
-dbtype: mysql
+dbtype: sqlite3
 debug: true
 espwdsecret: concat_mail!!->1340691923@qq.com
 evkey: admin-xwl
