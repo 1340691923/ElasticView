@@ -59,7 +59,7 @@ func (s *EvUpdate) instrumentedCheckForUpdates(ctx context.Context) {
 	start := time.Now()
 
 	if err := s.checkForUpdates(ctx); err != nil {
-		s.log.Sugar().Errorf("Update check failed", "error", err, "duration", time.Since(start))
+		s.log.Sugar().Error("Update check failed", zap.Error(err), zap.Reflect("所花时间", time.Since(start)))
 		return
 	}
 	s.log.Sugar().Infof("Update check succeeded", "duration", time.Since(start))

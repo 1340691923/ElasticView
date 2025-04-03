@@ -7,6 +7,7 @@ import (
 	"github.com/1340691923/ElasticView/pkg/infrastructure/es_sdk/pkg/base"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/es_sdk/pkg/cache"
 	proto2 "github.com/1340691923/ElasticView/pkg/infrastructure/es_sdk/pkg/proto"
+	"github.com/1340691923/ElasticView/pkg/infrastructure/es_sdk/pkg/utils"
 	"github.com/1340691923/eve-plugin-sdk-go/ev_api/pkg"
 	"github.com/1340691923/eve-plugin-sdk-go/ev_api/proto"
 	"github.com/pkg/errors"
@@ -98,7 +99,7 @@ func (this *PostgresqlClient) MysqlExecSql(ctx context.Context, dbName, sql stri
 }
 
 // todo... 表名鉴权
-func (this *PostgresqlClient) MysqlSelectSql(ctx context.Context, dbName, sql string, args ...interface{}) (list []map[string]interface{}, err error) {
+func (this *PostgresqlClient) MysqlSelectSql(ctx context.Context, dbName, sql string, args ...interface{}) (columns []string, list []map[string]interface{}, err error) {
 
 	tx := this.db.Begin()
 
@@ -106,24 +107,18 @@ func (this *PostgresqlClient) MysqlSelectSql(ctx context.Context, dbName, sql st
 		tx = tx.WithContext(ctx).Exec(fmt.Sprintf("use %s", dbName))
 	}
 
-	err = tx.WithContext(ctx).Raw(sql, args...).Scan(&list).Error
+	columns, list, err = utils.QuerySQL(tx, sql, args...)
 
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
-	err = tx.Commit().Error
-
-	if err != nil {
-		return nil, err
-	}
-
-	return list, nil
+	return columns, list, nil
 }
 
 func (this *PostgresqlClient) MysqlFirstSql(ctx context.Context, dbName, sql string, args ...interface{}) (data map[string]interface{}, err error) {
 
-	storeRes, err := this.MysqlSelectSql(ctx, dbName, sql, args)
+	_, storeRes, err := this.MysqlSelectSql(ctx, dbName, sql, args)
 	if err != nil {
 		return
 	}

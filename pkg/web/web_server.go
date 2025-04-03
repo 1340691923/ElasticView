@@ -21,6 +21,7 @@ import (
 	"io/fs"
 	"log"
 	"net/http"
+	"runtime"
 	"strings"
 	"time"
 )
@@ -40,14 +41,11 @@ type WebServer struct {
 	//wsController          *api.WsController
 	indexController  *api.IndexController
 	pluginController *api.PluginController
+	wsController     *api.WsController
 }
 
-func NewWebServer(engine *web_engine.WebEngine, log *logger.AppLogger, cfg *config.Config, rbac *access_control.Rbac, middleWareService *middleware.MiddleWareService, gmOperaterController *api.GmOperaterController, managerRoleController *api.ManagerRoleController, esLinkController *api.EsLinkController, managerUserController *api.ManagerUserController, esController *api.EsController, aiController *api.AiController, indexController *api.IndexController, pluginController *api.PluginController) *WebServer {
-	return &WebServer{engine: engine, log: log, cfg: cfg, rbac: rbac, middleWareService: middleWareService, gmOperaterController: gmOperaterController, managerRoleController: managerRoleController, esLinkController: esLinkController, managerUserController: managerUserController, esController: esController, aiController: aiController, indexController: indexController, pluginController: pluginController}
-}
-
-type Config struct {
-	Name string
+func NewWebServer(engine *web_engine.WebEngine, log *logger.AppLogger, cfg *config.Config, rbac *access_control.Rbac, middleWareService *middleware.MiddleWareService, gmOperaterController *api.GmOperaterController, managerRoleController *api.ManagerRoleController, esLinkController *api.EsLinkController, managerUserController *api.ManagerUserController, esController *api.EsController, aiController *api.AiController, indexController *api.IndexController, pluginController *api.PluginController, wsController *api.WsController) *WebServer {
+	return &WebServer{engine: engine, log: log, cfg: cfg, rbac: rbac, middleWareService: middleWareService, gmOperaterController: gmOperaterController, managerRoleController: managerRoleController, esLinkController: esLinkController, managerUserController: managerUserController, esController: esController, aiController: aiController, indexController: indexController, pluginController: pluginController, wsController: wsController}
 }
 
 func (this *WebServer) runRouter() {
@@ -125,6 +123,8 @@ func (this *WebServer) runRouter() {
 	this.engine.GetGinEngine().Any("/api/call_plugin/:plugin_id/*action",
 		this.pluginController.CallPlugin)
 
+	this.runWs()
+
 	this.engine.GetGinEngine().Use(
 		this.middleWareService.CheckVersion,
 	)
@@ -192,8 +192,9 @@ func (this *WebServer) Run(ctx context.Context) (err error) {
 }
 
 func (this *WebServer) InitOpenWinBrowser() {
-	if !this.cfg.DeBug {
-		util.OpenWinBrowser(this.cfg.RootUrl)
-		log.Println(fmt.Sprintf("将打开浏览器！地址为：%v", this.cfg.RootUrl))
+	if !this.cfg.DeBug && (runtime.GOOS == "windows" || runtime.GOOS == "darwin") {
+		openAddr := fmt.Sprintf("http://localhost:%d", this.cfg.Port)
+		util.OpenWinBrowser(openAddr)
+		log.Println(fmt.Sprintf("将打开浏览器！地址为：%v", openAddr))
 	}
 }

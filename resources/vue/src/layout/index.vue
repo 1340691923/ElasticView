@@ -233,7 +233,7 @@ watch(route, () => {
     .mix-container__left {
       position: relative;
       width: $sidebar-width;
-      height: 100%;
+     /* height: 100%;*/
 
       :deep(.el-menu) {
         height: 100%;

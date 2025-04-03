@@ -82,6 +82,7 @@ func newTestClientConfig(address string, pid int, log hclog.Logger, versionedPlu
 func getV2PluginSet() goplugin.PluginSet {
 	return goplugin.PluginSet{
 		"resource": &grpcplugin.ResourceGRPCPlugin{},
+		"live":     &grpcplugin.LiveGRPCPlugin{},
 		"basic":    &grpcplugin.PluginInfoGRPCPlugin{},
 	}
 }

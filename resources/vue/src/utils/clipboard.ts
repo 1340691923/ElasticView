@@ -4,7 +4,7 @@ import {ElMessage} from "element-plus";
 const clipboardSuccess = (text: any) => {
 
   ElMessage({
-    type: 'success',
+    type: 'success',offset:32,
     message: `拷贝成功`
   })
 }
@@ -12,7 +12,7 @@ const clipboardSuccess = (text: any) => {
 const clipboardError = (text: any) => {
 
   ElMessage({
-    type: 'error',
+    type: 'error',offset:32,
     message: `拷贝${text}失败`
   })
 }

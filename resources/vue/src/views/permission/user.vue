@@ -1,7 +1,13 @@
 <template>
   <div class="app-container">
 
-    <div class="search-container">
+    <div class="search-container" :class="{ 'is-collapsed': isCollapsed && isMobile }">
+      <div class="search-header" v-if="isMobile" @click="toggleCollapse">
+        <span>{{ $t('搜索条件') }}</span>
+        <el-icon :class="{ 'is-collapsed': isCollapsed }">
+          <ArrowDown />
+        </el-icon>
+      </div>
       <el-form :inline="true">
 
         <el-form-item label="用户名:">
@@ -54,13 +60,41 @@
           {{ scope.row.username }}
         </template>
       </el-table-column>
-      <el-table-column align="center" :label="$t('所属角色')" >
+      <el-table-column align="center" width="160" :label="$t('角色')">
         <template #default="scope">
-
-          <template v-for="(item) in scope.row.role_ids">
-            <el-tag>{{chanCfgMap[item]}}</el-tag>
+          <div class="role-tags">
+            <template v-if="scope.row.role_ids.length <= 2">
+              <el-tag v-for="item in scope.row.role_ids" :key="item">
+                {{chanCfgMap[item]}}
+              </el-tag>
+            </template>
+            <template v-else>
+              <el-tag v-for="item in scope.row.role_ids.slice(0, 1)" :key="item">
+                {{chanCfgMap[item]}}
+              </el-tag>
+              <el-popover
+                placement="bottom"
+                trigger="hover"
+                :width="200"
+                popper-class="role-popover"
+              >
+                <template #reference>
+                  <el-tag class="more-tag">
+                    +{{ scope.row.role_ids.length - 1 }}
+                  </el-tag>
+                </template>
+                <div class="popover-tags">
+                  <el-tag 
+                    v-for="item in scope.row.role_ids.slice(1)" 
+                    :key="item"
+                    size="small"
+                  >
+                    {{chanCfgMap[item]}}
+                  </el-tag>
+                </div>
+              </el-popover>
           </template>
-
+          </div>
         </template>
       </el-table-column>
       <el-table-column align="center" width="100"  :label="$t('姓名')">
@@ -277,6 +311,7 @@ import {ElMessage} from "element-plus";
 
 import {useAppStore} from "@/store";
 import {DeviceEnum} from "@/enums/DeviceEnum";
+import { ArrowDown } from '@element-plus/icons-vue'
 
 
 
@@ -325,7 +360,8 @@ export default {
         label: 'title'
       },
       chanCfgList: [],
-      chanCfgMap: []
+      chanCfgMap: [],
+      isCollapsed: true,
     }
   },
   computed: {
@@ -426,14 +462,14 @@ export default {
           const res = await DelUser({ id: row.id })
           if(res.code != 0){
             ElMessage({
-              type: 'error',
+              type: 'error',offset:60,
               message: res.msg
             })
             return
           }
           this.getUserList(1)
           ElMessage.success({
-            type: 'success',
+            type: 'success',offset:60,
             message: res.msg
           })
         })
@@ -452,14 +488,14 @@ export default {
           const res = await SealUserAction({ id: row.id })
           if(res.code != 0){
             ElMessage({
-              type: 'error',
+              type: 'error',offset:60,
               message: res.msg
             })
             return
           }
           this.getUserList(1)
           ElMessage.success({
-            type: 'success',
+            type: 'success',offset:60,
             message: res.msg
           })
         })
@@ -478,14 +514,14 @@ export default {
           const res = await UnSealUserAction({ id: row.id })
           if(res.code != 0){
             ElMessage({
-              type: 'error',
+              type: 'error',offset:60,
               message: res.msg
             })
             return
           }
           this.getUserList(1)
           ElMessage.success({
-            type: 'success',
+            type: 'success',offset:60,
             message: res.msg
           })
         })
@@ -547,21 +583,510 @@ export default {
 
       this.dialogVisible = false
 
-    }
+    },
+    toggleCollapse() {
+      this.isCollapsed = !this.isCollapsed
+    },
   }
 }
 </script>
 
 <style lang="scss" scoped>
 .app-container {
+  .search-container {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    backdrop-filter: blur(8px);
+    border-radius: 0.5rem;
+    transition: all 0.3s;
 
-.roles-table {
-  margin-top: 30px;
+    .search-header {
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      .search-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.5rem 0;
+        cursor: pointer;
+        user-select: none;
+        
+        span {
+          font-weight: 500;
+        }
+
+        .el-icon {
+          transition: transform 0.3s ease;
+          
+          &.is-collapsed {
+            transform: rotate(-180deg);
+          }
+        }
+      }
+
+      &.is-collapsed {
+        :deep(.el-form) {
+          display: none;
+        }
+      }
+
+      :deep(.el-form) {
+        animation: slideDown 0.3s ease;
+        
+        .el-form-item {
+          margin-right: 0;
+          width: 100%;
+          
+          .el-input {
+            width: 100% !important;
+          }
+          
+          &:last-child {
+            display: flex;
+            gap: 0.5rem;
+            
+            .el-button {
+              flex: 1;
+              margin: 0 !important;
+            }
+          }
+        }
+      }
+    }
+
+    :deep(.el-form) {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      gap: 1rem;
+
+      .el-form-item {
+        margin-bottom: 0;
+
+        &__label {
+          color: #4b5563;
+        }
+      }
+
+      .el-input__wrapper,
+      .el-select .el-input__wrapper {
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        border: 1px solid #e5e7eb;
+        transition: all 0.3s;
+
+        &:hover {
+          border-color: #60a5fa;
+        }
+
+        &.is-focus {
+          border-color: #3b82f6;
+          box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+      }
+
+      .el-button {
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s;
+        
+        &:hover {
+          transform: scale(1.05);
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        &.filter-item {
+          min-width: 80px;
+        }
+      }
+    }
+  }
+
+  .table-container {
+    border-radius: 0.5rem;
+    overflow: hidden;
+    backdrop-filter: blur(8px);
+    transition: all 0.3s;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+
+    :deep(.el-table) {
+      background-color: transparent;
+      
+      .el-table__row {
+        transition: all 0.3s;
+        
+        &:hover {
+          transform: translateY(-1px);
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+      }
+      
+      th {
+        color: #4b5563;
+        font-weight: 500;
+        border-bottom: 1px solid #e5e7eb;
+        padding: 12px 0;
+        
+        .cell {
+          font-size: 0.95rem;
+        }
+      }
+      
+      td {
+        border-bottom: 1px solid #f3f4f6;
+        padding: 16px 0;
+        
+        .cell {
+          line-height: 1.6;
+        }
+      }
+
+      .el-button {
+        transition: all 0.3s;
+        margin: 0 4px;
+        padding: 6px 12px;
+        
+        &:not(.el-button--link):hover {
+          transform: scale(1.05);
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        &--primary {
+          background: linear-gradient(135deg, #60a5fa, #3b82f6);
+          border: none;
+          
+          &:hover {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+          }
+        }
+
+        &--danger {
+          background: linear-gradient(135deg, #f87171, #ef4444);
+          border: none;
+          
+          &:hover {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+          }
+        }
+
+        &--info {
+          background: linear-gradient(135deg, #93c5fd, #60a5fa);
+          border: none;
+          
+          &:hover {
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+          }
+        }
+      }
+
+      .el-tag {
+        transition: all 0.3s;
+        margin: 0 4px;
+        border-radius: 4px;
+        padding: 4px 8px;
+        font-size: 0.9rem;
+        border: none;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        
+        &:hover {
+          transform: translateY(-1px);
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+      }
+
+      .el-table__empty-block {
+        background-color: transparent;
+        
+        .el-table__empty-text {
+          color: #6b7280;
+        }
+      }
+
+      .role-tags {
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: center;
+        gap: 4px;
+        
+        .el-tag {
+          transition: all 0.3s;
+          margin: 0;
+          white-space: nowrap;
+          max-width: 120px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          
+          &.more-tag {
+            background: linear-gradient(135deg, #93c5fd, #60a5fa);
+            color: white;
+            cursor: pointer;
+            padding: 0 8px;
+            
+            &:hover {
+              background: linear-gradient(135deg, #60a5fa, #3b82f6);
+              transform: translateY(-1px);
+            }
+          }
+        }
+      }
+
+      .role-popover {
+        .popover-tags {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 4px;
+          max-height: 200px;
+          overflow-y: auto;
+          padding: 4px;
+
+          &::-webkit-scrollbar {
+            width: 4px;
+          }
+          
+          &::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1;
+            border-radius: 2px;
+          }
+
+          .el-tag {
+            margin: 0;
+          }
+        }
+      }
+    }
+  }
+
+  .pagination-container {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: flex-end;
+    overflow-x: auto;
+    
+    :deep(.el-pagination) {
+      border-radius: 0.5rem;
+      padding: 0.5rem;
+      min-width: fit-content;
+      
+      @media (max-width: 768px) {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        font-size: 0.875rem;
+        
+        .el-pager {
+          flex-wrap: wrap;
+        }
+        
+        .btn-prev,
+        .btn-next {
+          min-width: 24px;
+        }
+        
+        li {
+          min-width: 24px;
+        }
+      }
+
+      .el-pagination__total,
+      .el-pagination__jump {
+        color: #6b7280;
+      }
+
+      .el-pager li {
+        background-color: transparent;
+        color: #4b5563;
+        border: 1px solid transparent;
+        transition: all 0.3s;
+
+        &:hover {
+          background-color: #f3f4f6;
+        }
+
+        &.is-active {
+          background-color: #3b82f6;
+          color: white;
+        }
+      }
+    }
+  }
 }
 
-.permission-tree {
-  margin-bottom: 30px;
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
+// 深色模式
+@media (prefers-color-scheme: dark) {
+  .app-container {
+    .search-container {
+      background-color: rgba(31, 41, 55, 0.9);
+
+      :deep(.el-form) {
+        .el-form-item__label { 
+          color: #d1d5db;
+        }
+
+        .el-input__wrapper,
+        .el-select .el-input__wrapper {
+          background-color: #374151;
+          border-color: #4b5563;
+
+          &:hover {
+            border-color: #60a5fa;
+          }
+
+          &.is-focus {
+            border-color: #60a5fa;
+          }
+        }
+      }
+    }
+
+    .table-container {
+      background-color: rgba(31, 41, 55, 0.9);
+
+      :deep(.el-table) {
+        .el-table__row:hover {
+          background-color: rgba(55, 65, 81, 0.7) !important;
+        }
+        
+        th {
+          background-color: rgba(55, 65, 81, 0.9) !important;
+          color: #d1d5db;
+          border-bottom-color: #4b5563;
+        }
+        
+        td {
+          border-bottom-color: #374151;
+        }
+
+        .el-button {
+          &--primary {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            &:hover {
+              background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            }
+          }
+
+          &--danger {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            &:hover {
+              background: linear-gradient(135deg, #dc2626, #b91c1c);
+            }
+          }
+
+          &--info {
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            &:hover {
+              background: linear-gradient(135deg, #3b82f6, #2563eb);
+            }
+          }
+        }
+
+        .el-table__empty-block {
+          .el-table__empty-text {
+            color: #9ca3af;
+          }
+        }
+
+        .role-tags {
+          .el-tag {
+            background-color: #374151;
+            color: #e5e7eb;
+            border: 1px solid #4b5563;
+            
+            &:hover {
+              border-color: #60a5fa;
+              background-color: #3b4252;
+            }
+
+            &.more-tag {
+              background: linear-gradient(135deg, #3b82f6, #2563eb);
+              border: none;
+              color: white;
+              
+              &:hover {
+                background: linear-gradient(135deg, #2563eb, #1d4ed8);
+              }
+            }
+          }
+        }
+
+        .role-popover {
+          .popover-tags::-webkit-scrollbar-thumb {
+            background-color: #4b5563;
+          }
+        }
+      }
+    }
+
+    .pagination-container {
+      :deep(.el-pagination) {
+        background-color: rgba(31, 41, 55, 0.9);
+
+        .el-pagination__total,
+        .el-pagination__jump {
+          color: #9ca3af;
+        }
+
+        .el-pager li {
+          color: #d1d5db;
+
+          &:hover {
+            background-color: #374151;
+          }
+
+          &.is-active {
+            background-color: #2563eb;
+          }
+        }
+      }
+    }
+  }
+}
+
+// 添加弹出框的深色模式样式（注意：这个需要放在全局样式中，因为 popper 是挂载在 body 下的）
+:deep(.el-popper.role-popover) {
+  &.is-dark {
+    background-color: #1f2937;
+    border: 1px solid #374151;
+    
+    .popover-tags {
+      .el-tag {
+        background-color: #374151;
+        color: #e5e7eb;
+        border: 1px solid #4b5563;
+        
+        &:hover {
+          border-color: #60a5fa;
+          background-color: #3b4252;
+        }
+      }
+
+      &::-webkit-scrollbar {
+        width: 4px;
+      }
+      
+      &::-webkit-scrollbar-thumb {
+        background-color: #4b5563;
+      }
+      
+      &::-webkit-scrollbar-track {
+        background-color: #1f2937;
+      }
+    }
+  }
+
+  .el-popper__arrow::before {
+    background-color: #1f2937;
+    border-color: #374151;
+  }
 }
 </style>

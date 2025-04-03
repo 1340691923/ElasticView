@@ -32,15 +32,46 @@ func (this *PluginManager) Plugins(_ context.Context) []*plugin.Plugin {
 	return res
 }
 
-func (this *PluginManager) Add(_ context.Context, p *plugin.Plugin) error {
+func (this *PluginManager) AddPlugin(_ context.Context, p *plugin.Plugin) error {
+
 	if this.isRegistered(p.ID) {
 		return fmt.Errorf("plugin %s is already registered", p.ID)
 	}
 
 	this.mu.Lock()
+	defer this.mu.Unlock()
 	this.store[p.ID] = p
 
-	this.mu.Unlock()
+	return nil
+}
+
+func (this *PluginManager) Reload(ctx context.Context, newPlugin *plugin.Plugin) error {
+
+	this.mu.Lock()
+	defer this.mu.Unlock()
+
+	oldPlugin := this.store[newPlugin.ID]
+	err := oldPlugin.Decommission()
+
+	if err != nil {
+		return err
+	}
+
+	err = newPlugin.Start(ctx)
+
+	if err != nil {
+		oldPlugin.Start(ctx)
+		return err
+	}
+
+	this.store[newPlugin.ID] = newPlugin
+
+	err = oldPlugin.Stop(ctx)
+	if err != nil {
+		return err
+	}
+
+	newPlugin.DisDecommission()
 
 	return nil
 }
@@ -52,8 +83,8 @@ func (this *PluginManager) Remove(_ context.Context, pluginID string) error {
 	}
 
 	this.mu.Lock()
+	defer this.mu.Unlock()
 	delete(this.store, pluginID)
-	this.mu.Unlock()
 
 	return nil
 }

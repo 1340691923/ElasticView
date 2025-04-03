@@ -145,6 +145,15 @@ export function GetOAuthConfigs(data){
   })
 }
 
+export function SetRootUrl(data){
+  return request({
+    url: '/api/gm_user/SetRootUrl',
+    method: 'post',
+    data
+  })
+}
+
+
 export function SaveOAuthConfigs(data){
   return request({
     url: '/api/gm_user/SaveOAuthConfigs',

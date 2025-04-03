@@ -19,7 +19,7 @@
             class="filter-item"
             @click="handleAddRole"
           >{{ $t('新建数据源') }}
-          </el-button>
+          </el-button> 
         </el-form-item>
 
         <el-form-item :label=" $t('鉴权配置')" >
@@ -382,7 +382,7 @@ export default {
           const res = await DeleteEsCfgRelation({id:scope2.row.cfg_relation_id})
           if (res.code != 0) {
             ElMessage.error({
-              type: 'error',
+              type: 'error',offset:60,
               message: res.msg
             })
             return
@@ -402,7 +402,7 @@ export default {
       const res = await GetEsCfgOpt()
       if (res.code != 0) {
         ElMessage.error({
-          type: 'error',
+          type: 'error',offset:60,
           message: res.msg
         })
         return
@@ -414,7 +414,7 @@ export default {
       const res = await roleOption()
       if (res.code != 0) {
         ElMessage.error({
-          type: 'error',
+          type: 'error',offset:60,
           message: res.msg
         })
         return
@@ -442,12 +442,12 @@ export default {
         scope.row.connectLoading = false
         if (res.code == 0) {
           ElMessage.success({
-            type: 'success',
+            type: 'success',offset:60,
             message: `连接成功`
           })
         } else {
           ElMessage.error({
-            type: 'error',
+            type: 'error',offset:60,
             message: res.msg
           })
         }
@@ -471,13 +471,13 @@ export default {
       this.getListLoading = false
       if (res.code != 0) {
         ElMessage.error({
-          type: 'error',
+          type: 'error',offset:60,
           message: res.msg
         })
         return
       }
       ElMessage.success({
-        type: 'success',
+        type: 'success',offset:60,
         message: res.msg
       })
 
@@ -516,13 +516,13 @@ export default {
       let res = await DeleteEsCfgAction({id:scope.row.id})
       if (res.code != 0) {
         ElMessage.error({
-          type: 'error',
+          type: 'error',offset:60,
           message: res.msg
         })
         return
       }
       ElMessage.success({
-        type: 'success',
+        type: 'success',offset:60,
         message: res.msg
       })
       this.getList()
@@ -537,7 +537,7 @@ export default {
           const res = await DeleteAction({ id: row.id })
           if (res.code != 0) {
             ElMessage.error({
-              type: 'error',
+              type: 'error',offset:60,
               message: res.msg
             })
             return
@@ -556,7 +556,7 @@ export default {
         const res = await UpdateAction(this.link)
         if (res.code != 0) {
           ElMessage.error({
-            type: 'error',
+            type: 'error',offset:60,
             message: res.msg
           })
           return
@@ -566,7 +566,7 @@ export default {
         const res = await InsertAction(this.link)
         if (res.code != 0) {
           ElMessage.error({
-            type: 'error',
+            type: 'error',offset:60,
             message: res.msg
           })
           return
@@ -576,7 +576,7 @@ export default {
 
       this.dialogVisible = false
       ElMessage.success({
-        type: 'success',
+        type: 'success',offset:60,
         message: isEdit ? '修改成功' : '创建成功'
       })
     },

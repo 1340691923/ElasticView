@@ -119,7 +119,7 @@ func (this *EvEService) Run(ctx context.Context) error {
 }
 
 func (this *EvEService) GetEvKey() string {
-	return this.cfg.EvKey
+	return this.cfg.GetEvKey()
 }
 
 func (this *EvEService) SaveEvKey(evKey string) error {

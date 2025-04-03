@@ -9,8 +9,8 @@ import (
 	"github.com/1340691923/ElasticView/pkg/infrastructure/jwt_svr"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/logger"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/model"
-	"github.com/1340691923/ElasticView/pkg/infrastructure/plugins/manager"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/orm"
+	"github.com/1340691923/ElasticView/pkg/infrastructure/plugins/manager"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/vo"
 	"github.com/1340691923/ElasticView/pkg/services/oauth"
 	"github.com/1340691923/ElasticView/pkg/util"
@@ -350,18 +350,13 @@ func (this *GmUserService) GetRoleList(ctx context.Context, js string) (outputRo
 		if len(frontendRoutes) == 0 {
 			continue
 		}
-		entry := fmt.Sprintf("%sapi/call_plugin_views/%s/", this.cfg.RootUrl, plugin.ID)
+		entry := fmt.Sprintf("api/call_plugin_views/%s/", plugin.ID)
 
 		if pluginJson.FrontendDebug {
 			entry = fmt.Sprintf("http://localhost:%d/", pluginJson.FrontendDevPort)
 		}
 
-		_, subUrl, err := this.cfg.ParseAppUrlAndSubUrl()
-		if err != nil {
-			subUrl = ""
-		} else {
-			subUrl = subUrl + "/"
-		}
+		subUrl := "/"
 
 		qiankunMicroApps = append(qiankunMicroApps, &QiankunMicroApp{
 			Name:       plugin.ID,
@@ -406,18 +401,14 @@ func (this *GmUserService) GetRoleList2C(ctx context.Context) (routes []*Route, 
 		if len(frontendRoutes) == 0 {
 			continue
 		}
-		entry := fmt.Sprintf("%sapi/call_plugin_views/%s/", this.cfg.RootUrl, plugin.ID)
+		entry := fmt.Sprintf("api/call_plugin_views/%s/", plugin.ID)
 
 		if pluginJson.FrontendDebug {
 			entry = fmt.Sprintf("http://localhost:%d/", pluginJson.FrontendDevPort)
 		}
 
-		_, subUrl, err := this.cfg.ParseAppUrlAndSubUrl()
-		if err != nil {
-			subUrl = ""
-		} else {
-			subUrl = subUrl + "/"
-		}
+		subUrl := "/"
+
 		if plugin.PluginData().PluginJsonData.Frontend2c {
 			qiankunMicroApps = append(qiankunMicroApps, &QiankunMicroApp{
 				Name:       plugin.ID,
@@ -622,7 +613,7 @@ func (this *GmUserService) Delete(ctx context.Context, id int) (err error) {
 func (this *GmUserService) GetOAuthList(callback string) (cfgs []vo.OAuthConfig, err error) {
 	svrs := this.oAuthServiceRegistry.GetServices()
 
-	authCallback := this.cfg.RootUrl + "api/callback"
+	authCallback := this.cfg.GetRootUrl() + "api/callback"
 
 	for _, v := range svrs {
 

@@ -34,7 +34,8 @@ type PluginInstaller struct {
 }
 
 func ProvideInstaller(cfg *config.Config, log *logger.AppLogger, pluginStore manager.Service,
-	evBackDao *dao.EvBackDao, pluginStoreService *pluginstore.PluginStoreService, pluginsService *updatechecker.PluginsService) *PluginInstaller {
+	evBackDao *dao.EvBackDao, pluginStoreService *pluginstore.PluginStoreService,
+	pluginsService *updatechecker.PluginsService) *PluginInstaller {
 	return New(log, cfg, pluginStore, evBackDao, pluginStoreService, pluginsService)
 }
 
@@ -52,25 +53,25 @@ func New(log *logger.AppLogger, cfg *config.Config, pluginStore manager.Service,
 	}
 }
 
-func (m *PluginInstaller) Add(ctx context.Context, pluginID, version string) error {
-	if ok, _ := m.installing.Load(pluginID); ok != nil {
+func (this *PluginInstaller) Add(ctx context.Context, pluginID, version string) error {
+	if ok, _ := this.installing.Load(pluginID); ok != nil {
 		return nil
 	}
-	m.installing.Store(pluginID, true)
+	this.installing.Store(pluginID, true)
 	defer func() {
-		m.installing.Delete(pluginID)
+		this.installing.Delete(pluginID)
 	}()
 
-	err := m.install(ctx, pluginID, version)
+	err := this.install(ctx, pluginID, version)
 	if err != nil {
 		return err
 	}
-	m.pluginsService.InstrumentedCheckForUpdates(ctx)
+	this.pluginsService.InstrumentedCheckForUpdates(ctx)
 
 	return nil
 }
 
-func (m *PluginInstaller) AddUploadPlugin(ctx *gin.Context, f *multipart.FileHeader) (pluginName string, err error) {
+func (this *PluginInstaller) AddUploadPlugin(ctx *gin.Context, f *multipart.FileHeader) (pluginName string, err error) {
 	fileName := f.Filename
 	buildOs := runtime.GOOS
 	buildArch := runtime.GOARCH
@@ -86,52 +87,56 @@ func (m *PluginInstaller) AddUploadPlugin(ctx *gin.Context, f *multipart.FileHea
 	}
 	pluginID := tmpArr[0]
 
-	if ok, _ := m.installing.Load(pluginID); ok != nil {
+	if ok, _ := this.installing.Load(pluginID); ok != nil {
 		return "", errors.New(fmt.Sprintf("插件[%s]已在安装中...", pluginID))
 	}
-	m.installing.Store(pluginID, true)
+	this.installing.Store(pluginID, true)
 	defer func() {
-		m.installing.Delete(pluginID)
+		this.installing.Delete(pluginID)
 	}()
 
-	if plugin, exists := m.plugin(ctx, pluginID, ""); exists {
+	if plugin, exists := this.plugin(ctx, pluginID, ""); exists {
 
-		m.log.Sugar().Infof("开始删除之前安装的老版本插件")
-		err = m.Remove(ctx, plugin.ID, plugin.Version())
+		this.log.Sugar().Infof("开始删除之前安装的老版本插件")
+		err = this.Remove(ctx, plugin.ID, plugin.Version())
 		if err != nil {
 			return "", errors.WithStack(err)
 		}
 	}
-	m.log.Sugar().Infof("Installing upload plugin", "pluginId", pluginID)
-	dest := filepath.Join(m.cfg.Plugin.LoadPath, fileName)
+	this.log.Sugar().Infof("Installing upload plugin", "pluginId", pluginID)
+	dest := filepath.Join(this.cfg.Plugin.LoadPath, fileName)
 	err = ctx.SaveUploadedFile(f, dest)
 	if err != nil {
 		os.Remove(dest)
 		return "", errors.WithStack(err)
 	}
-	err = m.pluginStoreService.FastInitPlugin(ctx, fileName)
+	err = this.pluginStoreService.FastInitPlugin(ctx, fileName)
 
 	if err != nil {
 		os.Remove(dest)
 		return "", err
 	}
 
-	m.pluginsService.InstrumentedCheckForUpdates(ctx)
+	this.pluginsService.InstrumentedCheckForUpdates(ctx)
 
 	return pluginID, nil
 }
 
-func (m *PluginInstaller) install(ctx context.Context, pluginID, version string) (err error) {
-
+func (this *PluginInstaller) install(ctx context.Context, pluginID, version string) (err error) {
+	isLinux := runtime.GOOS == "linux" //linux 才进行热更
 	var pluginArchiveInfo *vo.GetPluginDownloadUrlRes
-
-	if plugin, exists := m.plugin(ctx, pluginID, version); exists {
+	var exists bool
+	var plugin *plugin.Plugin
+	var pluginPath string
+	var oldPluginPath string
+	if plugin, exists = this.plugin(ctx, pluginID, version); exists {
 
 		if plugin.Version() == version {
 			return errors.New("已安装该插件版本")
 		}
 
-		pluginArchiveInfo, err = m.evBackDao.GetPluginDownloadUrl(ctx, &dto.GetPluginDownloadUrlReq{
+		//获取插件远端下载地址
+		pluginArchiveInfo, err = this.evBackDao.GetPluginDownloadUrl(ctx, &dto.GetPluginDownloadUrlReq{
 			PluginAlias: pluginID,
 			Version:     version,
 			Os:          runtime.GOOS,
@@ -140,16 +145,27 @@ func (m *PluginInstaller) install(ctx context.Context, pluginID, version string)
 		if err != nil {
 			return err
 		}
+		if isLinux {
+			this.log.Sugar().Infof("开始改名之前的插件名为插件-old")
 
-		m.log.Sugar().Infof("开始删除之前安装的老版本插件")
-		err = m.Remove(ctx, plugin.ID, plugin.Version())
-		if err != nil {
-			return err
+			pluginPath, oldPluginPath, err = this.Rename(ctx, plugin.ID)
+			if err != nil {
+				this.log.Sugar().Errorf("插件改名出现错误", oldPluginPath, pluginPath, err)
+				os.Rename(oldPluginPath, pluginPath)
+				return err
+			}
+		} else {
+			this.log.Sugar().Infof("开始删除之前安装的老版本插件")
+
+			err = this.Remove(ctx, plugin.ID, plugin.Version())
+			if err != nil {
+				return err
+			}
 		}
 
 	} else {
 		var err error
-		pluginArchiveInfo, err = m.evBackDao.GetPluginDownloadUrl(ctx, &dto.GetPluginDownloadUrlReq{
+		pluginArchiveInfo, err = this.evBackDao.GetPluginDownloadUrl(ctx, &dto.GetPluginDownloadUrlReq{
 			PluginAlias: pluginID,
 			Version:     version,
 			Os:          runtime.GOOS,
@@ -160,51 +176,82 @@ func (m *PluginInstaller) install(ctx context.Context, pluginID, version string)
 		}
 
 	}
-	m.log.Sugar().Infof("Installing plugin", "pluginId", pluginID, "version", version, pluginArchiveInfo.DownloadUrl)
+	this.log.Sugar().Infof("开始下载插件", "pluginId", pluginID, "version", version, pluginArchiveInfo.DownloadUrl)
 
-	downloadPluginName, err := util.DownloadFile(pluginArchiveInfo.DownloadUrl, m.cfg.Plugin.LoadPath)
+	downloadPluginName, err := util.DownloadFile(pluginArchiveInfo.DownloadUrl, this.cfg.Plugin.LoadPath)
 
 	if err != nil {
+		this.log.Sugar().Errorf("下载插件出现错误", oldPluginPath, pluginPath, err)
+		os.Rename(oldPluginPath, pluginPath)
 		return errors.WithStack(err)
 	}
 
-	err = m.pluginStoreService.FastInitPlugin(ctx, downloadPluginName)
-
-	if err != nil {
-		return errors.WithStack(err)
+	if isLinux && exists {
+		this.log.Sugar().Infof("开始插件热更新")
+		err = this.pluginStoreService.FastReloadPlugin(ctx, downloadPluginName)
+		if err != nil {
+			this.log.Sugar().Errorf("插件热更新出现错误", oldPluginPath, pluginPath, err)
+			os.Rename(oldPluginPath, pluginPath)
+			return errors.WithStack(err)
+		} else {
+			this.log.Sugar().Infof("开始刪除旧插件文件", oldPluginPath)
+			os.Remove(oldPluginPath)
+		}
+	} else {
+		err = this.pluginStoreService.FastInitPlugin(ctx, downloadPluginName)
+		if err != nil {
+			return errors.WithStack(err)
+		}
 	}
+
+	this.pluginsService.InstrumentedCheckForUpdates(ctx)
 
 	return nil
 }
 
 // 卸载插件
-func (m *PluginInstaller) Remove(ctx context.Context, pluginID, version string) error {
-	plugin, exists := m.plugin(ctx, pluginID, version)
+func (this *PluginInstaller) Remove(ctx context.Context, pluginID, version string) error {
+	plugin, exists := this.plugin(ctx, pluginID, version)
 	if !exists {
 		return errors.New("插件不存在")
 	}
 	pluginFilePath := plugin.GetPluginFileName()
-	err := m.pluginStoreService.FastShutdown(ctx, plugin)
+	err := this.pluginStoreService.FastShutdown(ctx, plugin)
 
 	if err != nil {
 		return errors.WithStack(err)
 	}
 
-	err = m.pluginStoreService.FastRemove(ctx, plugin)
+	err = this.pluginStoreService.FastRemove(ctx, plugin)
 
 	if err != nil {
 		return errors.WithStack(err)
 	}
 
-	pluginFilePath = filepath.Join(m.cfg.Plugin.LoadPath, pluginFilePath)
+	pluginFilePath = filepath.Join(this.cfg.Plugin.LoadPath, pluginFilePath)
 
 	os.Remove(pluginFilePath)
 
 	return err
 }
 
-func (m *PluginInstaller) plugin(ctx context.Context, pluginID, pluginVersion string) (*plugin.Plugin, bool) {
-	p, exists := m.pluginStore.Plugin(ctx, pluginID)
+// 重命名插件
+func (this *PluginInstaller) Rename(ctx context.Context, pluginID string) (oldPluginFilePath, newPluginFilePath string, err error) {
+	plugin, exists := this.plugin(ctx, pluginID, "")
+	if !exists {
+		return "", "", errors.New("插件不存在")
+	}
+	pluginFileName := plugin.GetPluginFileName()
+
+	pluginFilePath := filepath.Join(this.cfg.Plugin.LoadPath, pluginFileName)
+
+	newPluginFilePath = filepath.Join(this.cfg.Plugin.LoadPath, fmt.Sprintf("%s%s", pluginFileName, "-old"))
+	this.log.Sugar().Infof("修改插件名", pluginFilePath, newPluginFilePath)
+	return pluginFilePath, newPluginFilePath, os.Rename(pluginFilePath, newPluginFilePath)
+}
+
+func (this *PluginInstaller) plugin(ctx context.Context, pluginID, pluginVersion string) (*plugin.Plugin, bool) {
+	p, exists := this.pluginStore.Plugin(ctx, pluginID)
 	if !exists {
 		return nil, false
 	}

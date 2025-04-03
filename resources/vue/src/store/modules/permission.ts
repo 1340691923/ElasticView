@@ -4,7 +4,7 @@ import { store } from "@/store";
 import MenuAPI, { RouteVO } from "@/api/menu";
 import {asyncRoutes} from "@/utils/asyncRoutes";
 import path from "path-browserify";
-import {NoAuthRoute} from "@/api/user";
+import {NoAuthRoute, SetRootUrl} from "@/api/user";
 
 const modules = import.meta.glob("../../views/**/**.vue");
 const Layout = () => import("@/layout/index.vue");
@@ -23,9 +23,10 @@ export const usePermissionStore = defineStore("permission", () => {
    * 生成动态路由
    */
   function generateRoutes() {
+
     return new Promise<RouteRecordRaw[]>((resolve, reject) => {
       MenuAPI.getRoutes({baseRoutes:asyncRoutes})
-        .then((res) => {
+        .then(async (res) => {
 
           if (res.code !== 0) {
             ElMessage.error(res.msg)
@@ -40,6 +41,8 @@ export const usePermissionStore = defineStore("permission", () => {
             ElNotification({
               title: `您的Ev落后于官网最新版本:${evLatestVersion}`,
               dangerouslyUseHTMLString: true,
+              duration: 0, // 不自动关闭
+              showClose: true,
               message: ' <a target="_blank" href="'+evDownloadUrl+'">点我前往下载页面</a>',
             })
           }
@@ -110,6 +113,9 @@ export const usePermissionStore = defineStore("permission", () => {
  */
 export const transformRoutes = (routes: RouteVO[]) => {
   const asyncRoutes: RouteRecordRaw[] = [];
+  if (routes == null){
+    return asyncRoutes;
+  }
   routes.forEach((route) => {
     const tmpRoute = { ...route } as RouteRecordRaw;
     // 顶级目录，替换为 Layout 组件

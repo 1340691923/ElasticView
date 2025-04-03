@@ -119,6 +119,8 @@ func (this *EsClientService) GetEsClientByID(ctx context.Context, id int, userId
 		}
 	}
 
+	log.Println("user", userId, roleIds, id, linkOptions)
+
 	if isBanLink {
 		return nil, errors.New("您已经被移除访问该连接的权限")
 	}

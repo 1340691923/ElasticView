@@ -62,14 +62,14 @@ const submitForm = async () => {
 
   if (res.code != 0) {
     ElMessage.error({
-      type: 'error',
+      type: 'error',offset:60,
       message: res.msg
     })
     return
   }
 
   ElMessage.success({
-    type: 'success',
+    type: 'success',offset:60,
     message: 'evKey导入成功，请重新进行想要进行的操作'
   })
 

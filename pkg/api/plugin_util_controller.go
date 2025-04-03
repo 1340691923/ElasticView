@@ -6,17 +6,22 @@ import (
 	"github.com/1340691923/ElasticView/pkg/infrastructure/config"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/dto"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/es_sdk/pkg/factory"
+	"github.com/1340691923/ElasticView/pkg/infrastructure/eve_api"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/logger"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/response"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/vo"
 	"github.com/1340691923/ElasticView/pkg/services/es"
 	"github.com/1340691923/ElasticView/pkg/services/es_service"
 	"github.com/1340691923/ElasticView/pkg/services/gm_user"
+	"github.com/1340691923/ElasticView/pkg/services/live_svr"
 	"github.com/1340691923/ElasticView/pkg/services/plugin_service"
 	dto2 "github.com/1340691923/eve-plugin-sdk-go/ev_api/dto"
 	vo2 "github.com/1340691923/eve-plugin-sdk-go/ev_api/vo"
+	"github.com/1340691923/eve-plugin-sdk-go/live"
 	"github.com/gin-gonic/gin"
+	"github.com/goccy/go-json"
 	"github.com/pkg/errors"
+	"golang.org/x/sync/errgroup"
 	"net/http"
 )
 
@@ -28,10 +33,124 @@ type PluginUtilController struct {
 	log             *logger.AppLogger
 	cfg             *config.Config
 	gmUserSvr       *gm_user.GmUserService
+	live            *live_svr.Live
+	eveApi          *eve_api.EvEApi
 }
 
-func NewPluginUtilController(baseController *BaseController, pluginServer *plugin_service.PluginService, esClientService *es.EsClientService, esService *es_service.EsService, log *logger.AppLogger, cfg *config.Config, gmUserSvr *gm_user.GmUserService) *PluginUtilController {
-	return &PluginUtilController{BaseController: baseController, pluginServer: pluginServer, esClientService: esClientService, esService: esService, log: log, cfg: cfg, gmUserSvr: gmUserSvr}
+func NewPluginUtilController(baseController *BaseController, pluginServer *plugin_service.PluginService, esClientService *es.EsClientService, esService *es_service.EsService, log *logger.AppLogger, cfg *config.Config, gmUserSvr *gm_user.GmUserService, live *live_svr.Live, eveApi *eve_api.EvEApi) *PluginUtilController {
+	return &PluginUtilController{BaseController: baseController, pluginServer: pluginServer, esClientService: esClientService, esService: esService, log: log, cfg: cfg, gmUserSvr: gmUserSvr, live: live, eveApi: eveApi}
+}
+
+// 进行广播消息
+func (this *PluginUtilController) LiveBroadcast(ctx *gin.Context) {
+	var reqData dto.LiveBroadcast
+
+	err := ctx.BindJSON(&reqData)
+
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+
+	numSubscribers := this.live.Node().Hub().NumSubscribers(reqData.Channel)
+
+	if numSubscribers <= 0 {
+		this.Error(ctx, live.NoSubscriberErr)
+		return
+	}
+
+	b := []byte{}
+	if reqData.Data != nil {
+
+		b, err = json.Marshal(reqData.Data)
+		if err != nil {
+			this.Error(ctx, err)
+			return
+		}
+
+	}
+
+	publishResult, err := this.live.Node().Publish(reqData.Channel, b)
+
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+
+	this.log.Sugar().Infof("reqData.Channel:%s,publishResult:%v", reqData.Channel, publishResult)
+
+	this.Success(ctx, response.OperateSuccess, nil)
+}
+
+// 进行广播消息
+func (this *PluginUtilController) BatchLiveBroadcast(ctx *gin.Context) {
+	var reqData dto.BatchLiveBroadcast
+
+	err := ctx.BindJSON(&reqData)
+
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+
+	numSubscribers := this.live.Node().Hub().NumSubscribers(reqData.Channel)
+
+	if numSubscribers <= 0 {
+		this.Error(ctx, live.NoSubscriberErr)
+		return
+	}
+
+	eg := errgroup.Group{}
+	eg.SetLimit(10)
+	for _, v := range reqData.List {
+		v := v
+		eg.Go(func() error {
+
+			b := []byte{}
+
+			if v != nil {
+
+				b, err = json.Marshal(v)
+				if err != nil {
+					return err
+				}
+
+			}
+
+			_, err = this.live.Node().Publish(reqData.Channel, b)
+
+			return err
+		})
+	}
+
+	err = eg.Wait()
+
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+
+	this.Success(ctx, response.OperateSuccess, nil)
+}
+
+// 进行增删改等操作
+func (this *PluginUtilController) ExecMoreSql(ctx *gin.Context) {
+	var reqData dto.ExecMoreReq
+
+	err := ctx.BindJSON(&reqData)
+
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+
+	err = this.pluginServer.ExecMoreSql(ctx, reqData.PluginId, reqData.Sqls)
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+
+	this.Success(ctx, response.OperateSuccess, nil)
 }
 
 // 进行增删改等操作
@@ -125,6 +244,125 @@ func (this *PluginUtilController) FirstSql(ctx *gin.Context) {
 	}
 
 	this.Success(ctx, response.SearchSuccess, vo.FirstSqlRes{Result: res})
+}
+
+func (this *PluginUtilController) SaveDb(ctx *gin.Context) {
+
+	var request dto.SaveDb
+
+	err := ctx.BindJSON(&request)
+
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+
+	// 检查必须参数
+	if request.TableName == "" {
+		this.Error(ctx, errors.New("保存操作的表名不能空"))
+		return
+	}
+
+	// 直接 Save，GORM 自动判断是否插入或更新
+	err = this.pluginServer.SaveDb(ctx, request.PluginId, request.TableName, request.Data)
+	if err != nil {
+		this.Error(ctx, errors.WithStack(err))
+		return
+	}
+
+	this.Success(ctx, response.OperateSuccess, nil)
+}
+
+func (this *PluginUtilController) UpdateDb(ctx *gin.Context) {
+
+	var request dto.UpdateDb
+
+	err := ctx.BindJSON(&request)
+
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+
+	// 检查必须参数
+	if request.TableName == "" {
+		this.Error(ctx, errors.New("修改操作的表名不能空"))
+		return
+	}
+
+	if len(request.Data) == 0 {
+		this.Error(ctx, errors.New("修改操作的数据不能空"))
+		return
+	}
+
+	rowsAffected, err := this.pluginServer.UpdateDb(ctx, request.PluginId, request.TableName, request.UpdateSql, request.UpdateArgs, request.Data)
+	if err != nil {
+		this.Error(ctx, errors.WithStack(err))
+		return
+	}
+
+	res := vo.ExecSqlRes{
+		RowsAffected: rowsAffected,
+	}
+
+	this.Success(ctx, response.OperateSuccess, res)
+}
+
+func (this *PluginUtilController) DeleteDb(ctx *gin.Context) {
+
+	var request dto.DeleteDb
+
+	err := ctx.BindJSON(&request)
+
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+
+	// 检查必须参数
+	if request.TableName == "" {
+		this.Error(ctx, errors.New("删除操作的表名不能空"))
+		return
+	}
+
+	rowsAffected, err := this.pluginServer.DeleteDb(ctx, request.PluginId, request.TableName,
+		request.WhereSql, request.WhereArgs)
+	if err != nil {
+		this.Error(ctx, errors.WithStack(err))
+		return
+	}
+
+	res := vo.ExecSqlRes{
+		RowsAffected: rowsAffected,
+	}
+
+	this.Success(ctx, response.OperateSuccess, res)
+}
+
+func (this *PluginUtilController) InsertOrUpdate(ctx *gin.Context) {
+
+	var request dto.InsertOrUpdateDb
+
+	err := ctx.BindJSON(&request)
+
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+
+	// 检查必须参数
+	if request.TableName == "" {
+		this.Error(ctx, errors.New("保存操作的表名不能空"))
+		return
+	}
+
+	err = this.pluginServer.InsertOrUpdateDb(ctx, request.PluginId, request.TableName, request.UpsertData, request.UniqueKeys)
+	if err != nil {
+		this.Error(ctx, errors.WithStack(err))
+		return
+	}
+
+	this.Success(ctx, response.OperateSuccess, nil)
 }
 
 // 进行原生es操作
@@ -1569,12 +1807,12 @@ func (this *PluginUtilController) MysqlSelectSql(ctx *gin.Context) {
 		return
 	}
 
-	res, err := esI.MysqlSelectSql(ctx, reqData.DbName, reqData.Sql, reqData.Args...)
+	columns, res, err := esI.MysqlSelectSql(ctx, reqData.DbName, reqData.Sql, reqData.Args...)
 	if err != nil {
 		this.Error(ctx, err)
 		return
 	}
-	this.Success(ctx, response.SearchSuccess, vo2.MysqlSelectSqlRes{Result: res})
+	this.Success(ctx, response.SearchSuccess, vo2.MysqlSelectSqlRes{Result: res, Columns: columns})
 }
 
 // 进行查询操作
@@ -1697,4 +1935,17 @@ func (this *PluginUtilController) ShowMongoDbs(ctx *gin.Context) {
 	}
 
 	this.Success(ctx, response.SearchSuccess, res)
+}
+
+func (this *PluginUtilController) GetEveToken(ctx *gin.Context) {
+	token := this.eveApi.GetAccessToken()
+	this.Success(ctx, response.SearchSuccess, token)
+}
+
+func (this *PluginUtilController) CallPlugin(ctx *gin.Context) {
+	err := this.pluginServer.CallPlugin(ctx, ctx.Param("plugin_id"))
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
 }

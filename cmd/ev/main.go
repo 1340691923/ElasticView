@@ -47,7 +47,7 @@ func main() {
 		log.Println(fmt.Sprintf("初始化ev失败:%+v", err))
 		panic(err)
 	}
-	svr.InitSwagger()
+	//svr.InitSwagger()
 	err = svr.Init()
 	if err != nil {
 		log.Println(fmt.Sprintf("初始化ev失败:%+v", err))

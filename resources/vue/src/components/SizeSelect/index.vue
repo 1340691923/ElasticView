@@ -34,6 +34,6 @@ const sizeOptions = computed(() => {
 const appStore = useAppStore();
 function handleSizeChange(size: string) {
   appStore.changeSize(size);
-  ElMessage.success(t("sizeSelect.message.success"));
+  ElMessage.success(t("文字大小已经修改"));
 }
 </script>

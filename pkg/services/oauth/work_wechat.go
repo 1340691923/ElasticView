@@ -12,21 +12,13 @@ import (
 )
 
 type WorkWechat struct {
-	clientID     string
-	clientSecret string
-	agentId      string
-	enable       bool
-	cfg          *config.Config
+	cfg *config.Config
 }
 
 func NewWorkWechat(cfg *config.Config) *WorkWechat {
 
 	return &WorkWechat{
-		cfg:          cfg,
-		clientID:     cfg.OAuth.WorkWechat.Corpid,
-		clientSecret: cfg.OAuth.WorkWechat.Secert,
-		agentId:      cfg.OAuth.WorkWechat.AgentId,
-		enable:       cfg.OAuth.WorkWechat.Enable,
+		cfg: cfg,
 	}
 }
 
@@ -35,7 +27,7 @@ func (this *WorkWechat) GetAppliactionName() string {
 }
 
 func (this *WorkWechat) Enable() bool {
-	return this.enable
+	return this.cfg.WorkWechatEnable()
 }
 
 func (this *WorkWechat) GetImg() string {
@@ -57,8 +49,8 @@ func (this *WorkWechat) GetOAuthUrl(callback string, state map[string]interface{
 		"&agentid=%s"+
 		"&redirect_uri=%s"+
 		"&state=%s",
-		this.clientID,
-		this.agentId,
+		this.cfg.WorkWechatCorpid(),
+		this.cfg.WorkWechatAgentId(),
 		callback,
 		stateString,
 	)
@@ -90,7 +82,7 @@ func (this *WorkWechat) GetToken(code string) (*oauth2.Token, error) {
 	pTokenParams := &struct {
 		CorpId     string `json:"corpid"`
 		Corpsecret string `json:"corpsecret"`
-	}{this.clientID, this.clientSecret}
+	}{this.cfg.WorkWechatCorpid(), this.cfg.WorkWechatSecert()}
 	data, err := util.GetURL(fmt.Sprintf("https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid=%s&corpsecret=%s", pTokenParams.CorpId, pTokenParams.Corpsecret))
 	if err != nil {
 		return nil, errors.WithStack(err)
@@ -202,23 +194,21 @@ func (this *WorkWechat) GetUserInfo(token *oauth2.Token) (*UserInfo, error) {
 
 func (this *WorkWechat) GetConfig() map[string]interface{} {
 	return map[string]interface{}{
-		"corpid":  this.clientID,
-		"agentId": this.agentId,
-		"secert":  this.clientSecret,
-		"enable":  this.enable,
+		"corpid":  this.cfg.WorkWechatCorpid(),
+		"agentId": this.cfg.WorkWechatAgentId(),
+		"secert":  this.cfg.WorkWechatSecert(),
+		"enable":  this.cfg.WorkWechatEnable(),
+		"rootUrl": this.cfg.GetRootUrl(),
 	}
 }
 
 func (this *WorkWechat) SetConfig(data map[string]interface{}) {
-	this.clientID = cast.ToString(data["corpid"])
-	this.agentId = cast.ToString(data["agentId"])
-	this.clientSecret = cast.ToString(data["secert"])
-	this.enable = cast.ToBool(data["enable"])
 	this.cfg.
-		SetWorkWechatAgentId(this.agentId).
-		SetWorkWechatCorpid(this.clientID).
-		SetWorkWechatSecert(this.clientSecret).
-		SetWorkWechatEnable(this.enable).
+		SetWorkWechatAgentId(cast.ToString(data["agentId"])).
+		SetWorkWechatCorpid(cast.ToString(data["corpid"])).
+		SetWorkWechatSecert(cast.ToString(data["secert"])).
+		SetWorkWechatEnable(cast.ToBool(data["enable"])).
+		SetRootUrl(cast.ToString(data["rootUrl"])).
 		GetViperInstance().
 		WriteConfig()
 }

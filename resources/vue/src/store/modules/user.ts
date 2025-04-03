@@ -5,11 +5,14 @@ import { store } from "@/store";
 
 import { TOKEN_KEY } from "@/enums/CacheEnum";
 import {removeToken} from "@/utils/auth";
+import {disconnectCentrifuge} from "@/utils/centrifuge";
 
 export const useUserStore = defineStore("user", () => {
   const user = ref<UserInfo>({
+    userId:0,
     roles:[],
     avatar:''
+
   });
 
   /**
@@ -52,6 +55,7 @@ export const useUserStore = defineStore("user", () => {
       AuthAPI.logout()
         .then(() => {
           removeToken()
+          disconnectCentrifuge()
           location.reload(); // 清空路由
           resolve();
         })

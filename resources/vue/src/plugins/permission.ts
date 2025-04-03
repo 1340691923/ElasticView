@@ -11,6 +11,7 @@ import {RegisterMicroApps} from "@/utils/plugin";
 
 import {getToken, removeToken} from "@/utils/auth";
 import path from "path-browserify";
+import {disconnectCentrifuge} from "@/utils/centrifuge";
 
 const generateRoutes = (routes, findPath,basePath = '/',isNoAuthRoute)=> {
   let res = []
@@ -133,6 +134,7 @@ export async function setupPermission() {
             console.log("err",error)
             // 移除 token 并重定向到登录页，携带当前页面路由作为跳转参数
             removeToken()
+            disconnectCentrifuge()
             redirectToLogin(to, next);
             NProgress.done();
           }
