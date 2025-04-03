@@ -11,6 +11,9 @@
               inactive-text="不开启">
             </el-switch>
           </el-form-item>
+          <el-form-item label="回调域名:" >
+            <el-input placeholder="例如:https://www.elastic-view.cn/" v-model="data.wecomeCfg.rootUrl"></el-input>
+          </el-form-item>
           <el-form-item label="corpid:" >
             <el-input v-model="data.wecomeCfg.corpid"></el-input>
           </el-form-item>
@@ -42,6 +45,7 @@ import {GetOAuthConfigs, SaveOAuthConfigs} from "@/api/user";
 const data = reactive({
   authType:'企业微信认证(内部应用)',
   wecomeCfg:{
+    rootUrl:"",
     agentId: "",
     corpid: "",
     enable: false,

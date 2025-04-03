@@ -12,12 +12,11 @@ import (
 	"github.com/1340691923/ElasticView/pkg/services/eve_service"
 	"github.com/1340691923/ElasticView/pkg/services/gm_user"
 	"github.com/1340691923/ElasticView/pkg/services/plugin_install_service"
-	"github.com/1340691923/ElasticView/resources/docs"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 	"reflect"
-	"strings"
+	"runtime"
 	"sync"
 )
 
@@ -73,17 +72,6 @@ func (this *Server) Init() (err error) {
 	return nil
 }
 
-func (this *Server) InitSwagger() {
-	docs.SwaggerInfo.Version = config.GetVersion()
-	docs.SwaggerInfo.Host = strings.TrimPrefix(strings.TrimPrefix(this.cfg.RootUrl, "http://"), "https://")
-	if strings.HasPrefix(this.cfg.RootUrl, "https://") {
-		docs.SwaggerInfo.Schemes = []string{"https"}
-	}
-	if strings.HasPrefix(this.cfg.RootUrl, "http://") {
-		docs.SwaggerInfo.Schemes = []string{"http"}
-	}
-}
-
 func (this *Server) RunMigrator() (err error) {
 
 	err = this.migrator.Start()
@@ -98,13 +86,12 @@ func (this *Server) RunMigrator() (err error) {
 }
 
 func (this *Server) Run(exitFn ...func(svr *Server) error) (err error) {
-
+	if !this.cfg.DeBug && runtime.GOOS == "windows" {
+		this.runSystray()
+	}
 	services := this.backgroundServices
 
-	err = this.eveService.FlushAccessToken(this.context)
-	if err != nil {
-		return errors.WithStack(err)
-	}
+	this.eveService.FlushAccessToken(this.context)
 
 	for _, svc := range services {
 		if registry.IsDisabled(svc) {
@@ -149,6 +136,7 @@ func (this *Server) Run(exitFn ...func(svr *Server) error) (err error) {
 }
 
 func (this *Server) Shutdown(ctx context.Context) (err error) {
+	this.logger.Info("退出进程")
 	this.shutdownOnce.Do(func() {
 		this.logger.Info("开始停止进程")
 		this.shutdownFn()

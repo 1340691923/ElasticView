@@ -7,6 +7,7 @@ import (
 	"github.com/1340691923/ElasticView/pkg/infrastructure/access_control"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/config"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/dao"
+	dto2 "github.com/1340691923/ElasticView/pkg/infrastructure/dto"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/eve_api/dto"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/jwt_svr"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/logger"
@@ -20,11 +21,13 @@ import (
 	"github.com/1340691923/ElasticView/pkg/services/gm_operater_log"
 	"github.com/1340691923/ElasticView/pkg/services/updatechecker"
 	util2 "github.com/1340691923/ElasticView/pkg/util"
-	"github.com/1340691923/eve-plugin-sdk-go/util"
+	"github.com/1340691923/eve-plugin-sdk-go/enum"
 	"github.com/gin-gonic/gin"
 	"github.com/pkg/errors"
 	"github.com/spf13/cast"
 	"go.uber.org/zap"
+	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 	"io/ioutil"
 	"sort"
 	"strconv"
@@ -78,6 +81,28 @@ func (this *PluginService) ExecSql(ctx context.Context, pluginID string, sql str
 	return
 }
 
+func (this *PluginService) ExecMoreSql(ctx context.Context, pluginID string, sqls []dto2.ExecSql) (err error) {
+	p, b := this.pluginRegistry.Plugin(ctx, pluginID)
+	if !b {
+		err = errors.New(fmt.Sprintf("没有找到该插件信息:%s", pluginID))
+		return
+	}
+
+	tx := p.Gorm().Begin()
+
+	for _, v := range sqls {
+		result := tx.WithContext(ctx).Exec(v.Sql, v.Args...)
+		if result.Error != nil {
+			err = result.Error
+			tx.Rollback()
+			return
+		}
+	}
+	tx.Commit()
+
+	return
+}
+
 // todo... 表名鉴权
 func (this *PluginService) SelectSql(ctx context.Context, pluginID string, sql string, args []interface{}) (list []map[string]interface{}, err error) {
 
@@ -93,6 +118,111 @@ func (this *PluginService) SelectSql(ctx context.Context, pluginID string, sql s
 	}
 
 	return
+}
+
+func (this *PluginService) SaveDb(ctx context.Context, pluginID, table string, data map[string]interface{}) (err error) {
+
+	p, b := this.pluginRegistry.Plugin(ctx, pluginID)
+	if !b {
+		return errors.New(fmt.Sprintf("没有找到该插件信息:%s", pluginID))
+	}
+
+	if _, ok := data["id"]; ok && cast.ToInt(data["id"]) > 0 {
+		err = this.InsertOrUpdateDb(ctx, pluginID, table, data, []string{"id"})
+		return
+	}
+
+	err = p.Gorm().Table(table).WithContext(ctx).Create(data).Error
+
+	if err != nil {
+		return err
+	}
+
+	return
+}
+
+func (this *PluginService) UpdateDb(ctx context.Context, pluginID, table string, updateSql string, updateArgs []interface{}, data map[string]interface{}) (rowsAffected int64, err error) {
+
+	p, b := this.pluginRegistry.Plugin(ctx, pluginID)
+	if !b {
+		return 0, errors.New(fmt.Sprintf("没有找到该插件信息:%s", pluginID))
+	}
+	query := p.Gorm().Table(table).Where(updateSql, updateArgs...).WithContext(ctx).Updates(data)
+	err = query.Error
+
+	if err != nil {
+		return 0, err
+	}
+
+	rowsAffected = query.RowsAffected
+
+	return rowsAffected, nil
+}
+
+func (this *PluginService) DeleteDb(ctx context.Context, pluginID,
+	table string, whereSql string, whereArgs []interface{}) (rowsAffected int64, err error) {
+
+	p, b := this.pluginRegistry.Plugin(ctx, pluginID)
+	if !b {
+		return 0, errors.New(fmt.Sprintf("没有找到该插件信息:%s", pluginID))
+	}
+
+	query := p.Gorm().Table(table).Where(whereSql, whereArgs...).WithContext(ctx).Delete(nil)
+
+	err = query.Error
+	if err != nil {
+		return 0, err
+	}
+
+	rowsAffected = query.RowsAffected
+
+	return rowsAffected, nil
+}
+
+func (this *PluginService) InsertOrUpdateDb(ctx context.Context, pluginID, table string, upsertData map[string]interface{}, uniqueKeys []string) (err error) {
+
+	p, b := this.pluginRegistry.Plugin(ctx, pluginID)
+	if !b {
+		return errors.New(fmt.Sprintf("没有找到该插件信息:%s", pluginID))
+	}
+	g := p.Gorm()
+
+	query := g.Debug().Table(table)
+
+	err = applyUpsert(ctx, query, QueryDSL{
+		UpsertData: upsertData,
+		UniqueKeys: uniqueKeys,
+	}).Error
+
+	if err != nil {
+		return err
+	}
+
+	return
+}
+
+type QueryDSL struct {
+	UpsertData map[string]interface{} // 没有则新增，有则更新
+	UniqueKeys []string               // 冲突检查的唯一键
+}
+
+func applyUpsert(ctx context.Context, query *gorm.DB, dsl QueryDSL) *gorm.DB {
+	if dsl.UpsertData != nil && len(dsl.UniqueKeys) > 0 {
+		query = query.Clauses(clause.OnConflict{
+			Columns:   convertToClauseColumns(dsl.UniqueKeys),
+			DoUpdates: clause.Assignments(dsl.UpsertData),
+		}).WithContext(ctx).Create(dsl.UpsertData)
+	}
+	return query
+}
+
+// 转换唯一键为 GORM 结构
+func convertToClauseColumns(keys []string) []clause.Column {
+	var cols []clause.Column
+	for _, key := range keys {
+		cols = append(cols, clause.Column{Name: key})
+	}
+	return cols
 }
 
 func (this *PluginService) CallPlugin(ctx *gin.Context, pluginID string) (err error) {
@@ -121,7 +251,6 @@ func (this *PluginService) CallPlugin(ctx *gin.Context, pluginID string) (err er
 				if err != nil {
 					return
 				}
-
 			}
 		}
 	}
@@ -161,7 +290,7 @@ func (this *PluginService) CallPlugin(ctx *gin.Context, pluginID string) (err er
 	}
 
 	if hasTokenErr == nil {
-		ctx.Request.Header.Set(util.EvUserID, cast.ToString(c.UserID))
+		ctx.Request.Header.Set(enum.EvUserID, cast.ToString(c.UserID))
 		delete(ctx.Request.Header, "X-Token")
 	}
 
@@ -236,7 +365,7 @@ func (this *PluginService) LoadDebugPlugin(ctx context.Context, pluginID string,
 		return errors.WithStack(err)
 	}
 
-	err = this.pluginRegistry.Add(ctx, p)
+	err = this.pluginRegistry.AddPlugin(ctx, p)
 	if err != nil {
 		this.log.Sugar().Errorf("err", err)
 		return errors.WithStack(err)

@@ -16,6 +16,7 @@ import (
 type ClientV2 struct {
 	grpcplugin.PluginInfoClient
 	grpcplugin.ResourceClient
+	grpcplugin.LiveClient
 }
 
 func newClientV2(rpcClient plugin.ClientProtocol) (pluginClient, error) {
@@ -25,6 +26,11 @@ func newClientV2(rpcClient plugin.ClientProtocol) (pluginClient, error) {
 	}
 
 	rawResource, err := rpcClient.Dispense("resource")
+	if err != nil {
+		return nil, err
+	}
+
+	rawLive, err := rpcClient.Dispense("live")
 	if err != nil {
 		return nil, err
 	}
@@ -39,6 +45,12 @@ func newClientV2(rpcClient plugin.ClientProtocol) (pluginClient, error) {
 	if rawResource != nil {
 		if resourceClient, ok := rawResource.(grpcplugin.ResourceClient); ok {
 			c.ResourceClient = resourceClient
+		}
+	}
+
+	if rawLive != nil {
+		if liveClient, ok := rawLive.(grpcplugin.LiveClient); ok {
+			c.LiveClient = liveClient
 		}
 	}
 
@@ -99,4 +111,25 @@ func (c *ClientV2) CallResource(ctx context.Context, req *backend.CallResourceRe
 			return err
 		}
 	}
+}
+
+func (c *ClientV2) Pub2Channel(ctx context.Context, req *backend.Pub2ChannelRequest) (*backend.Pub2ChannelResponse, error) {
+	if c.LiveClient == nil {
+		return nil, errors.New("该插件没有实现Live接口1")
+	}
+
+	protoContext := backend.ToProto().PluginContext(req.PluginContext)
+	protoResp, err := c.LiveClient.Pub2Channel(ctx, &pluginv2.Pub2ChannelRequest{PluginContext: protoContext, Channel: req.Channel, JsonDetails: req.Data})
+
+	if err != nil {
+		if status.Code(err) == codes.Unimplemented {
+			return &backend.Pub2ChannelResponse{
+				Status:  backend.PubStatusUnknown,
+				Message: "该插件没有实现Live接口2",
+			}, nil
+		}
+		return nil, err
+	}
+
+	return backend.FromProto().Pub2ChannelResponse(protoResp), nil
 }

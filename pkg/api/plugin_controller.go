@@ -4,12 +4,15 @@ import (
 	"fmt"
 	dto2 "github.com/1340691923/ElasticView/pkg/infrastructure/dto"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/eve_api/dto"
+	"github.com/1340691923/ElasticView/pkg/infrastructure/jwt_svr"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/logger"
-	"github.com/1340691923/ElasticView/pkg/infrastructure/response"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/orm"
+	"github.com/1340691923/ElasticView/pkg/infrastructure/response"
 	"github.com/1340691923/ElasticView/pkg/services/eve_service"
+	"github.com/1340691923/ElasticView/pkg/services/gm_user"
 	"github.com/1340691923/ElasticView/pkg/services/plugin_install_service"
 	"github.com/1340691923/ElasticView/pkg/services/plugin_service"
+	"github.com/1340691923/ElasticView/pkg/util"
 	"github.com/gin-gonic/gin"
 )
 
@@ -20,10 +23,12 @@ type PluginController struct {
 	pluginService   *plugin_service.PluginService
 	eveService      *eve_service.EvEService
 	pluginInstaller *plugin_install_service.PluginInstaller
+	gmUserService   *gm_user.GmUserService
+	jwtSvr          *jwt_svr.Jwt
 }
 
-func NewPluginController(baseController *BaseController, log *logger.AppLogger, orm *orm.Gorm, pluginService *plugin_service.PluginService, eveService *eve_service.EvEService, pluginInstaller *plugin_install_service.PluginInstaller) *PluginController {
-	return &PluginController{BaseController: baseController, log: log, orm: orm, pluginService: pluginService, eveService: eveService, pluginInstaller: pluginInstaller}
+func NewPluginController(baseController *BaseController, log *logger.AppLogger, orm *orm.Gorm, pluginService *plugin_service.PluginService, eveService *eve_service.EvEService, pluginInstaller *plugin_install_service.PluginInstaller, gmUserService *gm_user.GmUserService, jwtSvr *jwt_svr.Jwt) *PluginController {
+	return &PluginController{BaseController: baseController, log: log, orm: orm, pluginService: pluginService, eveService: eveService, pluginInstaller: pluginInstaller, gmUserService: gmUserService, jwtSvr: jwtSvr}
 }
 
 func (this *PluginController) CallPlugin(ctx *gin.Context) {
@@ -94,6 +99,24 @@ func (this *PluginController) InstallPlugin(ctx *gin.Context) {
 	err = this.pluginInstaller.Add(ctx, req.PluginID, req.Version)
 	if err != nil {
 		this.Error(ctx, err)
+		return
+	}
+	userInfo, err := this.jwtSvr.ParseToken(this.GetToken(ctx))
+
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+
+	roles, err := this.gmUserService.GetRolesByUserID(userInfo.UserID)
+
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+
+	if util.InArr(roles, 1) {
+		this.Success(ctx, "安装成功,请刷新", nil)
 		return
 	}
 
@@ -175,7 +198,16 @@ func (this *PluginController) UploadPlugin(ctx *gin.Context) {
 		return
 	}
 
-	pluginId, err := this.pluginInstaller.AddUploadPlugin(ctx, f)
+	var pluginId string
+	/*os := runtime.GOOS
+	switch os {
+	case "windows":
+		pluginId, err = this.pluginInstaller.AddUploadPlugin(ctx, f)
+	default:
+		pluginId, err = this.pluginInstaller.AddUploadPluginByNoWindows(ctx, f)
+	}*/
+	pluginId, err = this.pluginInstaller.AddUploadPlugin(ctx, f)
+
 	if err != nil {
 		this.Error(ctx, err)
 		return

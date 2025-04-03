@@ -27,7 +27,7 @@ func (b *BaseDatasource) MysqlExecSql(ctx context.Context, dbName, sql string, a
 	return
 }
 
-func (b *BaseDatasource) MysqlSelectSql(ctx context.Context, dbName, sql string, args ...interface{}) (list []map[string]interface{}, err error) {
+func (b *BaseDatasource) MysqlSelectSql(ctx context.Context, dbName, sql string, args ...interface{}) (columns []string, list []map[string]interface{}, err error) {
 	err = NotAllowConnType
 	return
 }

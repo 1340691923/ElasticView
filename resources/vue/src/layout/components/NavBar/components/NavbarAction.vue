@@ -4,38 +4,38 @@
 
       <div class="message nav-action-item-nohover">
         <el-container>
-          <el-text type="primary" >数据源:</el-text><SelectLink style="margin-left: 1rem" ></SelectLink>
+          <el-text type="primary">{{$t("数据源")}}:</el-text>
+          <SelectLink style="margin-left: 1rem"></SelectLink>
         </el-container>
       </div>
 
-      <div style="margin-left: 1rem" class="message nav-action-item-nohover" >
-        <MenuSelect  class="message nav-action-item-nohover"></MenuSelect>
-<!--        <el-button @click="openSearchMenuVisble" :icon="Search" circle />-->
-      </div>
-<!--      <div class="message nav-action-item-nohover" >
-        <el-popover
+      <div class="flex items-center ml-4">
+        <el-tooltip
+          :content="$t('菜单定位')"
           placement="bottom"
-          title="请输入您需要快速到达的功能"
-          :width="200"
-          trigger="click"
         >
-          <template #reference>
-            <el-button  :icon="Search" circle />
-          </template>
-          <MenuSelect  class="message nav-action-item-nohover"></MenuSelect>
-
-        </el-popover>
-      </div>-->
-      <el-drawer
-        size="30%"
-        v-model="searchMenuVisble"
-        title="请选择您需要快速到达的功能"
+          <el-button
+            circle
+            size="small"  
+            class="search-icon-btn"
+            @click="showMenuSearch = true"
+          >
+            <el-icon><Search /></el-icon>
+          </el-button>
+        </el-tooltip>
+      </div>
+  
+      <el-dialog
+        v-model="showMenuSearch"
+        :title="$t('菜单定位')"
+        width="500px"
+        destroy-on-close
+        class="menu-search-dialog"
+        :modal-class="'menu-search-modal'"
       >
-        <MenuSelect  class="message nav-action-item-nohover"></MenuSelect>
-      </el-drawer>
-<!--      <MenuSelect  class="message nav-action-item-nohover"></MenuSelect>-->
+        <MenuSelect @select="handleMenuSelect"></MenuSelect> 
+      </el-dialog>
 
-<!--      <SelectLink style="margin-left: 1rem" class="message nav-action-item-nohover"></SelectLink>-->
       <!-- 消息通知 -->
 <!--      <el-dropdown class="message nav-action-item" trigger="click">
         <el-badge is-dot>
@@ -119,8 +119,11 @@
 
     <!-- 设置 -->
     <template v-if="defaultSettings.showSettings">
-      <div class="nav-action-item" @click="settingStore.settingsVisible = true">
-        <svg-icon icon-class="setting" />
+      <div 
+        class="nav-action-item flex items-center justify-center"
+        @click="openSettings"
+      >
+        <svg-icon icon-class="setting" class="setting-icon" />
       </div>
     </template>
   </div>
@@ -156,7 +159,7 @@ const appVersion = ()=>{
   return window["appVersion"]
 }
 
-const showSearchMenuVisble = ref(false)
+const showMenuSearch = ref(false)
 
 const showSearchMenu = ()=>{
   showSearchMenuVisble.value = true
@@ -224,15 +227,23 @@ function logout() {
       });
   });
 }
+
+const handleMenuSelect = () => {
+  showMenuSearch.value = false;
+}
+
+const openSettings = () => {
+  settingStore.settingsVisible = true;
+}
 </script>
 <style lang="scss" scoped>
 .nav-action-item {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   min-width: 40px;
   height: $navbar-height;
-  line-height: $navbar-height;
   color: var(--el-text-color);
-  text-align: center;
   cursor: pointer;
 
   &:hover {
@@ -266,5 +277,48 @@ function logout() {
 .layout-top .nav-action-item,
 .layout-mix .nav-action-item {
   color: #fff;
+}
+
+.search-btn-wrapper {
+  @apply flex items-center h-full;
+}
+
+.search-icon-btn {
+  @apply flex items-center justify-center;
+  @apply bg-transparent;
+  @apply border border-gray-300 dark:border-gray-600;
+  @apply text-gray-600 dark:text-gray-400;
+  @apply hover:bg-gray-100 dark:hover:bg-gray-700;
+  @apply transition-all duration-200;
+  
+  :deep(.el-icon) {
+    @apply text-base;
+  }
+
+  &:hover {
+    @apply border-blue-400 dark:border-blue-500;
+    @apply text-blue-500 dark:text-blue-400;
+    @apply shadow-sm;
+  }
+}
+
+:deep(.menu-search-dialog) {
+  z-index: 3000 !important;
+  
+  .el-dialog__body {
+    @apply p-4;
+  }
+}
+
+.setting-icon {
+  @apply w-5 h-5;
+}
+
+:global(.menu-search-modal) {
+  z-index: 2999 !important;
+}
+
+:global(.el-dialog__wrapper) {
+  z-index: 3000 !important;
 }
 </style>

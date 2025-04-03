@@ -25,7 +25,7 @@ func (this *Service) Start(ctx context.Context, p *plugin.Plugin) error {
 		return err
 	}
 
-	p.Logger().Debug("Successfully started backend plugin process")
+	p.Logger().Debug("成功启动" + p.PluginData().PluginJsonData.PluginName + "插件进程")
 	return nil
 }
 

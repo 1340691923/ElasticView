@@ -2,28 +2,29 @@ package api
 
 import (
 	"fmt"
+	"net/http"
+	"net/url"
+
 	"github.com/1340691923/ElasticView/pkg/infrastructure/config"
+	"github.com/1340691923/ElasticView/pkg/infrastructure/logger"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/vo"
 	"github.com/gin-gonic/gin"
 	"github.com/tidwall/gjson"
-	"net/http"
-	"net/url"
 )
 
 type IndexController struct {
 	cfg *config.Config
+	log *logger.AppLogger
 }
 
-func NewIndexController(cfg *config.Config) *IndexController {
-	return &IndexController{cfg: cfg}
+func NewIndexController(cfg *config.Config, log *logger.AppLogger) *IndexController {
+	return &IndexController{cfg: cfg, log: log}
 }
 
 func (this *IndexController) IndexHtml(c *gin.Context) {
-	appUrl, appBaseUrl, err := this.cfg.ParseAppUrlAndSubUrl()
-	if err != nil {
-		c.Writer.Write([]byte(err.Error()))
-		return
-	}
+
+	appUrl := ""
+	appBaseUrl := ""
 	frontEndCfg := new(vo.FrontEndCfg)
 	frontEndCfg.AppUrl = appUrl
 	frontEndCfg.AppSubUrl = appBaseUrl

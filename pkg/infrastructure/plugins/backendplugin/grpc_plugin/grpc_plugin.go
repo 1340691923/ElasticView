@@ -17,6 +17,7 @@ import (
 type pluginClient interface {
 	backend.CheckHealthHandler
 	backend.CallResourceHandler
+	backend.LiveHandler
 }
 
 type GrpcPlugin struct {
@@ -164,6 +165,15 @@ func (p *GrpcPlugin) Decommission() error {
 	return nil
 }
 
+func (p *GrpcPlugin) DisDecommission() error {
+	p.mutex.Lock()
+	defer p.mutex.Unlock()
+
+	p.decommissioned = false
+
+	return nil
+}
+
 func (p *GrpcPlugin) IsDecommissioned() bool {
 	p.mutex.RLock()
 	defer p.mutex.RUnlock()
@@ -195,4 +205,12 @@ func (p *GrpcPlugin) CallResource(ctx context.Context, req *backend.CallResource
 		return errors.New("该插件没有实现CallResource接口")
 	}
 	return pluginClient.CallResource(ctx, req, sender)
+}
+
+func (p *GrpcPlugin) Pub2Channel(ctx context.Context, req *backend.Pub2ChannelRequest) (*backend.Pub2ChannelResponse, error) {
+	pluginClient, ok := p.getPluginClient()
+	if !ok {
+		return nil, errors.New("该插件没有实现Live接口3")
+	}
+	return pluginClient.Pub2Channel(ctx, req)
 }

@@ -33,6 +33,7 @@ type OpenApiPlugin struct {
 	DownloadUserCnt int    `db:"download_user_cnt" json:"download_user_cnt"`
 	StarState       *int   `db:"star_state" json:"star_state"`
 	HasDownload     bool   `json:"has_download" `
+	BuyCoinNum      int    `db:"buy_coin_num" json:"buy_coin_num"`
 }
 
 type PluginListRes struct {

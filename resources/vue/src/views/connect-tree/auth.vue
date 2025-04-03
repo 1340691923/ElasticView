@@ -375,7 +375,7 @@ export default {
       const res = await roleOption()
       if (res.code != 0) {
         ElMessage.error({
-          type: 'error',
+          type: 'error',offset:60,
           message: res.msg
         })
         return
@@ -405,12 +405,12 @@ export default {
       PingAction(form).then(res => {
         if (res.code == 0) {
           ElMessage.success({
-            type: 'success',
+            type: 'success',offset:60,
             message: `连接成功`
           })
         } else {
           ElMessage.error({
-            type: 'error',
+            type: 'error',offset:60,
             message: res.msg
           })
         }
@@ -434,12 +434,12 @@ export default {
         if (res.code == 0) {
           console.log('res', res)
           ElMessage.success({
-            type: 'success',
+            type: 'success',offset:60,
             message: `连接成功`
           })
         } else {
           ElMessage.error({
-            type: 'error',
+            type: 'error',offset:60,
             message: res.msg
           })
         }
@@ -462,13 +462,13 @@ export default {
       this.getListLoading = false
       if (res.code != 0) {
         ElMessage.error({
-          type: 'error',
+          type: 'error',offset:60,
           message: res.msg
         })
         return
       }
       ElMessage.success({
-        type: 'success',
+        type: 'success',offset:60,
         message: res.msg
       })
       this.count = res.data.count
@@ -539,13 +539,13 @@ export default {
       let res = await UpdateEsCfgAction(form)
       if (res.code != 0) {
         ElMessage.error({
-          type: 'error',
+          type: 'error',offset:60,
           message: res.msg
         })
         return
       }
       ElMessage.success({
-        type: 'success',
+        type: 'success',offset:60,
         message: res.msg
       })
       this.getList(1)
@@ -556,13 +556,13 @@ export default {
       let res = await InsertEsCfgAction(form)
       if (res.code != 0) {
         ElMessage.error({
-          type: 'error',
+          type: 'error',offset:60,
           message: res.msg
         })
         return
       }
       ElMessage.success({
-        type: 'success',
+        type: 'success',offset:60,
         message: res.msg
       })
 
@@ -580,13 +580,13 @@ export default {
           let res = await DeleteEsCfgAction({id:scope.row.id})
           if (res.code != 0) {
             ElMessage.error({
-              type: 'error',
+              type: 'error',offset:60,
               message: res.msg
             })
             return
           }
           ElMessage.success({
-            type: 'success',
+            type: 'success',offset:60,
             message: res.msg
           })
           this.getList(1)
@@ -607,7 +607,7 @@ export default {
           const res = await DeleteAction({ id: row.id })
           if (res.code != 0) {
             ElMessage.error({
-              type: 'error',
+              type: 'error',offset:60,
               message: res.msg
             })
             return
@@ -626,7 +626,7 @@ export default {
         const res = await UpdateAction(this.link)
         if (res.code != 0) {
           ElMessage.error({
-            type: 'error',
+            type: 'error',offset:60,
             message: res.msg
           })
           return
@@ -636,7 +636,7 @@ export default {
         const res = await InsertAction(this.link)
         if (res.code != 0) {
           ElMessage.error({
-            type: 'error',
+            type: 'error',offset:60,
             message: res.msg
           })
           return
@@ -646,7 +646,7 @@ export default {
 
       this.dialogVisible = false
       ElMessage.success({
-        type: 'success',
+        type: 'success',offset:60,
         message: isEdit ? '修改成功' : '创建成功'
       })
     },

@@ -453,3 +453,31 @@ func DownloadFile(fileURL, dir string) (filename string, err error) {
 	out.Close()
 	return filename, nil
 }
+
+func DownloadFileV2(fileURL, dir string) (filename string, err error) {
+	// 解析 URL 获取文件名
+	parsedURL, err := url.Parse(fileURL)
+	if err != nil {
+		return "", fmt.Errorf("failed to parse URL: %v", err)
+	}
+
+	filename = path.Base(parsedURL.Path)
+
+	// 创建目录，如果不存在的话
+	err = os.MkdirAll(dir, os.ModePerm)
+	if err != nil {
+		return "", fmt.Errorf("failed to create directory: %v", err)
+	}
+
+	// 创建目标文件的完整路径
+	filePath := filepath.Join(dir, filename)
+
+	// 获取远程文件
+	err = NewDownloader(10, true).Download(fileURL, filename)
+	if err != nil {
+		os.Remove(filePath)
+		return "", fmt.Errorf("failed to download file: %v", err)
+	}
+
+	return filename, nil
+}

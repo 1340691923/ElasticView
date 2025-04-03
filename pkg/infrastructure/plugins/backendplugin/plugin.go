@@ -14,9 +14,11 @@ type Plugin interface {
 	Stop(ctx context.Context) error
 	Exited() bool
 	Decommission() error
+	DisDecommission() error
 	IsDecommissioned() bool
 	backend.CheckHealthHandler
 	backend.CallResourceHandler
+	backend.LiveHandler
 	GetPid() int
 	GetProcessUtil() (*process2.Process, error)
 }

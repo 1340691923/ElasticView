@@ -32,6 +32,7 @@ import (
 	"github.com/1340691923/ElasticView/pkg/services/gm_operater_log"
 	"github.com/1340691923/ElasticView/pkg/services/gm_role"
 	"github.com/1340691923/ElasticView/pkg/services/gm_user"
+	"github.com/1340691923/ElasticView/pkg/services/live_svr"
 	"github.com/1340691923/ElasticView/pkg/services/oauth"
 	"github.com/1340691923/ElasticView/pkg/services/plugin_install_service"
 	"github.com/1340691923/ElasticView/pkg/services/plugin_service"
@@ -44,7 +45,8 @@ import (
 var wireSet = wire.NewSet(
 
 	wire.Bind(new(registry.BackgroundServiceRegistry), new(*backgroundsvcs.BackgroundServiceRegistry)),
-
+	live_svr.NewLive,
+	api.NewWsController,
 	oauth.ProvideOAuthServiceRegistry,
 	oauth.NewWorkWechat,
 	big_mode_service.NewBigMode,

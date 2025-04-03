@@ -103,12 +103,11 @@ func buildBackend(cfg BuildConfig) error {
 		return err
 	}
 
-	//-H windowsgui
 	ldFlags := fmt.Sprintf("-w -s%s%s ", " ", `-extldflags "-static"`)
 
-	/*if cfg.OS == "windows" {
-		ldFlags = fmt.Sprintf("-w -s%s%s -H windowsgui", " ", `-extldflags "-static"`)
-	}*/
+	if cfg.OS == "windows" {
+		ldFlags = "-H windowsgui -w -s"
+	}
 
 	outputPath := cfg.OutputPath
 
@@ -123,7 +122,6 @@ func buildBackend(cfg BuildConfig) error {
 	args = append(args, rootPackage)
 
 	cfg.Env["GOOS"] = cfg.OS
-	cfg.Env["CGO_ENABLED"] = "0"
 	cfg.Env["GOARCH"] = cfg.GOARCH
 	return RunGoBuild(cfg.Env, args...)
 }

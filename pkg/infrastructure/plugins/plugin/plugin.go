@@ -156,6 +156,16 @@ func (p *Plugin) Decommission() error {
 	return nil
 }
 
+func (p *Plugin) DisDecommission() error {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+
+	if p.client != nil {
+		return p.client.DisDecommission()
+	}
+	return nil
+}
+
 func (p *Plugin) IsDecommissioned() bool {
 	if p.client != nil {
 		return p.client.IsDecommissioned()
@@ -184,6 +194,14 @@ func (p *Plugin) CheckHealth(ctx context.Context, req *backend.CheckHealthReques
 		return nil, errors.New("插件没有实现CheckHealth接口")
 	}
 	return pluginClient.CheckHealth(ctx, req)
+}
+
+func (p *Plugin) Pub2Channel(ctx context.Context, req *backend.Pub2ChannelRequest) (*backend.Pub2ChannelResponse, error) {
+	pluginClient, ok := p.Client()
+	if !ok {
+		return nil, errors.New("插件没有实现Live接口")
+	}
+	return pluginClient.Pub2Channel(ctx, req)
 }
 
 func (p *Plugin) RegisterClient(c backendplugin.Plugin) {

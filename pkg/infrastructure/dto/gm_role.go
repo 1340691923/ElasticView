@@ -61,3 +61,7 @@ type SealUserReq struct {
 type UnSealUserReq struct {
 	Id int `json:"id"`
 }
+
+type SetRootUrlReq struct {
+	RootUrl string `json:"rootUrl"`
+}

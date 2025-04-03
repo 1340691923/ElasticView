@@ -21,6 +21,7 @@ import { useAppStore, useSettingsStore } from "@/store";
 
 import { ThemeEnum } from "@/enums/ThemeEnum";
 import { SizeEnum } from "@/enums/SizeEnum";
+import {initCentrifuge} from "@/utils/centrifuge";
 
 const appStore = useAppStore();
 const settingsStore = useSettingsStore();
@@ -34,6 +35,7 @@ onMounted(()=>{
   if(window["watermarkContent"] == ""){
     watermarkEnabled.value = false
   }
+  initCentrifuge()
 })
 
 // 明亮/暗黑主题水印字体颜色适配

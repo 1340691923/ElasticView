@@ -88,7 +88,6 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
             VITE_APPSubUrl: env.VITE_APPSubUrl,
             VITE_APPVersion: env.VITE_APPVersion,
             VITE_Lang: env.VITE_Lang,
-
             title:'ElasticView'
           },
         },
@@ -236,6 +235,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
     },
     // 构建配置
     build: {
+      sourcemap: true, // 启用 Source Map
       outDir:'../views/dist',
       assetsDir: 'static',
       chunkSizeWarningLimit: 2000, // 消除打包大小超过500kb警告

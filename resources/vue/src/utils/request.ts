@@ -3,7 +3,7 @@ import { useUserStoreHook } from "@/store/modules/user";
 import { ResultEnum } from "@/enums/ResultEnum";
 import { TOKEN_KEY } from "@/enums/CacheEnum";
 import {getToken, removeToken, setToken} from "@/utils/auth";
-
+import {disconnectCentrifuge} from '@/utils/centrifuge.js'
 // 创建 axios 实例
 const service = axios.create({
   baseURL: getBaseURL(),
@@ -38,7 +38,7 @@ service.interceptors.response.use(
     if (response === undefined) {
       ElMessage({
         message: '网络异常', // error.message,
-        type: 'error',
+        type: 'error',offset:32,
         duration: 5 * 1000
       })
       return Promise.reject(error)
@@ -89,14 +89,18 @@ const handleData = (response) => {
         cancelButtonText: "取消",
         type: "warning",
       }).then(() => {
+
         removeToken()
+        disconnectCentrifuge()
         location.reload();
       });
     }
 
     if (res.code === 40008 ) {
       ElMessage.error(res.msg)
+
       removeToken()
+      disconnectCentrifuge()
       location.reload();
     }
 
@@ -107,7 +111,9 @@ const handleData = (response) => {
         cancelButtonText: "取消",
         type: "warning",
       }).then(() => {
+
         removeToken()
+        disconnectCentrifuge()
         location.reload();
       });
     }
@@ -119,12 +125,8 @@ const handleData = (response) => {
 export default service;
 
 export function getBaseURL(){
-  if(import.meta.env.PROD) {
-    if(window.location.href.indexOf(":8090/#/")!==-1){
-      return '/'
-    }
-    return window["appUrl"]
-  }
+  if(import.meta.env.PROD) return '/'
+
   return import.meta.env.VITE_APP_API_URL
 }
 

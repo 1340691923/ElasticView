@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/hashicorp/go-hclog"
 	"github.com/pkg/errors"
+	"github.com/spf13/cast"
 	"gorm.io/gorm"
 	gormLogger "gorm.io/gorm/logger"
 	"gorm.io/gorm/utils"
@@ -50,24 +51,51 @@ func (g *GormLogI) Trace(ctx context.Context, begin time.Time, fc func() (sql st
 	case err != nil && g.level >= gormLogger.Error && (!errors.Is(err, gorm.ErrRecordNotFound)):
 		sql, rows := fc()
 		if rows == -1 {
-			g.log.Error("%s %s\n[%.3fms] [rows:%v] %s", utils.FileWithLineNum(), err, float64(elapsed.Nanoseconds())/1e6, "-", sql)
+			g.log.Error("db执行错误",
+				"行号", utils.FileWithLineNum(),
+				"err", err,
+				"所花毫秒数", cast.ToString(float64(elapsed.Nanoseconds())/1e6)+"ms",
+				"执行sql", sql)
 		} else {
-			g.log.Error("%s %s\n[%.3fms] [rows:%v] %s", utils.FileWithLineNum(), err, float64(elapsed.Nanoseconds())/1e6, rows, sql)
+			g.log.Error("db执行错误",
+				"行号", utils.FileWithLineNum(),
+				"err", err,
+				"所花毫秒数", cast.ToString(float64(elapsed.Nanoseconds())/1e6)+"ms",
+				"rows", rows,
+				"执行sql", sql)
 		}
 	case elapsed > 200*time.Millisecond && g.level >= gormLogger.Warn:
 		sql, rows := fc()
 		slowLog := fmt.Sprintf("SLOW SQL >= %v", 200*time.Millisecond)
+
 		if rows == -1 {
-			g.log.Warn("%s %s\n[%.3fms] [rows:%v] %s", utils.FileWithLineNum(), slowLog, float64(elapsed.Nanoseconds())/1e6, "-", sql)
+			g.log.Warn(slowLog,
+				"行号", utils.FileWithLineNum(),
+				"所花毫秒数", cast.ToString(float64(elapsed.Nanoseconds())/1e6)+"ms",
+				"执行sql", sql)
 		} else {
-			g.log.Warn("%s %s\n[%.3fms] [rows:%v] %s", utils.FileWithLineNum(), slowLog, float64(elapsed.Nanoseconds())/1e6, rows, sql)
+			g.log.Warn(slowLog,
+				"行号", utils.FileWithLineNum(),
+				"所花毫秒数", cast.ToString(float64(elapsed.Nanoseconds())/1e6)+"ms",
+				"rows", rows,
+				"执行sql", sql)
 		}
+
 	case g.level <= gormLogger.Info:
 		sql, rows := fc()
+
 		if rows == -1 {
-			g.log.Info("%s\n[%.3fms] [rows:%v] %s", utils.FileWithLineNum(), float64(elapsed.Nanoseconds())/1e6, "-", sql)
+			g.log.Info("db log",
+				"行号", utils.FileWithLineNum(),
+				"所花毫秒数", cast.ToString(float64(elapsed.Nanoseconds())/1e6)+"ms",
+				"执行sql", sql)
 		} else {
-			g.log.Info("%s\n[%.3fms] [rows:%v] %s", utils.FileWithLineNum(), float64(elapsed.Nanoseconds())/1e6, rows, sql)
+			g.log.Info("db log",
+				"行号", utils.FileWithLineNum(),
+				"所花毫秒数", cast.ToString(float64(elapsed.Nanoseconds())/1e6)+"ms",
+				"rows", rows,
+				"执行sql", sql)
 		}
+
 	}
 }

@@ -84,7 +84,7 @@ func (s *PluginsService) instrumentedCheckForUpdates(ctx context.Context) {
 	start := time.Now()
 	ctxLogger := s.log
 	if err := s.checkForUpdates(ctx); err != nil {
-		ctxLogger.Sugar().Warnf("Update check failed", "error", err, "duration", time.Since(start))
+		s.log.Sugar().Warn("Update check failed", zap.Error(err), zap.Reflect("所花时间", time.Since(start)))
 		return
 	}
 

@@ -115,7 +115,7 @@ func (this *PluginStoreService) FastInitPlugin(ctx context.Context, fileName str
 		return errors.WithStack(err)
 	}
 
-	err = this.pluginRegistry.Add(ctx, p)
+	err = this.pluginRegistry.AddPlugin(ctx, p)
 
 	if err != nil {
 		this.log.Error("插件添加失败", zap.Error(err))
@@ -124,6 +124,45 @@ func (this *PluginStoreService) FastInitPlugin(ctx context.Context, fileName str
 
 	return nil
 
+}
+
+func (this *PluginStoreService) FastReloadPlugin(ctx context.Context, fileName string) error {
+	buildOs := runtime.GOOS
+	buildArch := runtime.GOARCH
+
+	if !strings.Contains(fileName, buildOs) || !strings.Contains(fileName, buildArch) {
+		return nil
+	}
+
+	tmpArr := strings.Split(fileName, "_")
+
+	if len(tmpArr) == 0 {
+		return nil
+	}
+	pluginAlias := tmpArr[0]
+	pluginLog, pluginLogPath, closeLogWrite, err := logger.InitPluginLog(this.cfg, pluginAlias)
+	if err != nil {
+		return errors.WithStack(err)
+	}
+
+	p := provider.DefaultProvider(ctx, pluginLog, pluginLogPath, closeLogWrite, &provider.Config{
+		ID:             pluginAlias,
+		PluginDir:      this.cfg.Plugin.LoadPath,
+		PluginFileName: fileName,
+		ExecArgs: []string{
+			fmt.Sprintf("-tmpFileStorePath=%s", this.cfg.GetStorePath(pluginAlias)),
+			fmt.Sprintf("-evRpcPort=%d", this.cfg.PluginRpcPort),
+		},
+	}, this.cfg, this.orm)
+
+	err = this.pluginRegistry.Reload(ctx, p)
+
+	if err != nil {
+		this.log.Error("插件添加失败", zap.Error(err))
+		return err
+	}
+
+	return nil
 }
 
 func (this *PluginStoreService) FastShutdown(ctx context.Context, plugin *plugin.Plugin) (err error) {

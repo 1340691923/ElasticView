@@ -2,14 +2,16 @@ package api
 
 import (
 	"fmt"
+	"time"
+
 	"github.com/1340691923/ElasticView/pkg/infrastructure/config"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/dto"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/jwt_svr"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/logger"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/model"
+	"github.com/1340691923/ElasticView/pkg/infrastructure/orm"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/plugins/manager"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/response"
-	"github.com/1340691923/ElasticView/pkg/infrastructure/orm"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/vo"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/web_engine"
 	"github.com/1340691923/ElasticView/pkg/services/gm_user"
@@ -20,7 +22,6 @@ import (
 	"github.com/pkg/errors"
 	"github.com/spf13/cast"
 	"go.uber.org/zap"
-	"time"
 )
 
 // BI用户控制器

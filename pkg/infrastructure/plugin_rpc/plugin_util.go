@@ -9,14 +9,30 @@ func (this *PluginRpcServer) runPluginUtil() {
 
 	group := engine.Group(AbsolutePath)
 	{
+		group.Any("/CallPlugin/:plugin_id/*action",
+			this.pluginUtilController.CallPlugin)
+
 		group.POST("/LoadDebugPlugin", this.pluginUtilController.LoadDebugPlugin)
 		group.POST("/StopDebugPlugin", this.pluginUtilController.StopDebugPlugin)
 
+		group.POST("/LiveBroadcast", this.pluginUtilController.LiveBroadcast)
+
+		group.POST("/BatchLiveBroadcast", this.pluginUtilController.BatchLiveBroadcast)
+
 		group.POST("/ExecSql", this.pluginUtilController.ExecSql)
+
+		group.POST("/ExecMoreSql", this.pluginUtilController.ExecMoreSql)
+
 		group.POST("/SelectSql", this.pluginUtilController.SelectSql)
+
 		group.POST("/GetRoles4UserID", this.pluginUtilController.GetRoles4UserID)
 
 		group.POST("/FirstSql", this.pluginUtilController.FirstSql)
+		group.POST("/SaveDb", this.pluginUtilController.SaveDb)
+		group.POST("/UpdateDb", this.pluginUtilController.UpdateDb)
+		group.POST("/InsertOrUpdateDb", this.pluginUtilController.InsertOrUpdate)
+		group.POST("/DeleteDb", this.pluginUtilController.DeleteDb)
+
 		group.POST("/EsVersion", this.pluginUtilController.EsVersion)
 		group.POST("/Ping", this.pluginUtilController.Ping)
 		group.POST("/EsCatNodes", this.pluginUtilController.EsCatNodes)
@@ -69,6 +85,7 @@ func (this *PluginRpcServer) runPluginUtil() {
 		group.POST("/RedisExecCommand", this.pluginUtilController.RedisExecCommand)
 		group.POST("/MongoExecCommand", this.pluginUtilController.MongoExecCommand)
 		group.POST("/ShowMongoDbs", this.pluginUtilController.ShowMongoDbs)
+		group.POST("/GetEveToken", this.pluginUtilController.GetEveToken)
 
 	}
 }

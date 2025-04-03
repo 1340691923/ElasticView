@@ -2,17 +2,18 @@ package config
 
 import (
 	"fmt"
+	"io/ioutil"
+	"log"
+	"os"
+	"path/filepath"
+	"strings"
+	"sync"
+
 	"github.com/1340691923/ElasticView/pkg/util"
 	"github.com/goccy/go-json"
 	"github.com/pkg/errors"
 	"github.com/spf13/cast"
 	"github.com/spf13/viper"
-	"io/ioutil"
-	"log"
-	"net/url"
-	"os"
-	"path/filepath"
-	"strings"
 )
 
 var TranslationCfg = map[string]map[string]interface{}{}
@@ -55,6 +56,7 @@ type ConfigMysql struct {
 }
 
 type Config struct {
+	lock                  sync.RWMutex
 	HomePath              string
 	CmdName               string
 	StoreFileDir          string       `json:"storeFileDir"`
@@ -78,6 +80,14 @@ type Config struct {
 	Translation           Translation  `json:"translation"`
 	OAuth                 OAuth        `json:"oAuth"`
 	Ai                    AI           `json:"ai"`
+	LiveMaxConnections    int          `json:"liveMaxConnections"`
+}
+
+func (this *Config) GetLiveMaxConnections() int {
+	if this.LiveMaxConnections > 0 {
+		return this.LiveMaxConnections
+	}
+	return 10000
 }
 
 const (
@@ -104,6 +114,8 @@ const (
 )
 
 func (this *Config) LoadEnv() *Config {
+	this.lock.Lock()
+	defer this.lock.Unlock()
 	if os.Getenv(EV_ROOT_URL) != "" {
 		this.RootUrl = os.Getenv(EV_ROOT_URL)
 	}
@@ -212,9 +224,36 @@ func (this *Plugin) Error() error {
 	return nil
 }
 
+func (this *Config) WorkWechatCorpid() string {
+	this.lock.RLock()
+	defer this.lock.RUnlock()
+	return this.OAuth.WorkWechat.Corpid
+}
+
+func (this *Config) WorkWechatAgentId() string {
+	this.lock.RLock()
+	defer this.lock.RUnlock()
+	return this.OAuth.WorkWechat.AgentId
+}
+
+func (this *Config) WorkWechatSecert() string {
+	this.lock.RLock()
+	defer this.lock.RUnlock()
+	return this.OAuth.WorkWechat.Secert
+}
+
+func (this *Config) WorkWechatEnable() bool {
+	this.lock.RLock()
+	defer this.lock.RUnlock()
+	return this.OAuth.WorkWechat.Enable
+}
+
 func (this *Config) GetRootUrl() string {
+	this.lock.RLock()
+	defer this.lock.RUnlock()
+
 	if this.RootUrl == "" {
-		return "http://localhost:8090/"
+		return ""
 	}
 
 	if this.RootUrl[len(this.RootUrl)-1] != '/' {
@@ -224,21 +263,12 @@ func (this *Config) GetRootUrl() string {
 	return this.RootUrl
 }
 
-func (this *Config) ParseAppUrlAndSubUrl() (string, string, error) {
-	appUrl := this.GetRootUrl()
-
-	if appUrl[len(appUrl)-1] != '/' {
-		appUrl += "/"
-	}
-
-	url, err := url.Parse(appUrl)
-	if err != nil {
-		log.Println("err", err, appUrl)
-		return "", "", err
-	}
-
-	appSubUrl := strings.TrimSuffix(url.Path, "/")
-	return appUrl, appSubUrl, nil
+func (this *Config) SetRootUrl(rootUrl string) *Config {
+	this.lock.Lock()
+	defer this.lock.Unlock()
+	this.RootUrl = rootUrl
+	vip.Set("rootUrl", rootUrl)
+	return this
 }
 
 func (this *Config) GetDbType() string {
@@ -419,30 +449,46 @@ func (this *Config) NewStorePath(dir string) string {
 }
 
 func (this *Config) SetEvKey(evKey string) *Config {
+	this.lock.Lock()
+	defer this.lock.Unlock()
 	this.EvKey = evKey
 	vip.Set("evKey", evKey)
 	return this
 }
 
+func (this *Config) GetEvKey() string {
+	this.lock.RLock()
+	defer this.lock.RUnlock()
+	return this.EvKey
+}
+
 func (this *Config) SetWorkWechatSecert(secert string) *Config {
+	this.lock.Lock()
+	defer this.lock.Unlock()
 	this.OAuth.WorkWechat.Secert = secert
 	vip.Set("oauth.workWechat.secert", secert)
 	return this
 }
 
 func (this *Config) SetWorkWechatCorpid(corpid string) *Config {
+	this.lock.Lock()
+	defer this.lock.Unlock()
 	this.OAuth.WorkWechat.Corpid = corpid
 	vip.Set("oauth.workWechat.corpid", corpid)
 	return this
 }
 
 func (this *Config) SetWorkWechatAgentId(agentId string) *Config {
+	this.lock.Lock()
+	defer this.lock.Unlock()
 	this.OAuth.WorkWechat.AgentId = agentId
 	vip.Set("oauth.workWechat.agentId", agentId)
 	return this
 }
 
 func (this *Config) SetWorkWechatEnable(enable bool) *Config {
+	this.lock.Lock()
+	defer this.lock.Unlock()
 	this.OAuth.WorkWechat.Enable = enable
 	vip.Set("oauth.workWechat.enable", enable)
 	return this
