@@ -73,7 +73,7 @@
                 @keyup.enter="handleLoginSubmit"
               >
                 <template #suffix>
-                  <el-icon 
+                  <el-icon
                     class="cursor-pointer text-gray-400 hover:text-blue-500 transition-colors"
                     @click="passwordVisible = !passwordVisible"
                   >
@@ -112,21 +112,34 @@
 
           <el-form-item class="flex justify-center">
             <span class="flex gap-4">
-              <template v-for="(v,index) in data.oauthConfigs">
-                <a 
-                  v-if="v.enable" 
-                  :title="v.name" 
-                  :href="v.oauthUrl"
-                  class="hover:scale-110 transition-all duration-300"
-                >
-                  <el-image 
-                    v-if="v.img == 'work_wechat'" 
-                    :src="work_wechat" 
-                    :alt="v.name"
-                    class="provider-img"
-                  />
-                </a>
-              </template>
+             <template v-for="(v, index) in data.oauthConfigs">
+  <div
+    :title="v.enable ? v.name : `${v.name}（未开启认证）`"
+    class="inline-block transition-all duration-300"
+    :class="v.enable ? 'hover:scale-110 cursor-pointer' : 'opacity-50 cursor-not-allowed'"
+  >
+    <a
+      v-if="v.enable"
+      :href="v.oauthUrl"
+    >
+      <el-image
+        v-if="v.img === 'work_wechat'"
+        :src="work_wechat"
+        :alt="v.name"
+        class="provider-img"
+      />
+    </a>
+    <template v-else>
+      <el-image
+        v-if="v.img === 'work_wechat'"
+        :src="work_wechat"
+        :alt="v.name"
+        class="provider-img"
+      />
+    </template>
+  </div>
+</template>
+
             </span>
           </el-form-item>
         </el-form>
@@ -410,21 +423,21 @@ onMounted(async () => {
 <style lang="scss" scoped>
 .login-container {
   @apply min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-teal-50 dark:from-gray-900 dark:to-gray-800;
-  
+
   .login-content {
     @apply rounded-xl shadow-2xl transition-all duration-500;
-    
+
     .login-box {
       @apply bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg;
     }
   }
-  
+
   .login-input :deep(.el-input__wrapper) {
     @apply rounded-lg border-0 shadow-sm;
   }
-  
+
   .provider-img {
-    @apply w-10 h-10 rounded-full shadow-md;
+    @apply w-10 h-10  shadow-md;
   }
 }
 
@@ -437,7 +450,7 @@ onMounted(async () => {
     @apply transition-all duration-300;
     @apply backdrop-blur-sm;
     @apply px-4;
-    
+
     // 输入框获得焦点时的样式
     &.is-focus {
       @apply border-blue-400 dark:border-blue-500;
@@ -470,7 +483,7 @@ onMounted(async () => {
 :deep(.el-form-item.is-error) .custom-input {
   .el-input__wrapper {
     @apply border-red-300 dark:border-red-500;
-    
+
     &:hover, &.is-focus {
       @apply border-red-400 dark:border-red-600;
     }

@@ -19,7 +19,7 @@
             class="filter-item"
             @click="handleAddRole"
           >{{ $t('新建数据源') }}
-          </el-button> 
+          </el-button>
         </el-form-item>
 
         <el-form-item :label=" $t('鉴权配置')" >
@@ -115,7 +115,7 @@
           {{ scope.row.remark }}
         </template>
       </el-table-column>
-      <el-table-column align="center"   :label="$t('连接地址')" >
+      <el-table-column align="center"   :label="$t('数据源地址')" >
         <template #default="scope">
           {{ scope.row.ip }}
         </template>
@@ -175,7 +175,7 @@
         <el-form-item :label="$t('备注')">
           <el-input clearable v-model="link.remark" :placeholder="$t('备注')" />
         </el-form-item>
-        <el-form-item :label="$t('连接地址')">
+        <el-form-item :label="$t('数据源地址')">
           <el-input v-model="link.ip" :placeholder="$t('例如:http://127.0.0.1:9200')" />
         </el-form-item>
         <el-form-item :label="$t('数据源类型')">

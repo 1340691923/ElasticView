@@ -12,16 +12,16 @@
             </el-switch>
           </el-form-item>
           <el-form-item label="回调域名:" >
-            <el-input placeholder="例如:https://www.elastic-view.cn/" v-model="data.wecomeCfg.rootUrl"></el-input>
+            <el-input :placeholder="cbPlaceholder" v-model="data.wecomeCfg.rootUrl"></el-input>
           </el-form-item>
           <el-form-item label="corpid:" >
-            <el-input v-model="data.wecomeCfg.corpid"></el-input>
+            <el-input placeholder="企业 ID，在企业微信管理后台可查，用于识别调用接口的企业身份。类似于企业的唯一编号。" v-model="data.wecomeCfg.corpid"></el-input>
           </el-form-item>
           <el-form-item label="agentId:" >
-            <el-input v-model="data.wecomeCfg.agentId"></el-input>
+            <el-input placeholder="应用 ID，用于区分具体是哪个企业内部应用。" v-model="data.wecomeCfg.agentId"></el-input>
           </el-form-item>
           <el-form-item label="secert:" >
-            <el-input  type="password" show-password  v-model="data.wecomeCfg.secert"></el-input>
+            <el-input placeholder="自建应用凭证密钥，用于获取该应用的 access_token。每个应用有不同的 secret，在企业微信管理后台可以查看。" type="password" show-password  v-model="data.wecomeCfg.secert"></el-input>
           </el-form-item>
           <el-form-item label="" >
             <el-button @click="saveOAuthConfig({
@@ -51,6 +51,16 @@ const data = reactive({
     enable: false,
     secert: ""
   }
+})
+
+const cbPlaceholder = computed(()=>{
+  let href = window.location.href;
+  if(!import.meta.env.PROD){
+    href = import.meta.env.VITE_APP_API_URL
+  }
+  const protocol = href.split('//')[0] === 'http:' ? 'http' : 'https';
+  const host = href.split('//')[1].split('/')[0];
+  return `例如:${protocol}://${host}/`
 })
 
 const saveOAuthConfig = async (data)=>{

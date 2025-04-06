@@ -46,7 +46,7 @@
           {{ scope.row.name }}
         </template>
       </el-table-column>
-      <el-table-column align="header-center" :label="$t('角色详细信息')">
+      <el-table-column align="header-center" :label="$t('备注')">
         <template #default="scope">
           {{ scope.row.description }}
         </template>
@@ -92,27 +92,27 @@
             <el-form-item :label="$t('角色名')">
               <el-input v-model="_this.role.name" :placeholder="$t('角色名')" />
             </el-form-item>
-            <el-form-item :label="$t('角色详情信')">
+            <el-form-item :label="$t('备注')">
               <el-input
                 v-model="_this.role.description"
                 :autosize="{ minRows: 2, maxRows: 4}"
                 type="textarea"
-                :placeholder="$t('角色详情信息')"
+                :placeholder="$t('备注')"
               />
             </el-form-item>
           </el-form>
         </el-tab-pane>
 
         <!-- 菜单权限 Tab -->
-        <el-tab-pane 
-          :label="$t('菜单权限')" 
+        <el-tab-pane
+          :label="$t('菜单权限')"
           name="menu"
           v-if="_this.role.id != 1"
         >
           <div class="permission-header">
-            <el-input 
-              v-model="_this.filterText" 
-              :placeholder="$t('输入关键字进行过滤')" 
+            <el-input
+              v-model="_this.filterText"
+              :placeholder="$t('输入关键字进行过滤')"
               class="filter-input"
             />
             <el-button @click="selectAll">{{ $t('全选') }}</el-button>
@@ -132,15 +132,15 @@
         </el-tab-pane>
 
         <!-- 接口权限 Tab -->
-        <el-tab-pane 
-          :label="$t('接口权限')" 
+        <el-tab-pane
+          :label="$t('接口权限')"
           name="api"
           v-if="_this.role.id != 1"
         >
           <div class="permission-header">
-            <el-input 
-              v-model="_this.filterText4Api" 
-              :placeholder="$t('输入关键字进行过滤')" 
+            <el-input
+              v-model="_this.filterText4Api"
+              :placeholder="$t('输入关键字进行过滤')"
               class="filter-input"
             />
             <el-button @click="selectAll4Api">{{ $t('全选') }}</el-button>
@@ -435,7 +435,7 @@ const handleEdit = (row) => {
 }
 
 const input =reactive({
-  page:1, 
+  page:1,
   limit:10,
 })
 
@@ -502,11 +502,17 @@ const confirmRole = async () => {
     _this.role.api = api
   }
 
-
   const isEdit = _this.dialogType === 'edit'
   const checkedKeys = menu_tree.value.getCheckedKeys()
   _this.role.routes = generateTree(deepClone(_this.allAsyncRoutes), '/', checkedKeys)
   var roleModel = _this.role
+  if (roleModel.name.trim() == ''){
+    ElMessage.error({
+      type: 'error',offset:60,
+      message: "角色名不能为空"
+    })
+    return
+  }
   roleModel.routes = JSON.stringify(roleModel.routes)
   if (isEdit) {
     roleModel['id'] = _this.role.id
@@ -609,7 +615,7 @@ const toggleCollapse = () => {
       .el-button {
         padding: 8px 16px;
         transition: all 0.3s;
-        
+
         &:hover {
           transform: translateY(-1px);
           box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -634,14 +640,14 @@ const toggleCollapse = () => {
         padding: 0.5rem 1rem;
         cursor: pointer;
         user-select: none;
-        
+
         span {
           font-weight: 500;
         }
 
         .el-icon {
           transition: transform 0.3s ease;
-          
+
           &.is-collapsed {
             transform: rotate(-180deg);
           }
@@ -656,21 +662,21 @@ const toggleCollapse = () => {
 
       :deep(.el-form) {
         animation: slideDown 0.3s ease;
-        
+
         .el-form-item {
           margin-right: 0;
           width: 100%;
-          
+
           .el-input {
             width: 100% !important;
           }
-          
+
           // 按钮组样式
           &.button-group {
             display: flex;
             gap: 0.5rem;
             margin-top: 0.5rem;
-            
+
             .el-button {
               flex: 1;
               margin: 0 !important;
@@ -692,33 +698,33 @@ const toggleCollapse = () => {
 
     :deep(.el-table) {
       background-color: transparent;
-      
+
       // 表格行样式
       .el-table__row {
         transition: all 0.3s;
-        
+
         &:hover {
           transform: translateY(-1px);
           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
       }
-      
+
       // 表头样式
       th {
         font-weight: 500;
         border-bottom: 1px solid #e5e7eb;
         padding: 12px 0;
-        
+
         .cell {
           font-size: 0.95rem;
         }
       }
-      
+
       // 单元格样式
       td {
         border-bottom: 1px solid #f3f4f6;
         padding: 16px 0;
-        
+
         .cell {
           line-height: 1.6;
         }
@@ -729,11 +735,11 @@ const toggleCollapse = () => {
         padding: 6px 12px;
         transition: all 0.3s;
         border-radius: 6px;
-        
+
         &:not(:last-child) {
           margin-right: 8px;
         }
-        
+
         &:hover {
           transform: translateY(-1px);
           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -742,7 +748,7 @@ const toggleCollapse = () => {
         &.el-button--primary {
           background: linear-gradient(135deg, #60a5fa, #3b82f6);
           border: none;
-          
+
           &:hover {
             background: linear-gradient(135deg, #3b82f6, #2563eb);
           }
@@ -751,7 +757,7 @@ const toggleCollapse = () => {
         &.el-button--danger {
           background: linear-gradient(135deg, #f87171, #ef4444);
           border: none;
-          
+
           &:hover {
             background: linear-gradient(135deg, #ef4444, #dc2626);
           }
@@ -765,7 +771,7 @@ const toggleCollapse = () => {
     margin-top: 1rem;
     display: flex;
     justify-content: flex-end;
-    
+
     :deep(.el-pagination) {
       padding: 0.75rem;
       border-radius: 0.5rem;
@@ -774,7 +780,7 @@ const toggleCollapse = () => {
       .el-pager li {
         border-radius: 4px;
         transition: all 0.3s;
-      
+
         &.is-active {
           background-color: #3b82f6;
         }
@@ -792,7 +798,7 @@ const toggleCollapse = () => {
       flex: 1;
       display: flex;
       flex-direction: column;
-      
+
       .el-tabs__header {
         margin: 0;
         padding: 0 20px;
@@ -820,7 +826,7 @@ const toggleCollapse = () => {
           }
         }
       }
-      
+
       .el-tabs__content {
         flex: 1;
         padding: 20px;

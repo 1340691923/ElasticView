@@ -2,7 +2,7 @@
   <el-drawer
     v-model="settingsVisible"
     :size="isMobile?'100%':'30%'"
-    :title="$t('ev后台配置')"
+    :title="$t('设置')"
   >
     <el-divider>{{$t('数据源')}}</el-divider>
     <div class="flex-center">
@@ -24,7 +24,7 @@
         @change="changeTheme"
       />
       </el-tooltip>
-    </div> 
+    </div>
 
     <el-divider>{{$t('界面工具')}}</el-divider>
     <div class="flex-center" >
@@ -79,7 +79,7 @@
 
 <!--    <div class="setting-item">
       <span class="text-xs">{{ $t("settings.watermark") }}</span>
-      <el-switch v-model="settingsStore.watermarkEnabled" /> 
+      <el-switch v-model="settingsStore.watermarkEnabled" />
     </div>-->
 
     <el-divider>{{ $t("导航设置") }}</el-divider>
@@ -186,7 +186,7 @@ function findOutermostParent(tree: any[], findName: string) {
   border-radius: 0.5rem;
   transition: all 0.3s ease;
   margin: 0.5rem 0;
-  
+
   &:hover {
     background-color: rgba(0, 0, 0, 0.02);
   }
@@ -200,7 +200,7 @@ function findOutermostParent(tree: any[], findName: string) {
 // 分隔线样式
 :deep(.el-divider) {
   margin: 1.5rem 0 1rem;
-  
+
   .el-divider__text {
     font-size: 0.875rem;
     font-weight: 500;
@@ -216,11 +216,11 @@ function findOutermostParent(tree: any[], findName: string) {
   justify-content: center;
   gap: 2rem;
   padding: 1rem;
-  
+
   .el-tooltip {
     cursor: pointer;
     transition: all 0.3s ease;
-    
+
     &:hover {
       transform: translateY(-2px);
     }
@@ -230,7 +230,7 @@ function findOutermostParent(tree: any[], findName: string) {
 // 主题切换开关样式
 :deep(.el-switch) {
   --el-switch-on-color: var(--el-color-primary);
-  
+
   &.is-checked .el-switch__core {
     box-shadow: 0 0 0.5rem var(--el-color-primary-light-5);
   }
@@ -242,13 +242,13 @@ function findOutermostParent(tree: any[], findName: string) {
     margin-bottom: 0;
     padding: 1rem 1.5rem;
     border-bottom: 1px solid var(--el-border-color-light);
-    
+
     .el-drawer__title {
       font-size: 1rem;
       font-weight: 600;
     }
   }
-  
+
   .el-drawer__body {
     padding: 1rem 1.5rem;
   }
@@ -261,7 +261,7 @@ function findOutermostParent(tree: any[], findName: string) {
   transition: all 0.3s ease;
   padding: 0.5rem;
   border-radius: 0.375rem;
-  
+
   &:hover {
     background-color: rgba(0, 0, 0, 0.05);
     transform: translateY(-2px);
@@ -275,11 +275,11 @@ function findOutermostParent(tree: any[], findName: string) {
       background-color: rgba(255, 255, 255, 0.05);
     }
   }
-  
+
   .el-divider__text {
     background-color: var(--el-bg-color);
   }
-  
+
   .svg-icon:hover {
     background-color: rgba(255, 255, 255, 0.1);
   }
@@ -289,18 +289,18 @@ function findOutermostParent(tree: any[], findName: string) {
 :deep(.theme-picker) {
   display: flex;
   gap: 0.5rem;
-  
+
   .theme-item {
     width: 1.5rem;
     height: 1.5rem;
     border-radius: 0.375rem;
     cursor: pointer;
     transition: all 0.3s ease;
-    
+
     &:hover {
       transform: scale(1.1);
     }
-    
+
     &.active {
       box-shadow: 0 0 0 2px var(--el-color-white),
                  0 0 0 4px var(--el-color-primary);
@@ -314,28 +314,28 @@ function findOutermostParent(tree: any[], findName: string) {
   grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
   padding: 1rem 0;
-  
+
   .layout-item {
     border: 2px solid var(--el-border-color);
     border-radius: 0.5rem;
     padding: 0.5rem;
     cursor: pointer;
     transition: all 0.3s ease;
-    
+
     &:hover {
       transform: translateY(-2px);
     }
-    
+
     &.active {
       border-color: var(--el-color-primary);
       box-shadow: 0 0 0.5rem var(--el-color-primary-light-5);
     }
-    
+
     img {
       width: 100%;
       border-radius: 0.25rem;
     }
-    
+
     .layout-title {
       text-align: center;
       margin-top: 0.5rem;

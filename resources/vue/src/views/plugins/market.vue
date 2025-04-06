@@ -9,16 +9,16 @@
       </el-button>
     </div>
 
-    <div 
+    <div
       class="search-container"
-      :class="{ 
+      :class="{
         'is-mobile': isMobile,
-        'is-collapsed': isMobile && !isFilterVisible 
+        'is-collapsed': isMobile && !isFilterVisible
       }"
     >
       <el-form :inline="true" class="search-form">
         <el-form-item label="插件名/描述:">
-          <el-input 
+          <el-input
             v-model="input.search_txt"
             clearable
             placeholder="搜索插件..."
@@ -38,7 +38,7 @@
               <el-option label="下载次数" value="download_cnt" />
               <el-option label="最后更新时间" value="publish_time" />
           </el-select>
-            
+
             <el-button
               size="default"
               class="sort-button"
@@ -80,7 +80,7 @@
           :key="item.id"
           class="plugin-card-wrapper"
         >
-          <el-card 
+          <el-card
             :class="['plugin-card', {'is-dark': settingsStore.theme === ThemeEnum.DARK}]"
             @click="lookPluginInfo(item)"
             :body-style="{ padding: '0' }"
@@ -89,14 +89,14 @@
               <img :src="item.logo" class="plugin-logo" loading="lazy">
               <h3 class="plugin-title">{{ item.plugin_name }}</h3>
             </div>
-            
+
             <div class="plugin-body">
               <p class="plugin-description">
                 <el-tooltip :content="item.describe" placement="top">
                   {{ truncatedText(item.describe, 50) }}
               </el-tooltip>
               </p>
-              
+
               <div class="plugin-tags">
                 <el-tag v-if="item.has_download" type="success" effect="light">已安装</el-tag>
                 <el-tag v-if="item.buy_coin_num > 0" type="primary" effect="light">
@@ -112,7 +112,7 @@
                     {{item.download_cnt}}/{{item.download_user_cnt}}
               </div>
                 </el-tooltip>
-                
+
                 <el-tooltip content="Star数" placement="top">
                   <div class="stat-item">
                     <el-icon><Star /></el-icon>
@@ -153,7 +153,7 @@
     <el-drawer
       v-model="dialog.visible"
       title="插件详情"
-      :size="isMobile ? '100%' : '95%'"
+      :size="isMobile ? '100%' : '80%'"
     >
       <div class="plugin-detail">
         <el-card v-loading="installLoading" class="detail-card">
@@ -198,14 +198,14 @@
                   <mark-down-view :content="publishInput.pluginData.readme"></mark-down-view>
               </div>
                 </el-tab-pane>
-            
+
                 <el-tab-pane label="版本列表" name="versions">
               <div class="version-list">
                 <el-timeline>
-                  <el-timeline-item 
-                    v-for="(item,index) in publishListData.list" 
+                  <el-timeline-item
+                    v-for="(item,index) in publishListData.list"
                     :key="index"
-                    :timestamp="item.update_time" 
+                    :timestamp="item.update_time"
                     placement="top"
                   >
                     <el-card class="version-card">
@@ -240,16 +240,16 @@
 
       <template #footer>
         <div class="dialog-footer">
-          <el-button 
-            type="primary" 
-            v-if="!publishInput.pluginData.has_download" 
+          <el-button
+            type="primary"
+            v-if="!publishInput.pluginData.has_download"
             @click="installPlugin(publishListData.list[0].version)"
           >
             安装最新版本
           </el-button>
-          <el-button 
-            type="danger" 
-            v-if="publishInput.pluginData.has_download" 
+          <el-button
+            type="danger"
+            v-if="publishInput.pluginData.has_download"
             @click="unInstall"
           >
             卸载
@@ -564,14 +564,14 @@ onMounted(() => {
 <style lang="scss" scoped>
 .mobile-filter-toggle {
   @apply mb-4;
-  
+
   .toggle-button {
     @apply w-full;
     @apply flex items-center justify-center gap-2;
-    
+
     .toggle-icon {
       @apply transition-transform duration-300;
-      
+
       &.is-reverse {
         @apply transform rotate-180;
       }
@@ -586,25 +586,25 @@ onMounted(() => {
   @apply rounded-lg;
   @apply shadow-sm;
   @apply transition-all duration-300;
-  
+
   &.is-mobile {
     @apply overflow-hidden;
-    
+
     &.is-collapsed {
       @apply h-0 p-0 mb-0;
       @apply opacity-0;
     }
-    
+
     .search-form {
       @apply flex-col;
-      
+
       .el-form-item {
         @apply w-full;
-        
+
         :deep(.el-form-item__content) {
           @apply w-full;
           @apply flex;
-          
+
           .custom-input,
           .custom-select,
           .sort-wrapper {
@@ -614,7 +614,7 @@ onMounted(() => {
       }
     }
   }
-  
+
   .search-form {
     @apply flex flex-wrap items-center gap-4;
   }
@@ -625,7 +625,7 @@ onMounted(() => {
   :deep(.el-input__wrapper) {
     @apply shadow-sm;
     @apply transition-all duration-300;
-    
+
     &:hover {
       @apply shadow;
     }
@@ -637,7 +637,7 @@ onMounted(() => {
   :deep(.el-input__wrapper) {
     @apply shadow-sm;
     @apply transition-all duration-300;
-    
+
     &:hover {
       @apply shadow;
     }
@@ -668,7 +668,7 @@ onMounted(() => {
   @apply cursor-pointer;
   @apply overflow-hidden;
   @apply transition-all duration-300;
-  
+
   &:hover {
     @apply shadow-lg;
   }
@@ -713,7 +713,7 @@ onMounted(() => {
 
   .plugin-stats {
     @apply flex items-center gap-4;
-    
+
     .stat-item {
       @apply flex items-center gap-1;
       @apply text-sm text-gray-500 dark:text-gray-400;
@@ -735,24 +735,24 @@ onMounted(() => {
   @apply mt-6;
   @apply flex justify-center;
   @apply overflow-x-hidden;
-  
+
   :deep(.el-pagination) {
     @apply flex flex-wrap justify-center;
     @apply gap-2;
-    
+
     @media (max-width: 768px) {
       @apply w-full;
       @apply px-4;
-      
+
       .el-pagination__sizes {
         @apply hidden;
       }
-      
+
       .btn-prev,
       .btn-next {
         @apply min-w-[32px];
       }
-      
+
       .el-pager {
         @apply flex-wrap justify-center;
       }
@@ -779,7 +779,7 @@ onMounted(() => {
 .sort-button {
   @apply flex items-center justify-center;
   @apply transition-all duration-300;
-  
+
   :deep(.el-icon) {
     @apply text-sm;
   }
@@ -788,7 +788,7 @@ onMounted(() => {
 .plugin-detail {
   @apply p-4;
   @apply w-full;
-  
+
   .detail-card {
     @apply bg-white/90 dark:bg-gray-800/90;
     @apply backdrop-blur-sm;
@@ -796,9 +796,9 @@ onMounted(() => {
     @apply shadow-sm;
     @apply transition-all duration-300;
     @apply w-full;
-    
+
     @apply p-6;
-    
+
     @media (max-width: 768px) {
       @apply p-4;
     }
@@ -861,15 +861,15 @@ onMounted(() => {
 
   .version-list {
     @apply px-4;
-    
+
     :deep(.el-timeline) {
       @apply space-y-6;
     }
-    
+
     :deep(.el-timeline-item__node) {
       @apply bg-blue-500;
     }
-    
+
     :deep(.el-timeline-item__timestamp) {
       @apply text-sm font-medium;
       @apply text-gray-500 dark:text-gray-400;
@@ -882,7 +882,7 @@ onMounted(() => {
       @apply border border-gray-200 dark:border-gray-700;
       @apply transition-all duration-300;
       @apply hover:shadow-md;
-      
+
       .version-header {
         @apply flex items-center justify-between;
         @apply p-4 pb-3;
@@ -892,7 +892,7 @@ onMounted(() => {
           @apply text-lg font-medium;
           @apply text-gray-900 dark:text-gray-100;
           @apply flex items-center gap-2;
-          
+
           &::before {
             content: '';
             @apply w-2 h-2;
@@ -909,7 +909,7 @@ onMounted(() => {
             @apply px-3 py-1;
             @apply rounded-full;
           }
-          
+
           .el-button {
             @apply hover:scale-110;
             @apply transition-transform duration-300;
@@ -922,28 +922,28 @@ onMounted(() => {
         @apply text-gray-600 dark:text-gray-400;
         @apply text-sm;
         @apply leading-relaxed;
-        
+
         :deep(h1, h2, h3, h4, h5, h6) {
           @apply font-medium;
           @apply mb-2;
         }
-        
+
         :deep(p) {
           @apply mb-3;
         }
-        
+
         :deep(ul, ol) {
           @apply pl-6;
           @apply mb-3;
         }
-        
+
         :deep(code) {
           @apply px-1.5 py-0.5;
           @apply rounded;
           @apply bg-gray-100 dark:bg-gray-700;
           @apply text-sm;
         }
-        
+
         :deep(pre) {
           @apply p-4;
           @apply rounded-lg;
@@ -970,12 +970,12 @@ onMounted(() => {
 :deep(.el-tag) {
   @apply border-0;
   @apply shadow-sm;
-  
+
   &.el-tag--warning {
     @apply bg-amber-100 text-amber-800;
     @apply dark:bg-amber-900/30 dark:text-amber-200;
   }
-  
+
   &.el-tag--success {
     @apply bg-green-100 text-green-800;
     @apply dark:bg-green-900/30 dark:text-green-200;
