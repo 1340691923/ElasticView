@@ -84,9 +84,10 @@
                   </el-tag>
                 </template>
                 <div class="popover-tags">
-                  <el-tag 
-                    v-for="item in scope.row.role_ids.slice(1)" 
+                  <el-tag
+                    v-for="item in scope.row.role_ids.slice(1)"
                     :key="item"
+                    style="margin-left:1rem"
                     size="small"
                   >
                     {{chanCfgMap[item]}}
@@ -231,7 +232,7 @@
     <el-drawer
       title="修改密码"
       v-model="pwdDialogVisible"
-      :size="isMobile?'100%':'30%'"
+      :size="isMobile?'100%':'50%'"
     >
       <el-form label-width="100px" >
         <el-form-item label="新密码" required>
@@ -612,14 +613,14 @@ export default {
         padding: 0.5rem 0;
         cursor: pointer;
         user-select: none;
-        
+
         span {
           font-weight: 500;
         }
 
         .el-icon {
           transition: transform 0.3s ease;
-          
+
           &.is-collapsed {
             transform: rotate(-180deg);
           }
@@ -634,19 +635,19 @@ export default {
 
       :deep(.el-form) {
         animation: slideDown 0.3s ease;
-        
+
         .el-form-item {
           margin-right: 0;
           width: 100%;
-          
+
           .el-input {
             width: 100% !important;
           }
-          
+
           &:last-child {
             display: flex;
             gap: 0.5rem;
-            
+
             .el-button {
               flex: 1;
               margin: 0 !important;
@@ -689,7 +690,7 @@ export default {
       .el-button {
         box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
         transition: all 0.3s;
-        
+
         &:hover {
           transform: scale(1.05);
           box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -711,31 +712,31 @@ export default {
 
     :deep(.el-table) {
       background-color: transparent;
-      
+
       .el-table__row {
         transition: all 0.3s;
-        
+
         &:hover {
           transform: translateY(-1px);
           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
       }
-      
+
       th {
         color: #4b5563;
         font-weight: 500;
         border-bottom: 1px solid #e5e7eb;
         padding: 12px 0;
-        
+
         .cell {
           font-size: 0.95rem;
         }
       }
-      
+
       td {
         border-bottom: 1px solid #f3f4f6;
         padding: 16px 0;
-        
+
         .cell {
           line-height: 1.6;
         }
@@ -745,7 +746,7 @@ export default {
         transition: all 0.3s;
         margin: 0 4px;
         padding: 6px 12px;
-        
+
         &:not(.el-button--link):hover {
           transform: scale(1.05);
           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -754,7 +755,7 @@ export default {
         &--primary {
           background: linear-gradient(135deg, #60a5fa, #3b82f6);
           border: none;
-          
+
           &:hover {
             background: linear-gradient(135deg, #3b82f6, #2563eb);
           }
@@ -763,7 +764,7 @@ export default {
         &--danger {
           background: linear-gradient(135deg, #f87171, #ef4444);
           border: none;
-          
+
           &:hover {
             background: linear-gradient(135deg, #ef4444, #dc2626);
           }
@@ -772,7 +773,7 @@ export default {
         &--info {
           background: linear-gradient(135deg, #93c5fd, #60a5fa);
           border: none;
-          
+
           &:hover {
             background: linear-gradient(135deg, #60a5fa, #3b82f6);
           }
@@ -787,7 +788,7 @@ export default {
         font-size: 0.9rem;
         border: none;
         box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-        
+
         &:hover {
           transform: translateY(-1px);
           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -796,7 +797,7 @@ export default {
 
       .el-table__empty-block {
         background-color: transparent;
-        
+
         .el-table__empty-text {
           color: #6b7280;
         }
@@ -807,7 +808,7 @@ export default {
         flex-wrap: nowrap;
         align-items: center;
         gap: 4px;
-        
+
         .el-tag {
           transition: all 0.3s;
           margin: 0;
@@ -815,13 +816,13 @@ export default {
           max-width: 120px;
           overflow: hidden;
           text-overflow: ellipsis;
-          
+
           &.more-tag {
             background: linear-gradient(135deg, #93c5fd, #60a5fa);
             color: white;
             cursor: pointer;
             padding: 0 8px;
-            
+
             &:hover {
               background: linear-gradient(135deg, #60a5fa, #3b82f6);
               transform: translateY(-1px);
@@ -842,7 +843,7 @@ export default {
           &::-webkit-scrollbar {
             width: 4px;
           }
-          
+
           &::-webkit-scrollbar-thumb {
             background-color: #cbd5e1;
             border-radius: 2px;
@@ -861,27 +862,27 @@ export default {
     display: flex;
     justify-content: flex-end;
     overflow-x: auto;
-    
+
     :deep(.el-pagination) {
       border-radius: 0.5rem;
       padding: 0.5rem;
       min-width: fit-content;
-      
+
       @media (max-width: 768px) {
         width: 100%;
         display: flex;
         justify-content: center;
         font-size: 0.875rem;
-        
+
         .el-pager {
           flex-wrap: wrap;
         }
-        
+
         .btn-prev,
         .btn-next {
           min-width: 24px;
         }
-        
+
         li {
           min-width: 24px;
         }
@@ -929,7 +930,7 @@ export default {
       background-color: rgba(31, 41, 55, 0.9);
 
       :deep(.el-form) {
-        .el-form-item__label { 
+        .el-form-item__label {
           color: #d1d5db;
         }
 
@@ -956,13 +957,13 @@ export default {
         .el-table__row:hover {
           background-color: rgba(55, 65, 81, 0.7) !important;
         }
-        
+
         th {
           background-color: rgba(55, 65, 81, 0.9) !important;
           color: #d1d5db;
           border-bottom-color: #4b5563;
         }
-        
+
         td {
           border-bottom-color: #374151;
         }
@@ -1001,7 +1002,7 @@ export default {
             background-color: #374151;
             color: #e5e7eb;
             border: 1px solid #4b5563;
-            
+
             &:hover {
               border-color: #60a5fa;
               background-color: #3b4252;
@@ -1011,7 +1012,7 @@ export default {
               background: linear-gradient(135deg, #3b82f6, #2563eb);
               border: none;
               color: white;
-              
+
               &:hover {
                 background: linear-gradient(135deg, #2563eb, #1d4ed8);
               }
@@ -1057,13 +1058,13 @@ export default {
   &.is-dark {
     background-color: #1f2937;
     border: 1px solid #374151;
-    
+
     .popover-tags {
       .el-tag {
         background-color: #374151;
         color: #e5e7eb;
         border: 1px solid #4b5563;
-        
+
         &:hover {
           border-color: #60a5fa;
           background-color: #3b4252;
@@ -1073,11 +1074,11 @@ export default {
       &::-webkit-scrollbar {
         width: 4px;
       }
-      
+
       &::-webkit-scrollbar-thumb {
         background-color: #4b5563;
       }
-      
+
       &::-webkit-scrollbar-track {
         background-color: #1f2937;
       }

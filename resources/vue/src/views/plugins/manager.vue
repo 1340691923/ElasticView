@@ -130,7 +130,7 @@
       v-model="detailsVisible"
       :title="currentPlugin?.plugin_name"
       direction="rtl"
-      size="500px"
+      :size="isMobile?'100%':'80%'"
     >
       <div class="plugin-details">
         <div class="detail-card">
@@ -185,8 +185,8 @@
             <div class="detail-item">
               <span class="detail-label">CPU占用</span>
               <div class="detail-progress">
-                <el-progress 
-                  :percentage="parseFloat(currentPlugin?.cpu_percent_str)" 
+                <el-progress
+                  :percentage="parseFloat(currentPlugin?.cpu_percent_str)"
                   :color="getCpuColor"
                 />
               </div>
@@ -194,8 +194,8 @@
             <div class="detail-item">
               <span class="detail-label">内存占用</span>
               <div class="detail-progress">
-                <el-progress 
-                  :percentage="parseFloat(currentPlugin?.memory_percent_str)" 
+                <el-progress
+                  :percentage="parseFloat(currentPlugin?.memory_percent_str)"
                   :color="getMemoryColor"
                 />
               </div>
@@ -445,7 +445,7 @@ onMounted(()=>{
 
   :deep(.el-table__header) {
     @apply bg-gray-50/90 dark:bg-gray-700/90;
-    
+
     th {
       @apply bg-transparent;
       @apply text-gray-600 dark:text-gray-300;
@@ -458,11 +458,11 @@ onMounted(()=>{
   :deep(.el-table__body) {
     tr {
       @apply transition-colors duration-300;
-      
+
       &:hover > td {
         @apply bg-gray-50/80 dark:bg-gray-700/50;
       }
-      
+
       td {
         @apply border-b border-gray-100 dark:border-gray-700;
         @apply text-gray-600 dark:text-gray-300;
@@ -475,12 +475,12 @@ onMounted(()=>{
     @apply border-0;
     @apply shadow-sm;
     @apply transition-all duration-300;
-    
+
     &.el-tag--success {
       @apply bg-green-100 text-green-800;
       @apply dark:bg-green-900/30 dark:text-green-200;
     }
-    
+
     &.el-tag--danger {
       @apply bg-red-100 text-red-800;
       @apply dark:bg-red-900/30 dark:text-red-200;
@@ -490,22 +490,22 @@ onMounted(()=>{
   // 优化按钮样式
   :deep(.el-button) {
     @apply transition-all duration-300;
-    
+
     &:not(.is-disabled):hover {
       @apply transform scale-105;
       @apply shadow-md;
     }
-    
+
     &.el-button--warning {
       @apply bg-amber-500 border-amber-500;
       @apply hover:bg-amber-600 hover:border-amber-600;
     }
-    
+
     &.el-button--info {
       @apply bg-blue-500 border-blue-500;
       @apply hover:bg-blue-600 hover:border-blue-600;
     }
-    
+
     &.el-button--danger {
       @apply bg-red-500 border-red-500;
       @apply hover:bg-red-600 hover:border-red-600;
@@ -521,10 +521,10 @@ onMounted(()=>{
 
 .performance-info {
   @apply inline-flex items-center;
-  
+
   .performance-indicators {
     @apply flex items-center gap-2;
-    
+
     .performance-progress {
       @apply w-16;
     }
@@ -557,13 +557,13 @@ onMounted(()=>{
 
   .detail-item {
     @apply flex items-center gap-2;
-    
+
     .detail-label {
       @apply text-gray-500 dark:text-gray-400;
       @apply text-sm;
       @apply w-24 flex-shrink-0;
     }
-    
+
     .detail-value {
       @apply text-gray-800 dark:text-gray-200;
       @apply flex-1;
@@ -574,7 +574,7 @@ onMounted(()=>{
       @apply flex-1;
     }
   }
-  
+
   .detail-actions {
     @apply sticky bottom-0 left-0 right-0;
     @apply bg-white/90 dark:bg-gray-800/90;
@@ -586,14 +586,14 @@ onMounted(()=>{
 
 .tooltip-content {
   @apply space-y-1;
-  
+
   .tooltip-item {
     @apply flex items-center gap-2;
-    
+
     .label {
       @apply text-gray-300;
     }
-    
+
     .value {
       @apply text-white font-medium;
     }
