@@ -5,3 +5,4 @@ resources/vue/node_moudules
 /cmd/test/main.go
 /ev_store/
 /cmd/test/
+/ev
