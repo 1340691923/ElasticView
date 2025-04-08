@@ -3,10 +3,5 @@ resources/vue/node_moudules
 /resources/dist
 /ev.exe
 /cmd/test/main.go
-/ev_store/data/es_view.db
-/ev_store/logs/ev/debug.log.20241228
-/ev_store/logs/ev/err.log.20241228
-/ev_store/logs/ev/info.log.20241228
-/ev_store/logs/ev/warn.log.20241228
-/ev_store/plugin_logs/ev-tools.log
-/ev_store/plugins_store/ev-tools-test.db
+/ev_store/
+/cmd/test/

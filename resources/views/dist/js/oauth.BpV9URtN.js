@@ -1,1 +1,0 @@
-import{_ as t}from"./oauth.vue_vue_type_script_setup_true_lang.DsuBB0NM.js";import"./index.CeDXPVSD.js";import"./el-card.Cx8qXsER.js";import"./el-tab-pane.DKPBtN8p.js";import"./strings.DM4HtHVe.js";import"./el-form.CyAu9Gll.js";import"./_Uint8Array.4jrYBpH3.js";import"./el-form-item.l0sNRNKZ.js";import"./el-switch.DZq8KFyg.js";export{t as default};

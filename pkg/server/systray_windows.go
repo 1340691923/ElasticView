@@ -28,6 +28,7 @@ func (this *Server) onReady() {
 			case <-openItem.ClickedCh:
 				openAddr := fmt.Sprintf("http://localhost:%d", this.cfg.Port)
 				util.OpenWinBrowser(openAddr)
+
 			case <-exitItem.ClickedCh:
 				this.Shutdown(this.context)
 				return

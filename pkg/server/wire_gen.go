@@ -40,6 +40,7 @@ import (
 	"github.com/1340691923/ElasticView/pkg/services/plugin_install_service"
 	"github.com/1340691923/ElasticView/pkg/services/plugin_service"
 	"github.com/1340691923/ElasticView/pkg/services/updatechecker"
+	"github.com/1340691923/ElasticView/pkg/services/webview"
 	"github.com/1340691923/ElasticView/pkg/web"
 	"github.com/google/wire"
 )
@@ -51,72 +52,76 @@ func Initialize(args *config.CommandLineArgs) (*Server, error) {
 	if err != nil {
 		return nil, err
 	}
-	v, err := logger.InitLog(configConfig)
+	zapLogger, err := logger.InitLog(configConfig)
 	if err != nil {
 		return nil, err
 	}
-	gorm, err := orm.NewGorm(configConfig, v)
+	gorm, err := orm.NewGorm(configConfig, zapLogger)
 	if err != nil {
 		return nil, err
 	}
-	rbac, err := access_control.NewRbac(configConfig, v, gorm)
+	rbac, err := access_control.NewRbac(configConfig, zapLogger, gorm)
 	if err != nil {
 		return nil, err
 	}
-	migratorMigrator := migrator.NewMigrator(gorm, configConfig, v, rbac)
+	migratorMigrator := migrator.NewMigrator(gorm, configConfig, zapLogger, rbac)
 	webEngine := web_engine.NewWebEngine()
-	jwt := jwt_svr.NewJwt(configConfig, v, gorm)
-	responseResponse := response.NewResponse(v)
+	jwt := jwt_svr.NewJwt(configConfig, zapLogger, gorm)
+	responseResponse := response.NewResponse(zapLogger)
 	gmUserDao := dao.NewGmUserDao(gorm)
 	gmRoleDao := dao.NewGmRoleDao(gorm)
 	pluginManager := manager.NewPluginManager()
 	workWechat := oauth.NewWorkWechat(configConfig)
 	oAuthServiceRegistry := oauth.ProvideOAuthServiceRegistry(workWechat)
-	gmUserService := gm_user.NewGmUserService(v, gmUserDao, gmRoleDao, jwt, pluginManager, configConfig, gorm, oAuthServiceRegistry)
-	gmOperaterLogService := gm_operater_log.NewGmOperaterLogService(v, gorm)
-	middleWareService := middleware.NewMiddleWareService(configConfig, gorm, v, jwt, responseResponse, gmUserService, rbac, webEngine, pluginManager, gmOperaterLogService)
+	gmUserService := gm_user.NewGmUserService(zapLogger, gmUserDao, gmRoleDao, jwt, pluginManager, configConfig, gorm, oAuthServiceRegistry)
+	gmOperaterLogService := gm_operater_log.NewGmOperaterLogService(zapLogger, gorm)
+	middleWareService := middleware.NewMiddleWareService(configConfig, gorm, zapLogger, jwt, responseResponse, gmUserService, rbac, webEngine, pluginManager, gmOperaterLogService)
 	requestRequest := request.NewRequest()
 	baseController := api.NewBaseController(requestRequest, responseResponse)
-	gmOperaterController := api.NewGmOperaterController(baseController, v, configConfig, gmOperaterLogService)
-	gmRoleService := gm_role.NewGmRoleService(v, gmRoleDao)
+	gmOperaterController := api.NewGmOperaterController(baseController, zapLogger, configConfig, gmOperaterLogService)
+	gmRoleService := gm_role.NewGmRoleService(zapLogger, gmRoleDao)
 	esCache := cache_service.NewEsCache()
 	esLinkV2Dao := dao.NewEsLinkV2Dao(gorm)
 	esClientService := es.NewEsClientService(configConfig, esCache, esLinkV2Dao, gmUserDao, gorm)
 	eslinkCfgV2Dao := dao.NewEslinkCfgV2Dao(gorm)
 	gmRoleEslinkCfgV2Dao := dao.NewGmRoleEslinkCfgV2Dao(gorm)
 	eslinkRoleCfgReletionDao := dao.NewEslinkRoleCfgReletion(gorm)
-	esLinkService := es_link_service.NewEsLinkService(gorm, v, esClientService, eslinkCfgV2Dao, gmRoleEslinkCfgV2Dao, eslinkRoleCfgReletionDao, gmUserDao, esLinkV2Dao)
-	managerRoleController := api.NewManagerRoleController(baseController, v, configConfig, jwt, gmRoleService, gmUserService, rbac, gorm, esLinkService)
-	esLinkController := api.NewEsLinkController(baseController, v, esClientService, gorm, esLinkService, jwt, esCache)
-	evEApi := eve_api.NewEvApi(configConfig, v)
-	evBackDao := dao.NewEvBackDao(v, evEApi)
-	evUpdate, err := updatechecker.ProvideEvUpdate(v, configConfig, evBackDao)
+	esLinkService := es_link_service.NewEsLinkService(gorm, zapLogger, esClientService, eslinkCfgV2Dao, gmRoleEslinkCfgV2Dao, eslinkRoleCfgReletionDao, gmUserDao, esLinkV2Dao)
+	managerRoleController := api.NewManagerRoleController(baseController, zapLogger, configConfig, jwt, gmRoleService, gmUserService, rbac, gorm, esLinkService)
+	esLinkController := api.NewEsLinkController(baseController, zapLogger, esClientService, gorm, esLinkService, jwt, esCache)
+	evEApi := eve_api.NewEvApi(configConfig, zapLogger)
+	evBackDao := dao.NewEvBackDao(zapLogger, evEApi)
+	evUpdate, err := updatechecker.ProvideEvUpdate(zapLogger, configConfig, evBackDao)
 	if err != nil {
 		return nil, err
 	}
-	managerUserController := api.NewManagerUserController(baseController, v, configConfig, gorm, jwt, gmUserService, webEngine, evUpdate, pluginManager)
+	managerUserController := api.NewManagerUserController(baseController, zapLogger, configConfig, gorm, jwt, gmUserService, webEngine, evUpdate, pluginManager)
 	esService := es_service.NewEsService(gorm)
-	esController := api.NewEsController(baseController, v, esClientService, esService, jwt, configConfig)
-	bigMode := big_mode_service.NewBigMode(v, configConfig)
-	aiController := api.NewAiController(baseController, v, bigMode)
-	indexController := api.NewIndexController(configConfig, v)
-	service := process.ProvideService(v)
-	pluginStoreService := pluginstore.NewPluginStoreService(pluginManager, configConfig, service, v, gorm)
-	pluginsService, err := updatechecker.ProvidePluginsService(v, configConfig, evBackDao, pluginManager)
+	esController := api.NewEsController(baseController, zapLogger, esClientService, esService, jwt, configConfig)
+	bigMode := big_mode_service.NewBigMode(zapLogger, configConfig)
+	aiController := api.NewAiController(baseController, zapLogger, bigMode)
+	indexController := api.NewIndexController(configConfig, zapLogger)
+	service := process.ProvideService(zapLogger)
+	pluginStoreService := pluginstore.NewPluginStoreService(pluginManager, configConfig, service, zapLogger, gorm)
+	pluginsService, err := updatechecker.ProvidePluginsService(zapLogger, configConfig, evBackDao, pluginManager)
 	if err != nil {
 		return nil, err
 	}
-	pluginService := plugin_service.NewPluginService(gorm, pluginManager, v, service, configConfig, rbac, gmUserDao, jwt, evBackDao, pluginStoreService, pluginsService, gmOperaterLogService)
-	evEService := eve_service.NewEvEService(v, evBackDao, configConfig, pluginManager, pluginsService)
-	pluginInstaller := plugin_install_service.ProvideInstaller(configConfig, v, pluginManager, evBackDao, pluginStoreService, pluginsService)
-	pluginController := api.NewPluginController(baseController, v, gorm, pluginService, evEService, pluginInstaller, gmUserService, jwt)
-	live := live_svr.NewLive(v, configConfig, jwt, pluginManager)
-	wsController := api.NewWsController(live, v)
-	webServer := web.NewWebServer(webEngine, v, configConfig, rbac, middleWareService, gmOperaterController, managerRoleController, esLinkController, managerUserController, esController, aiController, indexController, pluginController, wsController)
-	pluginUtilController := api.NewPluginUtilController(baseController, pluginService, esClientService, esService, v, configConfig, gmUserService, live, evEApi)
-	pluginRpcServer := plugin_rpc.NewPluginRpcServer(v, configConfig, middleWareService, pluginUtilController)
-	backgroundServiceRegistry := backgroundsvcs.ProvideBackgroundServiceRegistry(webServer, evUpdate, pluginsService, pluginStoreService, pluginRpcServer, evEService, gmOperaterLogService)
-	server := NewServer(configConfig, migratorMigrator, v, gorm, backgroundServiceRegistry, esLinkService, evEService, gmUserService, pluginInstaller)
+	pluginService := plugin_service.NewPluginService(gorm, pluginManager, zapLogger, service, configConfig, rbac, gmUserDao, jwt, evBackDao, pluginStoreService, pluginsService, gmOperaterLogService)
+	evEService := eve_service.NewEvEService(zapLogger, evBackDao, configConfig, pluginManager, pluginsService)
+	pluginInstaller := plugin_install_service.ProvideInstaller(configConfig, zapLogger, pluginManager, evBackDao, pluginStoreService, pluginsService)
+	pluginController := api.NewPluginController(baseController, zapLogger, gorm, pluginService, evEService, pluginInstaller, gmUserService, jwt)
+	live := live_svr.NewLive(zapLogger, configConfig, jwt, pluginManager)
+	wsController := api.NewWsController(live, zapLogger)
+	webServer := web.NewWebServer(webEngine, zapLogger, configConfig, rbac, middleWareService, gmOperaterController, managerRoleController, esLinkController, managerUserController, esController, aiController, indexController, pluginController, wsController)
+	pluginUtilController := api.NewPluginUtilController(baseController, pluginService, esClientService, esService, zapLogger, configConfig, gmUserService, live, evEApi)
+	pluginRpcServer := plugin_rpc.NewPluginRpcServer(zapLogger, configConfig, middleWareService, pluginUtilController)
+	webView, err := webview.ProvideWebView(zapLogger, configConfig)
+	if err != nil {
+		return nil, err
+	}
+	backgroundServiceRegistry := backgroundsvcs.ProvideBackgroundServiceRegistry(webServer, evUpdate, pluginsService, pluginStoreService, pluginRpcServer, evEService, gmOperaterLogService, webView)
+	server := NewServer(configConfig, migratorMigrator, zapLogger, gorm, backgroundServiceRegistry, esLinkService, evEService, gmUserService, pluginInstaller)
 	return server, nil
 }
 
@@ -125,11 +130,11 @@ func InitializeOrm(args *config.CommandLineArgs) (*orm.Gorm, error) {
 	if err != nil {
 		return nil, err
 	}
-	v, err := logger.InitLog(configConfig)
+	zapLogger, err := logger.InitLog(configConfig)
 	if err != nil {
 		return nil, err
 	}
-	gorm, err := orm.NewGorm(configConfig, v)
+	gorm, err := orm.NewGorm(configConfig, zapLogger)
 	if err != nil {
 		return nil, err
 	}
@@ -141,12 +146,12 @@ func InitializeEvApiDao(args *config.CommandLineArgs) (*dao.EvBackDao, error) {
 	if err != nil {
 		return nil, err
 	}
-	v, err := logger.InitLog(configConfig)
+	zapLogger, err := logger.InitLog(configConfig)
 	if err != nil {
 		return nil, err
 	}
-	evEApi := eve_api.NewEvApi(configConfig, v)
-	evBackDao := dao.NewEvBackDao(v, evEApi)
+	evEApi := eve_api.NewEvApi(configConfig, zapLogger)
+	evBackDao := dao.NewEvBackDao(zapLogger, evEApi)
 	return evBackDao, nil
 }
 
@@ -155,11 +160,11 @@ func InitializeGmRoleEslinkCfgV2Dao(args *config.CommandLineArgs) (*dao.GmRoleEs
 	if err != nil {
 		return nil, err
 	}
-	v, err := logger.InitLog(configConfig)
+	zapLogger, err := logger.InitLog(configConfig)
 	if err != nil {
 		return nil, err
 	}
-	gorm, err := orm.NewGorm(configConfig, v)
+	gorm, err := orm.NewGorm(configConfig, zapLogger)
 	if err != nil {
 		return nil, err
 	}
@@ -172,27 +177,27 @@ func InitializeProvideInstaller(args *config.CommandLineArgs) (*plugin_install_s
 	if err != nil {
 		return nil, err
 	}
-	v, err := logger.InitLog(configConfig)
+	zapLogger, err := logger.InitLog(configConfig)
 	if err != nil {
 		return nil, err
 	}
 	pluginManager := manager.NewPluginManager()
-	evEApi := eve_api.NewEvApi(configConfig, v)
-	evBackDao := dao.NewEvBackDao(v, evEApi)
-	service := process.ProvideService(v)
-	gorm, err := orm.NewGorm(configConfig, v)
+	evEApi := eve_api.NewEvApi(configConfig, zapLogger)
+	evBackDao := dao.NewEvBackDao(zapLogger, evEApi)
+	service := process.ProvideService(zapLogger)
+	gorm, err := orm.NewGorm(configConfig, zapLogger)
 	if err != nil {
 		return nil, err
 	}
-	pluginStoreService := pluginstore.NewPluginStoreService(pluginManager, configConfig, service, v, gorm)
-	pluginsService, err := updatechecker.ProvidePluginsService(v, configConfig, evBackDao, pluginManager)
+	pluginStoreService := pluginstore.NewPluginStoreService(pluginManager, configConfig, service, zapLogger, gorm)
+	pluginsService, err := updatechecker.ProvidePluginsService(zapLogger, configConfig, evBackDao, pluginManager)
 	if err != nil {
 		return nil, err
 	}
-	pluginInstaller := plugin_install_service.ProvideInstaller(configConfig, v, pluginManager, evBackDao, pluginStoreService, pluginsService)
+	pluginInstaller := plugin_install_service.ProvideInstaller(configConfig, zapLogger, pluginManager, evBackDao, pluginStoreService, pluginsService)
 	return pluginInstaller, nil
 }
 
 // wire.go:
 
-var wireSet = wire.NewSet(wire.Bind(new(registry.BackgroundServiceRegistry), new(*backgroundsvcs.BackgroundServiceRegistry)), live_svr.NewLive, api.NewWsController, oauth.ProvideOAuthServiceRegistry, oauth.NewWorkWechat, big_mode_service.NewBigMode, api.NewAiController, plugin_install_service.ProvideInstaller, wire.Bind(new(manager.Service), new(*manager.PluginManager)), api.NewPluginController, process.ProvideService, migrator.NewMigrator, config.InitConfig, manager.NewPluginManager, pluginstore.NewPluginStoreService, eve_api.NewEvApi, eve_service.NewEvEService, dao.NewEvBackDao, logger.InitLog, dao.NewEslinkCfgV2Dao, dao.NewGmRoleDao, dao.NewGmUserDao, dao.NewEsLinkV2Dao, dao.NewGmRoleEslinkCfgV2Dao, dao.NewEslinkRoleCfgReletion, updatechecker.ProvidePluginsService, orm.NewGorm, cache_service.NewEsCache, request.NewRequest, response.NewResponse, api.NewBaseController, api.NewIndexController, updatechecker.ProvideEvUpdate, api.NewPluginUtilController, plugin_service.NewPluginService, api.NewEsController, api.NewEsLinkController, es.NewEsClientService, es_link_service.NewEsLinkService, es_service.NewEsService, api.NewGmOperaterController, gm_operater_log.NewGmOperaterLogService, api.NewManagerRoleController, gm_role.NewGmRoleService, api.NewManagerUserController, gm_user.NewGmUserService, jwt_svr.NewJwt, middleware.NewMiddleWareService, backgroundsvcs.ProvideBackgroundServiceRegistry, access_control.NewRbac, web_engine.NewWebEngine, web.NewWebServer, plugin_rpc.NewPluginRpcServer, NewServer)
+var wireSet = wire.NewSet(wire.Bind(new(registry.BackgroundServiceRegistry), new(*backgroundsvcs.BackgroundServiceRegistry)), live_svr.NewLive, api.NewWsController, webview.ProvideWebView, oauth.ProvideOAuthServiceRegistry, oauth.NewWorkWechat, big_mode_service.NewBigMode, api.NewAiController, plugin_install_service.ProvideInstaller, wire.Bind(new(manager.Service), new(*manager.PluginManager)), api.NewPluginController, process.ProvideService, migrator.NewMigrator, config.InitConfig, manager.NewPluginManager, pluginstore.NewPluginStoreService, eve_api.NewEvApi, eve_service.NewEvEService, dao.NewEvBackDao, logger.InitLog, dao.NewEslinkCfgV2Dao, dao.NewGmRoleDao, dao.NewGmUserDao, dao.NewEsLinkV2Dao, dao.NewGmRoleEslinkCfgV2Dao, dao.NewEslinkRoleCfgReletion, updatechecker.ProvidePluginsService, orm.NewGorm, cache_service.NewEsCache, request.NewRequest, response.NewResponse, api.NewBaseController, api.NewIndexController, updatechecker.ProvideEvUpdate, api.NewPluginUtilController, plugin_service.NewPluginService, api.NewEsController, api.NewEsLinkController, es.NewEsClientService, es_link_service.NewEsLinkService, es_service.NewEsService, api.NewGmOperaterController, gm_operater_log.NewGmOperaterLogService, api.NewManagerRoleController, gm_role.NewGmRoleService, api.NewManagerUserController, gm_user.NewGmUserService, jwt_svr.NewJwt, middleware.NewMiddleWareService, backgroundsvcs.ProvideBackgroundServiceRegistry, access_control.NewRbac, web_engine.NewWebEngine, web.NewWebServer, plugin_rpc.NewPluginRpcServer, NewServer)

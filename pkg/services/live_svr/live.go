@@ -106,7 +106,7 @@ func NewLive(log *logger.AppLogger, cfg *config.Config, jwtSvr *jwt_svr.Jwt, plu
 				return
 			}
 
-			log.Sugar().Debugf("Client disconnected", "user", client.UserID(), "client", client.ID(), "reason", reason, "elapsed", time.Since(connectedAt))
+			log.Sugar().Debugf("Client disconnected", "user", client.UserID(), "client", client.ID(), "reason", reason, "elapsed", time.Since(connectedAt).String())
 		})
 	})
 

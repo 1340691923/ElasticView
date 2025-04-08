@@ -37,6 +37,7 @@ import (
 	"github.com/1340691923/ElasticView/pkg/services/plugin_install_service"
 	"github.com/1340691923/ElasticView/pkg/services/plugin_service"
 	"github.com/1340691923/ElasticView/pkg/services/updatechecker"
+	updatechecker2 "github.com/1340691923/ElasticView/pkg/services/webview"
 	"github.com/1340691923/ElasticView/pkg/web"
 
 	"github.com/google/wire"
@@ -47,6 +48,7 @@ var wireSet = wire.NewSet(
 	wire.Bind(new(registry.BackgroundServiceRegistry), new(*backgroundsvcs.BackgroundServiceRegistry)),
 	live_svr.NewLive,
 	api.NewWsController,
+	updatechecker2.ProvideWebView,
 	oauth.ProvideOAuthServiceRegistry,
 	oauth.NewWorkWechat,
 	big_mode_service.NewBigMode,

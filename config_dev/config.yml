@@ -33,5 +33,5 @@ storefiledir: store_file_dir
 translation:
     cfgdir: config/i18n
     lang: zh-cn
-version: 0.0.15
+version: 0.0.17
 watermarkcontent: ElasticView

@@ -17,6 +17,7 @@ type EvEApi struct {
 	accessToken string
 	lock        *sync.RWMutex
 	isDebug     bool
+	EvVersion   string
 }
 
 func NewEvApi(cfg *config.Config, log *logger.AppLogger) *EvEApi {
@@ -29,7 +30,7 @@ func NewEvApi(cfg *config.Config, log *logger.AppLogger) *EvEApi {
 		client = req.C()
 	}
 
-	return &EvEApi{log: log, client: client, lock: new(sync.RWMutex), isDebug: cfg.DeBug}
+	return &EvEApi{log: log, client: client, lock: new(sync.RWMutex), isDebug: cfg.DeBug, EvVersion: cfg.Version}
 }
 
 func (this *EvEApi) Request(ctx context.Context, api api.API, requestData interface{}, result *vo.ApiCommonRes) error {
@@ -38,6 +39,7 @@ func (this *EvEApi) Request(ctx context.Context, api api.API, requestData interf
 	if this.GetAccessToken() != "" {
 		header["Ev-Token"] = this.GetAccessToken()
 	}
+	header["Ev-Version"] = this.EvVersion
 
 	_, err := this.client.R().
 		SetContext(ctx).
