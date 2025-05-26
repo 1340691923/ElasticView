@@ -119,17 +119,13 @@ func (this *GmUserService) CheckLoginByOAuth(ctx context.Context, code string, s
 			LastLoginTime: time.Now(),
 		}
 		
-		switch svr.GetAppliactionName() {
-		case "企业微信认证":
-			gmUser.WorkWechatUid = ui.Id
-		case "钉钉认证":
-			gmUser.DingtalkId = ui.Id
-		case "飞书认证":
-			gmUser.FeishuOpenId = ui.Id
+		additionalFields := map[string]interface{}{
+			svr.GetUserField(): ui.Id,
 		}
+		
 		tx := this.orm.Begin()
 		//开始插入数据
-		userID, err := this.gmUserDao.Insert(ctx, tx, gmUser)
+		userID, err := this.gmUserDao.InsertWithFields(ctx, tx, gmUser, additionalFields)
 		if err != nil {
 			tx.Rollback()
 			return "", errors.WithStack(err)

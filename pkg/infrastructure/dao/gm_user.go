@@ -81,10 +81,52 @@ func (this *GmUserDao) Insert(ctx context.Context, orm *gorm.DB, gmUser model.Gm
 		Realname:      gmUser.Realname,
 		Email:         gmUser.Email,
 		WorkWechatUid: gmUser.WorkWechatUid,
+		DingtalkId:    gmUser.DingtalkId,
+		FeishuOpenId:  gmUser.FeishuOpenId,
 		UpdateTime:    time.Now(),
 		CreateTime:    time.Now(),
 		LastLoginTime: time.Now(),
 		IsBan:         0,
+	}
+
+	err = orm.WithContext(ctx).Create(data).Error
+	if err != nil {
+		err = errors.WithStack(err)
+		return
+	}
+
+	id = int64(data.Id)
+	return
+}
+
+func (this *GmUserDao) InsertWithFields(ctx context.Context, orm *gorm.DB, gmUser model.GmUserModel, additionalFields map[string]interface{}) (id int64, err error) {
+	if gmUser.Password == "" {
+		gmUser.Password = util.GetUUid()
+	}
+
+	data := &model.GmUserModel{
+		Username:      gmUser.Username,
+		Password:      gmUser.GetPassword(),
+		Avatar:        gmUser.Avatar,
+		Realname:      gmUser.Realname,
+		Email:         gmUser.Email,
+		UpdateTime:    time.Now(),
+		CreateTime:    time.Now(),
+		LastLoginTime: time.Now(),
+		IsBan:         0,
+	}
+
+	if additionalFields != nil {
+		for field, value := range additionalFields {
+			switch field {
+			case "work_wechat_uid":
+				data.WorkWechatUid = value.(string)
+			case "dingtalk_id":
+				data.DingtalkId = value.(string)
+			case "feishu_open_id":
+				data.FeishuOpenId = value.(string)
+			}
+		}
 	}
 
 	err = orm.WithContext(ctx).Create(data).Error
