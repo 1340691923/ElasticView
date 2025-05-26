@@ -30,9 +30,61 @@
             })" type="primary" >提交</el-button>
           </el-form-item>
         </el-form>
-
       </el-tab-pane>
 
+      <el-tab-pane label="钉钉认证" name="钉钉认证">
+        <el-form label-width="100px" label-position="left">
+          <el-form-item label="开启认证:" >
+            <el-switch
+              v-model="data.dingtalkCfg.enable"
+              active-text="开启"
+              inactive-text="不开启">
+            </el-switch>
+          </el-form-item>
+          <el-form-item label="回调域名:" >
+            <el-input :placeholder="cbPlaceholder" v-model="data.dingtalkCfg.rootUrl"></el-input>
+          </el-form-item>
+          <el-form-item label="appId:" >
+            <el-input placeholder="钉钉应用的 App ID" v-model="data.dingtalkCfg.appId"></el-input>
+          </el-form-item>
+          <el-form-item label="appSecret:" >
+            <el-input placeholder="钉钉应用的 App Secret" type="password" show-password v-model="data.dingtalkCfg.appSecret"></el-input>
+          </el-form-item>
+          <el-form-item label="" >
+            <el-button @click="saveOAuthConfig({
+            application_name:data.authType,
+            config:data.dingtalkCfg,
+            })" type="primary" >提交</el-button>
+          </el-form-item>
+        </el-form>
+      </el-tab-pane>
+
+      <el-tab-pane label="飞书认证" name="飞书认证">
+        <el-form label-width="100px" label-position="left">
+          <el-form-item label="开启认证:" >
+            <el-switch
+              v-model="data.feishuCfg.enable"
+              active-text="开启"
+              inactive-text="不开启">
+            </el-switch>
+          </el-form-item>
+          <el-form-item label="回调域名:" >
+            <el-input :placeholder="cbPlaceholder" v-model="data.feishuCfg.rootUrl"></el-input>
+          </el-form-item>
+          <el-form-item label="appId:" >
+            <el-input placeholder="飞书应用的 App ID" v-model="data.feishuCfg.appId"></el-input>
+          </el-form-item>
+          <el-form-item label="appSecret:" >
+            <el-input placeholder="飞书应用的 App Secret" type="password" show-password v-model="data.feishuCfg.appSecret"></el-input>
+          </el-form-item>
+          <el-form-item label="" >
+            <el-button @click="saveOAuthConfig({
+            application_name:data.authType,
+            config:data.feishuCfg,
+            })" type="primary" >提交</el-button>
+          </el-form-item>
+        </el-form>
+      </el-tab-pane>
     </el-tabs>
     </el-card>
   </div>
@@ -50,6 +102,18 @@ const data = reactive({
     corpid: "",
     enable: false,
     secert: ""
+  },
+  dingtalkCfg:{
+    rootUrl:"",
+    appId: "",
+    appSecret: "",
+    enable: false
+  },
+  feishuCfg:{
+    rootUrl:"",
+    appId: "",
+    appSecret: "",
+    enable: false
   }
 })
 
@@ -87,7 +151,9 @@ const Init = async ()=>{
     })
     return
   }
-  data.wecomeCfg = res.data["企业微信认证(内部应用)"]
+  data.wecomeCfg = res.data["企业微信认证(内部应用)"] || data.wecomeCfg
+  data.dingtalkCfg = res.data["钉钉认证"] || data.dingtalkCfg
+  data.feishuCfg = res.data["飞书认证"] || data.feishuCfg
 }
 
 onMounted(()=>{
