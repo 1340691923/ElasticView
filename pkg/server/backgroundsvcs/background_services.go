@@ -6,9 +6,10 @@ import (
 	"github.com/1340691923/ElasticView/pkg/registry"
 	"github.com/1340691923/ElasticView/pkg/services/eve_service"
 	"github.com/1340691923/ElasticView/pkg/services/gm_operater_log"
+	"github.com/1340691923/ElasticView/pkg/services/print_logo"
 	"github.com/1340691923/ElasticView/pkg/services/updatechecker"
+	"github.com/1340691923/ElasticView/pkg/services/web"
 	"github.com/1340691923/ElasticView/pkg/services/webview"
-	"github.com/1340691923/ElasticView/pkg/web"
 )
 
 func ProvideBackgroundServiceRegistry(
@@ -20,6 +21,7 @@ func ProvideBackgroundServiceRegistry(
 	eveService *eve_service.EvEService,
 	gmOperaterLogService *gm_operater_log.GmOperaterLogService,
 	webView *webview.WebView,
+	printLogo *print_logo.PrintLogo,
 ) *BackgroundServiceRegistry {
 	return NewBackgroundServiceRegistry(
 		httpServer,
@@ -30,6 +32,7 @@ func ProvideBackgroundServiceRegistry(
 		eveService,
 		gmOperaterLogService,
 		webView,
+		printLogo,
 	)
 }
 

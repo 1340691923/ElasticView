@@ -524,7 +524,8 @@ func (this *GmUserService) UpdatePassById(ctx context.Context, id int, pwd strin
 	})
 }
 
-func (this *GmUserService) Select(ctx context.Context, isAdmin bool, userName, realName string, isBan bool, page, pageSize int) (gmUserModel []model.GmUserModel, count int64, err error) {
+func (this *GmUserService) Select(ctx context.Context, isAdmin bool, userName,
+	realName string, isBan bool, roleIds []int, userIds []int, page, pageSize int) (gmUserModel []model.GmUserModel, count int64, err error) {
 	if page == 0 {
 		page = 1
 	}
@@ -532,7 +533,20 @@ func (this *GmUserService) Select(ctx context.Context, isAdmin bool, userName, r
 		pageSize = 10
 	}
 
-	return this.gmUserDao.Select(ctx, isAdmin, userName, realName, isBan, page, pageSize)
+	if len(roleIds) > 0 {
+		var users []model.UserRoleRelationModel
+		users, err = this.gmUserDao.GetUserByRoleId(this.orm.DB, roleIds)
+		if err != nil {
+			return nil, 0, errors.WithStack(err)
+		}
+
+		for _, v := range users {
+			userIds = append(userIds, v.UserId)
+		}
+
+	}
+
+	return this.gmUserDao.Select(ctx, isAdmin, userName, realName, isBan, userIds, page, pageSize)
 }
 
 func (this *GmUserService) SealUser(ctx context.Context, id int, isBan bool) (err error) {

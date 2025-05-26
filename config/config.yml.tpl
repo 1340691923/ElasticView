@@ -3,7 +3,6 @@ log:
   logDir: "logs"          # 日志保留文件夹
 port: 8090                # 启动端口
 pluginRpcPort: 8091            #插件内网访问端口
-rootUrl: http://localhost:8090/  #项目访问根目录
 dbType: "sqlite3"       # 数据保留类型 分为 sqlite3 和 mysql
 enableLogEs: false    #是否记录es请求记录
 enableLogEsRes: false #是否记录es请求记录中返回的响应体

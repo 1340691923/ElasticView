@@ -160,7 +160,7 @@ export default defineMock([
     },
   },
 
-  // 新增角色
+  // 新增权限组
   {
     url: "roles",
     method: ["POST"],
@@ -168,12 +168,12 @@ export default defineMock([
       return {
         code: "00000",
         data: null,
-        msg: "新增角色" + body.name + "成功",
+        msg: "新增权限组" + body.name + "成功",
       };
     },
   },
 
-  // 获取角色表单数据
+  // 获取权限组表单数据
   {
     url: "roles/:id/form",
     method: ["GET"],
@@ -185,7 +185,7 @@ export default defineMock([
       };
     },
   },
-  // 修改角色
+  // 修改权限组
   {
     url: "roles/:id",
     method: ["PUT"],
@@ -193,12 +193,12 @@ export default defineMock([
       return {
         code: "00000",
         data: null,
-        msg: "修改角色" + body.name + "成功",
+        msg: "修改权限组" + body.name + "成功",
       };
     },
   },
 
-  // 删除角色
+  // 删除权限组
   {
     url: "roles/:id",
     method: ["DELETE"],
@@ -206,11 +206,11 @@ export default defineMock([
       return {
         code: "00000",
         data: null,
-        msg: "删除角色" + params.id + "成功",
+        msg: "删除权限组" + params.id + "成功",
       };
     },
   },
-  // 获取角色拥有的菜单ID
+  // 获取权限组拥有的菜单ID
   {
     url: "roles/:id/menuIds",
     method: ["GET"],
@@ -227,7 +227,7 @@ export default defineMock([
       };
     },
   },
-  // 保存角色菜单
+  // 保存权限组菜单
   {
     url: "roles/:id/menus",
     method: ["PUT"],
@@ -239,7 +239,7 @@ export default defineMock([
   },
 ]);
 
-// 角色映射表数据
+// 权限组映射表数据
 const roleMap: Record<string, any> = {
   2: {
     id: 2,

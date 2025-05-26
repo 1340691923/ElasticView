@@ -12,4 +12,8 @@ const (
 	GetEvPluginsMaxVersion API = "GetEvPluginsMaxVersion"
 	StarPlugin             API = "StarPlugin"
 	GetWxArticleList       API = "GetWxArticleList"
+	//
+	AddComment   API = "AddComment"
+	LikeComment  API = "LikeComment"
+	ListComments API = "ListComments"
 )

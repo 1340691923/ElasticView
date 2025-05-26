@@ -4,12 +4,12 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	logger2 "github.com/1340691923/ElasticView/pkg/infrastructure/logger"
 	"github.com/1340691923/ElasticView/pkg/util/proxyutil"
 	"github.com/1340691923/ElasticView/pkg/util/response"
 	"github.com/1340691923/eve-plugin-sdk-go/backend"
 	"github.com/gin-gonic/gin"
 	"io"
-	"log"
 	"net/http"
 	"net/url"
 	"sync"
@@ -18,10 +18,11 @@ import (
 type DataSourcePlugin struct {
 	ginCtx    *gin.Context
 	rpcPlugin backend.CallResourceHandler
+	log       *logger2.AppLogger
 }
 
-func NewDataSourcePlugin(ginCtx *gin.Context, rpcPlugin backend.CallResourceHandler) *DataSourcePlugin {
-	return &DataSourcePlugin{ginCtx: ginCtx, rpcPlugin: rpcPlugin}
+func NewDataSourcePlugin(ginCtx *gin.Context, rpcPlugin backend.CallResourceHandler, log *logger2.AppLogger) *DataSourcePlugin {
+	return &DataSourcePlugin{ginCtx: ginCtx, rpcPlugin: rpcPlugin, log: log}
 }
 
 func (this *DataSourcePlugin) CallPluginResource() {
@@ -67,14 +68,14 @@ func (this *DataSourcePlugin) makePluginResourceRequest(req *http.Request) error
 
 	defer func() {
 		if err := stream.Close(); err != nil {
-			log.Println("Failed to close plugin resource stream", "err", err)
+			this.log.Sugar().Errorf("Failed to close plugin resource stream", "err", err)
 		}
 		wg.Wait()
 	}()
 
 	var flushStreamErr error
 	go func() {
-		flushStreamErr = flushStream(stream, this.ginCtx.Writer)
+		flushStreamErr = this.flushStream(stream, this.ginCtx.Writer)
 		wg.Done()
 	}()
 
@@ -90,7 +91,7 @@ type callResourceClientResponseStream interface {
 	Close() error
 }
 
-func flushStream(stream callResourceClientResponseStream, w http.ResponseWriter) error {
+func (this *DataSourcePlugin) flushStream(stream callResourceClientResponseStream, w http.ResponseWriter) error {
 	processedStreams := 0
 
 	for {
@@ -106,7 +107,7 @@ func flushStream(stream callResourceClientResponseStream, w http.ResponseWriter)
 				return fmt.Errorf("%v: %w", "failed to receive response from resource call", err)
 			}
 
-			log.Println("Failed to receive response from resource call", "err", err)
+			this.log.Sugar().Errorf("Failed to receive response from resource call", "err", err)
 			return stream.Close()
 		}
 
@@ -137,7 +138,7 @@ func flushStream(stream callResourceClientResponseStream, w http.ResponseWriter)
 		}
 
 		if _, err := w.Write(resp.Body); err != nil {
-			log.Println("Failed to write resource response", "err", err)
+			this.log.Sugar().Errorf("Failed to write resource response", "err", err)
 		}
 
 		if flusher, ok := w.(http.Flusher); ok {

@@ -12,7 +12,6 @@ export const useUserStore = defineStore("user", () => {
     userId:0,
     roles:[],
     avatar:''
-
   });
 
   /**
@@ -34,7 +33,7 @@ export const useUserStore = defineStore("user", () => {
     });
   }
 
-  // 获取信息(用户昵称、头像、角色集合、权限集合)
+  // 获取信息(用户昵称、头像、权限组集合、权限集合)
   function getUserInfo() {
     return new Promise<UserInfo>((resolve, reject) => {
       UserAPI.getInfo()

@@ -9,7 +9,7 @@
         </el-icon>
       </div>
       <el-form :inline="true">
-        <el-form-item label="角色名:" prop="keywords">
+        <el-form-item label="权限组名称:" prop="keywords">
           <el-input clearable v-model="searchCfg.role_name" style="width:160px"></el-input>
         </el-form-item>
         <el-form-item class="button-group">
@@ -36,35 +36,58 @@
       :data="_this.rolesList"
       @row-dblclick="handleEdit"
     >
-      <el-table-column align="center" :label="$t('id')" width="40">
+      <el-table-column prop="id" align="center" :label="$t('id')" width="36">
         <template #default="scope">
           {{ scope.row.id }}
         </template>
       </el-table-column>
-      <el-table-column align="center" :label="$t('角色名')" width="200">
+      <el-table-column prop="name" align="center" :label="$t('权限组名称')" width="200">
         <template #default="scope">
           {{ scope.row.name }}
         </template>
       </el-table-column>
-      <el-table-column align="header-center" :label="$t('备注')">
+      <el-table-column prop="description" align="header-center" :label="$t('备注')">
         <template #default="scope">
           {{ scope.row.description }}
         </template>
       </el-table-column>
-      <el-table-column align="center" :label="$t('操作')" width="140" fixed="right">
+      <el-table-column align="center" :label="$t('操作')" :width="isMobile ? 120 : 200" fixed="right">
         <template #default="scope">
-          <el-button
-            type="primary"
-            @click.stop="handleEdit(scope.row)"
-            :icon="Edit"
-          >
-          </el-button>
-          <el-button
-            type="danger"
-            @click.stop="handleDelete(scope)"
-            :icon="Delete"
-          >
-          </el-button>
+          <!-- 桌面端显示 -->
+          <template v-if="!isMobile">
+            <el-button
+              type="primary"
+              @click.stop="handleEdit(scope.row)"
+            >
+              编辑
+            </el-button>
+            <el-button
+              type="danger"
+              @click.stop="handleDelete(scope)"
+            >
+              删除
+            </el-button>
+          </template>
+
+          <!-- 移动端显示 -->
+          <template v-else>
+            <el-dropdown trigger="click" @command="handleCommand(scope, $event)">
+              <el-button >
+                管理
+
+              </el-button>
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <el-dropdown-item command="edit">
+                    <el-button type="primary">编辑</el-button>
+                  </el-dropdown-item>
+                  <el-dropdown-item command="delete" divided>
+                    <el-button type="danger">删除</el-button>
+                  </el-dropdown-item>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
+          </template>
         </template>
       </el-table-column>
     </el-table>
@@ -75,6 +98,7 @@
         :current-page="input.page"
         :page-size="input.limit"
         :total="count"
+        :layout="isMobile?'pager':'total, sizes, prev, pager, next, jumper'"
         @current-change="GetRoles"
         @size-change="handleSizeChange"
       />
@@ -83,14 +107,14 @@
     <el-drawer
       :size="isMobile?'100%':'70%'"
       v-model="_this.dialogVisible"
-      :title="_this.dialogType==='edit'?$t('修改角色'): $t('新建角色')"
+      :title="_this.dialogType==='edit'?$t('修改权限组'): $t('新建权限组')"
     >
       <el-tabs v-model="activeTab">
         <!-- 基本信息 Tab -->
         <el-tab-pane :label="$t('基本信息')" name="basic">
           <el-form :model="_this.role" label-width="80px" label-position="left">
-            <el-form-item :label="$t('角色名')">
-              <el-input v-model="_this.role.name" :placeholder="$t('角色名')" />
+            <el-form-item :label="$t('权限组名称')">
+              <el-input v-model="_this.role.name" :placeholder="$t('权限组名称')" />
             </el-form-item>
             <el-form-item :label="$t('备注')">
               <el-input
@@ -456,7 +480,7 @@ const GetRoles = async (page) => {
   _this.rolesList = res.data.list
 }
 const handleDelete = ({ $index, row }) => {
-  ElMessageBox.confirm('确定删除这个角色吗?', '警告', {
+  ElMessageBox.confirm('确定删除这个权限组吗?', '警告', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
@@ -509,7 +533,7 @@ const confirmRole = async () => {
   if (roleModel.name.trim() == ''){
     ElMessage.error({
       type: 'error',offset:60,
-      message: "角色名不能为空"
+      message: "权限组名称不能为空"
     })
     return
   }
@@ -553,6 +577,15 @@ const isCollapsed = ref(true)
 // 切换折叠状态
 const toggleCollapse = () => {
   isCollapsed.value = !isCollapsed.value
+}
+
+// 处理移动端管理按钮命令
+const handleCommand = (scope, command) => {
+  if (command === 'edit') {
+    handleEdit(scope.row)
+  } else if (command === 'delete') {
+    handleDelete(scope)
+  }
 }
 
 </script>

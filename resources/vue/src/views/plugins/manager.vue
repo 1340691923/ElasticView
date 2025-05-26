@@ -114,10 +114,10 @@
       <el-table-column align="center" fixed="right" :label="$t('操作')" width="150">
         <template #default="scope">
           <div class="action-buttons">
-            <el-button v-if="scope.row.has_update" @click="installPlugin(scope.row.plugin_id, scope.row.update_version)" type="warning" size="small">
+            <el-button v-if="scope.row.has_update" @click="installPlugin(scope.row.plugin_id, scope.row.update_version)" type="warning" >
               更新
             </el-button>
-            <el-button @click="showDetails(scope.row)" type="info" size="small">
+            <el-button @click="showDetails(scope.row)" type="info" >
               详情
             </el-button>
           </div>
@@ -439,7 +439,7 @@ onMounted(()=>{
 .plugin-table {
   @apply rounded-lg overflow-hidden;
   @apply shadow-sm;
-  @apply bg-white/90 dark:bg-gray-800/90;
+
   @apply backdrop-blur-sm;
   @apply transition-all duration-300;
 
@@ -532,7 +532,7 @@ onMounted(()=>{
 }
 
 .plugin-details {
-  @apply p-4 space-y-6 overflow-y-auto;
+  @apply space-y-6 overflow-y-auto;
   height: calc(100vh - 120px);
 
   .detail-card {
@@ -577,10 +577,11 @@ onMounted(()=>{
 
   .detail-actions {
     @apply sticky bottom-0 left-0 right-0;
-    @apply bg-white/90 dark:bg-gray-800/90;
-    @apply backdrop-blur-sm;
+    @apply bg-white/80 dark:bg-gray-800;
+    @apply backdrop-blur-sm dark:backdrop-blur-none;
     @apply p-4 flex gap-4;
     @apply border-t border-gray-100 dark:border-gray-700;
+    @apply shadow-sm;
   }
 }
 

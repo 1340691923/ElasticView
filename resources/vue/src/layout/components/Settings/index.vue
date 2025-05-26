@@ -4,8 +4,13 @@
     :size="isMobile?'100%':'30%'"
     :title="$t('设置')"
   >
-    <el-divider>{{$t('数据源')}}</el-divider>
+
+    <el-divider>版本</el-divider>
     <div class="flex-center">
+      {{appVersion()}}
+    </div>
+    <el-divider v-if="isMobile">{{$t('数据源')}}</el-divider>
+    <div v-if="isMobile" class="flex-center">
       <SelectLink></SelectLink>
     </div>
 
@@ -45,9 +50,7 @@
       >
         <!--全屏 -->
         <div style="margin-left: 3rem" @click="toggle">
-          <svg-icon
-            :icon-class="isFullscreen ? 'fullscreen-exit' : 'fullscreen'"
-          />
+          <el-icon><FullScreen /></el-icon>
         </div>
       </el-tooltip>
     </div>
@@ -61,6 +64,7 @@
         @update:model-value="changeThemeColor"
       />
     </div>
+
 
     <div class="setting-item">
       <span class="text-xs">{{ $t("开启 Tags-View") }}</span>
@@ -101,6 +105,7 @@ const appStore = useAppStore()
 
 const isMobile = computed(() => appStore.device === DeviceEnum.MOBILE);
 
+import { SidebarLightThemeEnum } from "@/enums/ThemeEnum";
 
 const route = useRoute();
 
@@ -108,7 +113,11 @@ const settingsStore = useSettingsStore();
 const permissionStore = usePermissionStore();
 
 const { isFullscreen, toggle } = useFullscreen();
+import {FullScreen} from '@element-plus/icons-vue'
 
+const appVersion = ()=>{
+  return window["appVersion"]
+}
 
 const settingsVisible = computed({
   get() {
@@ -118,6 +127,7 @@ const settingsVisible = computed({
     settingsStore.settingsVisible = false;
   },
 });
+
 
 /** 切换主题颜色 */
 function changeThemeColor(color: string) {
@@ -147,6 +157,12 @@ function againActiveTop(newVal: string) {
     appStore.activeTopMenu(parent.path);
   }
 }
+
+const changeSidebarColorScheme = (val: any) => {
+  console.log(val);
+  settingsStore.changeSidebarColorScheme(val);
+};
+
 
 /** 递归查找最外层父节点 */
 function findOutermostParent(tree: any[], findName: string) {

@@ -70,8 +70,8 @@ export default defineMock([
           },
           {
             id: 36189,
-            module: "角色",
-            content: "角色分页列表",
+            module: "权限组",
+            content: "权限组分页列表",
             requestUri: "/api/v1/roles/page",
             method: null,
             ip: "192.168.31.134",

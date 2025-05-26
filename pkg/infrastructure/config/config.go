@@ -178,7 +178,6 @@ func (this *Config) LoadEnv() *Config {
 		this.Ai.BigModeKey = cast.ToString(os.Getenv(EV_BIG_MODE_KEY))
 	}
 
-	log.Println("读取环境变量完毕", this)
 	return this
 }
 
@@ -326,7 +325,11 @@ func (cfg *Config) CreateDbDSN() string {
 			os.MkdirAll(dataDir, os.ModePerm)
 		}
 
-		DSN = filepath.Join(dataDir, cfg.Sqlite.DbName) + "?_pragma=charset(utf8)&_pragma=parse_time(true)&_pragma=_busy_timeout(9999999)&mode=wal"
+		if filepath.IsAbs(cfg.Sqlite.DbName) {
+			DSN = cfg.Sqlite.DbName + "?_pragma=charset(utf8)&_pragma=parse_time(true)&_pragma=_busy_timeout(9999999)&mode=wal"
+		} else {
+			DSN = filepath.Join(dataDir, cfg.Sqlite.DbName) + "?_pragma=charset(utf8)&_pragma=parse_time(true)&_pragma=_busy_timeout(9999999)&mode=wal"
+		}
 	} else if cfg.DbType == MysqlDbTyp {
 		DSN = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true",
 			cfg.Mysql.Username,
@@ -424,7 +427,6 @@ func InitConfig(opt *CommandLineArgs) (cfg *Config, err error) {
 	cfg.StoreFileDir = cfg.NewStorePath(cfg.StoreFileDir)
 	cfg.Sqlite.DbPath = cfg.MoveSqliteData(cfg.Sqlite.DbPath)
 
-	log.Println("配置文件加载成功", cf)
 	return cfg, nil
 }
 

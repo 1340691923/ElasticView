@@ -10,6 +10,7 @@ import (
 	"github.com/1340691923/ElasticView/pkg/infrastructure/plugins/manager"
 	"github.com/1340691923/ElasticView/pkg/services/updatechecker"
 	"github.com/pkg/errors"
+	"go.uber.org/zap"
 	"time"
 )
 
@@ -108,7 +109,7 @@ func (this *EvEService) Run(ctx context.Context) error {
 		case <-ticker.C:
 			err = this.FlushAccessToken(ctx)
 			if err != nil {
-				return errors.WithStack(err)
+				this.log.Error("FlushEvAccessTokenErr", zap.Error(err))
 			}
 		case <-ctx.Done():
 			run = false

@@ -28,10 +28,10 @@ pluginrpcport: 8091
 port: 8090
 rooturl: ""
 sqlite:
-    dbname: es_view.db
+    dbname: D:\eve\ev2\ev_store\data\es_view.db
 storefiledir: store_file_dir
 translation:
-    cfgdir: config/i18n
+    cfgdir: D:\eve\ev2\config\i18n
     lang: zh-cn
-version: 0.0.17
+version: 0.0.19
 watermarkcontent: ElasticView

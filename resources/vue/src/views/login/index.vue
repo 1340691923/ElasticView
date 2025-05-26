@@ -30,7 +30,9 @@
     <!-- 登录区域美化 -->
     <div class="login-content backdrop-blur-sm bg-white/30 dark:bg-gray-800/30">
       <div v-if="width > 992" class="login-image">
-        <el-image :src="login_bg" class="w-full h-full object-cover hover:scale-105 transition-all duration-500"/>
+        <el-image v-if="isDark" :src="bg_dark" class="w-full h-full object-cover hover:scale-105 transition-all duration-500"/>
+        <el-image v-else :src="bg_light" class="w-full h-full object-cover hover:scale-105 transition-all duration-500"/>
+
       </div>
       <div class="login-box">
         <h2 class="text-2xl font-bold text-center mb-8 bg-gradient-to-r from-blue-500 to-teal-500 text-transparent bg-clip-text">
@@ -107,7 +109,7 @@
 
           <!-- 其他登录方式美化 -->
           <el-divider class="my-6">
-            <span class="text-gray-400">其他登录方式</span>
+            <span class="text-gray-400">其他</span>
           </el-divider>
 
           <el-form-item class="flex justify-center">
@@ -156,10 +158,8 @@ import {GetOAuthList} from "@/api/user";
 const logo = ref(new URL(`@/assets/logo.png`, import.meta.url).href);
 //图片列表
 const work_wechat = ref(new URL(`@/assets/images/work_wechat.png`, import.meta.url).href);
-
-
 //
-const login_bg = ref(new URL(`@/assets/images/login_bg.png`, import.meta.url).href);
+
 
 const appStore = useAppStore();
 
@@ -177,6 +177,8 @@ import router from "@/router";
 import defaultSettings from "@/settings";
 import {ThemeEnum} from "@/enums/ThemeEnum";
 
+
+
 // 类型定义
 import type {FormInstance} from "element-plus";
 
@@ -192,6 +194,19 @@ const route = useRoute();
 const {height} = useWindowSize();
 // 国际化 Internationalization
 const {t} = useI18n();
+
+
+const bg_light = ref(new URL(`@/assets/images/login_bg.png`, import.meta.url).href)
+
+const bg_dark = ref(new URL(`@/assets/images/login_dark_bg2.png`, import.meta.url).href)
+
+
+const login_bg = computed(()=>{
+  if(isDark)return bg_dark
+  return bg_light
+});
+
+
 
 // 是否暗黑模式
 const isDark = ref(settingsStore.theme === ThemeEnum.DARK);

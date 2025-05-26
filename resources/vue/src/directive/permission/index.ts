@@ -21,11 +21,11 @@ export const hasPerm: Directive = {
 };
 
 /**
- * 角色权限
+ * 权限组权限
  */
 export const hasRole: Directive = {
   mounted(el: HTMLElement, binding: DirectiveBinding) {
-    // DOM绑定需要的角色编码
+    // DOM绑定需要的权限组编码
     const { value: requiredRoles } = binding;
     if (requiredRoles) {
       if (!hasAuth(requiredRoles, "role")) {

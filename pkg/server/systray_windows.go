@@ -8,6 +8,9 @@ import (
 	"github.com/1340691923/ElasticView/pkg/util"
 	"github.com/1340691923/ElasticView/resources/views"
 	"github.com/getlantern/systray"
+	"github.com/inkeliz/gowebview"
+	"log"
+	"runtime"
 )
 
 func (this *Server) runSystray() {
@@ -26,9 +29,26 @@ func (this *Server) onReady() {
 		for {
 			select {
 			case <-openItem.ClickedCh:
-				openAddr := fmt.Sprintf("http://localhost:%d", this.cfg.Port)
-				util.OpenWinBrowser(openAddr)
-
+				if runtime.GOOS != "windows" {
+					openAddr := fmt.Sprintf("http://localhost:%d", this.cfg.Port)
+					util.OpenWinBrowser(openAddr)
+				} else {
+					openAddr := fmt.Sprintf("http://localhost:%d/#/", this.cfg.Port)
+					w, err := gowebview.New(&gowebview.Config{
+						Debug: this.cfg.DeBug,
+						URL:   openAddr,
+						WindowConfig: &gowebview.WindowConfig{
+							Title: "ElasticView",
+							Size:  &gowebview.Point{X: 1280, Y: 720},
+						}})
+					if err == nil {
+						go func() {
+							w.Run()
+						}()
+					} else {
+						log.Println("open webview err", err)
+					}
+				}
 			case <-exitItem.ClickedCh:
 				this.Shutdown(this.context)
 				return

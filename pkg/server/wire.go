@@ -33,12 +33,14 @@ import (
 	"github.com/1340691923/ElasticView/pkg/services/gm_role"
 	"github.com/1340691923/ElasticView/pkg/services/gm_user"
 	"github.com/1340691923/ElasticView/pkg/services/live_svr"
+	"github.com/1340691923/ElasticView/pkg/services/notice_service"
 	"github.com/1340691923/ElasticView/pkg/services/oauth"
 	"github.com/1340691923/ElasticView/pkg/services/plugin_install_service"
 	"github.com/1340691923/ElasticView/pkg/services/plugin_service"
+	"github.com/1340691923/ElasticView/pkg/services/print_logo"
 	"github.com/1340691923/ElasticView/pkg/services/updatechecker"
+	"github.com/1340691923/ElasticView/pkg/services/web"
 	updatechecker2 "github.com/1340691923/ElasticView/pkg/services/webview"
-	"github.com/1340691923/ElasticView/pkg/web"
 
 	"github.com/google/wire"
 )
@@ -46,8 +48,12 @@ import (
 var wireSet = wire.NewSet(
 
 	wire.Bind(new(registry.BackgroundServiceRegistry), new(*backgroundsvcs.BackgroundServiceRegistry)),
+	notice_service.NewNoticeService,
+	api.NewNoticeController,
+	dao.NewNoticeDao,
 	live_svr.NewLive,
 	api.NewWsController,
+	print_logo.ProvidePrintLogo,
 	updatechecker2.ProvideWebView,
 	oauth.ProvideOAuthServiceRegistry,
 	oauth.NewWorkWechat,
@@ -128,4 +134,9 @@ func InitializeGmRoleEslinkCfgV2Dao(args *config.CommandLineArgs) (*dao.GmRoleEs
 func InitializeProvideInstaller(args *config.CommandLineArgs) (*plugin_install_service.PluginInstaller, error) {
 	wire.Build(wireSet)
 	return &plugin_install_service.PluginInstaller{}, nil
+}
+
+func InitializeNoticeDao(args *config.CommandLineArgs) (*dao.NoticeDao, error) {
+	wire.Build(wireSet)
+	return &dao.NoticeDao{}, nil
 }

@@ -1,6 +1,8 @@
 package api
 
 import (
+	"time"
+
 	"github.com/1340691923/ElasticView/pkg/infrastructure/dto"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/es_sdk/pkg/cache"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/es_sdk/pkg/factory"
@@ -15,7 +17,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/goccy/go-json"
 	"github.com/pkg/errors"
-	"time"
 
 	"github.com/1340691923/ElasticView/pkg/infrastructure/response"
 )

@@ -157,3 +157,45 @@ func (this *EvBackDao) GetEvPluginsMaxVersion(ctx context.Context, pluginIds []s
 
 	return res.Data.(map[string]interface{}), nil
 }
+
+func (this *EvBackDao) AddComment(ctx context.Context, req *dto.AddCommentRequest) error {
+	res := vo.ApiCommonRes{}
+	err := this.eveApi.Request(ctx, api.AddComment, req, &res)
+	if err != nil {
+		return errors.WithStack(err)
+	}
+
+	if res.Error() != nil {
+		return errors.WithStack(res.Error())
+	}
+
+	return nil
+}
+
+func (this *EvBackDao) LikeComment(ctx context.Context, req *dto.LikeCommentRequest) error {
+	res := vo.ApiCommonRes{}
+	err := this.eveApi.Request(ctx, api.LikeComment, req, &res)
+	if err != nil {
+		return errors.WithStack(err)
+	}
+
+	if res.Error() != nil {
+		return errors.WithStack(res.Error())
+	}
+
+	return nil
+}
+
+func (this *EvBackDao) ListComments(ctx context.Context, req *dto.ListCommentsRequest) (*[]*vo.Comment, error) {
+	res := vo.ApiCommonRes{Data: &[]*vo.Comment{}}
+	err := this.eveApi.Request(ctx, api.ListComments, req, &res)
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+
+	if res.Error() != nil {
+		return nil, errors.WithStack(res.Error())
+	}
+
+	return res.Data.(*[]*vo.Comment), nil
+}

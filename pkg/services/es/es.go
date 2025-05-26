@@ -7,6 +7,7 @@ import (
 	"github.com/1340691923/ElasticView/pkg/infrastructure/config"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/dao"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/es_sdk/pkg/cache"
+	logger2 "github.com/1340691923/ElasticView/pkg/infrastructure/logger"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/model"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/orm"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/vo"
@@ -15,7 +16,6 @@ import (
 	"github.com/goccy/go-json"
 	"github.com/pkg/errors"
 	"github.com/spf13/cast"
-	"log"
 	"sort"
 )
 
@@ -25,10 +25,11 @@ type EsClientService struct {
 	esLinkV2Dao *dao.EsLinkV2Dao
 	gmUserDao   *dao.GmUserDao
 	orm         *orm.Gorm
+	log         *logger2.AppLogger
 }
 
-func NewEsClientService(cfg *config.Config, esCache *cache_service.EsCache, esLinkV2Dao *dao.EsLinkV2Dao, gmUserDao *dao.GmUserDao, orm *orm.Gorm) *EsClientService {
-	return &EsClientService{cfg: cfg, esCache: esCache, esLinkV2Dao: esLinkV2Dao, gmUserDao: gmUserDao, orm: orm}
+func NewEsClientService(cfg *config.Config, log *logger2.AppLogger, esCache *cache_service.EsCache, esLinkV2Dao *dao.EsLinkV2Dao, gmUserDao *dao.GmUserDao, orm *orm.Gorm) *EsClientService {
+	return &EsClientService{cfg: cfg, log: log, esCache: esCache, esLinkV2Dao: esLinkV2Dao, gmUserDao: gmUserDao, orm: orm}
 }
 
 func (this *EsClientService) GetEsLinkOptions(ctx context.Context, roles []int) ([]vo.EsLinkOpt, error) {
@@ -119,8 +120,6 @@ func (this *EsClientService) GetEsClientByID(ctx context.Context, id int, userId
 		}
 	}
 
-	log.Println("user", userId, roleIds, id, linkOptions)
-
 	if isBanLink {
 		return nil, errors.New("您已经被移除访问该连接的权限")
 	}
@@ -163,12 +162,12 @@ func (this *EsClientService) EsPwdESBDecrypt(ctx context.Context, cryptedStr str
 
 	pwdByte, err := base64.StdEncoding.DecodeString(cryptedStr)
 	if err != nil {
-		log.Println(cryptedStr, this.cfg.EsPwdSecret, err)
+		this.log.Sugar().Errorf("DecodeString", cryptedStr, this.cfg.EsPwdSecret, err)
 		return "", err
 	}
 	b, err := util.ECBDecrypt(pwdByte, this.cfg.EsPwdSecret)
 	if err != nil {
-		log.Println(cryptedStr, this.cfg.EsPwdSecret, pwdByte, err)
+		this.log.Sugar().Errorf("ECBDecrypt", cryptedStr, this.cfg.EsPwdSecret, pwdByte, err)
 		return "", err
 	}
 	return string(b), nil

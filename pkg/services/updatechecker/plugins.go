@@ -2,6 +2,9 @@ package updatechecker
 
 import (
 	"context"
+	"fmt"
+	"github.com/1340691923/ElasticView/pkg/services/notice_service"
+	"github.com/1340691923/eve-plugin-sdk-go/ev_api/dto"
 	"github.com/spf13/cast"
 
 	"github.com/1340691923/ElasticView/pkg/infrastructure/config"
@@ -25,14 +28,16 @@ type PluginsService struct {
 	mutex            sync.RWMutex
 	log              *zap.Logger
 	updateCheckURL   *url.URL
+	noticeService    *notice_service.NoticeService
 }
 
-func ProvidePluginsService(log *logger.AppLogger, cfg *config.Config, evBackDao *dao.EvBackDao, pluginStore manager.Service) (*PluginsService, error) {
+func ProvidePluginsService(log *logger.AppLogger, cfg *config.Config,
+	evBackDao *dao.EvBackDao, pluginStore manager.Service, noticeService *notice_service.NoticeService) (*PluginsService, error) {
 	logger := log.Named("plugins.update.checker")
 
 	return &PluginsService{
-		enabled: cfg.CheckForPluginUpdates,
-
+		enabled:          cfg.CheckForPluginUpdates,
+		noticeService:    noticeService,
 		log:              logger,
 		evBackDao:        evBackDao,
 		pluginStore:      pluginStore,
@@ -122,6 +127,31 @@ func (s *PluginsService) checkForUpdates(ctx context.Context) error {
 		s.availableUpdates = availableUpdates
 		s.mutex.Unlock()
 	}
+
+	go func() {
+		for pluginId, pluginVersion := range availableUpdates {
+			p, has := s.pluginStore.Plugin(context.Background(), pluginId)
+			if has {
+				pName := p.PluginData().PluginJsonData.PluginName
+				s.noticeService.LiveBroadcastEvMsg2All(&dto.NoticeData{
+					Title:       fmt.Sprintf("%s插件有更新", pName),
+					Content:     fmt.Sprintf("%s插件发布了新版本(%s),请升级", pName, pluginVersion),
+					Type:        "插件需更新",
+					Level:       dto.NoticeLevelSuccess,
+					IsTask:      true,
+					FromUid:     0,
+					PluginAlias: "",
+					Source:      "ElasticView",
+					NoticeJumpBtn: &dto.NoticeJumpBtn{
+						Text:     "跳转",
+						JumpUrl:  "/plugins/manager",
+						JumpType: dto.NoticeBtnJumpTypeInternal,
+					},
+					PublishTime: time.Now(),
+				})
+			}
+		}
+	}()
 
 	return nil
 }

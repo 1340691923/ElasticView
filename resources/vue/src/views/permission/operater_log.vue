@@ -60,11 +60,11 @@
       :data="logList"
       max-height="800"
       :element-loading-text="`${$t('请给我点时间')}！`"
-        class="w-full"
+
       >
         <el-table-column align="center" :label="$t('操作用户')" min-width="100">
           <template #default="scope">
-            <el-tag size="small" type="info">{{ scope.row.operater_name }}</el-tag>
+            <el-tag  type="info">{{ scope.row.operater_name }}</el-tag>
           </template>
         </el-table-column>
 
@@ -84,7 +84,7 @@
 
         <el-table-column align="center" :label="$t('状态')" min-width="100">
           <template #default="scope">
-            <el-tag :type="scope.row.status === '正常' ? 'success' : 'danger'" size="small">
+            <el-tag :type="scope.row.status === '正常' ? 'success' : 'danger'" >
               {{ scope.row.status }}
             </el-tag>
           </template>
@@ -98,8 +98,8 @@
 
         <el-table-column align="center" :label="$t('请求数据')" min-width="100" fixed="right">
         <template #default="scope">
-            <el-button 
-              type="primary" 
+            <el-button
+              type="primary"
               link
               @click="showJsonDetail(scope.row)"
               v-if="scope.row.dataFormat"
@@ -119,7 +119,8 @@
         :total="count"
         :pager-count="isMobile ? 5 : 7"
         :small="isMobile"
-        layout="prev, pager, next"
+
+        :layout="isMobile?'pager':'total, sizes, prev, pager, next, jumper'"
         @current-change="getList"
         @size-change="handleSizeChange"
         class="pagination"
@@ -140,11 +141,11 @@
           <div class="info-grid">
             <div class="info-item">
               <span class="info-label">操作用户</span>
-              <el-tag size="small" type="info">{{ currentLog?.operater_name }}</el-tag>
+              <el-tag  type="info">{{ currentLog?.operater_name }}</el-tag>
             </div>
             <div class="info-item">
               <span class="info-label">状态</span>
-              <el-tag :type="currentLog?.status === '正常' ? 'success' : 'danger'" size="small">
+              <el-tag :type="currentLog?.status === '正常' ? 'success' : 'danger'" >
                 {{ currentLog?.status }}
               </el-tag>
             </div>
@@ -161,13 +162,12 @@
 
         <!-- 工具栏 -->
         <div class="json-toolbar">
-          <el-radio-group v-model="viewMode" size="small">
+          <el-radio-group v-model="viewMode" >
             <el-radio-button label="pretty">美化</el-radio-button>
             <el-radio-button label="raw">原始</el-radio-button>
           </el-radio-group>
-          <el-button 
-            type="primary" 
-            size="small" 
+          <el-button
+            type="primary"
             @click="copyJson"
           >
             <el-icon class="mr-1"><DocumentCopy /></el-icon>
@@ -215,7 +215,7 @@ export default {
         operater_action: '',
         operater_id: 0,
         date: [
-          dayjs().format('YYYY-MM-DD 00:00:00'), 
+          dayjs().format('YYYY-MM-DD 00:00:00'),
           dayjs().format('YYYY-MM-DD 23:59:59')
         ]
       },
@@ -373,7 +373,7 @@ export default {
 <style lang="scss" scoped>
 .search-card {
   @apply mb-6;
-  @apply bg-white/90 dark:bg-gray-800/90;
+
   @apply backdrop-blur-sm;
   @apply transition-all duration-300;
   @apply rounded-lg;
@@ -397,7 +397,7 @@ export default {
   :deep(.el-button--primary) {
     @apply shadow-sm;
     @apply transition-all duration-300;
-    
+
     &:hover {
       @apply transform scale-105;
       @apply shadow-md;
@@ -407,7 +407,7 @@ export default {
   .date-picker-item {
     @media (max-width: 768px) {
       @apply w-full;
-      
+
       :deep(.el-form-item__content) {
         @apply w-full;
       }
@@ -417,14 +417,14 @@ export default {
   :deep(.date-picker) {
     @media (max-width: 768px) {
       @apply w-full;
-      
+
       .el-range-editor {
         @apply w-full max-w-full;
-        
+
         .el-range-input {
           @apply w-[42%];
         }
-        
+
         .el-range-separator {
           @apply w-[8%];
         }
@@ -435,24 +435,16 @@ export default {
 
 .log-table {
   @apply rounded-lg overflow-hidden;
-  @apply bg-white/90 dark:bg-gray-800/90;
-  @apply backdrop-blur-sm;
+
+
   @apply transition-all duration-300;
   @apply shadow-sm;
 
   :deep(.el-table) {
     @apply bg-transparent;
-    
-    th {
-      @apply bg-gray-50/90 dark:bg-gray-700/90;
-      @apply text-gray-600 dark:text-gray-300;
-      @apply font-medium;
-      @apply border-b border-gray-200 dark:border-gray-600;
-    }
-    
-    td {
-      @apply border-b border-gray-100 dark:border-gray-700;
-    }
+
+
+
   }
 }
 
@@ -476,7 +468,7 @@ export default {
   .request-info {
     @apply p-4;
     @apply border-b border-gray-200 dark:border-gray-600;
-    @apply bg-white/90 dark:bg-gray-800/90;
+
     @apply backdrop-blur-sm;
 
     .info-grid {
@@ -495,13 +487,13 @@ export default {
   .json-toolbar {
     @apply p-4 flex items-center justify-between;
     @apply border-b border-gray-200 dark:border-gray-700;
-    @apply bg-white/90 dark:bg-gray-800/90;
+
     @apply backdrop-blur-sm;
     @apply sticky top-0 z-10;
 
     @media (max-width: 768px) {
       @apply p-2;
-      
+
       :deep(.el-radio-button__inner) {
         @apply px-2 py-1 text-sm;
       }
@@ -510,34 +502,34 @@ export default {
 
   .json-content {
     @apply flex-1 overflow-auto p-4;
-    
+
     @media (max-width: 768px) {
       @apply p-2;
     }
 
     :deep(.jv-container) {
       @apply bg-transparent;
-      
+
       .jv-key {
         @apply text-blue-600 dark:text-blue-400;
       }
-      
+
       .jv-item {
         @apply text-gray-700 dark:text-gray-300;
       }
-      
+
       .jv-string {
         @apply text-green-600 dark:text-green-400;
       }
-      
+
       .jv-number {
         @apply text-orange-600 dark:text-orange-400;
       }
-      
+
       .jv-boolean {
         @apply text-purple-600 dark:text-purple-400;
       }
-      
+
       .jv-null {
         @apply text-gray-500 dark:text-gray-500;
       }
@@ -568,27 +560,27 @@ export default {
 .pagination-container {
   @apply mt-4 flex justify-end;
   @apply overflow-x-auto;
-  
+
   :deep(.el-pagination) {
-    @apply bg-white/90 dark:bg-gray-800/90;
+
     @apply rounded-lg p-2;
     @apply shadow-sm;
     @apply min-w-fit;
-    
+
     @media (max-width: 768px) {
       @apply w-full;
       @apply flex justify-center;
       @apply text-sm;
-      
+
       .el-pager {
         @apply flex-wrap;
       }
-      
+
       .btn-prev,
       .btn-next {
         @apply min-w-[24px];
       }
-      
+
       li {
         @apply min-w-[24px];
       }

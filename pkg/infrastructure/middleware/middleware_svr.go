@@ -217,3 +217,49 @@ func (this *MiddleWareService) CheckVersion(c *gin.Context) {
 	// 处理请求
 	c.Next()
 }
+
+func (this *MiddleWareService) GinZapLoggerfunc(c *gin.Context) {
+	start := time.Now()
+
+	path := c.Request.URL.Path
+	raw := c.Request.URL.RawQuery
+	c.Next()
+
+	end := time.Now()
+	latency := end.Sub(start).String()
+
+	method := c.Request.Method
+	statusCode := c.Writer.Status()
+	clientIP := c.ClientIP()
+	errorMessage := c.Errors.ByType(gin.ErrorTypePrivate).String()
+
+	if raw != "" {
+		path = path + "?" + raw
+	}
+
+	this.log.Info("HTTP Request",
+		zap.Int("status", statusCode),
+		zap.String("method", method),
+		zap.String("path", path),
+		zap.String("ip", clientIP),
+		zap.String("latency", latency),
+		zap.String("error", errorMessage),
+	)
+}
+
+func (this *MiddleWareService) GinZapRecovery(c *gin.Context) {
+	defer func() {
+		if err := recover(); err != nil {
+			// 打印错误信息
+
+			this.log.Error("panic recovered",
+				zap.Any("error", err),
+				zap.String("path", c.Request.URL.Path),
+				zap.Stack("stacktrace"),
+			)
+			this.res.Error(c, errors.New(cast.ToString(err)))
+
+		}
+	}()
+	c.Next()
+}

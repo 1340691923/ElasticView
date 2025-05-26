@@ -9,13 +9,19 @@ func (this *PluginRpcServer) runPluginUtil() {
 
 	group := engine.Group(AbsolutePath)
 	{
-		group.Any("/CallPlugin/:plugin_id/*action",
-			this.pluginUtilController.CallPlugin)
+		group.Any("/CallPlugin/:plugin_id/*action", this.pluginUtilController.CallPlugin)
 
 		group.POST("/LoadDebugPlugin", this.pluginUtilController.LoadDebugPlugin)
+
 		group.POST("/StopDebugPlugin", this.pluginUtilController.StopDebugPlugin)
 
 		group.POST("/LiveBroadcast", this.pluginUtilController.LiveBroadcast)
+
+		group.POST("/LiveBroadcastEvMsg2All", this.pluginUtilController.LiveBroadcastEvMsg2All)
+
+		group.POST("/LiveBroadcastEvMsg2Users", this.pluginUtilController.LiveBroadcastEvMsg2Users)
+
+		group.POST("/LiveBroadcastEvMsg2Roles", this.pluginUtilController.LiveBroadcastEvMsg2Roles)
 
 		group.POST("/BatchLiveBroadcast", this.pluginUtilController.BatchLiveBroadcast)
 

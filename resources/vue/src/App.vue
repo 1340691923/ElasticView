@@ -23,7 +23,7 @@ import { ThemeEnum } from "@/enums/ThemeEnum";
 import { SizeEnum } from "@/enums/SizeEnum";
 import {initCentrifuge} from "@/utils/centrifuge";
 
-const appStore = useAppStore();
+const appStore = useAppStore(); 
 const settingsStore = useSettingsStore();
 
 const locale = computed(() => appStore.locale);

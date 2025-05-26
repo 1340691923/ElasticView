@@ -1,4 +1,4 @@
-// GM角色层
+// GM权限组层
 package gm_role
 
 import (

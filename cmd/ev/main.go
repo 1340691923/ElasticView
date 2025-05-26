@@ -22,6 +22,8 @@ func init() {
 	flag.StringVar(&args.HomePath, "homePath", util.GetCurrentDirectory(), "ev程序所在文件夹")
 	flag.StringVar(&args.CmdName, "cmdName", "ev", "二进制名称")
 	flag.StringVar(&args.ConfigFile, "configFile", "config/config.yml", "配置文件路径")
+	flag.StringVar(&args.AdminPwd, "adminPwd", "", "需重置的管理员密码")
+
 	flag.Parse()
 }
 
@@ -47,17 +49,17 @@ func main() {
 		log.Println(fmt.Sprintf("初始化ev失败:%+v", err))
 		panic(err)
 	}
-	//svr.InitSwagger()
-	err = svr.Init()
+
+	err = svr.ResetAdminPwd(args.AdminPwd)
 	if err != nil {
-		log.Println(fmt.Sprintf("初始化ev失败:%+v", err))
+		log.Println(fmt.Sprintf("修改admin密码失败:%+v", err))
 		panic(err)
 	}
+	//svr.InitSwagger()
 
 	go listenToSystemSignals(context.Background(), svr)
 
 	if err = svr.Run(func(svr *server.Server) error {
-		log.Println("服务退出成功")
 		return nil
 	}, func(svr *server.Server) error {
 		return svr.CloseLog()

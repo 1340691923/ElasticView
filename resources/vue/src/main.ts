@@ -33,6 +33,7 @@ const loadMessages = async () => {
           legacy: false,
           locale: window["lang"],
           messages: res.data,
+          silentTranslationWarn: true, // 不显示缺少 key 的警告
           globalInjection: true,
         })
 
@@ -48,6 +49,7 @@ const loadMessages = async () => {
       legacy: false,
       locale: window["lang"],
       globalInjection: true,
+      silentTranslationWarn: true, // 不显示缺少 key 的警告
     })
 
     app.use(i18n)

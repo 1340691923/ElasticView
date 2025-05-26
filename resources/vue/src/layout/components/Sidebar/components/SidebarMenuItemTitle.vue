@@ -1,12 +1,14 @@
 <template>
-  <!-- 根据 icon 类型决定使用的不同类型的图标组件 -->
-  <el-icon v-if="icon && icon.startsWith('el-icon')" class="sub-el-icon">
-    <component :is="icon.replace('el-icon-', '')" />
-  </el-icon>
-  <svg-icon v-else-if="icon" :icon-class="icon" />
-  <svg-icon v-else icon-class="menu" />
-  <!-- 菜单标题 -->
-  <span v-if="title" class="ml-1">{{ translateRouteTitle(title) }}</span>
+
+    <!-- 根据 icon 类型决定使用的不同类型的图标组件 -->
+    <el-icon v-if="icon && icon.startsWith('el-icon')" class="sub-el-icon">
+      <component :is="icon.replace('el-icon-', '')" />
+    </el-icon>
+    <svg-icon v-else-if="icon" :icon-class="icon" />
+    <svg-icon v-else icon-class="menu" />
+    <!-- 菜单标题 -->
+    <span v-if="titles" class="ml-1">{{ translateRouteTitle(titles) }}</span>
+
 </template>
 
 <script setup lang="ts">
@@ -17,7 +19,7 @@ defineProps({
     type: String,
     default: "",
   },
-  title: {
+  titles: {
     type: String,
     default: "",
   },

@@ -6,7 +6,7 @@ class UserAPI {
   /**
    * 获取当前登录用户信息
    *
-   * @returns 登录用户昵称、头像信息，包括角色和权限
+   * @returns 登录用户昵称、头像信息，包括权限组和权限
    */
   static getInfo() {
     return request<any, UserInfo>({

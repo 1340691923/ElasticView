@@ -37,6 +37,7 @@
 
 <script lang="ts" setup>
 import { LayoutEnum } from "@/enums/LayoutEnum";
+import {useAppStore} from "@/store";
 
 const props = defineProps({
   modelValue: String,
@@ -44,7 +45,18 @@ const props = defineProps({
 
 const emit = defineEmits(["update:modelValue"]);
 
+const appStore = useAppStore();
+
 function updateValue(layout: string) {
+  if(layout == LayoutEnum.LEFT){
+    appStore.openSideBar();
+  }
+  if(layout == LayoutEnum.TOP){
+    appStore.openSideBar();
+  }
+  if(layout == LayoutEnum.MIX){
+    appStore.closeSideBar();
+  }
   emit("update:modelValue", layout);
 }
 </script>

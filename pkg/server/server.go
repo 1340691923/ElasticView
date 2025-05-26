@@ -17,6 +17,7 @@ import (
 	"golang.org/x/sync/errgroup"
 	"reflect"
 	"runtime"
+	"strings"
 	"sync"
 )
 
@@ -66,10 +67,6 @@ func NewServer(
 		pluginInstaller:    pluginInstaller,
 	}
 	return svr
-}
-
-func (this *Server) Init() (err error) {
-	return nil
 }
 
 func (this *Server) RunMigrator() (err error) {
@@ -161,8 +158,8 @@ func (this *Server) CloseLog() error {
 }
 
 func (this *Server) ResetAdminPwd(pwd string) error {
-	if pwd == "" {
-		return errors.New("密码不能为空")
+	if strings.TrimSpace(pwd) != "" {
+		return this.gmUserService.UpdatePassById(context.Background(), 1, pwd)
 	}
-	return this.gmUserService.UpdatePassById(context.Background(), 1, pwd)
+	return nil
 }

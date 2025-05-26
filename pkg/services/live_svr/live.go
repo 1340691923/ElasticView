@@ -2,6 +2,13 @@ package live_svr
 
 import (
 	"context"
+	"github.com/1340691923/ElasticView/pkg/consts"
+	"github.com/1340691923/eve-plugin-sdk-go/live"
+	"go.uber.org/zap"
+	"net/http"
+	"strings"
+	"time"
+
 	"github.com/1340691923/ElasticView/pkg/infrastructure/config"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/jwt_svr"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/logger"
@@ -12,9 +19,6 @@ import (
 	"github.com/goccy/go-json"
 	"github.com/pkg/errors"
 	"github.com/spf13/cast"
-	"net/http"
-	"strings"
-	"time"
 )
 
 type Live struct {
@@ -30,16 +34,48 @@ func (this *Live) Node() *centrifuge.Node {
 	return this.node
 }
 
+func (this *Live) handleLog(msg centrifuge.LogEntry) {
+	arr := make([]interface{}, 0)
+	for k, v := range msg.Fields {
+		switch v {
+		case nil:
+			v = "<nil>"
+		case "":
+			v = "<empty>"
+		}
+		arr = append(arr, k, v)
+	}
+
+	switch msg.Level {
+	case centrifuge.LogLevelDebug:
+		this.log.Sugar().Debugf(msg.Message, arr...)
+	case centrifuge.LogLevelError:
+		this.log.Sugar().Errorf(msg.Message, arr...)
+	case centrifuge.LogLevelInfo:
+		this.log.Sugar().Infof(msg.Message, arr...)
+	default:
+		this.log.Sugar().Debugf(msg.Message, arr...)
+	}
+}
+
 const clientConcurrency = 12
 
 func NewLive(log *logger.AppLogger, cfg *config.Config, jwtSvr *jwt_svr.Jwt, pluginRegistry manager.Service) *Live {
 	live := &Live{
-		log: log, cfg: cfg, jwtSvr: jwtSvr, pluginRegistry: pluginRegistry,
+		log:            log,
+		cfg:            cfg,
+		jwtSvr:         jwtSvr,
+		pluginRegistry: pluginRegistry,
 	}
 	// 初始化 Centrifuge Node，添加必要的配置
 	centrifugeCfg := centrifuge.Config{
-		LogLevel: centrifuge.LogLevelDebug,
+		LogLevel:           centrifuge.LogLevelError,
+		LogHandler:         live.handleLog,
+		ClientQueueMaxSize: 4194304, // 4MB
+
+		HistoryMetaTTL: 7 * 24 * time.Hour,
 	}
+
 	node, err := centrifuge.New(centrifugeCfg)
 	if err != nil {
 		panic(err)
@@ -127,6 +163,24 @@ func NewLive(log *logger.AppLogger, cfg *config.Config, jwtSvr *jwt_svr.Jwt, plu
 	live.Handler = wsHandler
 	live.node = node
 
+	/*go func() {
+		i := 0
+		for {
+			time.Sleep(3 * time.Second)
+
+			err := live.LiveBroadcastEvMsg(false, &CommonMsg{
+				Id:          i,
+				PublishTime: time.Now().Format(util.TimeFormat),
+				Title:       "test",
+				Msg:         "test",
+				BtnDesc:     "test",
+				BtnJumpUrl:  "test",
+				Type:        "success",
+			})
+			log.Sugar().Errorf("LiveBroadcastEvMsg err", err)
+		}
+	}()*/
+
 	return live
 }
 
@@ -161,53 +215,63 @@ func (this *Live) clientSend(client *centrifuge.Client, channel string, data int
 func (this *Live) handleOnPublish(ctx context.Context, client *centrifuge.Client, e centrifuge.PublishEvent) (centrifuge.PublishReply, error) {
 	// 记录客户端发布请求的日志
 	this.log.Sugar().Debugf("Client wants to publish", "user", client.UserID(), "client", client.ID(), "channel", e.Channel)
-	//todo... 调用插件的 publish 然后把结果发给client
-	// 这里可以处理发布的消息，例如广播到其他订阅了该频道的客户端
-	// 假设我们只是简单地返回已发布的消息
-	//根据参数调用频道，然后相当于异步返回
-
-	pluginId, channel, err := this.ParseChannel(e.Channel)
-
-	if err != nil {
-		this.log.Sugar().Errorf("ParseChannel err", e.Channel, err)
-		return centrifuge.PublishReply{}, centrifuge.ErrorInternal
-	}
-
-	plugin, ok := this.pluginRegistry.Plugin(ctx, pluginId)
-
-	if !ok {
-		this.log.Sugar().Errorf("该插件不存在 err", pluginId, e.Channel)
-		return centrifuge.PublishReply{}, centrifuge.ErrorInternal
-	}
-
-	resp, err := plugin.Pub2Channel(ctx, &backend.Pub2ChannelRequest{Channel: channel, Data: e.Data, PluginContext: backend.PluginContext{}})
-
-	if err != nil {
-		this.log.Sugar().Errorf("Pub2Channel err", e.Channel, string(e.Data), err)
-		return centrifuge.PublishReply{}, centrifuge.ErrorInternal
-	}
-
-	if resp.Status != backend.PubStatusOk {
-		this.log.Sugar().Errorf("Pub2Channel err", e.Channel, string(e.Data), resp.Status)
-		return centrifuge.PublishReply{}, centrifuge.ErrorInternal
-	}
 
 	var respMap map[string]interface{}
-	err = json.Unmarshal(resp.JsonDetails, &respMap)
+	if e.Channel == consts.EvAllMsgChannel ||
+		strings.Contains(e.Channel, consts.EvRoleMsgChannel) ||
+		strings.Contains(e.Channel, consts.EvUserMsgChannel) {
+		this.log.Info("common msg", zap.String("e.Channel", e.Channel))
+	} else {
+		pluginId, channel, err := this.ParseChannel(e.Channel)
 
-	if err != nil {
-		this.log.Sugar().Errorf("Pub2Channel Unmarshal res err", e.Channel, string(resp.JsonDetails), err)
-		return centrifuge.PublishReply{}, centrifuge.ErrorInternal
-	}
+		if err != nil {
+			this.log.Sugar().Errorf("ParseChannel err", e.Channel, err)
+			return centrifuge.PublishReply{}, centrifuge.ErrorInternal
+		}
 
-	err = this.clientSend(client, e.Channel, respMap)
-	if err != nil {
-		this.log.Sugar().Errorf("Failed to send message to client", "error", err)
-		return centrifuge.PublishReply{}, centrifuge.ErrorInternal
+		plugin, ok := this.pluginRegistry.Plugin(ctx, pluginId)
+
+		if !ok {
+			this.log.Sugar().Errorf("该插件不存在 err", pluginId, e.Channel)
+			return centrifuge.PublishReply{}, centrifuge.ErrorInternal
+		}
+
+		resp, err := plugin.Pub2Channel(ctx, &backend.Pub2ChannelRequest{
+			Channel:       channel,
+			Data:          e.Data,
+			PluginContext: backend.PluginContext{},
+		})
+
+		if err != nil {
+			this.log.Sugar().Errorf("Pub2Channel err", e.Channel, string(e.Data), err)
+			return centrifuge.PublishReply{}, centrifuge.ErrorInternal
+		}
+
+		if resp.Status != backend.PubStatusOk {
+			this.log.Sugar().Errorf("Pub2Channel err", e.Channel, string(e.Data), resp.Status)
+			return centrifuge.PublishReply{}, centrifuge.ErrorInternal
+		}
+
+		err = json.Unmarshal(resp.JsonDetails, &respMap)
+		if err != nil {
+			this.log.Sugar().Errorf("Pub2Channel Unmarshal res err", e.Channel, string(resp.JsonDetails), err)
+			return centrifuge.PublishReply{}, centrifuge.ErrorInternal
+		}
+
+		err = this.clientSend(client, e.Channel, respMap)
+		if err != nil {
+			this.log.Sugar().Errorf("Failed to send message to client", "error", err)
+			return centrifuge.PublishReply{}, centrifuge.ErrorInternal
+		}
+
 	}
 
 	// 由于消息已经通过 `client.Send()` 发送，我们返回一个空的 `PublishReply` 来避免广播
 	return centrifuge.PublishReply{
+		Options: centrifuge.PublishOptions{
+			HistorySize: 1000,
+			HistoryTTL:  7 * 24 * time.Hour,
+		},
 		Result: &centrifuge.PublishResult{},
 	}, nil
 }
@@ -230,11 +294,9 @@ func runConcurrentlyIfNeeded(ctx context.Context, semaphore chan struct{}, fn fu
 	return nil
 }
 
-const ChannelSplit = "$v$"
-
 func (this *Live) ParseChannel(channel string) (pluginId string, parseChannel string, err error) {
 
-	arr := strings.Split(channel, ChannelSplit)
+	arr := strings.Split(channel, consts.ChannelSplit)
 
 	if len(arr) != 2 {
 		err = errors.New("channel parse err:" + channel)
@@ -244,4 +306,28 @@ func (this *Live) ParseChannel(channel string) (pluginId string, parseChannel st
 	pluginId = arr[0]
 	parseChannel = arr[1]
 	return
+}
+
+func (this *Live) LiveBroadcast(channel string, data interface{}) (err error) {
+	numSubscribers := this.Node().Hub().NumSubscribers(channel)
+
+	if numSubscribers <= 0 {
+		return live.NoSubscriberErr
+	}
+
+	b := []byte{}
+	if data != nil {
+		b, err = json.Marshal(data)
+		if err != nil {
+			return err
+		}
+	}
+
+	_, err = this.Node().Publish(channel, b)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

@@ -1,6 +1,5 @@
 <template>
   <div class="app-container">
-
     <div class="search-container" :class="{ 'is-collapsed': isCollapsed && isMobile }">
       <div class="search-header" v-if="isMobile" @click="toggleCollapse">
         <span>{{ $t('搜索条件') }}</span>
@@ -9,11 +8,31 @@
         </el-icon>
       </div>
       <el-form :inline="true">
+        <el-form-item label="权限组:">
+          <el-select
+            style="width: 180px"
+            multiple
+            v-model="input.role_ids"
+            reserve-keyword
+            collapse-tags
+            :placeholder="$t('权限组')"
 
+            class="filter-item"
+            filterable
+          >
+
+            <el-option
+              v-for="item in allRoleConfig"
+              :key="item.key"
+              :label="item.label"
+              :value="item.key"
+            />
+          </el-select>
+        </el-form-item>
         <el-form-item label="用户名:">
           <el-input clearable v-model="input.user_name" style="width: 200px" ></el-input>
         </el-form-item>
-        <el-form-item label="姓名:">
+        <el-form-item label="真实姓名:">
           <el-input clearable v-model="input.real_name" style="width: 200px" ></el-input>
         </el-form-item>
         <el-form-item label="是否封禁:">
@@ -60,7 +79,7 @@
           {{ scope.row.username }}
         </template>
       </el-table-column>
-      <el-table-column align="center" width="160" :label="$t('角色')">
+      <el-table-column align="center" width="160" :label="$t('权限组')">
         <template #default="scope">
           <div class="role-tags">
             <template v-if="scope.row.role_ids.length <= 2">
@@ -88,7 +107,6 @@
                     v-for="item in scope.row.role_ids.slice(1)"
                     :key="item"
                     style="margin-left:1rem"
-                    size="small"
                   >
                     {{chanCfgMap[item]}}
                   </el-tag>
@@ -98,7 +116,7 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column align="center" width="100"  :label="$t('姓名')">
+      <el-table-column align="center" width="100"  :label="$t('真实姓名')">
         <template #default="scope">
           {{ scope.row.realname }}
         </template>
@@ -216,19 +234,17 @@
       </el-table-column>
     </el-table>
     </el-card>
-
     <div class="pagination-container">
       <el-pagination
         background
         :current-page="input.page"
         :page-size="input.limit"
         :total="count"
+        :layout="isMobile?'pager':'total, sizes, prev, pager, next, jumper'"
         @current-change="getUserList"
         @size-change="handleSizeChange"
       />
     </div>
-
-
     <el-drawer
       title="修改密码"
       v-model="pwdDialogVisible"
@@ -262,8 +278,8 @@
         <el-form-item v-if="dialogType!=='edit'" :label="$t('密码')">
           <el-input show-password type="password" v-model="role.password" :placeholder="$t('不填则为系统自动生成')" />
         </el-form-item>
-        <el-form-item :label="$t('姓名')">
-          <el-input v-model="role.realname" :placeholder="$t('姓名')" />
+        <el-form-item :label="$t('真实姓名')">
+          <el-input v-model="role.realname" :placeholder="$t('真实姓名')" />
         </el-form-item>
 
         <el-form-item :label="$t('电子邮箱')">
@@ -273,8 +289,8 @@
           <el-input v-model="role.work_wechat_uid" :placeholder="$t('企业微信成员UserID。对应管理端的账号，企业内必须唯一')" />
         </el-form-item>
 
-        <el-form-item :label="$t('请选择角色')">
-          <el-select v-model="role.role_ids" multiple :placeholder="$t('请选择角色')" clearable filterable>
+        <el-form-item :label="$t('请选择权限组')">
+          <el-select v-model="role.role_ids" multiple :placeholder="$t('请选择权限组')" clearable filterable>
             <el-option
               v-for="item in chanCfgList"
               :key="item.id"
@@ -335,12 +351,14 @@ export default {
   },
   data() {
     return {
+      allRoleConfig:[],
       input: {
         page: 1,
         limit: 10,
         user_name:'',
         real_name:'',
-        is_ban:false
+        is_ban:false,
+        role_ids:[]
       },
       count: 0,
       updatePwdForm:{
@@ -371,6 +389,7 @@ export default {
     },
   },
   async created() {
+
     await this.getRoleOpt()
     this.getUserList(1)
   },
@@ -378,11 +397,25 @@ export default {
     Oauth
   },
   methods: {
+
     async getRoleOpt() {
       const res = await roleOption()
       for (var v of res.data) {
         this.chanCfgList.push(v)
         this.chanCfgMap[v['id']] = v['name']
+      }
+      this.allRoleConfig = []
+      for (let v of res.data) {
+
+        const obj = {
+          label: v.name,
+          key: v.id.toString(),
+          disabled: false
+        }
+
+        this.allRoleConfig.push(
+          obj
+        )
       }
     },
     handleSizeChange(v) {
@@ -392,12 +425,17 @@ export default {
     async getUserList(page) {
       !page ? this.input.page = 1 :  this.input.page = page
       this.loading = true
+      let roleids = []
+      for(let v of this.input.role_ids){
+        roleids.push(Number(v))
+      }
       const res = await userList({
         page:page,
         page_size: this.input.limit,
         user_name:this.input.user_name,
         real_name:this.input.real_name,
         is_ban:this.input.is_ban,
+        role_ids:roleids
       })
       this.loading = false
       this.count = res.data.count
@@ -537,7 +575,7 @@ export default {
 
       if (this.role.role_ids.length == 0) {
         ElMessage.error({
-          message: '角色不能为空',
+          message: '权限组不能为空',
           type: 'error'
         })
         return false

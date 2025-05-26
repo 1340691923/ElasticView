@@ -8,7 +8,6 @@
         <el-dropdown-item
           v-for="item of sizeOptions"
           :key="item.value"
-          :disabled="appStore.size == item.value"
           :command="item.value"
         >
           {{ item.label }}

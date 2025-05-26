@@ -39,6 +39,9 @@ const onChangeAppStore = (fn:any) => {
 
 let loadingInstance = null; // 保存Loading实例
 
+import NProgress from 'nprogress';
+import 'nprogress/nprogress.css';
+
 export function RegisterMicroApps(pluginList){
 
   for(let i in pluginList){
@@ -99,16 +102,16 @@ export function RegisterMicroApps(pluginList){
         pluginList[i].entry = import.meta.env.VITE_APP_API_URL+pluginList[i].entry
       }
     }
-
   }
   console.log(pluginList)
 
   registerMicroApps(pluginList, {
     // qiankun 生命周期钩子 - 加载前
     beforeLoad: (app) => {
+      NProgress.start()
       loadingInstance = ElLoading.service({
         lock: true,
-        text: '插件正在加载中...',
+        text: app.name+'插件正在加载中...',
         background: 'rgba(0, 0, 0, 0.7)'
       }); // 开启全局Loading
       console.log('加载插件前，加载进度条',app.name)
@@ -120,12 +123,13 @@ export function RegisterMicroApps(pluginList){
     },
     // qiankun 生命周期钩子 - 挂载后
     afterMount: (app) => {
+      NProgress.done()
       if (loadingInstance) {
         loadingInstance.close(); // 关闭全局Loading
       }
       console.log('挂载插件后，进度条加载完成', app.name)
       return Promise.resolve()
-    }
+    },
   })
 }
 

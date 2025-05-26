@@ -52,6 +52,8 @@ type SearchUserReq struct {
 	UserName string `json:"user_name"`
 	RealName string `json:"real_name"`
 	IsBan    bool   `json:"is_ban"`
+	RoleIds  []int  `json:"role_ids"`
+	UserIds  []int  `json:"user_ids"`
 }
 
 type SealUserReq struct {

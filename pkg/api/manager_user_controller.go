@@ -50,7 +50,6 @@ func NewManagerUserController(baseController *BaseController, log *logger.AppLog
 // @Success 0 {object} vo.User
 // @Router /api/gm_user/login [post]
 func (this *ManagerUserController) Login(ctx *gin.Context) {
-
 	var reqData dto.User
 
 	err := ctx.Bind(&reqData)
@@ -61,13 +60,11 @@ func (this *ManagerUserController) Login(ctx *gin.Context) {
 	}
 	var token string
 	if reqData.OAuthCode != "" && reqData.State != "" {
-
 		token, err = this.gmUserService.CheckLoginByOAuth(ctx, reqData.OAuthCode, reqData.State)
 		if err != nil {
 			this.Error(ctx, err)
 			return
 		}
-
 	} else {
 		username := reqData.Username
 		password := reqData.Password
@@ -79,7 +76,10 @@ func (this *ManagerUserController) Login(ctx *gin.Context) {
 		}
 	}
 
-	this.Success(ctx, "登录成功", vo.User{Token: token, UnixTime: time.Now().Unix()})
+	this.Success(ctx, "登录成功", vo.User{
+		Token:    token,
+		UnixTime: time.Now().Unix(),
+	})
 }
 
 // 修改自己的密码
@@ -251,9 +251,10 @@ func (this *ManagerUserController) UserListAction(ctx *gin.Context) {
 
 	var list []model.GmUserModel
 	var count int64
-	list, count, err = this.gmUserService.Select(ctx,
-		this.gmUserService.IsAdminUser(this.GetRoleCache(ctx)),
+	list, count, err = this.gmUserService.Select(
+		ctx, this.gmUserService.IsAdminUser(this.GetRoleCache(ctx)),
 		reqData.UserName, reqData.RealName, reqData.IsBan,
+		reqData.RoleIds, reqData.UserIds,
 		reqData.Page, reqData.PageSize)
 
 	if err != nil {
@@ -387,8 +388,12 @@ func (this *ManagerUserController) UserUpdateAction(ctx *gin.Context) {
 		return
 	}
 
+	if reqData.Username == "" {
+		this.Error(ctx, errors.New("用户名不能为空"))
+	}
+
 	if util.InArr(reqData.RoleIds, gm_user.AdminRole) && !this.gmUserService.IsAdminUser(this.GetRoleCache(ctx)) {
-		this.Error(ctx, errors.New("非管理员角色无法修改管理员信息"))
+		this.Error(ctx, errors.New("非管理员权限组无法修改管理员信息"))
 		return
 	}
 
@@ -422,8 +427,16 @@ func (this *ManagerUserController) UserAddAction(ctx *gin.Context) {
 		return
 	}
 
+	if reqData.Username == "" {
+		this.Error(ctx, errors.New("用户名不能为空"))
+	}
+
+	if reqData.Password == "" {
+		this.Error(ctx, errors.New("密码不能为空"))
+	}
+
 	if util.InArr(reqData.RoleIds, gm_user.AdminRole) && !this.gmUserService.IsAdminUser(this.GetRoleCache(ctx)) {
-		this.Error(ctx, errors.New("非管理员角色无法新增管理员信息"))
+		this.Error(ctx, errors.New("非管理员权限组无法新增管理员信息"))
 		return
 	}
 
@@ -500,12 +513,15 @@ func (this *ManagerUserController) UserInfoV2(ctx *gin.Context) {
 	res := vo.UserInfoV2{}
 	res.UserId = claims.UserID
 	res.Username = claims.RealName
-
-	claims.Avatar = "https://oss.youlai.tech/youlai-boot/2023/05/16/811270ef31f548af9cffc026dfc3777b.gif?imageView2/1/w/80/h/80"
-
 	res.Avatar = claims.Avatar
 	res.Perms = make([]string, 0)
-	res.Roles = []string{"ev_user"}
+
+	roleIds, err := this.gmUserService.GetRolesByUserID(res.UserId)
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+	res.Roles = roleIds
 	this.Success(ctx, response.SearchSuccess, res)
 }
 

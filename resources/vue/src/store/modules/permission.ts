@@ -37,7 +37,7 @@ export const usePermissionStore = defineStore("permission", () => {
           let evLatestVersion = res.data.evLatestVersion
           let evUpdateAvailable = res.data.evUpdateAvailable
 
-          if (evUpdateAvailable) {
+         /* if (evUpdateAvailable) {
             ElNotification({
               title: `您的Ev落后于官网最新版本:${evLatestVersion}`,
               dangerouslyUseHTMLString: true,
@@ -45,7 +45,7 @@ export const usePermissionStore = defineStore("permission", () => {
               showClose: true,
               message: ' <a target="_blank" href="'+evDownloadUrl+'">点我前往下载页面</a>',
             })
-          }
+          }*/
 
           let data = JSON.parse(res.data.list)
 

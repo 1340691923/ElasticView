@@ -45,7 +45,7 @@ const logo = ref(new URL(`../../../../assets/logo.png`, import.meta.url).href);
     margin-left: 10px;
     font-size: 14px;
     font-weight: bold;
-    color: white;
+    color: $sidebar-logo-text-color;
   }
 }
 

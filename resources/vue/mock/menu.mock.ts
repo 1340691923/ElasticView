@@ -38,7 +38,7 @@ export default defineMock([
               component: "system/role/index",
               name: "Role",
               meta: {
-                title: "角色管理",
+                title: "权限组管理",
                 icon: "role",
                 hidden: false,
                 keepAlive: true,
@@ -557,7 +557,7 @@ export default defineMock([
             {
               id: 3,
               parentId: 1,
-              name: "角色管理",
+              name: "权限组管理",
               type: "MENU",
               routeName: "Role",
               routePath: "role",
@@ -571,7 +571,7 @@ export default defineMock([
                 {
                   id: 70,
                   parentId: 3,
-                  name: "角色新增",
+                  name: "权限组新增",
                   type: "BUTTON",
                   routeName: null,
                   routePath: "",
@@ -586,7 +586,7 @@ export default defineMock([
                 {
                   id: 71,
                   parentId: 3,
-                  name: "角色编辑",
+                  name: "权限组编辑",
                   type: "BUTTON",
                   routeName: null,
                   routePath: "",
@@ -601,7 +601,7 @@ export default defineMock([
                 {
                   id: 72,
                   parentId: 3,
-                  name: "角色删除",
+                  name: "权限组删除",
                   type: "BUTTON",
                   routeName: null,
                   routePath: "",
@@ -1264,19 +1264,19 @@ export default defineMock([
             },
             {
               value: 3,
-              label: "角色管理",
+              label: "权限组管理",
               children: [
                 {
                   value: 70,
-                  label: "角色新增",
+                  label: "权限组新增",
                 },
                 {
                   value: 71,
-                  label: "角色编辑",
+                  label: "权限组编辑",
                 },
                 {
                   value: 72,
-                  label: "角色删除",
+                  label: "权限组删除",
                 },
               ],
             },
@@ -1556,7 +1556,7 @@ const menuMap: Record<string, any> = {
   3: {
     id: 3,
     parentId: 1,
-    name: "角色管理",
+    name: "权限组管理",
     type: "MENU",
     routeName: "Role",
     routePath: "role",

@@ -14,6 +14,7 @@ import (
 	"github.com/1340691923/ElasticView/pkg/services/es_service"
 	"github.com/1340691923/ElasticView/pkg/services/gm_user"
 	"github.com/1340691923/ElasticView/pkg/services/live_svr"
+	"github.com/1340691923/ElasticView/pkg/services/notice_service"
 	"github.com/1340691923/ElasticView/pkg/services/plugin_service"
 	dto2 "github.com/1340691923/eve-plugin-sdk-go/ev_api/dto"
 	vo2 "github.com/1340691923/eve-plugin-sdk-go/ev_api/vo"
@@ -35,10 +36,78 @@ type PluginUtilController struct {
 	gmUserSvr       *gm_user.GmUserService
 	live            *live_svr.Live
 	eveApi          *eve_api.EvEApi
+	noticeService   *notice_service.NoticeService
 }
 
-func NewPluginUtilController(baseController *BaseController, pluginServer *plugin_service.PluginService, esClientService *es.EsClientService, esService *es_service.EsService, log *logger.AppLogger, cfg *config.Config, gmUserSvr *gm_user.GmUserService, live *live_svr.Live, eveApi *eve_api.EvEApi) *PluginUtilController {
-	return &PluginUtilController{BaseController: baseController, pluginServer: pluginServer, esClientService: esClientService, esService: esService, log: log, cfg: cfg, gmUserSvr: gmUserSvr, live: live, eveApi: eveApi}
+func NewPluginUtilController(baseController *BaseController, pluginServer *plugin_service.PluginService, esClientService *es.EsClientService, esService *es_service.EsService, log *logger.AppLogger, cfg *config.Config, gmUserSvr *gm_user.GmUserService, live *live_svr.Live, eveApi *eve_api.EvEApi, noticeService *notice_service.NoticeService) *PluginUtilController {
+	return &PluginUtilController{BaseController: baseController, pluginServer: pluginServer, esClientService: esClientService, esService: esService, log: log, cfg: cfg, gmUserSvr: gmUserSvr, live: live, eveApi: eveApi, noticeService: noticeService}
+}
+
+//发送系统通知 todo...
+
+func (this *PluginUtilController) LiveBroadcastEvMsg2All(ctx *gin.Context) {
+
+	var reqData dto2.LiveBroadcastEvMsg2AllReq
+
+	err := ctx.BindJSON(&reqData)
+
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+
+	err = this.noticeService.LiveBroadcastEvMsg2All(reqData.NoticeData)
+
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+
+	this.Success(ctx, response.OperateSuccess, nil)
+}
+
+// 部分权限组接收
+func (this *PluginUtilController) LiveBroadcastEvMsg2Roles(ctx *gin.Context) {
+
+	var reqData dto2.LiveBroadcastEvMsg2RolesReq
+
+	err := ctx.BindJSON(&reqData)
+
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+
+	err = this.noticeService.LiveBroadcastEvMsg2Roles(reqData.RoleIds, reqData.NoticeData)
+
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+
+	this.Success(ctx, response.OperateSuccess, nil)
+}
+
+// 部分用户接收
+func (this *PluginUtilController) LiveBroadcastEvMsg2Users(ctx *gin.Context) {
+
+	var reqData dto2.LiveBroadcastEvMsg2UsersReq
+
+	err := ctx.BindJSON(&reqData)
+
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+
+	err = this.noticeService.LiveBroadcastEvMsg2Users(reqData.UserIds, reqData.NoticeData)
+
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+
+	this.Success(ctx, response.OperateSuccess, nil)
 }
 
 // 进行广播消息
@@ -52,32 +121,12 @@ func (this *PluginUtilController) LiveBroadcast(ctx *gin.Context) {
 		return
 	}
 
-	numSubscribers := this.live.Node().Hub().NumSubscribers(reqData.Channel)
-
-	if numSubscribers <= 0 {
-		this.Error(ctx, live.NoSubscriberErr)
-		return
-	}
-
-	b := []byte{}
-	if reqData.Data != nil {
-
-		b, err = json.Marshal(reqData.Data)
-		if err != nil {
-			this.Error(ctx, err)
-			return
-		}
-
-	}
-
-	publishResult, err := this.live.Node().Publish(reqData.Channel, b)
+	err = this.live.LiveBroadcast(reqData.Channel, reqData.Data)
 
 	if err != nil {
 		this.Error(ctx, err)
 		return
 	}
-
-	this.log.Sugar().Infof("reqData.Channel:%s,publishResult:%v", reqData.Channel, publishResult)
 
 	this.Success(ctx, response.OperateSuccess, nil)
 }
@@ -1943,7 +1992,7 @@ func (this *PluginUtilController) GetEveToken(ctx *gin.Context) {
 }
 
 func (this *PluginUtilController) CallPlugin(ctx *gin.Context) {
-	err := this.pluginServer.CallPlugin(ctx, ctx.Param("plugin_id"))
+	err := this.pluginServer.CallPluginNoAuth(ctx, ctx.Param("plugin_id"))
 	if err != nil {
 		this.Error(ctx, err)
 		return

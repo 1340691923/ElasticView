@@ -9,6 +9,7 @@ import (
 	"github.com/1340691923/ElasticView/pkg/infrastructure/dao"
 	dto2 "github.com/1340691923/ElasticView/pkg/infrastructure/dto"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/eve_api/dto"
+	"github.com/1340691923/ElasticView/pkg/infrastructure/eve_api/vo"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/jwt_svr"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/logger"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/model"
@@ -22,6 +23,7 @@ import (
 	"github.com/1340691923/ElasticView/pkg/services/updatechecker"
 	util2 "github.com/1340691923/ElasticView/pkg/util"
 	"github.com/1340691923/eve-plugin-sdk-go/enum"
+	"github.com/1340691923/eve-plugin-sdk-go/util"
 	"github.com/gin-gonic/gin"
 	"github.com/pkg/errors"
 	"github.com/spf13/cast"
@@ -271,7 +273,7 @@ func (this *PluginService) CallPlugin(ctx *gin.Context, pluginID string) (err er
 
 			if ctx.Param("action") == routerConfig.Path && routerConfig.NeedAuth {
 				if len(roles) == 0 {
-					return errors.WithStack(errors.New("请检查该用户的角色分配"))
+					return errors.WithStack(errors.New("请检查该用户的权限组分配"))
 				}
 				for _, roleId := range roles {
 					ok, err := this.rbac.Enforce(strconv.Itoa(roleId),
@@ -294,7 +296,7 @@ func (this *PluginService) CallPlugin(ctx *gin.Context, pluginID string) (err er
 		delete(ctx.Request.Header, "X-Token")
 	}
 
-	plugins.NewDataSourcePlugin(ctx, plugin).CallPluginResource()
+	plugins.NewDataSourcePlugin(ctx, plugin, this.log).CallPluginResource()
 
 	if strings.Contains(contentType, "application/json") {
 
@@ -328,7 +330,7 @@ func (this *PluginService) CallPluginViews(ctx *gin.Context, pluginID string) (e
 	if !b {
 		return errors.New(fmt.Sprintf("没有找到该插件信息:%s", pluginID))
 	}
-	plugins.NewDataSourcePlugin(ctx, plugin).CallPluginResource()
+	plugins.NewDataSourcePlugin(ctx, plugin, this.log).CallPluginResource()
 	return nil
 }
 
@@ -396,6 +398,39 @@ func (this *PluginService) StarPlugin(ctx context.Context, pluginId int64) (err 
 		return errors.WithStack(err)
 	}
 	return nil
+}
+
+func (this *PluginService) AddComment(ctx context.Context, pluginId int, content string, parentId int) (err error) {
+	err = this.evBackDao.AddComment(ctx, &dto.AddCommentRequest{
+		PluginID: pluginId,
+		Content:  content,
+		ParentID: parentId,
+	})
+	if err != nil {
+		return errors.WithStack(err)
+	}
+	return nil
+}
+
+func (this *PluginService) LikeComment(ctx context.Context, commentId int, state int) (err error) {
+	err = this.evBackDao.LikeComment(ctx, &dto.LikeCommentRequest{
+		CommentID: commentId,
+		State:     state,
+	})
+	if err != nil {
+		return errors.WithStack(err)
+	}
+	return nil
+}
+
+func (this *PluginService) ListComments(ctx context.Context, pluginId int) (list *[]*vo.Comment, err error) {
+	list, err = this.evBackDao.ListComments(ctx, &dto.ListCommentsRequest{
+		PluginID: pluginId,
+	})
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+	return list, nil
 }
 
 type PluginVo struct {
@@ -505,4 +540,62 @@ const AdminRole = 1
 
 func (this *PluginService) IsAdminUser(roleId []int) bool {
 	return util2.InArr(roleId, AdminRole)
+}
+
+func (this *PluginService) CallPluginNoAuth(ctx *gin.Context, pluginID string) (err error) {
+	plugin, b := this.pluginRegistry.Plugin(ctx, pluginID)
+	if !b {
+		return errors.New(fmt.Sprintf("没有找到该插件信息:%s", pluginID))
+	}
+
+	userId := util.GetEvUserID(ctx)
+
+	pluginJsonData := plugin.PluginData().PluginJsonData
+
+	if !pluginJsonData.BackendDebug {
+		var roles []int
+		if userId > 0 {
+			roles, err = this.gmUserDao.GetRolesFromUser(userId)
+			if err != nil {
+				return errors.WithStack(err)
+			}
+		}
+
+		for _, routerConfig := range pluginJsonData.BackendRoutes {
+			if this.IsAdminUser(roles) {
+				break
+			}
+
+			if ctx.Param("action") == routerConfig.Path && routerConfig.NeedAuth {
+				if len(roles) == 0 {
+					return errors.WithStack(errors.New("请检查该用户的权限组分配"))
+				}
+				for _, roleId := range roles {
+					ok, err := this.rbac.Enforce(strconv.Itoa(roleId),
+						fmt.Sprintf("/%s%s", pluginID, routerConfig.Path), "*")
+					if err != nil {
+						return errors.WithStack(err)
+					}
+					if !ok {
+						return errors.New(fmt.Sprintf("您没有操作该资源的权限:%s[%s]", pluginJsonData.PluginName, routerConfig.Remark))
+					}
+					break
+				}
+			}
+		}
+	}
+
+	this.log.Sugar().Info("CallPluginNoAuth", zap.Int("userId", userId), zap.String("action", ctx.Param("action")))
+
+	plugins.NewDataSourcePlugin(ctx, plugin, this.log).CallPluginResource()
+
+	return nil
+}
+
+func (this *PluginService) GetPluginName(id string) (pluginName string) {
+	p, has := this.pluginRegistry.Plugin(context.Background(), id)
+	if !has {
+		return ""
+	}
+	return p.PluginData().PluginJsonData.PluginName
 }

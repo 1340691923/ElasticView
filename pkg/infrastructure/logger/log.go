@@ -7,8 +7,8 @@ import (
 	"github.com/1340691923/ElasticView/pkg/util"
 	"github.com/hashicorp/go-hclog"
 	"github.com/pkg/errors"
+	"gopkg.in/natefinch/lumberjack.v2"
 	"io"
-	"log"
 	"os"
 	"path/filepath"
 	"sync"
@@ -149,7 +149,6 @@ func InitLog(cfg *config.Config) (logger *AppLogger, err error) {
 		EsReqLog = zap.New(esReqCore, zap.AddCaller(), zap.Development())
 	})
 
-	log.Println("日志组件加载成功", logPath)
 	return zap.New(core, zap.AddCaller(), zap.Development()), nil
 }
 
@@ -179,18 +178,25 @@ func InitPluginLog(cfg *config.Config, pluginName string) (logger hclog.Logger, 
 		return nil, "", nil, errors.WithStack(err)
 	}
 
-	writer, err := os.OpenFile(pluginlogPath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	/*writer, err := os.OpenFile(pluginlogPath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		return nil, "", nil, errors.WithStack(err)
+	}*/
+
+	rotator := &lumberjack.Logger{
+		Filename:   pluginlogPath,
+		MaxSize:    100,  // 单个日志文件最大 50MB
+		MaxBackups: 7,    // 最多保留7个备份
+		MaxAge:     30,   // 保留30天
+		Compress:   true, // 是否压缩旧日志
 	}
-	log.Println("插件日志组件加载成功", pluginlogPath)
 
 	return hclog.New(&hclog.LoggerOptions{
 			Name:   "plugin",
-			Output: writer,
+			Output: rotator,
 			Level:  hclog.Debug,
 		}), pluginlogPath, func() error {
-			return writer.Close()
+			return rotator.Close()
 		}, nil
 }
 

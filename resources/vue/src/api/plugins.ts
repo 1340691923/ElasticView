@@ -58,6 +58,32 @@ export function UnInstallPlugin(data) {
   })
 }
 
+export function LikeComment(data) {
+  return request({
+    url: api + 'LikeComment',
+    method: 'post', 
+    data
+  })
+}
+
+ 
+export function ListComments(data) {
+  return request({
+    url: api + 'ListComments',
+    method: 'post', 
+    data
+  })
+}
+
+ 
+export function AddComment(data) {
+  return request({
+    url: api + 'AddComment',
+    method: 'post', 
+    data
+  })
+}
+
 export function GetWxArticleList(data) {
   return request({
     url: api + 'GetWxArticleList',

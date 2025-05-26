@@ -11,6 +11,7 @@ import (
 	"github.com/1340691923/ElasticView/pkg/infrastructure/plugins/manager"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/plugins/plugin"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/pluginstore"
+	"github.com/1340691923/ElasticView/pkg/services/notice_service"
 	"github.com/1340691923/ElasticView/pkg/services/updatechecker"
 	"github.com/1340691923/ElasticView/pkg/util"
 	"github.com/gin-gonic/gin"
@@ -31,17 +32,18 @@ type PluginInstaller struct {
 	evBackDao          *dao.EvBackDao
 	pluginStoreService *pluginstore.PluginStoreService
 	pluginsService     *updatechecker.PluginsService
+	noticeService      *notice_service.NoticeService
 }
 
 func ProvideInstaller(cfg *config.Config, log *logger.AppLogger, pluginStore manager.Service,
 	evBackDao *dao.EvBackDao, pluginStoreService *pluginstore.PluginStoreService,
-	pluginsService *updatechecker.PluginsService) *PluginInstaller {
-	return New(log, cfg, pluginStore, evBackDao, pluginStoreService, pluginsService)
+	pluginsService *updatechecker.PluginsService, noticeService *notice_service.NoticeService) *PluginInstaller {
+	return New(log, cfg, pluginStore, evBackDao, pluginStoreService, pluginsService, noticeService)
 }
 
 func New(log *logger.AppLogger, cfg *config.Config, pluginStore manager.Service,
 	evBackDao *dao.EvBackDao, pluginStoreService *pluginstore.PluginStoreService,
-	pluginsService *updatechecker.PluginsService) *PluginInstaller {
+	pluginsService *updatechecker.PluginsService, noticeService *notice_service.NoticeService) *PluginInstaller {
 	return &PluginInstaller{
 		installing:         sync.Map{},
 		log:                log.Named("plugin.installer"),
@@ -50,6 +52,7 @@ func New(log *logger.AppLogger, cfg *config.Config, pluginStore manager.Service,
 		evBackDao:          evBackDao,
 		pluginStoreService: pluginStoreService,
 		pluginsService:     pluginsService,
+		noticeService:      noticeService,
 	}
 }
 

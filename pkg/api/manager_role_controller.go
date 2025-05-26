@@ -18,7 +18,7 @@ import (
 	"strconv"
 )
 
-// GM角色控制器
+// GM权限组控制器
 type ManagerRoleController struct {
 	*BaseController
 	log *logger.AppLogger
@@ -36,7 +36,7 @@ func NewManagerRoleController(baseController *BaseController, log *logger.AppLog
 	return &ManagerRoleController{BaseController: baseController, log: log, cfg: cfg, jwtSvr: jwtSvr, gmRoleService: gmRoleService, gmUserService: gmUserService, rbac: rbac, orm: orm, esLinkService: esLinkService}
 }
 
-// 获取所有的EV角色
+// 获取所有的EV权限组
 func (this *ManagerRoleController) RolesAction(ctx *gin.Context) {
 
 	var reqData dto.SearchRoleReq
@@ -69,7 +69,7 @@ func (this *ManagerRoleController) RolesAction(ctx *gin.Context) {
 	return
 }
 
-// 新增EV角色
+// 新增EV权限组
 func (this *ManagerRoleController) RolesAddAction(ctx *gin.Context) {
 
 	var model2 dto.GmRoleModel
@@ -115,7 +115,7 @@ func (this *ManagerRoleController) RolesAddAction(ctx *gin.Context) {
 	this.Success(ctx, response.OperateSuccess, map[string]interface{}{"id": id})
 }
 
-// 修改EV角色
+// 修改EV权限组
 func (this *ManagerRoleController) RolesUpdateAction(ctx *gin.Context) {
 	var model2 dto.GmRoleModel
 	err := ctx.Bind(&model2)
@@ -125,7 +125,7 @@ func (this *ManagerRoleController) RolesUpdateAction(ctx *gin.Context) {
 	}
 
 	if model2.ID == 1 && !this.gmUserService.IsAdminUser(this.GetRoleCache(ctx)) {
-		this.Error(ctx, errors.New("您无权修改该角色!"))
+		this.Error(ctx, errors.New("您无权修改该权限组!"))
 		return
 	}
 
@@ -162,7 +162,7 @@ func (this *ManagerRoleController) RolesUpdateAction(ctx *gin.Context) {
 	return
 }
 
-// 删除EV角色
+// 删除EV权限组
 func (this *ManagerRoleController) RolesDelAction(ctx *gin.Context) {
 
 	var reqData dto.RolesDelReq
@@ -176,7 +176,7 @@ func (this *ManagerRoleController) RolesDelAction(ctx *gin.Context) {
 	id := reqData.Id
 
 	if id == 1 && !this.gmUserService.IsAdminUser(this.GetRoleCache(ctx)) {
-		this.Error(ctx, errors.New("您无权修改该角色!"))
+		this.Error(ctx, errors.New("您无权修改该权限组!"))
 		return
 	}
 	tx := this.orm.Begin()
@@ -209,7 +209,7 @@ func (this *ManagerRoleController) RolesDelAction(ctx *gin.Context) {
 	return
 }
 
-// 获取EV角色下拉选
+// 获取EV权限组下拉选
 func (this *ManagerRoleController) RoleOptionAction(ctx *gin.Context) {
 
 	list, err := this.gmRoleService.GetOptions(ctx)

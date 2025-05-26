@@ -113,6 +113,8 @@ const isMobile = computed(() => appStore.device === DeviceEnum.MOBILE);
 onMounted(()=>{
   if( !window["qiankunStarted"]){
     start({
+      prefetch:true,
+      singular:true,
       sandbox: {
       // 开启严格的样式隔离模式。这种模式下 qiankun 会为每个微应用的容器包裹上一个 [shadow dom]节点，从而确保微应用的样式不会对全局造成影响。
       //strictStyleIsolation: false,

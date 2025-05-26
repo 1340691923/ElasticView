@@ -132,10 +132,15 @@ func (this *GmUserDao) UpdatePassById(ctx context.Context, gmUser model.GmUserMo
 }
 
 // Select
-func (this *GmUserDao) Select(ctx context.Context, isAdmin bool, userName, realName string, isBan bool, page, pageSize int) (gmUser []model.GmUserModel, count int64, err error) {
+func (this *GmUserDao) Select(ctx context.Context, isAdmin bool, userName,
+	realName string, isBan bool, userIds []int, page, pageSize int) (gmUser []model.GmUserModel, count int64, err error) {
 	db := this.orm.WithContext(ctx).Table("gm_user")
 	if !isAdmin {
 		db = db.Where(" id != 1")
+	}
+
+	if len(userIds) > 0 {
+		db = db.Where(" id in ? ", userIds)
 	}
 
 	if userName != "" {
@@ -205,6 +210,13 @@ func (this *GmUserDao) GetRolesFromUser(userID int) ([]int, error) {
 
 func (this *GmUserDao) RemoveUserRoles(tx *gorm.DB, userID int) (err error) {
 	return errors.WithStack(tx.Where("user_id = ?", userID).Delete(model.UserRoleRelationModel{}).Error)
+}
+
+func (this *GmUserDao) GetUserByRoleId(tx *gorm.DB, roleId []int) (users []model.UserRoleRelationModel, err error) {
+	err = errors.WithStack(
+		tx.Where("role_id in ?", roleId).Find(&users).Error,
+	)
+	return
 }
 
 func (this *GmUserDao) RemoveRoles(tx *gorm.DB, roleId int) (err error) {

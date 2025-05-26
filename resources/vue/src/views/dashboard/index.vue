@@ -16,7 +16,7 @@
                 但凡成功者，并非都出类拔萃，而是他们相信勤能补拙，只要忍受了，挺住了，成功早晚露出笑容
               </p>
             </div>
-          </div> 
+          </div>
         </el-col>
 
 <!--        <el-col :span="6" :xs="24">
@@ -94,12 +94,9 @@ import {IndexsCountAction,CatAction} from "@/api/es";
 import {GetEsConnect,GetEsConnectVer} from "@/utils/es_link";
 import EsDashbord from "@/views/dashboard/components/EsDashbord.vue";
 
-
-
 const isEs = computed(()=>{
   return `${GetEsConnectVer()}`.indexOf('elasticsearch') !==-1
 })
-
 
 const userStore = useUserStore();
 
@@ -182,8 +179,6 @@ const notices = ref([
 const articleData = reactive({
   list:[],
 })
-
-
 
 const GetArticleData = async ()=>{
   //await SearchBigMode({content:"mysql如何拼接字符串"})

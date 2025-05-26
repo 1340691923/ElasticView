@@ -14,13 +14,14 @@ const defaultSettings: AppSettings = {
   tagsView: true,
   fixedHeader: true,
   sidebarLogo: true,
-  layout: LayoutEnum.LEFT,
+  layout: LayoutEnum.MIX,
   theme: mediaQueryList.matches ? ThemeEnum.DARK : ThemeEnum.LIGHT,
   size: SizeEnum.DEFAULT,
   language: LanguageEnum.ZH_CN,
   themeColor: "#409EFF",
   watermarkEnabled: false,
   watermarkContent: pkg.name,
+  sidebarColorScheme: "light-white",
 };
 
 export default defaultSettings;

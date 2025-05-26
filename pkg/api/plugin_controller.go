@@ -139,6 +139,54 @@ func (this *PluginController) StarPlugin(ctx *gin.Context) {
 	this.Success(ctx, "操作成功", nil)
 }
 
+func (this *PluginController) AddComment(ctx *gin.Context) {
+	var req dto.AddCommentRequest
+	err := ctx.Bind(&req)
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+
+	err = this.pluginService.AddComment(ctx, req.PluginID, req.Content, req.ParentID)
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+	this.Success(ctx, "操作成功", nil)
+}
+
+func (this *PluginController) LikeComment(ctx *gin.Context) {
+	var req dto.LikeCommentRequest
+	err := ctx.Bind(&req)
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+
+	err = this.pluginService.LikeComment(ctx, req.CommentID, req.State)
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+	this.Success(ctx, "操作成功", nil)
+}
+
+func (this *PluginController) ListComments(ctx *gin.Context) {
+	var req dto.ListCommentsRequest
+	err := ctx.Bind(&req)
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+
+	list, err := this.pluginService.ListComments(ctx, req.PluginID)
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+	this.Success(ctx, response.SearchSuccess, list)
+}
+
 func (this *PluginController) UnInstallPlugin(ctx *gin.Context) {
 	var req dto2.InstallPlugin
 	err := ctx.Bind(&req)

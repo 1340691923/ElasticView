@@ -5,6 +5,6 @@ type UserInfoV2 struct {
 	Username string   `json:"username"`
 	Nickname string   `json:"nickname"`
 	Avatar   string   `json:"avatar"`
-	Roles    []string `json:"roles"`
+	Roles    []int    `json:"roles"`
 	Perms    []string `json:"perms"`
 }

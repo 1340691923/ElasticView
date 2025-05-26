@@ -14,7 +14,7 @@ export const asyncRoutes = [
         "name": "role",
         "component": "views/permission/role",
         "meta": {
-          "title": "角色管理",
+          "title": "权限组管理",
           "icon": "role",
           "hidden": false
         },
@@ -36,7 +36,7 @@ export const asyncRoutes = [
         "component": "views/permission/oauth",
         "meta": {
           "title": "第三方登录",
-          "icon": "el-icon-user",
+          "icon": "el-icon-promotion",
           "hidden": false
         },
 
@@ -60,7 +60,7 @@ export const asyncRoutes = [
     "redirect": "/connect-tree/link",
     "alwaysShow": false,
     "meta": {
-      "title": "数据源管理",
+      "title": "数据源",
       "icon": "el-icon-link"
     },
     "children": [
@@ -94,7 +94,7 @@ export const asyncRoutes = [
     "alwaysShow": false,
     "meta": {
       "title": "插件",
-      "icon": "el-icon-link"
+      "icon": "el-icon-goods-filled"
     },
     "children": [
       {
@@ -103,7 +103,7 @@ export const asyncRoutes = [
         "component": "views/plugins/market",
         "meta": {
           "title": "插件市场",
-          "icon": "el-icon-link",
+          "icon": "el-icon-goods-filled",
           "hidden": false
         },
 
@@ -113,8 +113,8 @@ export const asyncRoutes = [
         "name": "manager",
         "component": "views/plugins/manager",
         "meta": {
-          "title": "插件管理",
-          "icon": "el-icon-link",
+          "title": "插件列表",
+          "icon": "el-icon-list",
           "hidden": false
         },
 

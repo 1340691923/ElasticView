@@ -25,7 +25,7 @@ type WebEngine struct {
 
 func NewWebEngine() *WebEngine {
 	gin.SetMode(gin.ReleaseMode)
-	return &WebEngine{g: gin.Default()}
+	return &WebEngine{g: gin.New()}
 }
 
 func (this *WebEngine) GetGinEngine() *gin.Engine {
