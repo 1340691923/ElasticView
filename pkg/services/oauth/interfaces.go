@@ -19,9 +19,13 @@ type OAuthInterface interface {
 
 func ProvideOAuthServiceRegistry(
 	workWechat *WorkWechat,
+	dingtalk *Dingtalk,
+	feishu *Feishu,
 ) *OAuthServiceRegistry {
 	return NewOAuthServiceRegistry(
 		workWechat,
+		dingtalk,
+		feishu,
 	)
 }
 
