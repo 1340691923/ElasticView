@@ -114,10 +114,18 @@ func (this *GmUserService) CheckLoginByOAuth(ctx context.Context, code string, s
 			Avatar:        ui.AvatarUrl,
 			Realname:      ui.DisplayName,
 			Email:         ui.Email,
-			WorkWechatUid: ui.Id,
 			UpdateTime:    time.Now(),
 			CreateTime:    time.Now(),
 			LastLoginTime: time.Now(),
+		}
+		
+		switch svr.GetAppliactionName() {
+		case "企业微信认证":
+			gmUser.WorkWechatUid = ui.Id
+		case "钉钉认证":
+			gmUser.DingtalkId = ui.Id
+		case "飞书认证":
+			gmUser.FeishuOpenId = ui.Id
 		}
 		tx := this.orm.Begin()
 		//开始插入数据
