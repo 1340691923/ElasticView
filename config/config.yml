@@ -19,6 +19,14 @@ oauth:
         corpid: ""
         enable: false
         secert: ""
+    dingtalk:
+        appid: ""
+        appsecret: ""
+        enable: false
+    feishu:
+        appid: ""
+        appsecret: ""
+        enable: false
 plugin:
     loadpath: plugins
     storepath: plugins_store

@@ -16,6 +16,8 @@ type GmUserModel struct {
 	Realname      string `gorm:"column:realname;default:" json:"realname"`
 	Email         string `gorm:"column:email;default:" json:"email"`
 	WorkWechatUid string `gorm:"column:work_wechat_uid;default:" json:"work_wechat_uid"`
+	DingtalkId    string `gorm:"column:dingtalk_id;default:" json:"dingtalk_id"`
+	FeishuOpenId  string `gorm:"column:feishu_open_id;default:" json:"feishu_open_id"`
 
 	UpdateTime    time.Time `gorm:"column:update_time;type:timestamp;default:CURRENT_TIMESTAMP;NOT NULL" json:"update_time"`
 	CreateTime    time.Time `gorm:"column:create_time;type:timestamp;default:CURRENT_TIMESTAMP;NOT NULL" json:"create_time"`

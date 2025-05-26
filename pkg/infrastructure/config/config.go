@@ -183,6 +183,8 @@ func (this *Config) LoadEnv() *Config {
 
 type OAuth struct {
 	WorkWechat WorkWechat `json:"workWechat"`
+	Dingtalk   Dingtalk   `json:"dingtalk"`
+	Feishu     Feishu     `json:"feishu"`
 }
 
 type AI struct {
@@ -194,6 +196,18 @@ type WorkWechat struct {
 	AgentId string `json:"agentId"`
 	Secert  string `json:"secert"`
 	Enable  bool   `json:"enable"`
+}
+
+type Dingtalk struct {
+	AppId     string `json:"appId"`
+	AppSecret string `json:"appSecret"`
+	Enable    bool   `json:"enable"`
+}
+
+type Feishu struct {
+	AppId     string `json:"appId"`
+	AppSecret string `json:"appSecret"`
+	Enable    bool   `json:"enable"`
 }
 
 type Translation struct {
@@ -493,6 +507,90 @@ func (this *Config) SetWorkWechatEnable(enable bool) *Config {
 	defer this.lock.Unlock()
 	this.OAuth.WorkWechat.Enable = enable
 	vip.Set("oauth.workWechat.enable", enable)
+	return this
+}
+
+func (this *Config) DingtalkAppId() string {
+	this.lock.RLock()
+	defer this.lock.RUnlock()
+	return this.OAuth.Dingtalk.AppId
+}
+
+func (this *Config) DingtalkAppSecret() string {
+	this.lock.RLock()
+	defer this.lock.RUnlock()
+	return this.OAuth.Dingtalk.AppSecret
+}
+
+func (this *Config) DingtalkEnable() bool {
+	this.lock.RLock()
+	defer this.lock.RUnlock()
+	return this.OAuth.Dingtalk.Enable
+}
+
+func (this *Config) SetDingtalkAppId(appId string) *Config {
+	this.lock.Lock()
+	defer this.lock.Unlock()
+	this.OAuth.Dingtalk.AppId = appId
+	vip.Set("oauth.dingtalk.appId", appId)
+	return this
+}
+
+func (this *Config) SetDingtalkAppSecret(appSecret string) *Config {
+	this.lock.Lock()
+	defer this.lock.Unlock()
+	this.OAuth.Dingtalk.AppSecret = appSecret
+	vip.Set("oauth.dingtalk.appSecret", appSecret)
+	return this
+}
+
+func (this *Config) SetDingtalkEnable(enable bool) *Config {
+	this.lock.Lock()
+	defer this.lock.Unlock()
+	this.OAuth.Dingtalk.Enable = enable
+	vip.Set("oauth.dingtalk.enable", enable)
+	return this
+}
+
+func (this *Config) FeishuAppId() string {
+	this.lock.RLock()
+	defer this.lock.RUnlock()
+	return this.OAuth.Feishu.AppId
+}
+
+func (this *Config) FeishuAppSecret() string {
+	this.lock.RLock()
+	defer this.lock.RUnlock()
+	return this.OAuth.Feishu.AppSecret
+}
+
+func (this *Config) FeishuEnable() bool {
+	this.lock.RLock()
+	defer this.lock.RUnlock()
+	return this.OAuth.Feishu.Enable
+}
+
+func (this *Config) SetFeishuAppId(appId string) *Config {
+	this.lock.Lock()
+	defer this.lock.Unlock()
+	this.OAuth.Feishu.AppId = appId
+	vip.Set("oauth.feishu.appId", appId)
+	return this
+}
+
+func (this *Config) SetFeishuAppSecret(appSecret string) *Config {
+	this.lock.Lock()
+	defer this.lock.Unlock()
+	this.OAuth.Feishu.AppSecret = appSecret
+	vip.Set("oauth.feishu.appSecret", appSecret)
+	return this
+}
+
+func (this *Config) SetFeishuEnable(enable bool) *Config {
+	this.lock.Lock()
+	defer this.lock.Unlock()
+	this.OAuth.Feishu.Enable = enable
+	vip.Set("oauth.feishu.enable", enable)
 	return this
 }
 

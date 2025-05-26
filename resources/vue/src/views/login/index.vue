@@ -112,38 +112,8 @@
             <span class="text-gray-400">其他</span>
           </el-divider>
 
-          <el-form-item class="flex justify-center">
-            <span class="flex gap-4">
-             <template v-for="(v, index) in data.oauthConfigs">
-  <div
-    :title="v.enable ? v.name : `${v.name}（未开启认证）`"
-    class="inline-block transition-all duration-300"
-    :class="v.enable ? 'hover:scale-110 cursor-pointer' : 'opacity-50 cursor-not-allowed'"
-  >
-    <a
-      v-if="v.enable"
-      :href="v.oauthUrl"
-    >
-      <el-image
-        v-if="v.img === 'work_wechat'"
-        :src="work_wechat"
-        :alt="v.name"
-        class="provider-img"
-      />
-    </a>
-    <template v-else>
-      <el-image
-        v-if="v.img === 'work_wechat'"
-        :src="work_wechat"
-        :alt="v.name"
-        class="provider-img"
-      />
-    </template>
-  </div>
-</template>
+          <social-signin />
 
-            </span>
-          </el-form-item>
         </el-form>
       </div>
     </div>
@@ -154,6 +124,7 @@
 import { ref } from 'vue'
 import { View, Hide } from '@element-plus/icons-vue'
 import {GetOAuthList} from "@/api/user";
+import SocialSignin from './components/SocialSignin.vue';
 
 const logo = ref(new URL(`@/assets/logo.png`, import.meta.url).href);
 //图片列表
