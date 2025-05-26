@@ -100,11 +100,14 @@ VALUES(1, 'admin', '超级管理员', '[{"path":"/permission","component":"layou
 DROP TABLE IF EXISTS `gm_user`;
 CREATE TABLE `gm_user`
 (
-    `id`       int(11) NOT NULL AUTO_INCREMENT,
-    `username` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-    `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-    `role_id`  int(11) DEFAULT NULL COMMENT '角色id',
-    `realname` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '真实姓名',
+    `id`            int(11) NOT NULL AUTO_INCREMENT,
+    `username`      varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+    `password`      varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+    `role_id`       int(11) DEFAULT NULL COMMENT '角色id',
+    `realname`      varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '真实姓名',
+    `wechat_open_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '企业微信OpenID',
+    `dingtalk_id`   varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '钉钉ID',
+    `feishu_open_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '飞书OpenID',
     PRIMARY KEY (`id`) USING BTREE,
     UNIQUE INDEX `gm_user_username`(`username`) USING BTREE COMMENT '角色名唯一索引'
 ) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;

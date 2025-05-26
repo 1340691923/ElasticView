@@ -21,4 +21,10 @@ func (this *WebServer) runManagerUser() {
 		group.POST(true, "新增用户", "/InsertUser", this.managerUserController.UserAddAction)
 		group.POST(true, "删除用户", "/DelUser", this.managerUserController.DeleteUserAction)
 	}
+	
+	oauthGroup := this.engine.Group("OAuth认证", "/api/oauth")
+	{
+		oauthGroup.GET(false, "OAuth回调", "/:provider/callback", this.managerUserController.OAuthCallback)
+		oauthGroup.GET(false, "OAuth配置", "/config", this.managerUserController.OAuthConfig)
+	}
 }

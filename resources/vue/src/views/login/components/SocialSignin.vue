@@ -1,12 +1,16 @@
 <template>
   <div class="social-signup-container">
-    <div class="sign-btn" @click="wechatHandleClick('wechat')">
+    <div class="sign-btn" @click="handleOAuthClick('wechat')">
       <span class="wx-svg-container"><svg-icon icon-class="wechat" class="icon"/></span>
-      WeChat
+      企业微信
     </div>
-    <div class="sign-btn" @click="tencentHandleClick('tencent')">
-      <span class="qq-svg-container"><svg-icon icon-class="qq" class="icon"/></span>
-      QQ
+    <div class="sign-btn" @click="handleOAuthClick('dingtalk')">
+      <span class="dingtalk-svg-container"><svg-icon icon-class="dingtalk" class="icon"/></span>
+      钉钉
+    </div>
+    <div class="sign-btn" @click="handleOAuthClick('feishu')">
+      <span class="feishu-svg-container"><svg-icon icon-class="feishu" class="icon"/></span>
+      飞书
     </div>
   </div>
 </template>
@@ -16,22 +20,55 @@ import openWindow from '@/utils/open-window'
 
 export default {
   name: 'SocialSignin',
+  data() {
+    return {
+      oauthConfig: {
+        wechat: {
+          appId: 'wx39f7f96daaec1f96',
+          authUrl: 'https://open.weixin.qq.com/connect/qrconnect',
+          scope: 'snsapi_login',
+          responseType: 'code',
+          hash: '#wechat_redirect'
+        },
+        dingtalk: {
+          appId: 'your_dingtalk_app_id',
+          authUrl: 'https://login.dingtalk.com/oauth2/auth',
+          scope: 'openid',
+          responseType: 'code',
+          hash: ''
+        },
+        feishu: {
+          appId: 'your_feishu_app_id',
+          authUrl: 'https://open.feishu.cn/open-apis/authen/v1/index',
+          scope: 'user_info',
+          responseType: 'code',
+          hash: ''
+        }
+      }
+    }
+  },
   methods: {
-    wechatHandleClick(thirdpart) {
-      // alert('ok')
-      // this.$store.commit('SET_AUTH_TYPE', thirdpart)
-      const appid = 'wx39f7f96daaec1f96'
-      const redirect_uri = encodeURIComponent('http://localhost:9528/#/login?redirect=' + window.location.origin + '/auth-redirect')
-      const url = 'https://open.weixin.qq.com/connect/qrconnect?appid=' + appid + '&redirect_uri=' + redirect_uri + '&response_type=code&scope=snsapi_login#wechat_redirect'
-      openWindow(url, thirdpart, 540, 540)
-    },
-    tencentHandleClick(thirdpart) {
-      alert('ok')
-      // this.$store.commit('SET_AUTH_TYPE', thirdpart)
-      /* const client_id = '1110059239'
-       const redirect_uri = encodeURIComponent('http://localhost:9528/#/login?redirect=' + window.location.origin + '/auth-redirect')
-       const url = 'https://graph.qq.com/oauth2.0/authorize?response_type=code&client_id=' + client_id + '&redirect_uri=' + redirect_uri
-       openWindow(url, thirdpart, 540, 540)*/
+    handleOAuthClick(provider) {
+      const config = this.oauthConfig[provider]
+      if (!config) return
+      
+      const state = provider + '_' + Date.now()
+      const redirect_uri = encodeURIComponent('http://localhost:9528/#/auth-redirect?provider=' + provider)
+      
+      let url = `${config.authUrl}?`
+      
+      // Different providers use different parameter names
+      if (provider === 'feishu') {
+        url += `app_id=${config.appId}&redirect_uri=${redirect_uri}&state=${state}`
+      } else {
+        url += `client_id=${config.appId}&redirect_uri=${redirect_uri}&response_type=${config.responseType}&scope=${config.scope}&state=${state}`
+      }
+      
+      if (config.hash) {
+        url += config.hash
+      }
+      
+      openWindow(url, provider, 540, 540)
     }
   }
 }

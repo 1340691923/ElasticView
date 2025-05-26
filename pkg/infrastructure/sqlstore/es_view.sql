@@ -49,11 +49,14 @@ VALUES(1, 'admin', '超级管理员', '[{"path":"/permission","component":"layou
 DROP TABLE IF EXISTS `gm_user`;
 CREATE TABLE `gm_user`
 (
-    `id`       INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-    `username` TEXT    DEFAULT NULL,
-    `password` TEXT    DEFAULT NULL,
-    `role_id`  INTEGER DEFAULT NULL,
-    `realname` TEXT    DEFAULT ''
+    `id`            INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    `username`      TEXT    DEFAULT NULL,
+    `password`      TEXT    DEFAULT NULL,
+    `role_id`       INTEGER DEFAULT NULL,
+    `realname`      TEXT    DEFAULT '',
+    `wechat_open_id` TEXT   DEFAULT '',
+    `dingtalk_id`   TEXT    DEFAULT '',
+    `feishu_open_id` TEXT   DEFAULT ''
 );
 CREATE UNIQUE INDEX gm_user_username on gm_user (`username`);
 INSERT INTO `gm_user`

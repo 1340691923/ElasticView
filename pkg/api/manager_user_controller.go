@@ -12,6 +12,7 @@ import (
 	"github.com/1340691923/ElasticView/pkg/model"
 	"github.com/1340691923/ElasticView/pkg/response"
 	"github.com/1340691923/ElasticView/pkg/services/gm_user"
+	"github.com/1340691923/ElasticView/pkg/services/oauth"
 	"github.com/1340691923/ElasticView/pkg/util"
 	"github.com/davecgh/go-spew/spew"
 	"github.com/gin-gonic/gin"
@@ -30,16 +31,17 @@ type ManagerUserController struct {
 	jwtSvr        *jwt_svr.Jwt
 	gmUserService *gm_user.GmUserService
 	routerEngine  *web_engine.WebEngine
+	oauthRegistry *oauth.OAuthRegistry
 }
 
 func NewManagerUserController(baseController *BaseController, routerEngine *web_engine.WebEngine,
 	log *logger.AppLogger, cfg *config.Config,
 	sqlx *sqlstore.SqlStore, jwtSvr *jwt_svr.Jwt,
-	gmUserService *gm_user.GmUserService) *ManagerUserController {
+	gmUserService *gm_user.GmUserService, oauthRegistry *oauth.OAuthRegistry) *ManagerUserController {
 	return &ManagerUserController{
 		BaseController: baseController, log: log,
 		cfg: cfg, sqlx: sqlx, jwtSvr: jwtSvr, gmUserService: gmUserService,
-		routerEngine: routerEngine}
+		routerEngine: routerEngine, oauthRegistry: oauthRegistry}
 }
 
 // 登录
@@ -295,4 +297,55 @@ func (this *ManagerUserController) UrlConfig(ctx *gin.Context) {
 		}
 	}
 	this.Success(ctx, response.SearchSuccess, list)
+}
+
+func (this *ManagerUserController) OAuthCallback(ctx *gin.Context) {
+	provider := ctx.Param("provider")
+	code := ctx.Query("code")
+	state := ctx.Query("state")
+	
+	this.log.Info("OAuth callback received", 
+		zap.String("provider", provider), 
+		zap.String("code", code), 
+		zap.String("state", state))
+	
+	oauthProvider, exists := this.oauthRegistry.GetProvider(provider)
+	if !exists {
+		this.Error(ctx, errors.New("不支持的认证提供商"))
+		return
+	}
+	
+	tokenResp, err := oauthProvider.ExchangeToken(ctx, code)
+	if err != nil {
+		this.log.Error("Failed to exchange token", zap.Error(err), zap.String("provider", provider))
+		this.Error(ctx, errors.New("认证失败，无法获取令牌"))
+		return
+	}
+	
+	userInfo, err := oauthProvider.GetUserInfo(ctx, tokenResp.AccessToken)
+	if err != nil {
+		this.log.Error("Failed to get user info", zap.Error(err), zap.String("provider", provider))
+		this.Error(ctx, errors.New("认证失败，无法获取用户信息"))
+		return
+	}
+	
+	token, err := this.gmUserService.CheckOAuthLogin(provider, userInfo.ID, userInfo.Name, userInfo.Name)
+	if err != nil {
+		this.log.Error("Failed to login/register user", zap.Error(err), zap.String("provider", provider))
+		this.Error(ctx, errors.New("认证失败，无法登录/注册用户"))
+		return
+	}
+	
+	this.Success(ctx, "登录成功", map[string]interface{}{
+		"token": token, 
+		"unix_time": time.Now().Unix(),
+		"user_info": userInfo,
+	})
+}
+
+func (this *ManagerUserController) OAuthConfig(ctx *gin.Context) {
+	providers := this.oauthRegistry.GetProviderNames()
+	this.Success(ctx, response.SearchSuccess, map[string]interface{}{
+		"providers": providers,
+	})
 }

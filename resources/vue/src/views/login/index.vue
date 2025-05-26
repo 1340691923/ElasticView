@@ -56,7 +56,6 @@
 
           <el-button
             size="mini"
-
             icon="el-icon-switch-button"
             :loading="loading"
             type="primary"
@@ -82,6 +81,11 @@
               <span />
             </div>
           </div>
+          
+          <!-- Social Login -->
+          <div class="social-login">
+            <social-sign-in />
+          </div>
         </el-form>
       </div>
     </div>
@@ -90,8 +94,12 @@
 </template>
 
 <script>
+import SocialSignIn from './components/SocialSignin'
 
 export default {
+  components: {
+    SocialSignIn
+  },
   name: 'Login',
   data() {
     const validatePassword = (rule, value, callback) => {

@@ -30,6 +30,7 @@ import (
 	"github.com/1340691923/ElasticView/pkg/services/gm_user"
 	"github.com/1340691923/ElasticView/pkg/services/index_service"
 	"github.com/1340691923/ElasticView/pkg/services/navicat_service"
+	"github.com/1340691923/ElasticView/pkg/services/oauth"
 	"github.com/1340691923/ElasticView/pkg/web"
 	"github.com/google/wire"
 )
@@ -70,6 +71,7 @@ var wireSet = wire.NewSet(
 	gm_operater_log.NewGmOperaterLogService,
 	api.NewManagerRoleController,
 	gm_role.NewGmRoleService,
+	oauth.NewOAuthRegistry,
 	api.NewManagerUserController,
 	gm_user.NewGmUserService,
 	jwt_svr.NewJwt,

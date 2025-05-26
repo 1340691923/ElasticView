@@ -15,6 +15,9 @@ type GmUserModel struct {
 	Username      string             `json:"username" db:"username"`
 	Password      string             `json:"password" db:"password"`
 	Realname      string             `json:"realname" db:"realname"`
+	WechatOpenId  string             `json:"wechat_open_id" db:"wechat_open_id"`
+	DingtalkId    string             `json:"dingtalk_id" db:"dingtalk_id"`
+	FeishuOpenId  string             `json:"feishu_open_id" db:"feishu_open_id"`
 	CreateTime    string             `db:"create_time" json:"create_time"`
 	UpdateTime    string             `db:"update_time" json:"update_time"`
 	LastLoginTime string             `db:"last_login_time" json:"last_login_time"`

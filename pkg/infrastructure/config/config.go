@@ -48,10 +48,11 @@ type Config struct {
 		MaxOpenConns int    `json:"maxOpenConns"`
 		MaxIdleConns int    `json:"maxIdleConns"`
 	} `json:"mysql"`
-	AppSecret   string `json:"appSecret"`
-	Version     string `json:"version"`
-	DeBug       bool   `json:"deBug"`
-	EsPwdSecret string `json:"esPwdSecret"`
+	OAuth       *OAuthConfig `json:"oauth"`
+	AppSecret   string       `json:"appSecret"`
+	Version     string       `json:"version"`
+	DeBug       bool         `json:"deBug"`
+	EsPwdSecret string       `json:"esPwdSecret"`
 }
 
 func (this *Config) GetDbType() string {
