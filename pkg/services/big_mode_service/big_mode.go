@@ -23,17 +23,24 @@ const CommonSysMd = ` 最终结果以Markdown语法格式输出，不要使用�
 const CompatibleModeUrl = "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions"
 
 type BigMode struct {
-	log *logger.AppLogger
-	key string
+	log         *logger.AppLogger
+	qwenKey     string
+	openaiKey   string
+	deepseekKey string
 }
 
 func NewBigMode(log *logger.AppLogger, cfg *config.Config) *BigMode {
-	return &BigMode{log: log, key: cfg.Ai.BigModeKey}
+	return &BigMode{
+		log:         log,
+		qwenKey:     cfg.Ai.BigModeKey,
+		openaiKey:   cfg.Ai.OpenAIKey,
+		deepseekKey: cfg.Ai.DeepSeekKey,
+	}
 }
 
 func (this *BigMode) BigModelSearch(sysContent, content string) (resContent string, err error) {
 
-	if this.key == "" {
+	if this.qwenKey == "" {
 		err = errors.New("请修改config.yml中的bigModeKey,获取地址: https://bailian.console.aliyun.com/?apiKey=1#/api-key ")
 		return
 	}
@@ -71,7 +78,7 @@ func (this *BigMode) BigModelSearch(sysContent, content string) (resContent stri
 		return
 	}
 
-	req.Header.Set("Authorization", "Bearer "+this.key)
+	req.Header.Set("Authorization", "Bearer "+this.qwenKey)
 	req.Header.Set("Content-Type", "application/json")
 
 	// 发送请求
@@ -130,5 +137,179 @@ func (this *BigMode) BigModelSearch(sysContent, content string) (resContent stri
 
 	resContent = responseBody.Choices[0].Message.Content
 
+	return
+}
+
+func (this *BigMode) ChatGPTSearch(sysContent, content string) (resContent string, err error) {
+	if this.openaiKey == "" {
+		err = errors.New("请配置OpenAI API Key")
+		return
+	}
+	
+	url := "https://api.openai.com/v1/chat/completions"
+	requestBody := map[string]interface{}{
+		"model": "gpt-3.5-turbo",
+		"messages": []map[string]string{
+			{"role": "system", "content": sysContent},
+			{"role": "user", "content": content},
+		},
+	}
+	
+	jsonBody, err := json.Marshal(requestBody)
+	if err != nil {
+		this.log.Error("err", zap.Error(err))
+		err = errors.WithStack(err)
+		return
+	}
+	
+	// 创建请求
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonBody))
+	if err != nil {
+		this.log.Error("err", zap.Error(err))
+		err = errors.WithStack(err)
+		return
+	}
+	
+	req.Header.Set("Authorization", "Bearer "+this.openaiKey)
+	req.Header.Set("Content-Type", "application/json")
+	
+	// 发送请求
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		this.log.Error("err", zap.Error(err))
+		err = errors.WithStack(err)
+		return
+	}
+	defer resp.Body.Close()
+	
+	// 读取响应
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		this.log.Error("err", zap.Error(err))
+		err = errors.WithStack(err)
+		return
+	}
+	
+	type ResBody struct {
+		Choices []struct {
+			Message struct {
+				Role    string `json:"role"`
+				Content string `json:"content"`
+			} `json:"message"`
+			FinishReason string      `json:"finish_reason"`
+			Index        int         `json:"index"`
+			Logprobs     interface{} `json:"logprobs"`
+		} `json:"choices"`
+		Object string `json:"object"`
+		Usage  struct {
+			PromptTokens     int `json:"prompt_tokens"`
+			CompletionTokens int `json:"completion_tokens"`
+			TotalTokens      int `json:"total_tokens"`
+		} `json:"usage"`
+	}
+	
+	var responseBody ResBody
+	err = json.Unmarshal(body, &responseBody)
+	if err != nil {
+		this.log.Error("err", zap.Error(err))
+		err = errors.WithStack(err)
+		return
+	}
+	if len(responseBody.Choices) == 0 {
+		err = errors.New("解析失败")
+		this.log.Error("err", zap.Error(err))
+		return
+	}
+	
+	resContent = responseBody.Choices[0].Message.Content
+	
+	return
+}
+
+func (this *BigMode) DeepSeekSearch(sysContent, content string) (resContent string, err error) {
+	if this.deepseekKey == "" {
+		err = errors.New("请配置DeepSeek API Key")
+		return
+	}
+	
+	url := "https://api.deepseek.com/v1/chat/completions"
+	requestBody := map[string]interface{}{
+		"model": "deepseek-chat",
+		"messages": []map[string]string{
+			{"role": "system", "content": sysContent},
+			{"role": "user", "content": content},
+		},
+	}
+	
+	jsonBody, err := json.Marshal(requestBody)
+	if err != nil {
+		this.log.Error("err", zap.Error(err))
+		err = errors.WithStack(err)
+		return
+	}
+	
+	// 创建请求
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonBody))
+	if err != nil {
+		this.log.Error("err", zap.Error(err))
+		err = errors.WithStack(err)
+		return
+	}
+	
+	req.Header.Set("Authorization", "Bearer "+this.deepseekKey)
+	req.Header.Set("Content-Type", "application/json")
+	
+	// 发送请求
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		this.log.Error("err", zap.Error(err))
+		err = errors.WithStack(err)
+		return
+	}
+	defer resp.Body.Close()
+	
+	// 读取响应
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		this.log.Error("err", zap.Error(err))
+		err = errors.WithStack(err)
+		return
+	}
+	
+	type ResBody struct {
+		Choices []struct {
+			Message struct {
+				Role    string `json:"role"`
+				Content string `json:"content"`
+			} `json:"message"`
+			FinishReason string      `json:"finish_reason"`
+			Index        int         `json:"index"`
+			Logprobs     interface{} `json:"logprobs"`
+		} `json:"choices"`
+		Object string `json:"object"`
+		Usage  struct {
+			PromptTokens     int `json:"prompt_tokens"`
+			CompletionTokens int `json:"completion_tokens"`
+			TotalTokens      int `json:"total_tokens"`
+		} `json:"usage"`
+	}
+	
+	var responseBody ResBody
+	err = json.Unmarshal(body, &responseBody)
+	if err != nil {
+		this.log.Error("err", zap.Error(err))
+		err = errors.WithStack(err)
+		return
+	}
+	if len(responseBody.Choices) == 0 {
+		err = errors.New("解析失败")
+		this.log.Error("err", zap.Error(err))
+		return
+	}
+	
+	resContent = responseBody.Choices[0].Message.Content
+	
 	return
 }
