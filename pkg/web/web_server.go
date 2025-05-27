@@ -43,10 +43,32 @@ type WebServer struct {
 	esMappingController   *api.EsMappingController
 	esTaskController      *api.EsTaskController
 	guidController        *api.GuidController
+	aiController          *api.AiController
 }
 
 func NewWebServer(engine *web_engine.WebEngine, log *logger.AppLogger, cfg *config.Config, rbac *access_control.Rbac, middleWareService *middleware.MiddleWareService, gmOperaterController *api.GmOperaterController, managerRoleController *api.ManagerRoleController, managerUserController *api.ManagerUserController, esLinkController *api.EsLinkController, dslHistoryController *api.DslHistoryController, esBackUpController *api.EsBackUpController, esController *api.EsController, esCrudController *api.EsCrudController, esDocController *api.EsDocController, esIndexController *api.EsIndexController, esMappingController *api.EsMappingController, esTaskController *api.EsTaskController, guidController *api.GuidController) *WebServer {
-	return &WebServer{engine: engine, log: log, cfg: cfg, rbac: rbac, middleWareService: middleWareService, gmOperaterController: gmOperaterController, managerRoleController: managerRoleController, esLinkController: esLinkController, managerUserController: managerUserController, dslHistoryController: dslHistoryController, esBackUpController: esBackUpController, esController: esController, esCrudController: esCrudController, esDocController: esDocController, esIndexController: esIndexController, esMappingController: esMappingController, esTaskController: esTaskController, guidController: guidController}
+	aiController := api.NewAiController()
+	return &WebServer{
+		engine:                engine, 
+		log:                   log, 
+		cfg:                   cfg, 
+		rbac:                  rbac, 
+		middleWareService:     middleWareService, 
+		gmOperaterController:  gmOperaterController, 
+		managerRoleController: managerRoleController, 
+		esLinkController:      esLinkController, 
+		managerUserController: managerUserController, 
+		dslHistoryController:  dslHistoryController, 
+		esBackUpController:    esBackUpController, 
+		esController:          esController, 
+		esCrudController:      esCrudController, 
+		esDocController:       esDocController, 
+		esIndexController:     esIndexController, 
+		esMappingController:   esMappingController, 
+		esTaskController:      esTaskController, 
+		guidController:        guidController,
+		aiController:          aiController,
+	}
 }
 
 func (this *WebServer) runRouter() {
@@ -91,6 +113,7 @@ func (this *WebServer) runRouter() {
 	this.runEsMap()
 	this.runEsTask()
 	this.runGmGuid()
+	this.runAI()
 
 }
 

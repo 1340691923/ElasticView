@@ -259,6 +259,27 @@ export const asyncRoutes = [
       }
     ]
   },
+  {
+    path: '/ai',
+    component: 'layout',
+    redirect: '/ai/config',
+    alwaysShow: false,
+    meta: {
+      title: 'AI管理',
+      icon: 'el-icon-cpu'
+    },
+    children: [
+      {
+        path: 'config',
+        component: 'views/ai/config',
+        name: 'ai-config',
+        meta: {
+          title: 'AI配置',
+          icon: 'el-icon-setting'
+        }
+      }
+    ]
+  },
 ]
 
 const createRouter = () => new Router({

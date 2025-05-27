@@ -52,6 +52,7 @@ type Config struct {
 	Version     string `json:"version"`
 	DeBug       bool   `json:"deBug"`
 	EsPwdSecret string `json:"esPwdSecret"`
+	Ai          AI     `json:"ai"`
 }
 
 func (this *Config) GetDbType() string {
