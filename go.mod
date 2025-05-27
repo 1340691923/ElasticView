@@ -1,6 +1,8 @@
 module github.com/1340691923/ElasticView
 
-go 1.20
+go 1.23.0
+
+toolchain go1.23.1
 
 replace github.com/1340691923/eve-plugin-sdk-go => ../eve-plugin-sdk-go
 
