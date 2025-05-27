@@ -74,7 +74,9 @@ func Initialize(args *config.CommandLineArgs) (*Server, error) {
 	gmRoleDao := dao.NewGmRoleDao(gorm)
 	pluginManager := manager.NewPluginManager()
 	workWechat := oauth.NewWorkWechat(configConfig)
-	oAuthServiceRegistry := oauth.ProvideOAuthServiceRegistry(workWechat)
+	dingtalk := oauth.NewDingtalk(configConfig)
+	feishu := oauth.NewFeishu(configConfig)
+	oAuthServiceRegistry := oauth.ProvideOAuthServiceRegistry(workWechat, dingtalk, feishu)
 	gmUserService := gm_user.NewGmUserService(zapLogger, gmUserDao, gmRoleDao, jwt, pluginManager, configConfig, gorm, oAuthServiceRegistry)
 	gmOperaterLogService := gm_operater_log.NewGmOperaterLogService(zapLogger, gorm)
 	middleWareService := middleware.NewMiddleWareService(configConfig, gorm, zapLogger, jwt, responseResponse, gmUserService, rbac, webEngine, pluginManager, gmOperaterLogService)
@@ -229,6 +231,15 @@ func InitializeNoticeDao(args *config.CommandLineArgs) (*dao.NoticeDao, error) {
 	return noticeDao, nil
 }
 
+func InitializeDingtalk(args *config.CommandLineArgs) (*oauth.Dingtalk, error) {
+	configConfig, err := config.InitConfig(args)
+	if err != nil {
+		return nil, err
+	}
+	dingtalk := oauth.NewDingtalk(configConfig)
+	return dingtalk, nil
+}
+
 // wire.go:
 
-var wireSet = wire.NewSet(wire.Bind(new(registry.BackgroundServiceRegistry), new(*backgroundsvcs.BackgroundServiceRegistry)), notice_service.NewNoticeService, api.NewNoticeController, dao.NewNoticeDao, live_svr.NewLive, api.NewWsController, print_logo.ProvidePrintLogo, webview.ProvideWebView, oauth.ProvideOAuthServiceRegistry, oauth.NewWorkWechat, big_mode_service.NewBigMode, api.NewAiController, plugin_install_service.ProvideInstaller, wire.Bind(new(manager.Service), new(*manager.PluginManager)), api.NewPluginController, process.ProvideService, migrator.NewMigrator, config.InitConfig, manager.NewPluginManager, pluginstore.NewPluginStoreService, eve_api.NewEvApi, eve_service.NewEvEService, dao.NewEvBackDao, logger.InitLog, dao.NewEslinkCfgV2Dao, dao.NewGmRoleDao, dao.NewGmUserDao, dao.NewEsLinkV2Dao, dao.NewGmRoleEslinkCfgV2Dao, dao.NewEslinkRoleCfgReletion, updatechecker.ProvidePluginsService, orm.NewGorm, cache_service.NewEsCache, request.NewRequest, response.NewResponse, api.NewBaseController, api.NewIndexController, updatechecker.ProvideEvUpdate, api.NewPluginUtilController, plugin_service.NewPluginService, api.NewEsController, api.NewEsLinkController, es.NewEsClientService, es_link_service.NewEsLinkService, es_service.NewEsService, api.NewGmOperaterController, gm_operater_log.NewGmOperaterLogService, api.NewManagerRoleController, gm_role.NewGmRoleService, api.NewManagerUserController, gm_user.NewGmUserService, jwt_svr.NewJwt, middleware.NewMiddleWareService, backgroundsvcs.ProvideBackgroundServiceRegistry, access_control.NewRbac, web_engine.NewWebEngine, web.NewWebServer, plugin_rpc.NewPluginRpcServer, NewServer)
+var wireSet = wire.NewSet(wire.Bind(new(registry.BackgroundServiceRegistry), new(*backgroundsvcs.BackgroundServiceRegistry)), notice_service.NewNoticeService, oauth.NewDingtalk, oauth.NewFeishu, api.NewNoticeController, dao.NewNoticeDao, live_svr.NewLive, api.NewWsController, print_logo.ProvidePrintLogo, webview.ProvideWebView, oauth.ProvideOAuthServiceRegistry, oauth.NewWorkWechat, big_mode_service.NewBigMode, api.NewAiController, plugin_install_service.ProvideInstaller, wire.Bind(new(manager.Service), new(*manager.PluginManager)), api.NewPluginController, process.ProvideService, migrator.NewMigrator, config.InitConfig, manager.NewPluginManager, pluginstore.NewPluginStoreService, eve_api.NewEvApi, eve_service.NewEvEService, dao.NewEvBackDao, logger.InitLog, dao.NewEslinkCfgV2Dao, dao.NewGmRoleDao, dao.NewGmUserDao, dao.NewEsLinkV2Dao, dao.NewGmRoleEslinkCfgV2Dao, dao.NewEslinkRoleCfgReletion, updatechecker.ProvidePluginsService, orm.NewGorm, cache_service.NewEsCache, request.NewRequest, response.NewResponse, api.NewBaseController, api.NewIndexController, updatechecker.ProvideEvUpdate, api.NewPluginUtilController, plugin_service.NewPluginService, api.NewEsController, api.NewEsLinkController, es.NewEsClientService, es_link_service.NewEsLinkService, es_service.NewEsService, api.NewGmOperaterController, gm_operater_log.NewGmOperaterLogService, api.NewManagerRoleController, gm_role.NewGmRoleService, api.NewManagerUserController, gm_user.NewGmUserService, jwt_svr.NewJwt, middleware.NewMiddleWareService, backgroundsvcs.ProvideBackgroundServiceRegistry, access_control.NewRbac, web_engine.NewWebEngine, web.NewWebServer, plugin_rpc.NewPluginRpcServer, NewServer)

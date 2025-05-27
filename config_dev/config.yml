@@ -16,6 +16,15 @@ mysql:
     pwd: 123456
     username: root
 oauth:
+    dingtalk:
+        appid: "111"
+        appsecret: "123"
+        clientid: dingycls0zzps44fa8yi
+        enable: false
+    feishu:
+        appid: ""
+        appsecret: ""
+        enable: true
     workwechat:
         agentid: ""
         corpid: ""
@@ -26,7 +35,7 @@ plugin:
     storepath: plugins_store
 pluginrpcport: 8091
 port: 8090
-rooturl: ""
+rooturl: http://demo.elastic-view.cn/
 sqlite:
     dbname: D:\eve\ev2\ev_store\data\es_view.db
 storefiledir: store_file_dir

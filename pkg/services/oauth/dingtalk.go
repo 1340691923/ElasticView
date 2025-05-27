@@ -45,7 +45,7 @@ func (this *Dingtalk) GetOAuthUrl(callback string, state map[string]interface{})
 	return fmt.Sprintf("https://login.dingtalk.com/oauth2/auth?"+
 		"response_type=code"+
 		"&client_id=%s"+
-		"&scope=openid"+
+		"&scope=openid&prompt=login consent"+
 		"&state=%s"+
 		"&redirect_uri=%s",
 		this.cfg.DingtalkAppId(),
@@ -76,30 +76,30 @@ func (this *Dingtalk) MockGetToken(code string) (*oauth2.Token, error) {
 func (this *Dingtalk) GetToken(code string) (*oauth2.Token, error) {
 
 	tokenUrl := "https://api.dingtalk.com/v1.0/oauth2/userAccessToken"
-	
+
 	requestBody := map[string]string{
-		"clientId": this.cfg.DingtalkAppId(),
+		"clientId":     this.cfg.DingtalkAppId(),
 		"clientSecret": this.cfg.DingtalkAppSecret(),
-		"code": code,
-		"grantType": "authorization_code",
+		"code":         code,
+		"grantType":    "authorization_code",
 	}
-	
+
 	jsonBody, err := json.Marshal(requestBody)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
-	
+
 	data, err := util.PostJSON(tokenUrl, jsonBody)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
 
 	tokenResp := struct {
-		AccessToken string `json:"accessToken"`
-		ExpiresIn   int    `json:"expireIn"`
+		AccessToken  string `json:"accessToken"`
+		ExpiresIn    int    `json:"expireIn"`
 		RefreshToken string `json:"refreshToken"`
 	}{}
-	
+
 	err = json.Unmarshal(data, &tokenResp)
 	if err != nil {
 		return nil, errors.WithStack(err)
@@ -143,11 +143,11 @@ func (this *Dingtalk) MockGetUserInfo(token *oauth2.Token) (*UserInfo, error) {
 func (this *Dingtalk) GetUserInfo(token *oauth2.Token) (*UserInfo, error) {
 
 	userInfoUrl := "https://api.dingtalk.com/v1.0/contact/users/me"
-	
+
 	headers := map[string]string{
 		"x-acs-dingtalk-access-token": token.AccessToken,
 	}
-	
+
 	data, err := util.GetURLWithHeaders(userInfoUrl, headers)
 	if err != nil {
 		return nil, errors.WithStack(err)
@@ -160,7 +160,7 @@ func (this *Dingtalk) GetUserInfo(token *oauth2.Token) (*UserInfo, error) {
 		Email     string `json:"email"`
 		AvatarUrl string `json:"avatarUrl"`
 	}{}
-	
+
 	err = json.Unmarshal(data, &userResp)
 	if err != nil {
 		return nil, errors.WithStack(err)
@@ -184,7 +184,7 @@ func (this *Dingtalk) GetUserInfo(token *oauth2.Token) (*UserInfo, error) {
 
 func (this *Dingtalk) GetConfig() map[string]interface{} {
 	return map[string]interface{}{
-		"appId":     this.cfg.DingtalkAppId(),
+		"clientid":  this.cfg.DingtalkAppId(),
 		"appSecret": this.cfg.DingtalkAppSecret(),
 		"enable":    this.cfg.DingtalkEnable(),
 		"rootUrl":   this.cfg.GetRootUrl(),
@@ -193,7 +193,7 @@ func (this *Dingtalk) GetConfig() map[string]interface{} {
 
 func (this *Dingtalk) SetConfig(data map[string]interface{}) {
 	this.cfg.
-		SetDingtalkAppId(cast.ToString(data["appId"])).
+		SetDingtalkAppId(cast.ToString(data["clientid"])).
 		SetDingtalkAppSecret(cast.ToString(data["appSecret"])).
 		SetDingtalkEnable(cast.ToBool(data["enable"])).
 		SetRootUrl(cast.ToString(data["rootUrl"])).

@@ -112,8 +112,65 @@
             <span class="text-gray-400">其他</span>
           </el-divider>
 
-          <social-signin />
+          <el-form-item class="flex justify-center">
+            <span class="flex gap-4">
+             <template v-for="(v, index) in data.oauthConfigs">
+  <div
+    :title="v.enable ? v.name : `${v.name}（未开启认证）`"
+    class="inline-block transition-all duration-300"
+    :class="v.enable ? 'hover:scale-110 cursor-pointer' : 'opacity-50 cursor-not-allowed'"
+  >
+    <a
+      v-if="v.enable"
+      :href="v.oauthUrl"
+    >
+      <el-image
+        v-if="v.img === 'work_wechat'"
+        :src="work_wechat"
+        :alt="v.name"
+        class="provider-img"
+      />
+       <el-image
+         v-if="v.img === 'dingtalk'"
+         :src="dingdingPng"
+         :alt="v.name"
+         class="provider-img"
+       />
 
+       <el-image
+         v-if="v.img === 'feishu'"
+         :src="socialLarkPng"
+         :alt="v.name"
+         class="provider-img"
+       />
+    </a>
+    <template v-else>
+      <el-image
+        v-if="v.img === 'work_wechat'"
+        :src="work_wechat"
+        :alt="v.name"
+        class="provider-img"
+      />
+       <el-image
+         v-if="v.img === 'dingtalk'"
+         :src="dingdingPng"
+         :alt="v.name"
+         class="provider-img"
+       />
+
+       <el-image
+         v-if="v.img === 'feishu'"
+         :src="socialLarkPng"
+         :alt="v.name"
+         class="provider-img"
+       />
+    </template>
+
+  </div>
+</template>
+
+            </span>
+          </el-form-item>
         </el-form>
       </div>
     </div>
@@ -124,12 +181,15 @@
 import { ref } from 'vue'
 import { View, Hide } from '@element-plus/icons-vue'
 import {GetOAuthList} from "@/api/user";
-import SocialSignin from './components/SocialSignin.vue';
 
 const logo = ref(new URL(`@/assets/logo.png`, import.meta.url).href);
 //图片列表
 const work_wechat = ref(new URL(`@/assets/images/work_wechat.png`, import.meta.url).href);
 //
+const dingdingPng = ref(new URL(`@/assets/images/social_dingtalk.png`, import.meta.url).href);
+
+const socialLarkPng = ref(new URL(`@/assets/images/social_lark.png`, import.meta.url).href);
+
 
 
 const appStore = useAppStore();

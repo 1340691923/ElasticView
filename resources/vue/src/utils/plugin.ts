@@ -111,14 +111,14 @@ export function RegisterMicroApps(pluginList){
       NProgress.start()
       loadingInstance = ElLoading.service({
         lock: true,
-        text: app.name+'插件正在加载中...',
+        text: app.show_name+'插件正在加载中...',
         background: 'rgba(0, 0, 0, 0.7)'
       }); // 开启全局Loading
-      console.log('加载插件前，加载进度条',app.name)
+      console.log('加载插件前，加载进度条',app.show_name)
       return Promise.resolve()
     },
     beforeMount:(app) =>{
-      console.log('挂载插件前，加载进度条', app.name)
+      console.log('挂载插件前，加载进度条', app.show_name)
       return Promise.resolve()
     },
     // qiankun 生命周期钩子 - 挂载后
@@ -127,7 +127,7 @@ export function RegisterMicroApps(pluginList){
       if (loadingInstance) {
         loadingInstance.close(); // 关闭全局Loading
       }
-      console.log('挂载插件后，进度条加载完成', app.name)
+      console.log('挂载插件后，进度条加载完成', app.show_name)
       return Promise.resolve()
     },
   })

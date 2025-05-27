@@ -118,11 +118,11 @@ func (this *GmUserService) CheckLoginByOAuth(ctx context.Context, code string, s
 			CreateTime:    time.Now(),
 			LastLoginTime: time.Now(),
 		}
-		
+
 		additionalFields := map[string]interface{}{
 			svr.GetUserField(): ui.Id,
 		}
-		
+
 		tx := this.orm.Begin()
 		//开始插入数据
 		userID, err := this.gmUserDao.InsertWithFields(ctx, tx, gmUser, additionalFields)
@@ -156,6 +156,7 @@ func (this *GmUserService) CheckLoginByOAuth(ctx context.Context, code string, s
 }
 
 type QiankunMicroApp struct {
+	ShowName   string `json:"show_name"`
 	Name       string `json:"name"`
 	Entry      string `json:"entry"`
 	ActiveRule string `json:"activeRule"`
@@ -363,6 +364,7 @@ func (this *GmUserService) GetRoleList(ctx context.Context, js string) (outputRo
 		subUrl := "/"
 
 		qiankunMicroApps = append(qiankunMicroApps, &QiankunMicroApp{
+			ShowName:   plugin.PluginData().PluginJsonData.PluginName,
 			Name:       plugin.ID,
 			Entry:      entry,
 			ActiveRule: fmt.Sprintf("%s#/%s", subUrl, plugin.ID),
@@ -415,6 +417,7 @@ func (this *GmUserService) GetRoleList2C(ctx context.Context) (routes []*Route, 
 
 		if plugin.PluginData().PluginJsonData.Frontend2c {
 			qiankunMicroApps = append(qiankunMicroApps, &QiankunMicroApp{
+				ShowName:   plugin.PluginData().PluginJsonData.PluginName,
 				Name:       plugin.ID,
 				Entry:      entry,
 				ActiveRule: fmt.Sprintf("%s#/%s", subUrl, plugin.ID),

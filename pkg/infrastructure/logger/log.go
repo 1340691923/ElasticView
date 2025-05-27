@@ -11,6 +11,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"strings"
 	"sync"
 
 	"time"
@@ -38,6 +39,7 @@ func InitLog(cfg *config.Config) (logger *AppLogger, err error) {
 		}
 		return hook, nil
 	}
+
 	zapConfig := zapcore.EncoderConfig{
 		MessageKey: "msg",
 		TimeKey:    "ts",
@@ -45,10 +47,29 @@ func InitLog(cfg *config.Config) (logger *AppLogger, err error) {
 		EncodeTime: func(t time.Time, enc zapcore.PrimitiveArrayEncoder) {
 			enc.AppendString(t.Format(util.TimeFormat))
 		},
-		CallerKey:      "file",
-		EncodeCaller:   zapcore.ShortCallerEncoder,
+		CallerKey: "file",
+		EncodeCaller: func(caller zapcore.EntryCaller, enc zapcore.PrimitiveArrayEncoder) {
+			// 自定义调用者编码器，显示函数名
+			if !caller.Defined {
+				enc.AppendString("undefined")
+				return
+			}
+
+			// 获取函数名
+			if caller.Function != "" {
+				// 提取函数名（去掉包路径）
+				parts := strings.Split(caller.Function, ".")
+				funcName := parts[len(parts)-1]
+				// 格式：funcName@file:line
+				enc.AppendString(fmt.Sprintf("%s@%s:%d", funcName, caller.File, caller.Line))
+			} else {
+				// 如果没有函数名，fallback到默认格式
+				enc.AppendString(fmt.Sprintf("%s:%d", caller.File, caller.Line))
+			}
+		},
 		EncodeDuration: zapcore.SecondsDurationEncoder,
 	}
+
 	encoder := zapcore.NewConsoleEncoder(zapConfig)
 
 	infoLevel := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
@@ -146,10 +167,10 @@ func InitLog(cfg *config.Config) (logger *AppLogger, err error) {
 	}
 
 	once.Do(func() {
-		EsReqLog = zap.New(esReqCore, zap.AddCaller(), zap.Development())
+		EsReqLog = zap.New(esReqCore, zap.AddCaller(), zap.AddStacktrace(zapcore.ErrorLevel), zap.Development())
 	})
 
-	return zap.New(core, zap.AddCaller(), zap.Development()), nil
+	return zap.New(core, zap.AddCaller(), zap.AddStacktrace(zapcore.ErrorLevel), zap.Development()), nil
 }
 
 func InitPluginLog(cfg *config.Config, pluginName string) (logger hclog.Logger, logAddr string, closeWriteCallback func() error, err error) {

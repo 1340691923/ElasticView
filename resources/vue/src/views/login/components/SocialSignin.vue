@@ -1,5 +1,6 @@
 <template>
   <div class="social-container">
+
     <div v-if="oauthProviders.length > 0" class="social-title">第三方登录</div>
     <div class="social-icons">
       <a v-for="provider in oauthProviders" :key="provider.name" @click="handleLogin(provider)">
@@ -10,7 +11,7 @@
 </template>
 
 <script>
-import { getOAuthConfig } from '@/api/user'
+import { GetOAuthConfigs } from '@/api/user'
 
 export default {
   name: 'SocialSignin',
@@ -25,7 +26,7 @@ export default {
   methods: {
     async getOAuthProviders() {
       try {
-        const { data } = await getOAuthConfig()
+        const { data } = await GetOAuthConfigs()
         if (data && data.code === 0) {
           this.oauthProviders = data.data.filter(provider => provider.enable)
         }
@@ -38,7 +39,7 @@ export default {
       const state = encodeURIComponent(JSON.stringify({
         redirect: this.$route.query.redirect || '/'
       }))
-      
+
       window.location.href = `/api/oauth/${provider.name}/login?redirect_uri=${redirectUri}&state=${state}`
     }
   }
@@ -48,7 +49,7 @@ export default {
 <style lang="scss" scoped>
 .social-container {
   margin: 20px 0;
-  
+
   .social-title {
     font-size: 14px;
     color: #606266;
@@ -59,17 +60,17 @@ export default {
   .social-icons {
     display: flex;
     justify-content: center;
-    
+
     a {
       margin: 0 10px;
       color: #606266;
       font-size: 24px;
       cursor: pointer;
-      
+
       &:hover {
         color: #409EFF;
       }
-      
+
       .svg-icon {
         width: 30px;
         height: 30px;

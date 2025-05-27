@@ -481,3 +481,42 @@ func DownloadFileV2(fileURL, dir string) (filename string, err error) {
 
 	return filename, nil
 }
+
+// GetURLWithHeaders 发起 GET 请求并附带自定义 headers，返回响应内容（字节）
+func GetURLWithHeaders(url string, headers map[string]string) ([]byte, error) {
+	// 创建客户端（可设置超时）
+	client := &http.Client{
+		Timeout: 10 * time.Second,
+	}
+
+	// 创建请求
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		return nil, fmt.Errorf("create request error: %w", err)
+	}
+
+	// 添加 Headers
+	for k, v := range headers {
+		req.Header.Set(k, v)
+	}
+
+	// 发起请求
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("request error: %w", err)
+	}
+	defer resp.Body.Close()
+
+	// 读取响应体
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("read response error: %w", err)
+	}
+
+	// 检查 HTTP 状态码
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		return nil, fmt.Errorf("unexpected status code: %d, body: %s", resp.StatusCode, string(body))
+	}
+
+	return body, nil
+}

@@ -199,7 +199,7 @@ type WorkWechat struct {
 }
 
 type Dingtalk struct {
-	AppId     string `json:"appId"`
+	ClientId  string `json:"clientId"`
 	AppSecret string `json:"appSecret"`
 	Enable    bool   `json:"enable"`
 }
@@ -513,7 +513,7 @@ func (this *Config) SetWorkWechatEnable(enable bool) *Config {
 func (this *Config) DingtalkAppId() string {
 	this.lock.RLock()
 	defer this.lock.RUnlock()
-	return this.OAuth.Dingtalk.AppId
+	return this.OAuth.Dingtalk.ClientId
 }
 
 func (this *Config) DingtalkAppSecret() string {
@@ -531,7 +531,7 @@ func (this *Config) DingtalkEnable() bool {
 func (this *Config) SetDingtalkAppId(appId string) *Config {
 	this.lock.Lock()
 	defer this.lock.Unlock()
-	this.OAuth.Dingtalk.AppId = appId
+	this.OAuth.Dingtalk.ClientId = appId
 	vip.Set("oauth.dingtalk.appId", appId)
 	return this
 }

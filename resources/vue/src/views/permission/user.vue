@@ -132,6 +132,16 @@
             {{ scope.row.work_wechat_uid }}
           </template>
         </el-table-column>
+        <el-table-column align="center"   width="100" :label="$t('钉钉UserID')">
+          <template #default="scope">
+            {{ scope.row.dingtalk_id }}
+          </template>
+        </el-table-column>
+        <el-table-column align="center"   width="100" :label="$t('飞书UserID')">
+          <template #default="scope">
+            {{ scope.row.feishu_open_id }}
+          </template>
+        </el-table-column>
 
         <el-table-column align="center" sortable  width="180" :label="$t('创建时间')">
           <template #default="scope">
@@ -289,6 +299,14 @@
           <el-input v-model="role.work_wechat_uid" :placeholder="$t('企业微信成员UserID。对应管理端的账号，企业内必须唯一')" />
         </el-form-item>
 
+        <el-form-item :label="$t('钉钉UserID')">
+          <el-input v-model="role.dingtalk_id" />
+        </el-form-item>
+
+        <el-form-item :label="$t('飞书UserID')">
+          <el-input v-model="role.feishu_open_id"/>
+        </el-form-item>
+
         <el-form-item :label="$t('请选择权限组')">
           <el-select v-model="role.role_ids" multiple :placeholder="$t('请选择权限组')" clearable filterable>
             <el-option
@@ -338,6 +356,8 @@ const defaultUser = {
   realname: '',
   email:'',
   work_wechat_uid:'',
+  dingtalk_id:'',
+  feishu_open_id:'',
   role_ids: [],
   username: '',
   role_name: ''

@@ -49,6 +49,8 @@ var wireSet = wire.NewSet(
 
 	wire.Bind(new(registry.BackgroundServiceRegistry), new(*backgroundsvcs.BackgroundServiceRegistry)),
 	notice_service.NewNoticeService,
+	oauth.NewDingtalk,
+	oauth.NewFeishu,
 	api.NewNoticeController,
 	dao.NewNoticeDao,
 	live_svr.NewLive,
@@ -139,4 +141,9 @@ func InitializeProvideInstaller(args *config.CommandLineArgs) (*plugin_install_s
 func InitializeNoticeDao(args *config.CommandLineArgs) (*dao.NoticeDao, error) {
 	wire.Build(wireSet)
 	return &dao.NoticeDao{}, nil
+}
+
+func InitializeDingtalk(args *config.CommandLineArgs) (*oauth.Dingtalk, error) {
+	wire.Build(wireSet)
+	return &oauth.Dingtalk{}, nil
 }

@@ -32,7 +32,62 @@
         </el-form>
 
       </el-tab-pane>
+        <el-tab-pane label="钉钉认证" name="钉钉认证">
+          <el-form label-width="100px" label-position="left">
+            <el-form-item label="开启认证:" >
+              <el-switch
+                v-model="data.dingdingCfg.enable"
+                active-text="开启"
+                inactive-text="不开启">
+              </el-switch>
+            </el-form-item>
+            <el-form-item label="回调域名:" >
+              <el-input :placeholder="cbPlaceholder" v-model="data.dingdingCfg.rootUrl"></el-input>
+            </el-form-item>
+            <el-form-item label="clientId:" >
+              <el-input  v-model="data.dingdingCfg.clientid"></el-input>
+            </el-form-item>
+            <el-form-item label="appSecret:" >
+              <el-input type="password" show-password v-model="data.dingdingCfg.appSecret"></el-input>
+            </el-form-item>
 
+            <el-form-item label="" >
+              <el-button @click="saveOAuthConfig({
+            application_name:data.authType,
+            config:data.dingdingCfg,
+            })" type="primary" >提交</el-button>
+            </el-form-item>
+          </el-form>
+
+        </el-tab-pane>
+        <el-tab-pane label="飞书认证" name="飞书认证">
+          <el-form label-width="100px" label-position="left">
+            <el-form-item label="开启认证:" >
+              <el-switch
+                v-model="data.feishuCfg.enable"
+                active-text="开启"
+                inactive-text="不开启">
+              </el-switch>
+            </el-form-item>
+            <el-form-item label="回调域名:" >
+              <el-input :placeholder="cbPlaceholder" v-model="data.feishuCfg.rootUrl"></el-input>
+            </el-form-item>
+            <el-form-item label="appId:" >
+              <el-input  v-model="data.feishuCfg.appId"></el-input>
+            </el-form-item>
+            <el-form-item label="appSecret:" >
+              <el-input type="password" show-password v-model="data.feishuCfg.appSecret"></el-input>
+            </el-form-item>
+
+            <el-form-item label="" >
+              <el-button @click="saveOAuthConfig({
+            application_name:data.authType,
+            config:data.feishuCfg,
+            })" type="primary" >提交</el-button>
+            </el-form-item>
+          </el-form>
+
+        </el-tab-pane>
     </el-tabs>
     </el-card>
   </div>
@@ -50,7 +105,19 @@ const data = reactive({
     corpid: "",
     enable: false,
     secert: ""
-  }
+  },
+  dingdingCfg:{
+    clientid: "",
+    appSecret: "",
+    enable: false,
+    rootUrl:"",
+  },
+  feishuCfg:{
+    appId: "",
+    appSecret: "",
+    enable: false,
+    rootUrl:"",
+  },
 })
 
 const cbPlaceholder = computed(()=>{
@@ -88,6 +155,8 @@ const Init = async ()=>{
     return
   }
   data.wecomeCfg = res.data["企业微信认证(内部应用)"]
+  data.dingdingCfg = res.data["钉钉认证"]
+  data.feishuCfg = res.data["飞书认证"]
 }
 
 onMounted(()=>{

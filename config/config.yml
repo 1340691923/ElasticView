@@ -20,7 +20,7 @@ oauth:
         enable: false
         secert: ""
     dingtalk:
-        appid: ""
+        clientid: ""
         appsecret: ""
         enable: false
     feishu:

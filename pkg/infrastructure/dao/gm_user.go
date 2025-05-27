@@ -116,26 +116,18 @@ func (this *GmUserDao) InsertWithFields(ctx context.Context, orm *gorm.DB, gmUse
 		IsBan:         0,
 	}
 
-	if additionalFields != nil {
-		for field, value := range additionalFields {
-			switch field {
-			case "work_wechat_uid":
-				data.WorkWechatUid = value.(string)
-			case "dingtalk_id":
-				data.DingtalkId = value.(string)
-			case "feishu_open_id":
-				data.FeishuOpenId = value.(string)
-			}
-		}
-	}
-
 	err = orm.WithContext(ctx).Create(data).Error
 	if err != nil {
 		err = errors.WithStack(err)
 		return
 	}
-
 	id = int64(data.Id)
+	err = orm.WithContext(ctx).Where("id = ?", id).Updates(additionalFields).Error
+	if err != nil {
+		err = errors.WithStack(err)
+		return
+	}
+
 	return
 }
 
