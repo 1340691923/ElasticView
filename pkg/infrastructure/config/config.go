@@ -188,7 +188,9 @@ type OAuth struct {
 }
 
 type AI struct {
-	BigModeKey string `json:"bigModeKey"`
+	BigModeKey  string `json:"bigModeKey"`
+	OpenAIKey   string `json:"openAIKey"`
+	DeepSeekKey string `json:"deepSeekKey"`
 }
 
 type WorkWechat struct {
