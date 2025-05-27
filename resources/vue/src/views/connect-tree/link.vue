@@ -223,6 +223,12 @@
             <el-option label="clickhouse" value="clickhouse" />
             <el-option label="postgres" value="postgres" />
             <el-option label="mongo" value="mongo" />
+            <el-option label="dameng" value="dameng" />
+            <el-option label="oracle" value="oracle" />
+            <el-option label="sqlserver" value="sqlserver" />
+            <el-option label="mariadb" value="mariadb" />
+            <el-option label="hive" value="hive" />
+            <el-option label="spark" value="spark" />
           </el-select>
         </el-form-item>
         <el-form-item :label="$t('鉴权列表')">
@@ -377,6 +383,24 @@ export default {
           break
         case "redis":
           this.link.ip = "127.0.0.1:6379"
+          break
+        case "dameng":
+          this.link.ip = "127.0.0.1:5236"
+          break
+        case "oracle":
+          this.link.ip = "127.0.0.1:1521"
+          break
+        case "sqlserver":
+          this.link.ip = "127.0.0.1:1433"
+          break
+        case "mariadb":
+          this.link.ip = "127.0.0.1:3306"
+          break
+        case "hive":
+          this.link.ip = "127.0.0.1:10000"
+          break
+        case "spark":
+          this.link.ip = "127.0.0.1:10001"
           break
       }
     },

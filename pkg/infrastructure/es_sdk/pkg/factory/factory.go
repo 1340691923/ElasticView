@@ -3,11 +3,17 @@ package factory
 import (
 	"fmt"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/es_sdk/pkg/clickhouse"
+	"github.com/1340691923/ElasticView/pkg/infrastructure/es_sdk/pkg/dameng"
+	"github.com/1340691923/ElasticView/pkg/infrastructure/es_sdk/pkg/hive"
+	"github.com/1340691923/ElasticView/pkg/infrastructure/es_sdk/pkg/mariadb"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/es_sdk/pkg/mongo"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/es_sdk/pkg/mysql"
+	"github.com/1340691923/ElasticView/pkg/infrastructure/es_sdk/pkg/oracle"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/es_sdk/pkg/postgresql"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/es_sdk/pkg/proto"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/es_sdk/pkg/redis"
+	"github.com/1340691923/ElasticView/pkg/infrastructure/es_sdk/pkg/spark"
+	"github.com/1340691923/ElasticView/pkg/infrastructure/es_sdk/pkg/sqlserver"
 	v6 "github.com/1340691923/ElasticView/pkg/infrastructure/es_sdk/pkg/v6"
 	v7 "github.com/1340691923/ElasticView/pkg/infrastructure/es_sdk/pkg/v7"
 	v8 "github.com/1340691923/ElasticView/pkg/infrastructure/es_sdk/pkg/v8"
@@ -24,6 +30,12 @@ var EsServiceMap = map[string]func(cfg *proto.Config) (pkg.ClientInterface, erro
 	pkg.ClickHouse:     clickhouse.NewClickhouseClient,
 	pkg.Postgres:       postgresql.NewPostgresqlClient,
 	pkg.Mongo:          mongo.NewMongoClient,
+	"dameng":           dameng.NewDamengClient,
+	"oracle":           oracle.NewOracleClient,
+	"sqlserver":        sqlserver.NewSqlServerClient,
+	"mariadb":          mariadb.NewMariaDBClient,
+	"hive":             hive.NewHiveClient,
+	"spark":            spark.NewSparkClient,
 }
 
 func NewEsService(cfg *proto.Config) (pkg.ClientInterface, error) {
