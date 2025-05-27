@@ -88,6 +88,28 @@ export const asyncRoutes = [
     ]
   },
   {
+    "path": "/ai",
+    "component": "layout",
+    "redirect": "/ai/config",
+    "alwaysShow": false,
+    "meta": {
+      "title": "AI管理",
+      "icon": "el-icon-cpu"
+    },
+    "children": [
+      {
+        "path": "config",
+        "name": "ai-config",
+        "component": "views/ai/config",
+        "meta": {
+          "title": "AI配置",
+          "icon": "el-icon-setting",
+          "hidden": false
+        },
+      }
+    ]
+  },
+  {
     "path": "/plugins",
     "component": "layout",
     "redirect": "/plugins/market",
