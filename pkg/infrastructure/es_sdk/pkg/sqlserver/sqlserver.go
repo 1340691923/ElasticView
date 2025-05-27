@@ -11,7 +11,7 @@ import (
 	"github.com/1340691923/eve-plugin-sdk-go/ev_api/pkg"
 	"github.com/1340691923/eve-plugin-sdk-go/ev_api/proto"
 	"github.com/pkg/errors"
-	"gorm.io/driver/mysql" // Using mysql driver as fallback
+	"gorm.io/driver/sqlserver"
 	"gorm.io/gorm"
 )
 
@@ -30,13 +30,19 @@ func NewSqlServerClient(cfg *proto2.Config) (pkg.ClientInterface, error) {
 			return nil, errors.New("ip和端口不能为空")
 		}
 		
-		dsn := fmt.Sprintf("%s:%s@tcp(%s)/",
+		ip, port, err := obj.ExtractIPPort(cfg.Addresses[0])
+		if err != nil {
+			return nil, errors.WithStack(err)
+		}
+		
+		dsn := fmt.Sprintf("sqlserver://%s:%s@%s:%s?database=master",
 			cfg.Username,
 			cfg.Password,
-			cfg.Addresses[0],
+			ip,
+			port,
 		)
 		
-		orm, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+		orm, err := gorm.Open(sqlserver.Open(dsn), &gorm.Config{})
 		if err != nil {
 			return nil, errors.WithStack(err)
 		}

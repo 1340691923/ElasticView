@@ -2,6 +2,7 @@ package spark
 
 import (
 	"context"
+	"database/sql"
 	sql2 "database/sql"
 	"fmt"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/es_sdk/pkg/base"
@@ -10,14 +11,15 @@ import (
 	"github.com/1340691923/ElasticView/pkg/infrastructure/es_sdk/pkg/utils"
 	"github.com/1340691923/eve-plugin-sdk-go/ev_api/pkg"
 	"github.com/1340691923/eve-plugin-sdk-go/ev_api/proto"
+	"github.com/apache/thrift/lib/go/thrift"
 	"github.com/pkg/errors"
-	"gorm.io/driver/mysql" // Using mysql driver as fallback
 	"gorm.io/gorm"
 )
 
 type SparkClient struct {
 	base.BaseDatasource
-	db *gorm.DB
+	db        *gorm.DB
+	transport thrift.TTransport
 }
 
 func NewSparkClient(cfg *proto2.Config) (pkg.ClientInterface, error) {
@@ -30,13 +32,38 @@ func NewSparkClient(cfg *proto2.Config) (pkg.ClientInterface, error) {
 			return nil, errors.New("ip和端口不能为空")
 		}
 		
-		dsn := fmt.Sprintf("%s:%s@tcp(%s)/",
-			cfg.Username,
-			cfg.Password,
-			cfg.Addresses[0],
-		)
+		ip, port, err := obj.ExtractIPPort(cfg.Addresses[0])
+		if err != nil {
+			return nil, errors.WithStack(err)
+		}
 		
-		orm, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+		transportFactory := thrift.NewTBufferedTransportFactory(8192)
+		protocolFactory := thrift.NewTBinaryProtocolFactoryDefault()
+		
+		socket, err := thrift.NewTSocket(fmt.Sprintf("%s:%s", ip, port))
+		if err != nil {
+			return nil, errors.WithStack(err)
+		}
+		
+		transport := transportFactory.GetTransport(socket)
+		if err := transport.Open(); err != nil {
+			return nil, errors.WithStack(err)
+		}
+		
+		obj.transport = transport
+		
+		sqlDB, err := sql.Open("spark", fmt.Sprintf("spark://%s:%s@%s:%s", 
+			cfg.Username, 
+			cfg.Password, 
+			ip, 
+			port))
+		if err != nil {
+			return nil, errors.WithStack(err)
+		}
+		
+		orm, err := gorm.Open(gorm.New(gorm.Config{
+			ConnPool: sqlDB,
+		}))
 		if err != nil {
 			return nil, errors.WithStack(err)
 		}
@@ -50,6 +77,11 @@ func NewSparkClient(cfg *proto2.Config) (pkg.ClientInterface, error) {
 }
 
 func (this *SparkClient) Ping(ctx context.Context) (res *proto.Response, err error) {
+	if this.transport != nil && this.transport.IsOpen() {
+		res = proto.NewResponseNotErr()
+		return
+	}
+	
 	db, err := this.db.WithContext(ctx).DB()
 	if err != nil {
 		return

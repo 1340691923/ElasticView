@@ -30,10 +30,16 @@ func NewMariaDBClient(cfg *proto2.Config) (pkg.ClientInterface, error) {
 			return nil, errors.New("ip和端口不能为空")
 		}
 		
-		dsn := fmt.Sprintf("%s:%s@tcp(%s)/?parseTime=true",
+		ip, port, err := obj.ExtractIPPort(cfg.Addresses[0])
+		if err != nil {
+			return nil, errors.WithStack(err)
+		}
+		
+		dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/?parseTime=true&charset=utf8mb4",
 			cfg.Username,
 			cfg.Password,
-			cfg.Addresses[0],
+			ip,
+			port,
 		)
 		
 		orm, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})

@@ -2,6 +2,7 @@ package dameng
 
 import (
 	"context"
+	"database/sql"
 	sql2 "database/sql"
 	"fmt"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/es_sdk/pkg/base"
@@ -10,9 +11,10 @@ import (
 	"github.com/1340691923/ElasticView/pkg/infrastructure/es_sdk/pkg/utils"
 	"github.com/1340691923/eve-plugin-sdk-go/ev_api/pkg"
 	"github.com/1340691923/eve-plugin-sdk-go/ev_api/proto"
+	_ "github.com/godoes/gorm-dameng/dameng" // Dameng driver
 	"github.com/pkg/errors"
-	"gorm.io/driver/mysql" // Using mysql driver as fallback
 	"gorm.io/gorm"
+	"gorm.io/gorm/schema"
 )
 
 type DamengClient struct {
@@ -30,13 +32,29 @@ func NewDamengClient(cfg *proto2.Config) (pkg.ClientInterface, error) {
 			return nil, errors.New("ip和端口不能为空")
 		}
 		
-		dsn := fmt.Sprintf("%s:%s@tcp(%s)/",
+		ip, port, err := obj.ExtractIPPort(cfg.Addresses[0])
+		if err != nil {
+			return nil, errors.WithStack(err)
+		}
+		
+		dsn := fmt.Sprintf("dm://%s:%s@%s:%s",
 			cfg.Username,
 			cfg.Password,
-			cfg.Addresses[0],
+			ip,
+			port,
 		)
 		
-		orm, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+		sqlDB, err := sql.Open("dm", dsn)
+		if err != nil {
+			return nil, errors.WithStack(err)
+		}
+		
+		orm, err := gorm.Open(gorm.New(gorm.Config{
+			ConnPool: sqlDB,
+			NamingStrategy: schema.NamingStrategy{
+				SingularTable: true,
+			},
+		}))
 		if err != nil {
 			return nil, errors.WithStack(err)
 		}

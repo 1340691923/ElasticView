@@ -11,7 +11,8 @@ import (
 	"github.com/1340691923/eve-plugin-sdk-go/ev_api/pkg"
 	"github.com/1340691923/eve-plugin-sdk-go/ev_api/proto"
 	"github.com/pkg/errors"
-	"gorm.io/driver/mysql" // Using mysql driver as fallback
+	"github.com/sijms/go-ora/v2"
+	"gorm.io/driver/oracle"
 	"gorm.io/gorm"
 )
 
@@ -30,13 +31,19 @@ func NewOracleClient(cfg *proto2.Config) (pkg.ClientInterface, error) {
 			return nil, errors.New("ip和端口不能为空")
 		}
 		
-		dsn := fmt.Sprintf("%s:%s@tcp(%s)/",
+		ip, port, err := obj.ExtractIPPort(cfg.Addresses[0])
+		if err != nil {
+			return nil, errors.WithStack(err)
+		}
+		
+		dsn := fmt.Sprintf("oracle://%s:%s@%s:%s/XE",
 			cfg.Username,
 			cfg.Password,
-			cfg.Addresses[0],
+			ip,
+			port,
 		)
 		
-		orm, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+		orm, err := gorm.Open(oracle.Open(dsn), &gorm.Config{})
 		if err != nil {
 			return nil, errors.WithStack(err)
 		}
