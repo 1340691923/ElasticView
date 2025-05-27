@@ -389,6 +389,8 @@ func InitConfig(opt *CommandLineArgs) (cfg *Config, err error) {
 
 	cfg.HomePath = opt.HomePath
 	cfg.CmdName = opt.CmdName
+	
+	SetConfigInstance(cfg)
 
 	if cfg.Translation.CfgDir != "" {
 		err = filepath.Walk(cfg.Translation.CfgDir, func(path string, info os.FileInfo, err error) error {
