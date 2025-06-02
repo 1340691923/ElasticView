@@ -356,6 +356,7 @@ func (this *GmUserService) GetRoleList(ctx context.Context, js string) (outputRo
 			continue
 		}
 		entry := fmt.Sprintf("api/call_plugin_views/%s/", plugin.ID)
+		icon := fmt.Sprintf("api/call_plugin_views/%s/icon", plugin.ID)
 
 		if pluginJson.FrontendDebug {
 			entry = fmt.Sprintf("http://localhost:%d/", pluginJson.FrontendDevPort)
@@ -375,7 +376,7 @@ func (this *GmUserService) GetRoleList(ctx context.Context, js string) (outputRo
 			Name:      util.StringPtr(plugin.ID),
 			Meta: &RouteMeta{
 				Title: pluginJson.PluginName,
-				Icon:  "table",
+				Icon:  icon,
 			},
 		}
 
@@ -408,7 +409,7 @@ func (this *GmUserService) GetRoleList2C(ctx context.Context) (routes []*Route, 
 			continue
 		}
 		entry := fmt.Sprintf("api/call_plugin_views/%s/", plugin.ID)
-
+		icon := fmt.Sprintf("api/call_plugin_views/%s/icon", plugin.ID)
 		if pluginJson.FrontendDebug {
 			entry = fmt.Sprintf("http://localhost:%d/", pluginJson.FrontendDevPort)
 		}
@@ -430,7 +431,7 @@ func (this *GmUserService) GetRoleList2C(ctx context.Context) (routes []*Route, 
 			Name:      util.StringPtr(plugin.ID),
 			Meta: &RouteMeta{
 				Title: pluginJson.PluginName,
-				Icon:  "table",
+				Icon:  icon,
 			},
 		}
 
@@ -452,13 +453,15 @@ func (this *GmUserService) MergePluginRoutes(ctx context.Context, routes []*Rout
 			continue
 		}
 
+		icon := fmt.Sprintf("api/call_plugin_views/%s/icon", plugin.ID)
+
 		pluginRoutes := &Route{
 			Path:      fmt.Sprintf("/%s", plugin.ID),
 			Component: util.StringPtr("layout"),
 			Name:      util.StringPtr(plugin.ID),
 			Meta: &RouteMeta{
 				Title: pluginJson.PluginName,
-				Icon:  "table",
+				Icon:  icon,
 			},
 		}
 

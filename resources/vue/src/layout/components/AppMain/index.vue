@@ -6,7 +6,13 @@
           enter-active-class="animate__animated animate__fadeIn"
           mode="out-in"
         >
+<!--
           <keep-alive :include="cachedViews">
+            <component :is="Component" :key="route.path" />
+          </keep-alive>
+-->
+
+          <keep-alive >
             <component :is="Component" :key="route.path" />
           </keep-alive>
         </transition>

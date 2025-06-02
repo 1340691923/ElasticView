@@ -3,6 +3,7 @@ package api
 import (
 	"bytes"
 	"database/sql"
+	"fmt"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/config"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/dto"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/es_sdk/pkg/factory"
@@ -24,6 +25,7 @@ import (
 	"github.com/pkg/errors"
 	"golang.org/x/sync/errgroup"
 	"net/http"
+	"time"
 )
 
 type PluginUtilController struct {
@@ -43,8 +45,7 @@ func NewPluginUtilController(baseController *BaseController, pluginServer *plugi
 	return &PluginUtilController{BaseController: baseController, pluginServer: pluginServer, esClientService: esClientService, esService: esService, log: log, cfg: cfg, gmUserSvr: gmUserSvr, live: live, eveApi: eveApi, noticeService: noticeService}
 }
 
-//发送系统通知 todo...
-
+// 发送系统通知 todo...
 func (this *PluginUtilController) LiveBroadcastEvMsg2All(ctx *gin.Context) {
 
 	var reqData dto2.LiveBroadcastEvMsg2AllReq
@@ -486,11 +487,32 @@ func (this *PluginUtilController) LoadDebugPlugin(ctx *gin.Context) {
 		return
 	}
 
-	err = this.pluginServer.LoadDebugPlugin(ctx, reqData.ID, reqData.Addr, reqData.Pid)
+	jumpPath, pluginName, err := this.pluginServer.LoadDebugPlugin(ctx, reqData.ID, reqData.Addr, reqData.Pid)
 	if err != nil {
 		this.Error(ctx, err)
 		return
 	}
+	noticeData := &dto2.NoticeData{
+		Title:       "调试插件已连接",
+		Content:     fmt.Sprintf("插件（%s）已经连接", pluginName),
+		Type:        "调试插件提示",
+		Level:       dto2.NoticeLevelSuccess,
+		IsTask:      true,
+		FromUid:     0,
+		PluginAlias: "",
+		Source:      "ElasticView",
+		PublishTime: time.Now(),
+	}
+
+	if len(jumpPath) > 0 {
+		noticeData.NoticeJumpBtn = &dto2.NoticeJumpBtn{
+			Text:     "跳转",
+			JumpUrl:  jumpPath,
+			JumpType: dto2.NoticeBtnJumpTypeInternal,
+		}
+	}
+	go this.noticeService.LiveBroadcastEvMsg2All(noticeData)
+
 	this.Success(ctx, response.OperateSuccess, nil)
 }
 

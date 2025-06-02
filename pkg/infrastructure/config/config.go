@@ -80,6 +80,7 @@ type Config struct {
 	Translation           Translation  `json:"translation"`
 	OAuth                 OAuth        `json:"oAuth"`
 	Ai                    AI           `json:"ai"`
+	OpenSwagger           bool         `json:"openSwagger"`
 	LiveMaxConnections    int          `json:"liveMaxConnections"`
 }
 

@@ -408,8 +408,9 @@ export default {
       return this.device === DeviceEnum.MOBILE
     },
   },
+  activated() {
+  },
   async created() {
-
     await this.getRoleOpt()
     this.getUserList(1)
   },

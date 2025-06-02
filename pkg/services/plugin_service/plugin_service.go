@@ -4,6 +4,12 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"io/ioutil"
+	"sort"
+	"strconv"
+	"strings"
+	"time"
+
 	"github.com/1340691923/ElasticView/pkg/infrastructure/access_control"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/config"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/dao"
@@ -30,11 +36,6 @@ import (
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
-	"io/ioutil"
-	"sort"
-	"strconv"
-	"strings"
-	"time"
 )
 
 type PluginService struct {
@@ -334,22 +335,22 @@ func (this *PluginService) CallPluginViews(ctx *gin.Context, pluginID string) (e
 	return nil
 }
 
-func (this *PluginService) LoadDebugPlugin(ctx context.Context, pluginID string, addr string, pid int) (err error) {
+func (this *PluginService) LoadDebugPlugin(ctx context.Context, pluginID string, addr string, pid int) (pluginAlias, pluginName string, err error) {
 
 	p, ok := this.pluginRegistry.Plugin(ctx, pluginID)
 	if ok {
 		err = this.progressSvr.Stop(ctx, p)
 		if err != nil {
-			return errors.WithStack(err)
+			return "", "", errors.WithStack(err)
 		}
 		err = this.pluginRegistry.Remove(ctx, p.ID)
 		if err != nil {
-			return errors.WithStack(err)
+			return "", "", errors.WithStack(err)
 		}
 	}
 	log, logPath, closeLogCallback, err := logger.InitPluginLog(this.cfg, pluginID)
 	if err != nil {
-		return errors.WithStack(err)
+		return "", "", errors.WithStack(err)
 	}
 	p = provider.DefaultProvider(ctx, log, logPath, closeLogCallback, &provider.Config{
 		ID:             pluginID,
@@ -364,15 +365,16 @@ func (this *PluginService) LoadDebugPlugin(ctx context.Context, pluginID string,
 
 	err = p.Start(ctx)
 	if err != nil {
-		return errors.WithStack(err)
+		return "", "", errors.WithStack(err)
 	}
 
 	err = this.pluginRegistry.AddPlugin(ctx, p)
 	if err != nil {
 		this.log.Sugar().Errorf("err", err)
-		return errors.WithStack(err)
+		return "", "", errors.WithStack(err)
 	}
-	return nil
+
+	return p.GetFrontJumpPath(), p.PluginData().PluginJsonData.PluginName, nil
 }
 
 func (this *PluginService) StopDebugPlugin(ctx context.Context, pluginID string) (err error) {

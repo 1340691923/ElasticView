@@ -35,6 +35,7 @@ import (
 	"github.com/1340691923/ElasticView/pkg/services/live_svr"
 	"github.com/1340691923/ElasticView/pkg/services/notice_service"
 	"github.com/1340691923/ElasticView/pkg/services/oauth"
+	"github.com/1340691923/ElasticView/pkg/services/plugin_config_service"
 	"github.com/1340691923/ElasticView/pkg/services/plugin_install_service"
 	"github.com/1340691923/ElasticView/pkg/services/plugin_service"
 	"github.com/1340691923/ElasticView/pkg/services/print_logo"
@@ -51,10 +52,13 @@ var wireSet = wire.NewSet(
 	notice_service.NewNoticeService,
 	oauth.NewDingtalk,
 	oauth.NewFeishu,
+	dao.NewPluginConfigDao,
+	plugin_config_service.NewPluginConfigServie,
+	api.NewPluginConfigController,
 	api.NewNoticeController,
 	dao.NewNoticeDao,
 	live_svr.NewLive,
-	api.NewWsController,
+	api.NewLiveController,
 	print_logo.ProvidePrintLogo,
 	updatechecker2.ProvideWebView,
 	oauth.ProvideOAuthServiceRegistry,

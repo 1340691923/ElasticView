@@ -50,6 +50,15 @@ func (p *Plugin) PluginData() *build.PluginInitRespData {
 	return p.pluginData
 }
 
+func (p *Plugin) GetFrontJumpPath() string {
+	frontendRoutes := p.PluginData().PluginJsonData.FrontendRoutes
+	pluginAlias := p.PluginData().PluginJsonData.PluginAlias
+	if len(frontendRoutes) == 0 {
+		return ""
+	}
+	return fmt.Sprintf("/%s/%s", pluginAlias, frontendRoutes[0].Path)
+}
+
 func (p *Plugin) Logger() hclog.Logger {
 	return p.log
 }

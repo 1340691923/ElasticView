@@ -119,7 +119,7 @@
       append-to-body
       v-model="detailDialog.visible"
       :title="currentNotice.title"
-      :size="isMobile ? '90%' : '50%'"
+      :size="isMobile ? '100%' : '50%'"
       direction="rtl"
       class="notice-drawer"
       :before-close="closeDetailDialog"
@@ -161,7 +161,10 @@
           </el-descriptions-item>
 
           <el-descriptions-item label="内容" label-class-name="description-label">
-            <div class="notice-content" v-html="currentNotice.content" />
+
+            <div class="readme-content">
+              <mark-down-view v-if="detailDialog.visible" :content="currentNotice.content"></mark-down-view>
+            </div>
           </el-descriptions-item>
         </el-descriptions>
 
@@ -186,7 +189,7 @@ import { ElMessage } from 'element-plus'
 import { GetList, MarkReadNotice,Truncate } from '@/api/notice'
 import { useNoticeStore} from "@/store";
 import { ArrowDown } from '@element-plus/icons-vue'
-
+import MarkDownView from '@/components/MarkDownView/index.vue'
 const noticeStore = useNoticeStore();
 
 import router from "@/router";
@@ -341,6 +344,7 @@ function closeDetailDialog() {
 function handleJump(typ: string, url: string) {
   if (typ === 'internal') {
     router.push({ path: url })
+    closeDetailDialog()
   } else {
     window.open(url, '_blank')
   }
@@ -348,7 +352,7 @@ function handleJump(typ: string, url: string) {
 
 onMounted(() => {
   handleQuery()
-  
+
   // 监听窗口大小变化
   window.addEventListener('resize', () => {
     if (isMobile.value) {
@@ -356,6 +360,11 @@ onMounted(() => {
     }
   })
 })
+
+onActivated(() => {
+  handleQuery()
+})
+
 </script>
 <style scoped>
 .notice-content {
@@ -415,16 +424,16 @@ onMounted(() => {
     margin-bottom: 10px;
     width: 100%;
   }
-  
+
   .search-form :deep(.el-form-item__content) {
     width: 100%;
   }
-  
+
   .search-form :deep(.el-input),
   .search-form :deep(.el-select) {
     width: 100% !important;
   }
-  
+
   .pagination-container {
     overflow-x: auto;
   }
@@ -510,19 +519,19 @@ onMounted(() => {
     margin-bottom: 10px;
     font-size: 16px;
   }
-  
+
   .drawer-content {
     padding: 0 10px;
   }
-  
+
   .close-button {
     width: 100%;
   }
-  
+
   .notice-drawer :deep(.el-descriptions__label) {
     padding: 8px;
   }
-  
+
   .notice-drawer :deep(.el-descriptions__content) {
     padding: 8px;
   }

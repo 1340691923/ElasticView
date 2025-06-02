@@ -4,9 +4,10 @@
     <el-icon v-if="icon && icon.startsWith('el-icon')" class="sub-el-icon">
       <component :is="icon.replace('el-icon-', '')" />
     </el-icon>
+    <img v-else-if="icon.indexOf('call_plugin')!==-1" class="w-4 h-4 hover:rotate-180 transition-all duration-500"  :src="getIconUrl(icon)" ></img>
     <svg-icon v-else-if="icon" :icon-class="icon" />
     <svg-icon v-else icon-class="menu" />
-    <!-- 菜单标题 -->
+
     <span v-if="titles" class="ml-1">{{ translateRouteTitle(titles) }}</span>
 
 </template>
@@ -24,6 +25,13 @@ defineProps({
     default: "",
   },
 });
+
+const getIconUrl = (path)=>{
+  if(!import.meta.env.PROD){
+    return import.meta.env.VITE_APP_API_URL+path
+  }
+  return path
+}
 </script>
 
 <style lang="scss" scoped>

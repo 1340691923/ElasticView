@@ -520,3 +520,20 @@ func GetURLWithHeaders(url string, headers map[string]string) ([]byte, error) {
 
 	return body, nil
 }
+
+func Cors(h http.Handler) http.Handler {
+
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "PUT,PATCH,GET, POST, DELETE")
+		w.Header().Set("Access-Control-Allow-Headers", "Accept,Accept-Encoding,Accept-Language,Access-Control-Request-Headers,Access-Control-Request-Method,Connection,Referer,Sec-Fetch-Dest,User-Agent, Origin,Authorization,Content-Type,X-Token,x-token,X-Version,Current-Language")
+
+		if r.Method == "OPTIONS" {
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+
+		h.ServeHTTP(w, r)
+	})
+
+}

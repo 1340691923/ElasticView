@@ -2,86 +2,58 @@ package hive
 
 import (
 	"context"
-	"database/sql"
 	sql2 "database/sql"
 	"fmt"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/es_sdk/pkg/base"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/es_sdk/pkg/cache"
+	hive "github.com/1340691923/ElasticView/pkg/infrastructure/es_sdk/pkg/hive/hive_dirver"
 	proto2 "github.com/1340691923/ElasticView/pkg/infrastructure/es_sdk/pkg/proto"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/es_sdk/pkg/utils"
 	"github.com/1340691923/eve-plugin-sdk-go/ev_api/pkg"
 	"github.com/1340691923/eve-plugin-sdk-go/ev_api/proto"
-	"github.com/apache/thrift/lib/go/thrift"
 	"github.com/pkg/errors"
 	"gorm.io/gorm"
 )
 
 type HiveClient struct {
 	base.BaseDatasource
-	db        *gorm.DB
-	transport thrift.TTransport
+	db *gorm.DB
 }
 
 func NewHiveClient(cfg *proto2.Config) (pkg.ClientInterface, error) {
 	ds, ok := cache.GetDataSourceCache(cfg.ConnectId)
-	
+
 	if !ok {
 		obj := &HiveClient{}
-		
+
 		if len(cfg.Addresses) == 0 {
 			return nil, errors.New("ip和端口不能为空")
 		}
-		
+
 		ip, port, err := obj.ExtractIPPort(cfg.Addresses[0])
 		if err != nil {
 			return nil, errors.WithStack(err)
 		}
-		
-		transportFactory := thrift.NewTBufferedTransportFactory(8192)
-		protocolFactory := thrift.NewTBinaryProtocolFactoryDefault()
-		
-		socket, err := thrift.NewTSocket(fmt.Sprintf("%s:%s", ip, port))
-		if err != nil {
-			return nil, errors.WithStack(err)
-		}
-		
-		transport := transportFactory.GetTransport(socket)
-		if err := transport.Open(); err != nil {
-			return nil, errors.WithStack(err)
-		}
-		
-		obj.transport = transport
-		
-		sqlDB, err := sql.Open("hive", fmt.Sprintf("hive://%s:%s@%s:%s", 
-			cfg.Username, 
-			cfg.Password, 
-			ip, 
-			port))
-		if err != nil {
-			return nil, errors.WithStack(err)
-		}
-		
-		orm, err := gorm.Open(gorm.New(gorm.Config{
-			ConnPool: sqlDB,
-		}))
+
+		orm, err := gorm.Open(hive.Open(fmt.Sprintf("hive://%s:%s@%s:%s",
+			cfg.Username,
+			cfg.Password,
+			ip,
+			port)))
 		if err != nil {
 			return nil, errors.WithStack(err)
 		}
 		obj.db = orm
-		
+
 		cache.SaveDataSourceCache(cfg.ConnectId, obj)
 		return obj, nil
 	}
-	
+
 	return ds, nil
 }
 
 func (this *HiveClient) Ping(ctx context.Context) (res *proto.Response, err error) {
-	if this.transport != nil && this.transport.IsOpen() {
-		res = proto.NewResponseNotErr()
-		return
-	}
-	
+
 	db, err := this.db.WithContext(ctx).DB()
 	if err != nil {
 		return

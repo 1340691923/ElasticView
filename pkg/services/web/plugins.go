@@ -22,3 +22,13 @@ func (this *WebServer) runPlugins() {
 
 	}
 }
+
+// 插件配置相关路由
+func (this *WebServer) runPluginConfig() {
+	const AbsolutePath = "/api/plugin_config"
+	group := this.engine.Group("插件配置", AbsolutePath)
+	{
+		group.POST(false, "获取插件配置", "/get", this.pluginConfigController.GetPluginConfig)
+		group.POST(true, "更新插件配置", "/update", this.pluginConfigController.UpdatePluginConfig)
+	}
+}

@@ -342,6 +342,9 @@ export default {
       return this.device === DeviceEnum.MOBILE
     },
   },
+  activated(){
+    console.log("auth activated")
+  },
   data() {
     return {
       input: {

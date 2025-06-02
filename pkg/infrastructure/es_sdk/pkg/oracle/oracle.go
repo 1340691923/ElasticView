@@ -10,9 +10,8 @@ import (
 	"github.com/1340691923/ElasticView/pkg/infrastructure/es_sdk/pkg/utils"
 	"github.com/1340691923/eve-plugin-sdk-go/ev_api/pkg"
 	"github.com/1340691923/eve-plugin-sdk-go/ev_api/proto"
+	oracle "github.com/godoes/gorm-oracle"
 	"github.com/pkg/errors"
-	"github.com/sijms/go-ora/v2"
-	"gorm.io/driver/oracle"
 	"gorm.io/gorm"
 )
 
@@ -23,36 +22,36 @@ type OracleClient struct {
 
 func NewOracleClient(cfg *proto2.Config) (pkg.ClientInterface, error) {
 	ds, ok := cache.GetDataSourceCache(cfg.ConnectId)
-	
+
 	if !ok {
 		obj := &OracleClient{}
-		
+
 		if len(cfg.Addresses) == 0 {
 			return nil, errors.New("ip和端口不能为空")
 		}
-		
+
 		ip, port, err := obj.ExtractIPPort(cfg.Addresses[0])
 		if err != nil {
 			return nil, errors.WithStack(err)
 		}
-		
+
 		dsn := fmt.Sprintf("oracle://%s:%s@%s:%s/XE",
 			cfg.Username,
 			cfg.Password,
 			ip,
 			port,
 		)
-		
+
 		orm, err := gorm.Open(oracle.Open(dsn), &gorm.Config{})
 		if err != nil {
 			return nil, errors.WithStack(err)
 		}
 		obj.db = orm
-		
+
 		cache.SaveDataSourceCache(cfg.ConnectId, obj)
 		return obj, nil
 	}
-	
+
 	return ds, nil
 }
 

@@ -89,9 +89,8 @@ defineOptions({
 });
 
 import { useUserStore } from "@/store/modules/user";
-import { NoticeTypeEnum, getNoticeLabel } from "@/enums/NoticeTypeEnum";
-import {IndexsCountAction,CatAction} from "@/api/es";
-import {GetEsConnect,GetEsConnectVer} from "@/utils/es_link";
+import { NoticeTypeEnum } from "@/enums/NoticeTypeEnum";
+import {GetEsConnectVer} from "@/utils/es_link";
 import EsDashbord from "@/views/dashboard/components/EsDashbord.vue";
 
 const isEs = computed(()=>{
@@ -194,6 +193,9 @@ const GetArticleData = async ()=>{
   return
 }
 
+onActivated(()=>{
+  GetArticleData()
+})
 
 onMounted(()=>{
   GetArticleData()

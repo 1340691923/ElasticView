@@ -146,4 +146,32 @@ var Migrators = []*gormigrate.Migration{
 			return nil
 		},
 	},
+	{
+		ID: "0.0.19",
+		Migrate: func(tx *gorm.DB) error {
+			err := tx.AutoMigrate(&model.GmUserModel{}, &model.PluginConfig{})
+			if err != nil {
+				return errors.WithStack(err)
+			}
+
+			return nil
+		},
+		Rollback: func(tx *gorm.DB) error {
+			return nil
+		},
+	},
+	{
+		ID: "0.0.21",
+		Migrate: func(tx *gorm.DB) error {
+			err := tx.AutoMigrate(&model.PluginConfig{})
+			if err != nil {
+				return errors.WithStack(err)
+			}
+
+			return nil
+		},
+		Rollback: func(tx *gorm.DB) error {
+			return nil
+		},
+	},
 }

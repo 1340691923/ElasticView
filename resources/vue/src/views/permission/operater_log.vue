@@ -239,6 +239,9 @@ export default {
     this.initList()
   },
 
+  activated() {
+  },
+
   mounted() {
     this.checkDevice()
     window.addEventListener('resize', this.checkDevice)

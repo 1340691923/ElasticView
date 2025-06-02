@@ -2,7 +2,6 @@ package dameng
 
 import (
 	"context"
-	"database/sql"
 	sql2 "database/sql"
 	"fmt"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/es_sdk/pkg/base"
@@ -11,10 +10,10 @@ import (
 	"github.com/1340691923/ElasticView/pkg/infrastructure/es_sdk/pkg/utils"
 	"github.com/1340691923/eve-plugin-sdk-go/ev_api/pkg"
 	"github.com/1340691923/eve-plugin-sdk-go/ev_api/proto"
-	_ "github.com/godoes/gorm-dameng/dameng" // Dameng driver
 	"github.com/pkg/errors"
+	dm "github.com/sineycoder/gorm-dm" // Dameng driver
+	"github.com/spf13/cast"
 	"gorm.io/gorm"
-	"gorm.io/gorm/schema"
 )
 
 type DamengClient struct {
@@ -24,46 +23,34 @@ type DamengClient struct {
 
 func NewDamengClient(cfg *proto2.Config) (pkg.ClientInterface, error) {
 	ds, ok := cache.GetDataSourceCache(cfg.ConnectId)
-	
+
 	if !ok {
 		obj := &DamengClient{}
-		
+
 		if len(cfg.Addresses) == 0 {
 			return nil, errors.New("ip和端口不能为空")
 		}
-		
+
 		ip, port, err := obj.ExtractIPPort(cfg.Addresses[0])
 		if err != nil {
 			return nil, errors.WithStack(err)
 		}
-		
-		dsn := fmt.Sprintf("dm://%s:%s@%s:%s",
-			cfg.Username,
-			cfg.Password,
-			ip,
-			port,
-		)
-		
-		sqlDB, err := sql.Open("dm", dsn)
+
+		url := dm.BuildDsn(ip, cast.ToInt(port), cfg.Username, cfg.Password, nil)
+		orm, err := gorm.Open(dm.Open(url), &gorm.Config{})
 		if err != nil {
 			return nil, errors.WithStack(err)
 		}
-		
-		orm, err := gorm.Open(gorm.New(gorm.Config{
-			ConnPool: sqlDB,
-			NamingStrategy: schema.NamingStrategy{
-				SingularTable: true,
-			},
-		}))
+
 		if err != nil {
 			return nil, errors.WithStack(err)
 		}
 		obj.db = orm
-		
+
 		cache.SaveDataSourceCache(cfg.ConnectId, obj)
 		return obj, nil
 	}
-	
+
 	return ds, nil
 }
 

@@ -97,6 +97,7 @@ export function RegisterMicroApps(pluginList){
 
     pluginList[i].container =  "#Appmicro"
     pluginList[i].props =  props
+    pluginList[i].keepAlive = true
     if(!import.meta.env.PROD){
       if(pluginList[i].entry.indexOf("http") ===-1){
         pluginList[i].entry = import.meta.env.VITE_APP_API_URL+pluginList[i].entry
@@ -130,6 +131,7 @@ export function RegisterMicroApps(pluginList){
       console.log('挂载插件后，进度条加载完成', app.show_name)
       return Promise.resolve()
     },
+
   })
 }
 

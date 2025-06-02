@@ -2,9 +2,6 @@
   <div class="app-container">
     <div class="search-container">
       <el-form :inline="true">
-
-
-
         <el-form-item>
          <el-container>
            <el-upload
@@ -69,6 +66,15 @@
           <template v-else>
             <el-tag type="success">{{ scope.row.version }}</el-tag>
           </template>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" :label="$t('自动更新')" width="100">
+        <template #default="scope">
+          <el-switch 
+            v-model="scope.row.auto_update" 
+            @change="handleAutoUpdateChange(scope.row)"
+            :loading="scope.row.updateLoading"
+          />
         </template>
       </el-table-column>
       <el-table-column align="center" :label="$t('性能')" width="240">
@@ -151,6 +157,30 @@
             <div class="detail-item">
               <span class="detail-label">文件名</span>
               <span class="detail-value">{{ currentPlugin?.plugin_file_name }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="detail-card">
+          <div class="card-title">自动更新配置</div>
+          <div class="card-content">
+            <div class="detail-item">
+              <span class="detail-label">自动更新</span>
+              <div class="detail-value">
+                <el-switch 
+                  v-model="currentPlugin.auto_update" 
+                  @change="handleCurrentPluginAutoUpdateChange"
+                  :loading="currentPluginUpdateLoading"
+                  active-text="开启"
+                  inactive-text="关闭"
+                />
+              </div>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">说明</span>
+              <span class="detail-value text-gray-500">
+                开启后，插件将在有新版本时自动更新
+              </span>
             </div>
           </div>
         </div>
@@ -282,6 +312,7 @@ import {getToken} from "@/utils/auth";
 import {ElMessage, ElMessageBox, UploadProps, UploadUserFile} from "element-plus";
 import {ref, computed} from "vue";
 import { Monitor, Right } from '@element-plus/icons-vue'
+import request from '@/utils/request'
 
 const appStore = useAppStore()
 
@@ -293,6 +324,84 @@ const data = reactive({
 })
 
 const uninstallLoading = ref(false)
+const currentPluginUpdateLoading = ref(false)
+
+// 获取插件配置
+const getPluginConfig = async (pluginId: string) => {
+  try {
+    const res = await request({
+      url: '/api/plugin_config/get',
+      method: 'post',
+      data: {
+        plugin_id: pluginId
+      }
+    })
+    if (res.code === 0) {
+      return res.data
+    } else {
+      ElMessage.error(res.msg)
+      return null
+    }
+  } catch (error) {
+    console.error('获取插件配置失败:', error)
+    return null
+  }
+}
+
+// 更新插件配置
+const updatePluginConfig = async (pluginId: string, autoUpdate: boolean) => {
+  try {
+    const res = await request({
+      url: '/api/plugin_config/update',
+      method: 'post',
+      data: {
+        plugin_id: pluginId,
+        auto_update: autoUpdate
+      }
+    })
+    if (res.code === 0) {
+      ElMessage.success('自动更新设置已保存')
+      return true
+    } else {
+      ElMessage.error(res.msg)
+      return false
+    }
+  } catch (error) {
+    console.error('更新插件配置失败:', error)
+    ElMessage.error('更新失败')
+    return false
+  }
+}
+
+// 处理插件列表中的自动更新开关变化
+const handleAutoUpdateChange = async (plugin: any) => {
+  plugin.updateLoading = true
+  const success = await updatePluginConfig(plugin.plugin_id, plugin.auto_update)
+  if (!success) {
+    // 如果更新失败，恢复原状态
+    plugin.auto_update = !plugin.auto_update
+  }
+  plugin.updateLoading = false
+}
+
+// 处理详情抽屉中的自动更新开关变化
+const handleCurrentPluginAutoUpdateChange = async () => {
+  if (!currentPlugin.value) return
+  
+  currentPluginUpdateLoading.value = true
+  const success = await updatePluginConfig(currentPlugin.value.plugin_id, currentPlugin.value.auto_update)
+  if (!success) {
+    // 如果更新失败，恢复原状态
+    currentPlugin.value.auto_update = !currentPlugin.value.auto_update
+  } else {
+    // 同步更新插件列表中的状态
+    const listPlugin = data.pluginList.find(p => p.plugin_id === currentPlugin.value.plugin_id)
+    if (listPlugin) {
+      listPlugin.auto_update = currentPlugin.value.auto_update
+    }
+  }
+  currentPluginUpdateLoading.value = false
+}
 
 const unInstall = async (pluginId)=>{
   uninstallLoading.value = true
@@ -318,7 +427,7 @@ const unInstall = async (pluginId)=>{
 const loading = ref(false)
 
 const getLocalPluginList = async ()=>{
-  loading.value = false
+  loading.value = true
   let res =  await GetLocalPluginList({})
   loading.value = false
   if(res.code != 0){
@@ -327,6 +436,17 @@ const getLocalPluginList = async ()=>{
   }
 
   data.pluginList = res.data
+
+  // 获取每个插件的自动更新配置
+  for (const plugin of data.pluginList) {
+    plugin.updateLoading = false
+    const config = await getPluginConfig(plugin.plugin_id)
+    if (config) {
+      plugin.auto_update = config.auto_update
+    } else {
+      plugin.auto_update = false // 默认关闭
+    }
+  }
 
   return
 }
@@ -412,8 +532,15 @@ const beforeRemove: UploadProps['beforeRemove'] = (uploadFile, uploadFiles) => {
 const detailsVisible = ref(false)
 const currentPlugin = ref(null)
 
-const showDetails = (plugin) => {
-  currentPlugin.value = plugin
+const showDetails = async (plugin) => {
+  currentPlugin.value = { ...plugin }
+  
+  // 确保获取最新的自动更新配置
+  const config = await getPluginConfig(plugin.plugin_id)
+  if (config) {
+    currentPlugin.value.auto_update = config.auto_update
+  }
+  
   detailsVisible.value = true
 }
 
@@ -432,6 +559,11 @@ const getMemoryColor = (percentage) => {
 onMounted(()=>{
   getLocalPluginList()
 })
+
+onActivated(()=>{
+
+})
+
 
 </script>
 

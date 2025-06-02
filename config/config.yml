@@ -33,11 +33,12 @@ plugin:
 pluginrpcport: 8091
 port: 8090
 rooturl: ""
+openSwagger: false
 sqlite:
     dbname: es_view.db
 storefiledir: store_file_dir
 translation:
     cfgdir: config/i18n
     lang: zh-cn
-version: 0.0.20
+version: 0.0.21
 watermarkcontent: ElasticView

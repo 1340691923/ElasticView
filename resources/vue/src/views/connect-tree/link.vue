@@ -10,11 +10,8 @@
           >{{$t('搜索')}}
           </el-button>
         </el-form-item>
-
-
         <el-form-item label="" >
           <el-button
-
             type="primary"
             class="filter-item"
             @click="handleAddRole"
@@ -48,7 +45,6 @@
             <el-table-column
               :label="$t('备注')"
               align="center"
-
             >
               <template #default="scope">
                 {{ scope.row.remark }}
@@ -56,8 +52,6 @@
             </el-table-column>
             <el-table-column align="center" :label="$t('分配权限组')" width="100">
               <template #default="scope">
-
-
                 <div class="role-tags">
                   <template v-if="scope.row.share_roles.length <= 2">
                     <el-tag v-for="item in scope.row.share_roles" :key="item">
@@ -102,21 +96,7 @@
               </template>
             </el-table-column>
 
-            <el-table-column align="center" :label="$t('root证书')" width="120" show-overflow-tooltip>
-              <template #default="scope">
-                {{ scope.row.rootpem }}
-              </template>
-            </el-table-column>
-            <el-table-column align="center" :label="$t('cert证书')" width="120" show-overflow-tooltip>
-              <template #default="scope">
-                {{ scope.row.certpem }}
-              </template>
-            </el-table-column>
-            <el-table-column align="center" :label="$t('key证书')" width="120" show-overflow-tooltip>
-              <template #default="scope">
-                {{ scope.row.keypem }}
-              </template>
-            </el-table-column>
+
             <el-table-column align="center" :label="$t('操作')" fixed="right" width="300">
               <template #default="scope2">
 
@@ -149,7 +129,7 @@
           {{ scope.row.remark }}
         </template>
       </el-table-column>
-      <el-table-column align="center"   :label="$t('数据源地址')" >
+      <el-table-column align="center"  min-width="200"  :label="$t('数据源地址')" >
         <template #default="scope">
           {{ scope.row.ip }}
         </template>
@@ -172,19 +152,51 @@
       <el-table-column align="center"   fixed="right" :label="$t('操作')" width="130">
         <template #default="scope">
 
-          <el-button
-            type="primary"
 
-            @click="handleEdit(scope)"
-            :icon="Edit"
-          >
-          </el-button>
-          <el-button
-            type="danger"
-            :icon="Delete"
-            @click="handleDelete(scope)"
-          >
-          </el-button>
+          <template v-if="!isMobile">
+            <el-button
+              type="primary"
+
+              @click="handleEdit(scope)"
+              :icon="Edit"
+            >
+            </el-button>
+            <el-button
+              type="danger"
+              :icon="Delete"
+              @click="handleDelete(scope)"
+            >
+            </el-button>
+          </template>
+          <template v-else >
+            <el-dropdown trigger="click" >
+              <el-button>管理</el-button>
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <el-dropdown-item  command="1">
+                    <el-button
+                      type="primary"
+
+                      @click="handleEdit(scope)"
+                      :icon="Edit"
+                    >
+                    </el-button>
+
+                  </el-dropdown-item>
+                  <el-dropdown-item  >
+                    <el-button
+                      type="danger"
+                      :icon="Delete"
+                      @click="handleDelete(scope)"
+                    >
+                    </el-button>
+                  </el-dropdown-item>
+
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
+          </template>
+
         </template>
       </el-table-column>
     </el-table>
@@ -228,7 +240,6 @@
             <el-option label="sqlserver" value="sqlserver" />
             <el-option label="mariadb" value="mariadb" />
             <el-option label="hive" value="hive" />
-            <el-option label="spark" value="spark" />
           </el-select>
         </el-form-item>
         <el-form-item :label="$t('鉴权列表')">
@@ -267,13 +278,13 @@ import { DeleteAction, InsertAction, ListAction, UpdateAction,
 import { PingAction } from '@/api/es'
 
 import {roleOption} from "@/api/user";
-import {Plus,Search,Edit,Delete} from "@element-plus/icons-vue";
+import {Edit,Delete} from "@element-plus/icons-vue";
 import {useAppStore} from "@/store";
 import {DeviceEnum} from "@/enums/DeviceEnum";
 
 const defaultLink = {
   id: 0,
-  ip: 'http://127.0.0.1:9200',
+  ip: 'https://127.0.0.1:9200',
   remark: '',
   version: 'elasticsearch8.x',
   cfgIds:[],
@@ -337,6 +348,9 @@ export default {
       expandRowKeys: [],
     }
   },
+  activated(){
+    console.log("link activated")
+  },
   async created() {
     await this.getEsCfgOpt()
     await this.initAllRoles()
@@ -399,9 +413,7 @@ export default {
         case "hive":
           this.link.ip = "127.0.0.1:10000"
           break
-        case "spark":
-          this.link.ip = "127.0.0.1:10001"
-          break
+
       }
     },
     changeExpand(){
@@ -641,8 +653,8 @@ export default {
     },
   }
 }
-</script>
 
+</script>
 
 <style lang="scss" scoped>
 .app-container {
@@ -1143,4 +1155,3 @@ td {
 }
 }
 </style>
-

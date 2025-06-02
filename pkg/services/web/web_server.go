@@ -3,6 +3,14 @@ package web
 import (
 	"context"
 	"fmt"
+	"html/template"
+	"io/fs"
+	"log"
+	"net/http"
+	"runtime"
+	"strings"
+	"time"
+
 	"github.com/1340691923/ElasticView/pkg/api"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/access_control"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/config"
@@ -17,32 +25,25 @@ import (
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"go.uber.org/zap"
-	"html/template"
-	"io/fs"
-	"log"
-	"net/http"
-	"runtime"
-	"strings"
-	"time"
 )
 
 type WebServer struct {
-	engine                *web_engine.WebEngine
-	log                   *logger.AppLogger
-	cfg                   *config.Config
-	rbac                  *access_control.Rbac
-	middleWareService     *middleware.MiddleWareService
-	gmOperaterController  *api.GmOperaterController
-	managerRoleController *api.ManagerRoleController
-	esLinkController      *api.EsLinkController
-	managerUserController *api.ManagerUserController
-	esController          *api.EsController
-	aiController          *api.AiController
-	//wsController          *api.WsController
-	indexController  *api.IndexController
-	pluginController *api.PluginController
-	wsController     *api.WsController
-	noticeController *api.NoticeController
+	engine                 *web_engine.WebEngine
+	log                    *logger.AppLogger
+	cfg                    *config.Config
+	rbac                   *access_control.Rbac
+	middleWareService      *middleware.MiddleWareService
+	gmOperaterController   *api.GmOperaterController
+	managerRoleController  *api.ManagerRoleController
+	esLinkController       *api.EsLinkController
+	managerUserController  *api.ManagerUserController
+	esController           *api.EsController
+	aiController           *api.AiController
+	indexController        *api.IndexController
+	pluginController       *api.PluginController
+	pluginConfigController *api.PluginConfigController
+	liveController         *api.LiveController
+	noticeController       *api.NoticeController
 }
 
 func NewWebServer(engine *web_engine.WebEngine, log *logger.AppLogger,
@@ -51,11 +52,11 @@ func NewWebServer(engine *web_engine.WebEngine, log *logger.AppLogger,
 	noticeController *api.NoticeController,
 	gmOperaterController *api.GmOperaterController,
 	managerRoleController *api.ManagerRoleController,
-	esLinkController *api.EsLinkController, managerUserController *api.ManagerUserController, esController *api.EsController, aiController *api.AiController, indexController *api.IndexController, pluginController *api.PluginController, wsController *api.WsController) *WebServer {
+	esLinkController *api.EsLinkController, managerUserController *api.ManagerUserController, esController *api.EsController, aiController *api.AiController, indexController *api.IndexController, pluginController *api.PluginController, pluginConfigController *api.PluginConfigController, liveController *api.LiveController) *WebServer {
 	return &WebServer{engine: engine, log: log, cfg: cfg, rbac: rbac,
 		middleWareService: middleWareService, gmOperaterController: gmOperaterController,
 		noticeController:      noticeController,
-		managerRoleController: managerRoleController, esLinkController: esLinkController, managerUserController: managerUserController, esController: esController, aiController: aiController, indexController: indexController, pluginController: pluginController, wsController: wsController}
+		managerRoleController: managerRoleController, esLinkController: esLinkController, managerUserController: managerUserController, esController: esController, aiController: aiController, indexController: indexController, pluginController: pluginController, pluginConfigController: pluginConfigController, liveController: liveController}
 }
 
 func (this *WebServer) runRouter() {
@@ -117,10 +118,13 @@ func (this *WebServer) runRouter() {
 		}),
 	)
 	this.runpprof()
+	if this.cfg.OpenSwagger {
+		this.engine.GetGinEngine().GET("/swagger/*any", func(c *gin.Context) {
+			ginSwagger.DisablingWrapHandler(swaggerFiles.Handler, "SWAGGER")(c)
+		})
 
-	this.engine.GetGinEngine().GET("/swagger/*any", func(c *gin.Context) {
-		ginSwagger.DisablingWrapHandler(swaggerFiles.Handler, "SWAGGER")(c)
-	})
+	}
+
 	this.engine.GetGinEngine().POST("/api/NoAuthRoute", this.managerUserController.NoAuthRoute)
 	this.engine.GetGinEngine().GET("/api/Health", this.indexController.Health)
 	this.engine.GetGinEngine().POST("/api/GetI18nCfg", this.indexController.GetI18nCfg)
@@ -152,6 +156,7 @@ func (this *WebServer) runRouter() {
 	this.runEsLink()
 	this.runEs()
 	this.runPlugins()
+	this.runPluginConfig()
 	this.runNotice()
 
 	this.engine.GetGinEngine().NoRoute(func(c *gin.Context) {

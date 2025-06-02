@@ -12,7 +12,6 @@ import (
 	"github.com/1340691923/ElasticView/pkg/infrastructure/plugins/plugin"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/pluginstore"
 	"github.com/1340691923/ElasticView/pkg/services/notice_service"
-	"github.com/1340691923/ElasticView/pkg/services/updatechecker"
 	"github.com/1340691923/ElasticView/pkg/util"
 	"github.com/gin-gonic/gin"
 	"github.com/pkg/errors"
@@ -31,19 +30,18 @@ type PluginInstaller struct {
 	pluginStore        manager.Service
 	evBackDao          *dao.EvBackDao
 	pluginStoreService *pluginstore.PluginStoreService
-	pluginsService     *updatechecker.PluginsService
 	noticeService      *notice_service.NoticeService
 }
 
 func ProvideInstaller(cfg *config.Config, log *logger.AppLogger, pluginStore manager.Service,
 	evBackDao *dao.EvBackDao, pluginStoreService *pluginstore.PluginStoreService,
-	pluginsService *updatechecker.PluginsService, noticeService *notice_service.NoticeService) *PluginInstaller {
-	return New(log, cfg, pluginStore, evBackDao, pluginStoreService, pluginsService, noticeService)
+	noticeService *notice_service.NoticeService) *PluginInstaller {
+	return New(log, cfg, pluginStore, evBackDao, pluginStoreService, noticeService)
 }
 
 func New(log *logger.AppLogger, cfg *config.Config, pluginStore manager.Service,
 	evBackDao *dao.EvBackDao, pluginStoreService *pluginstore.PluginStoreService,
-	pluginsService *updatechecker.PluginsService, noticeService *notice_service.NoticeService) *PluginInstaller {
+	noticeService *notice_service.NoticeService) *PluginInstaller {
 	return &PluginInstaller{
 		installing:         sync.Map{},
 		log:                log.Named("plugin.installer"),
@@ -51,8 +49,8 @@ func New(log *logger.AppLogger, cfg *config.Config, pluginStore manager.Service,
 		pluginStore:        pluginStore,
 		evBackDao:          evBackDao,
 		pluginStoreService: pluginStoreService,
-		pluginsService:     pluginsService,
-		noticeService:      noticeService,
+
+		noticeService: noticeService,
 	}
 }
 
@@ -69,7 +67,6 @@ func (this *PluginInstaller) Add(ctx context.Context, pluginID, version string) 
 	if err != nil {
 		return err
 	}
-	this.pluginsService.InstrumentedCheckForUpdates(ctx)
 
 	return nil
 }
@@ -119,8 +116,6 @@ func (this *PluginInstaller) AddUploadPlugin(ctx *gin.Context, f *multipart.File
 		os.Remove(dest)
 		return "", err
 	}
-
-	this.pluginsService.InstrumentedCheckForUpdates(ctx)
 
 	return pluginID, nil
 }
@@ -206,8 +201,6 @@ func (this *PluginInstaller) install(ctx context.Context, pluginID, version stri
 			return errors.WithStack(err)
 		}
 	}
-
-	this.pluginsService.InstrumentedCheckForUpdates(ctx)
 
 	return nil
 }

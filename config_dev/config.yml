@@ -35,12 +35,12 @@ plugin:
     storepath: plugins_store
 pluginrpcport: 8091
 port: 8090
-rooturl: http://demo.elastic-view.cn/
+rooturl:
 sqlite:
     dbname: D:\eve\ev2\ev_store\data\es_view.db
 storefiledir: store_file_dir
 translation:
     cfgdir: D:\eve\ev2\config\i18n
     lang: zh-cn
-version: 0.0.19
+version: 0.0.21
 watermarkcontent: ElasticView

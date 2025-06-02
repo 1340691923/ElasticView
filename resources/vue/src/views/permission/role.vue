@@ -46,7 +46,7 @@
           {{ scope.row.name }}
         </template>
       </el-table-column>
-      <el-table-column prop="description" align="header-center" :label="$t('备注')">
+      <el-table-column prop="description" min-width="300" align="header-center" :label="$t('备注')">
         <template #default="scope">
           {{ scope.row.description }}
         </template>
@@ -112,7 +112,7 @@
       <el-tabs v-model="activeTab">
         <!-- 基本信息 Tab -->
         <el-tab-pane :label="$t('基本信息')" name="basic">
-          <el-form :model="_this.role" label-width="80px" label-position="left">
+          <el-form :model="_this.role" label-width="120px" label-position="left">
             <el-form-item :label="$t('权限组名称')">
               <el-input v-model="_this.role.name" :placeholder="$t('权限组名称')" />
             </el-form-item>
@@ -142,7 +142,7 @@
             <el-button @click="selectAll">{{ $t('全选') }}</el-button>
           </div>
           <el-tree
-            default-expand-all
+            :default-expand-all="false"
             check-on-click-node
             ref="menu_tree"
             :filter-node-method="filterNode"
@@ -170,7 +170,7 @@
             <el-button @click="selectAll4Api">{{ $t('全选') }}</el-button>
           </div>
           <el-tree
-            default-expand-all
+            :default-expand-all="false"
             check-on-click-node
             ref="api_tree"
             :filter-node-method="filterNode4Api"
@@ -287,6 +287,11 @@ onMounted(async ()=>{
   GetRoutes()
   GetRoles(1)
 })
+
+onActivated(()=>{
+
+})
+
 
 //获取接口权限配置
 const  GetUrlOpt = async () => {

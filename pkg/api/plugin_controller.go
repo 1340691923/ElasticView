@@ -12,6 +12,7 @@ import (
 	"github.com/1340691923/ElasticView/pkg/services/gm_user"
 	"github.com/1340691923/ElasticView/pkg/services/plugin_install_service"
 	"github.com/1340691923/ElasticView/pkg/services/plugin_service"
+	"github.com/1340691923/ElasticView/pkg/services/updatechecker"
 	"github.com/1340691923/ElasticView/pkg/util"
 	"github.com/gin-gonic/gin"
 )
@@ -21,14 +22,15 @@ type PluginController struct {
 	log             *logger.AppLogger
 	orm             *orm.Gorm
 	pluginService   *plugin_service.PluginService
+	updateChecker   *updatechecker.PluginsService
 	eveService      *eve_service.EvEService
 	pluginInstaller *plugin_install_service.PluginInstaller
 	gmUserService   *gm_user.GmUserService
 	jwtSvr          *jwt_svr.Jwt
 }
 
-func NewPluginController(baseController *BaseController, log *logger.AppLogger, orm *orm.Gorm, pluginService *plugin_service.PluginService, eveService *eve_service.EvEService, pluginInstaller *plugin_install_service.PluginInstaller, gmUserService *gm_user.GmUserService, jwtSvr *jwt_svr.Jwt) *PluginController {
-	return &PluginController{BaseController: baseController, log: log, orm: orm, pluginService: pluginService, eveService: eveService, pluginInstaller: pluginInstaller, gmUserService: gmUserService, jwtSvr: jwtSvr}
+func NewPluginController(baseController *BaseController, log *logger.AppLogger, orm *orm.Gorm, updateChecker *updatechecker.PluginsService, pluginService *plugin_service.PluginService, eveService *eve_service.EvEService, pluginInstaller *plugin_install_service.PluginInstaller, gmUserService *gm_user.GmUserService, jwtSvr *jwt_svr.Jwt) *PluginController {
+	return &PluginController{BaseController: baseController, log: log, orm: orm, updateChecker: updateChecker, pluginService: pluginService, eveService: eveService, pluginInstaller: pluginInstaller, gmUserService: gmUserService, jwtSvr: jwtSvr}
 }
 
 func (this *PluginController) CallPlugin(ctx *gin.Context) {
@@ -101,6 +103,7 @@ func (this *PluginController) InstallPlugin(ctx *gin.Context) {
 		this.Error(ctx, err)
 		return
 	}
+	this.updateChecker.InstrumentedCheckForUpdates(ctx)
 	userInfo, err := this.jwtSvr.ParseToken(this.GetToken(ctx))
 
 	if err != nil {
@@ -247,18 +250,15 @@ func (this *PluginController) UploadPlugin(ctx *gin.Context) {
 	}
 
 	var pluginId string
-	/*os := runtime.GOOS
-	switch os {
-	case "windows":
-		pluginId, err = this.pluginInstaller.AddUploadPlugin(ctx, f)
-	default:
-		pluginId, err = this.pluginInstaller.AddUploadPluginByNoWindows(ctx, f)
-	}*/
+
 	pluginId, err = this.pluginInstaller.AddUploadPlugin(ctx, f)
 
 	if err != nil {
 		this.Error(ctx, err)
 		return
 	}
+
+	this.updateChecker.InstrumentedCheckForUpdates(ctx)
+
 	this.Success(ctx, fmt.Sprintf("%s安装成功", pluginId), nil)
 }

@@ -52,7 +52,14 @@
       </div>
     </div>
     <div v-else>
-      <router-view></router-view>
+      <transition
+        enter-active-class="animate__animated animate__fadeIn"
+        mode="out-in"
+      >
+        <keep-alive >
+          <component :is="Component" :key="route.path" />
+        </keep-alive>
+      </transition>
       <div id="Appmicro">
       </div>
     </div>

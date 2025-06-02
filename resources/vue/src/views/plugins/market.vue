@@ -763,6 +763,11 @@ onMounted(() => {
   getPluginMarket()
 })
 
+onActivated(()=>{
+
+})
+
+
 </script>
 
 <style lang="scss" scoped>

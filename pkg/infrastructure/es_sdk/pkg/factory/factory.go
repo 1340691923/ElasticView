@@ -12,7 +12,6 @@ import (
 	"github.com/1340691923/ElasticView/pkg/infrastructure/es_sdk/pkg/postgresql"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/es_sdk/pkg/proto"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/es_sdk/pkg/redis"
-	"github.com/1340691923/ElasticView/pkg/infrastructure/es_sdk/pkg/spark"
 	"github.com/1340691923/ElasticView/pkg/infrastructure/es_sdk/pkg/sqlserver"
 	v6 "github.com/1340691923/ElasticView/pkg/infrastructure/es_sdk/pkg/v6"
 	v7 "github.com/1340691923/ElasticView/pkg/infrastructure/es_sdk/pkg/v7"
@@ -30,12 +29,11 @@ var EsServiceMap = map[string]func(cfg *proto.Config) (pkg.ClientInterface, erro
 	pkg.ClickHouse:     clickhouse.NewClickhouseClient,
 	pkg.Postgres:       postgresql.NewPostgresqlClient,
 	pkg.Mongo:          mongo.NewMongoClient,
-	"dameng":           dameng.NewDamengClient,
-	"oracle":           oracle.NewOracleClient,
-	"sqlserver":        sqlserver.NewSqlServerClient,
-	"mariadb":          mariadb.NewMariaDBClient,
-	"hive":             hive.NewHiveClient,
-	"spark":            spark.NewSparkClient,
+	pkg.Dameng:         dameng.NewDamengClient,
+	pkg.Oracle:         oracle.NewOracleClient,
+	pkg.Sqlserver:      sqlserver.NewSqlServerClient,
+	pkg.Mariadb:        mariadb.NewMariaDBClient,
+	pkg.Hive:           hive.NewHiveClient,
 }
 
 func NewEsService(cfg *proto.Config) (pkg.ClientInterface, error) {

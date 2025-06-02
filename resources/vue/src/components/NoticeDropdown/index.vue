@@ -112,7 +112,8 @@
           </el-descriptions-item>
 
           <el-descriptions-item label="内容" label-class-name="description-label">
-            <div class="notice-content" v-html="currentNotice.content" />
+            <mark-down-view v-if="noticeDialogVisible" :content="currentNotice.content"></mark-down-view>
+
           </el-descriptions-item>
         </el-descriptions>
 
@@ -149,7 +150,7 @@
 import router from "@/router";
 import {DeviceEnum} from "@/enums/DeviceEnum";
 import {useAppStore, useUserStore, useNoticeStore} from "@/store";
-
+import MarkDownView from '@/components/MarkDownView/index.vue'
 const noticeDialogVisible = ref(false);
 const currentNotice = ref(null);
 const appStore = useAppStore();
@@ -203,6 +204,7 @@ function handleViewMoreNotice() {
 function handleJump(typ: string, url: string) {
   if (typ === 'internal') {
     router.push({ path: url })
+    noticeDialogVisible.value = false
   } else {
     window.open(url, '_blank')
   }

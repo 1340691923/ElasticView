@@ -163,6 +163,11 @@ onMounted(()=>{
   Init()
 })
 
+onActivated(()=>{
+
+})
+
+
 </script>
 
 <style scoped>

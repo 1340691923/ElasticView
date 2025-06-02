@@ -3,6 +3,10 @@ package updatechecker
 import (
 	"context"
 	"fmt"
+
+	"github.com/1340691923/ElasticView/pkg/services/plugin_config_service"
+	"github.com/1340691923/ElasticView/pkg/services/plugin_install_service"
+
 	"github.com/1340691923/ElasticView/pkg/services/notice_service"
 	"github.com/1340691923/eve-plugin-sdk-go/ev_api/dto"
 	"github.com/spf13/cast"
@@ -21,27 +25,32 @@ import (
 )
 
 type PluginsService struct {
-	availableUpdates map[string]string
-	pluginStore      manager.Service
-	enabled          bool
-	evBackDao        *dao.EvBackDao
-	mutex            sync.RWMutex
-	log              *zap.Logger
-	updateCheckURL   *url.URL
-	noticeService    *notice_service.NoticeService
+	availableUpdates   map[string]string
+	pluginStore        manager.Service
+	pluginConfigServie *plugin_config_service.PluginConfigServie
+	pluginInstaller    *plugin_install_service.PluginInstaller
+	enabled            bool
+	evBackDao          *dao.EvBackDao
+	mutex              sync.RWMutex
+	log                *zap.Logger
+	updateCheckURL     *url.URL
+	noticeService      *notice_service.NoticeService
 }
 
 func ProvidePluginsService(log *logger.AppLogger, cfg *config.Config,
-	evBackDao *dao.EvBackDao, pluginStore manager.Service, noticeService *notice_service.NoticeService) (*PluginsService, error) {
+	evBackDao *dao.EvBackDao, pluginStore manager.Service, pluginInstaller *plugin_install_service.PluginInstaller,
+	noticeService *notice_service.NoticeService, pluginConfigServie *plugin_config_service.PluginConfigServie) (*PluginsService, error) {
 	logger := log.Named("plugins.update.checker")
 
 	return &PluginsService{
-		enabled:          cfg.CheckForPluginUpdates,
-		noticeService:    noticeService,
-		log:              logger,
-		evBackDao:        evBackDao,
-		pluginStore:      pluginStore,
-		availableUpdates: make(map[string]string),
+		pluginInstaller:    pluginInstaller,
+		enabled:            cfg.CheckForPluginUpdates,
+		noticeService:      noticeService,
+		log:                logger,
+		evBackDao:          evBackDao,
+		pluginStore:        pluginStore,
+		pluginConfigServie: pluginConfigServie,
+		availableUpdates:   make(map[string]string),
 	}, nil
 }
 
@@ -133,22 +142,83 @@ func (s *PluginsService) checkForUpdates(ctx context.Context) error {
 			p, has := s.pluginStore.Plugin(context.Background(), pluginId)
 			if has {
 				pName := p.PluginData().PluginJsonData.PluginName
-				s.noticeService.LiveBroadcastEvMsg2All(&dto.NoticeData{
-					Title:       fmt.Sprintf("%s插件有更新", pName),
-					Content:     fmt.Sprintf("%s插件发布了新版本(%s),请升级", pName, pluginVersion),
-					Type:        "插件需更新",
-					Level:       dto.NoticeLevelSuccess,
-					IsTask:      true,
-					FromUid:     0,
-					PluginAlias: "",
-					Source:      "ElasticView",
-					NoticeJumpBtn: &dto.NoticeJumpBtn{
-						Text:     "跳转",
-						JumpUrl:  "/plugins/manager",
-						JumpType: dto.NoticeBtnJumpTypeInternal,
-					},
-					PublishTime: time.Now(),
-				})
+
+				if s.pluginConfigServie.IsAutoUpdateEnabled(ctx, pluginId) {
+					// 发送开始自动更新的通知
+					s.noticeService.LiveBroadcastEvMsg2All(&dto.NoticeData{
+						Title:       fmt.Sprintf("%s插件开始自动更新", pName),
+						Content:     fmt.Sprintf("%s插件检测到新版本(%s)，正在自动更新中...", pName, pluginVersion),
+						Type:        "插件自动更新",
+						Level:       dto.NoticeLevelInfo,
+						IsTask:      true,
+						FromUid:     0,
+						PluginAlias: "",
+						Source:      "ElasticView",
+						PublishTime: time.Now(),
+					})
+
+					// 执行自动更新
+					err = s.pluginInstaller.Add(ctx, pluginId, pluginVersion)
+
+					if err != nil {
+						// 更新失败的通知
+						s.noticeService.LiveBroadcastEvMsg2All(&dto.NoticeData{
+							Title:       fmt.Sprintf("%s插件自动更新失败", pName),
+							Content:     fmt.Sprintf("%s插件自动更新到版本(%s)失败：%s", pName, pluginVersion, err.Error()),
+							Type:        "插件自动更新失败",
+							Level:       dto.NoticeLevelDanger,
+							IsTask:      true,
+							FromUid:     0,
+							PluginAlias: "",
+							Source:      "ElasticView",
+							NoticeJumpBtn: &dto.NoticeJumpBtn{
+								Text:     "跳转",
+								JumpUrl:  "/plugins/manager",
+								JumpType: dto.NoticeBtnJumpTypeInternal,
+							},
+							PublishTime: time.Now(),
+						})
+						s.log.Error("插件自动更新失败", zap.String("pluginId", pluginId), zap.String("pluginName", pName), zap.String("version", pluginVersion), zap.Error(err))
+					} else {
+						// 更新成功的通知
+						s.noticeService.LiveBroadcastEvMsg2All(&dto.NoticeData{
+							Title:       fmt.Sprintf("%s插件自动更新成功", pName),
+							Content:     fmt.Sprintf("%s插件已成功自动更新到版本(%s)", pName, pluginVersion),
+							Type:        "插件自动更新成功",
+							Level:       dto.NoticeLevelSuccess,
+							IsTask:      true,
+							FromUid:     0,
+							PluginAlias: "",
+							Source:      "ElasticView",
+							NoticeJumpBtn: &dto.NoticeJumpBtn{
+								Text:     "跳转",
+								JumpUrl:  "/plugins/manager",
+								JumpType: dto.NoticeBtnJumpTypeInternal,
+							},
+							PublishTime: time.Now(),
+						})
+						s.log.Info("插件自动更新成功", zap.String("pluginId", pluginId), zap.String("pluginName", pName), zap.String("version", pluginVersion))
+					}
+
+				} else {
+					// 手动更新提示（原有逻辑）
+					s.noticeService.LiveBroadcastEvMsg2All(&dto.NoticeData{
+						Title:       fmt.Sprintf("%s插件有更新", pName),
+						Content:     fmt.Sprintf("%s插件发布了新版本(%s),请升级", pName, pluginVersion),
+						Type:        "插件需更新",
+						Level:       dto.NoticeLevelSuccess,
+						IsTask:      true,
+						FromUid:     0,
+						PluginAlias: "",
+						Source:      "ElasticView",
+						NoticeJumpBtn: &dto.NoticeJumpBtn{
+							Text:     "跳转",
+							JumpUrl:  "/plugins/manager",
+							JumpType: dto.NoticeBtnJumpTypeInternal,
+						},
+						PublishTime: time.Now(),
+					})
+				}
 			}
 		}
 	}()

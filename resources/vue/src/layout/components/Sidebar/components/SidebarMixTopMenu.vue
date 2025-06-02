@@ -8,13 +8,17 @@
       :text-color="theme === 'dark' ? variables['menu-text'] : undefined"
       :active-text-color="theme === 'dark' ? variables['menu-active-text'] : undefined"
       @select="handleMenuSelect"
-    > 
+    >
       <el-menu-item v-for="route in topMenus" :key="route.path" :index="route.path">
         <template #title>
+
           <template v-if="route.meta && route.meta.icon">
+
             <el-icon v-if="route.meta.icon.startsWith('el-icon')" class="sub-el-icon">
               <component :is="route.meta.icon.replace('el-icon-', '')" />
             </el-icon>
+            <img v-else-if="route.meta.icon.indexOf('call_plugin')!==-1" class="w-5 h-5 hover:rotate-180 transition-all duration-500"   :src="getIconUrl(route.meta.icon)" ></img>
+
             <svg-icon v-else :icon-class="route.meta.icon" />
           </template>
           <span v-if="route.path === '/'">首页</span>
@@ -43,6 +47,13 @@ const router = useRouter();
 const appStore = useAppStore();
 const permissionStore = usePermissionStore();
 const settingsStore = useSettingsStore();
+
+const getIconUrl = (path)=>{
+  if(!import.meta.env.PROD){
+    return import.meta.env.VITE_APP_API_URL+path
+  }
+  return path
+}
 
 // 当前激活的顶部菜单路径
 const activePath = computed(() => appStore.activeTopMenuPath);

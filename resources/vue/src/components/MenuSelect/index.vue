@@ -12,16 +12,20 @@
       <el-tree
         :data="filteredTreeData"
         :expand-on-click-node="false"
-        default-expand-all
+        :default-expand-all="false"
         highlight-current
         @node-click="handleNodeClick"
       >
         <template #default="{ data }">
+
           <div class="custom-tree-node">
             <span class="tree-node-icon">
               <el-icon v-if="data.meta?.icon?.startsWith('el-icon')" class="sub-el-icon">
                 <component :is="data.meta.icon.replace('el-icon-', '')" />
               </el-icon>
+
+              <img v-else-if="data.meta?.icon.indexOf('call_plugin')!==-1" class="w-4 h-4 hover:rotate-180 transition-all duration-500"  :src="getIconUrl(data.meta?.icon)"  />
+
               <svg-icon v-else-if="data.meta?.icon" :icon-class="data.meta.icon" />
               <svg-icon v-else icon-class="menu" />
             </span>
@@ -43,6 +47,13 @@ import { translateRouteTitle } from '@/utils/i18n'
 import path from 'path-browserify'
 
 defineOptions({ name: 'MenuSelect' })
+
+const getIconUrl = (path)=>{
+  if(!import.meta.env.PROD){
+      return import.meta.env.VITE_APP_API_URL+path
+  }
+  return path
+}
 
 const searchValue = ref('')
 const router = useRouter()
