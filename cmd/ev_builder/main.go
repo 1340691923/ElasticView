@@ -14,10 +14,12 @@ import (
 )
 
 var args *config.CommandLineArgs
+var execUpx bool
 
 func init() {
 	args = &config.CommandLineArgs{}
 	flag.StringVar(&args.ConfigFile, "c", "config/config.yml", "配置文件路径")
+	flag.BoolVar(&execUpx, "upx", false, "是否使用upx")
 	flag.Parse()
 }
 
@@ -221,5 +223,14 @@ func RunGoBuild(env map[string]string, args ...string) (err error) {
 	fmt.Println(fmt.Sprintf("start build cmd: go %v", args))
 	cmd := exec.Command("go", args...)
 	err = cmd.Run()
+
+	if err != nil {
+		return
+	}
+	if execUpx {
+		fmt.Println(fmt.Sprintf("start cmd %s %s %s", "upx", "--best", args[2]))
+		cmd = exec.Command("upx", "--best", args[2])
+		err = cmd.Run()
+	}
 	return
 }

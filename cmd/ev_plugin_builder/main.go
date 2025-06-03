@@ -12,9 +12,11 @@ import (
 )
 
 var pluginJsonFile string
+var execUpx bool
 
 func init() {
 	flag.StringVar(&pluginJsonFile, "pj", "plugin.json", "插件配置文件")
+	flag.BoolVar(&execUpx, "upx", false, "是否使用upx")
 	flag.Parse()
 }
 
@@ -22,7 +24,7 @@ func main() {
 
 	BuildVue()
 
-	err := build.BuildPluginSvr(pluginJsonFile)
+	err := build.BuildPluginSvr(pluginJsonFile, execUpx)
 
 	if err != nil {
 		fmt.Println("BuildPluginSvr err", err)

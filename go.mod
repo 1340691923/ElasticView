@@ -4,10 +4,10 @@ go 1.23.0
 
 toolchain go1.23.1
 
-replace github.com/1340691923/eve-plugin-sdk-go => ../eve-plugin-sdk-go
+//replace github.com/1340691923/eve-plugin-sdk-go => ../eve-plugin-sdk-go
 
 require (
-	github.com/1340691923/eve-plugin-sdk-go v0.0.10
+	github.com/1340691923/eve-plugin-sdk-go v0.0.14
 	github.com/casbin/casbin/v2 v2.77.2
 	github.com/casbin/gorm-adapter/v3 v3.20.0
 	github.com/centrifugal/centrifuge v0.34.2
