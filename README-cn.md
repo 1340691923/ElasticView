@@ -92,7 +92,7 @@ npm run dev
 
 # 安装打包工具
 
-go install github.com/1340691923/ElasticView/cmd/ev_builder@v0.0.12
+go install github.com/1340691923/ElasticView/cmd/ev_builder@v0.0.22
 
 # 执行打包命令
 
