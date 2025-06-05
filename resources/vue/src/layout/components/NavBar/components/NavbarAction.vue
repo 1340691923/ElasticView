@@ -21,9 +21,6 @@
           <a target="_blank"  href="http://www.elastic-view.cn/" >
             <el-dropdown-item><el-icon><Postcard /></el-icon>{{ $t("官网") }}</el-dropdown-item>
           </a>
-          <a target="_blank" href="https://txc.qq.com/products/666253" >
-            <el-dropdown-item><el-icon><QuestionFilled /></el-icon>{{ $t("反馈") }}</el-dropdown-item>
-          </a>
           <a target="_blank" href="https://raw.githubusercontent.com/1340691923/ElasticView/main/resources/show_img/weixin.jpg">
             <el-dropdown-item><el-icon><UserFilled /></el-icon>{{ $t("联系作者") }}</el-dropdown-item>
           </a>

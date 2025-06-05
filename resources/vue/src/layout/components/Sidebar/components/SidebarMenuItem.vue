@@ -185,6 +185,11 @@ function resolvePath(routePath: string) {
 
 <style lang="scss">
 .hideSidebar {
+
+  .img-left {
+    margin-left: 19px;
+  }
+
   .submenu-title-noDropdown {
     position: relative;
     padding: 0 !important;

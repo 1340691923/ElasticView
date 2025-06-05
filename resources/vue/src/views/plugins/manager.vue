@@ -34,6 +34,11 @@
       show-overflow-tooltip
       class="plugin-table"
     >
+      <el-table-column align="center" :label="$t('icon')" >
+        <template #default="scope">
+          <img class="w-4 h-4"  :src="getIconUrl(scope.row.icon_path)"  />
+        </template>
+      </el-table-column>
       <el-table-column align="center" :label="$t('插件名')" >
         <template #default="scope">
           <el-tag :type="scope.row.is_exited?'danger':'success'">
@@ -70,8 +75,8 @@
       </el-table-column>
       <el-table-column align="center" :label="$t('自动更新')" width="100">
         <template #default="scope">
-          <el-switch 
-            v-model="scope.row.auto_update" 
+          <el-switch
+            v-model="scope.row.auto_update"
             @change="handleAutoUpdateChange(scope.row)"
             :loading="scope.row.updateLoading"
           />
@@ -167,8 +172,8 @@
             <div class="detail-item">
               <span class="detail-label">自动更新</span>
               <div class="detail-value">
-                <el-switch 
-                  v-model="currentPlugin.auto_update" 
+                <el-switch
+                  v-model="currentPlugin.auto_update"
                   @change="handleCurrentPluginAutoUpdateChange"
                   :loading="currentPluginUpdateLoading"
                   active-text="开启"
@@ -326,6 +331,13 @@ const data = reactive({
 const uninstallLoading = ref(false)
 const currentPluginUpdateLoading = ref(false)
 
+const getIconUrl = (path)=>{
+  if(!import.meta.env.PROD){
+    return import.meta.env.VITE_APP_API_URL+path
+  }
+  return path
+}
+
 // 获取插件配置
 const getPluginConfig = async (pluginId: string) => {
   try {
@@ -387,7 +399,7 @@ const handleAutoUpdateChange = async (plugin: any) => {
 // 处理详情抽屉中的自动更新开关变化
 const handleCurrentPluginAutoUpdateChange = async () => {
   if (!currentPlugin.value) return
-  
+
   currentPluginUpdateLoading.value = true
   const success = await updatePluginConfig(currentPlugin.value.plugin_id, currentPlugin.value.auto_update)
   if (!success) {
@@ -534,13 +546,13 @@ const currentPlugin = ref(null)
 
 const showDetails = async (plugin) => {
   currentPlugin.value = { ...plugin }
-  
+
   // 确保获取最新的自动更新配置
   const config = await getPluginConfig(plugin.plugin_id)
   if (config) {
     currentPlugin.value.auto_update = config.auto_update
   }
-  
+
   detailsVisible.value = true
 }
 

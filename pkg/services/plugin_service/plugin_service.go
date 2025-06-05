@@ -436,6 +436,7 @@ func (this *PluginService) ListComments(ctx context.Context, pluginId int) (list
 }
 
 type PluginVo struct {
+	IconPath         string `json:"icon_path"`
 	Developer        string `json:"developer"`
 	PluginId         string `json:"plugin_id"`
 	PluginFileName   string `json:"plugin_file_name"`
@@ -507,7 +508,9 @@ func (this *PluginService) PluginList(ctx context.Context) (res []*PluginVo) {
 		stopTime := v.StopTime.Format(time.DateTime)
 		isExited := v.Exited()
 		updateVersion, hasUpdate := this.pluginUpdateChecker.HasUpdate(ctx, v.PluginID())
+		icon := fmt.Sprintf("api/call_plugin_views/%s/icon", pluginID)
 		res = append(res, &PluginVo{
+			IconPath:         icon,
 			UpdateVersion:    updateVersion,
 			HasUpdate:        hasUpdate,
 			PluginId:         pluginID,

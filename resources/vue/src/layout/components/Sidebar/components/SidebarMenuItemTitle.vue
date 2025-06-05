@@ -4,7 +4,7 @@
     <el-icon v-if="icon && icon.startsWith('el-icon')" class="sub-el-icon">
       <component :is="icon.replace('el-icon-', '')" />
     </el-icon>
-    <img v-else-if="icon.indexOf('call_plugin')!==-1" class="w-4 h-4 hover:rotate-180 transition-all duration-500"  :src="getIconUrl(icon)" ></img>
+    <img  v-else-if="icon.indexOf('call_plugin')!==-1" class="img-left w-4 h-4 hover:rotate-180 transition-all duration-500"  :src="getIconUrl(icon)" ></img>
     <svg-icon v-else-if="icon" :icon-class="icon" />
     <svg-icon v-else icon-class="menu" />
 
@@ -48,6 +48,11 @@ const getIconUrl = (path)=>{
     .sub-el-icon {
       margin-left: 20px;
     }
+  }
+
+
+  .img-left {
+    margin-left: 20px;
   }
 }
 </style>
