@@ -1,144 +1,150 @@
-﻿<h1 align="center">
-   作者求工作，tel：13298692154
-</h1>
- <h1 align="center">
-   <br>
-   <img src="https://gitee.com/cynthia520/elastic-view/raw/main/static/show_img/2.png"/>
-   <br>
-   ElasticView
-   <br>
-</h1>
 
------------
-[![Go Documentation](http://img.shields.io/badge/go-documentation-blue.svg?style=flat-square)](https://godoc.org/github.com/1340691923/ElasticView)
-[![license](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)](https://github.com/1340691923/ElasticView/blob/main/LICENSE)
-[![Release](https://img.shields.io/github/release/1340691923/ElasticView.svg?label=Release)](https://gitee.com/cynthia520/elastic-view/releases)
+<div align=center>
+<img src="https://raw.githubusercontent.com/1340691923/ElasticView/c01b67cf1f97fb543d4513d1b6a4a7eac20a8387/resources/vue/src/assets/logo.png" width="300" height="300" />
+</div>
+<div align=center>
+<img src="https://img.shields.io/badge/golang-1.23-blue"/>
+<img src="https://img.shields.io/badge/gin-1.10-lightBlue"/>
+<img src="https://img.shields.io/badge/vue-3.4.31-brightgreen"/>
+<img src="https://img.shields.io/badge/element--plus-2.7.6-green"/>
+<img src="https://img.shields.io/badge/gorm-1.25.7-red"/>
+</div>
 
-> ElasticView
-> 是一款用来监控ElasticSearch状态和操作ElasticSearch索引的web可视化工具。它由golang开发而成，具有部署方便，占用内存小等优点，官网地址:http://www.elastic-view.cn
+[简体中文](./README-cn.md) | English
 
-* ElasticSearch连接树管理（更方便的切换测试/生产环境）
-* 支持权限管理
-* 支持sql转换成dsl语法
-* 更方便的重建索引
-* 任务管理
-* 备份管理
-* 可将查询内容下载为excel文件
-* 可进行索引创建，映射创建，别名创建，索引删除等操作
-* 支持版本 `6.x`,`7.x`,`8.x`
-* 支持类似Navicat功能
-* docker部署
-* 支持sqlite3（免安装gcc版）
-* 数据抽取功能
+# Project Documentation
+[Official Website](http://www.elastic-view.cn)
 
-## 官网地址
+[Video Tutorial](https://www.bilibili.com/video/BV12tDDYWEP2/?vd_source=d03eb2249d8310afce3f5b90c6081bb3)
 
-[http://www.elastic-view.cn]( http://www.elastic-view.cn)
+[Communication community](https://txc.qq.com/products/666253)
 
-## Quick Start
 
-1. [应用程序下载地址]( https://gitee.com/cynthia520/elastic-view/releases/)
-2. 下载应用程序下载地址里面的对应压缩包后解压（windows用户下载ElasticView_windows.zip，linux用户下载ElasticView_linux.zip，mac用户下载
-   ElasticView_mac.zip）
-3. （若无需mysql存储数据则跳过该步骤）修改config.json文件中的 数据库连接信息，日志存放目录和应用启动端口等配置信息
-4. （若无需mysql存储数据则跳过该步骤）数据存储 若config.json下的dbType为sqlite3则指定sqlite配置下的dbPath即可（无需安装gcc）
-   为mysql则需新建mysql数据库 es_view，导入es_view.sql并修改mysql配置
-5. windows：双击ElasticView.exe linux：chmod +x ElasticView && nohup ./ElasticView > ElasticView.log &
-6. 浏览器访问对应ip:端口，初始用户名：admin，初始密码：admin
+# Important Tips
 
-## ElasticView 教学视频（来源：https://blog.csdn.net/dzcro/article/details/126918571?spm=1001.2014.3001.5502）
+1. This project has documents and detailed video tutorials from start-up to development to deployment
 
-https://www.bilibili.com/video/av473231184/?zw&spm_id_from=888.80996.embed_old
+2. This project requires you to have a certain foundation in golang and vue3
 
-## ElasticView 教学视
+3. You can complete all operations through our tutorials and documents, so we no longer provide free technical services. If you need services, please [add the author's paid support](https://raw.githubusercontent.com/1340691923/ElasticView/main/resources/show_img/weixin.jpg)
 
-##支持操作系统：
 
-- Windows
-- Linux
-- MacOs
 
-<!-- ## 手动编译
- 1. `git clone git@github.com:1340691923/ElasticView.git`
- 2. `cd vue && cnpm install (安装前端依赖)`
- 3. `执行resource/vue 下的 npm run build:prod）`
- 4. `执行根目录下 go run cmd/build/main.go --homePath=$(pwd) --configFile=$(pwd)/config/config.yml )  (编译二进制可执行程序)`
-  -->
+## 1. Basic Introduction
 
-## ☁docker部署
+### 1.1 Project Introduction
 
-图文教程：[https://4xx.me/archives/128.html](https://4xx.me/archives/128.html)
+> ElasticView is a full-stack front-end and back-end separated data source management plugin platform developed based on [vue](https://vuejs.org) and [gin](https://gin-gonic.com), integrating jwt authentication, dynamic routing, dynamic menu, casbin authentication, data source management, plugin market and other functions.
 
-- sqlite3存储
 
-```shell
-docker run --restart=unless-stopped -d -p 8090:8090 -v /data/elastic_view/data:/data -v /data/elastic_view/logs:/logs kecikeci/elastic_view:latest
+## 2. Main functions
+
+- Permission management: Permission management based on `jwt` and `casbin`.
+
+- User management: System administrators assign user roles and role permissions.
+
+- Role management: Create the main object of permission control, and assign different api permissions and menu permissions to roles.
+
+- Data source management: You can set the data source to be managed, and have integrated elasticsearch (6, 7, 8), mysql, redis, clickhouse, postgres, mongodb data sources
+
+- Plugin market: You can install various plugins for operating data sources.
+
+## 3. Secondary Development
+
+```
+- node version >= v20.14.0
+- golang version >= v1.23
+- IDE：Goland
 ```
 
-- mysql存储部署
+### 3.1 run golang
 
-1. 新建数据库`es_view`
-2. 导入对应数据表`es_view.sql`
-3. 准备`config.yml`配置文件并修改对应连接信息
 
-```yaml
-log:
-   storageDays: 4          # 日志保留天数
-   logDir: "logs"         # 日志保留文件夹
-port: 8090              # 启动端口
-dbType: "mysql"       # 数据保留类型 分为 sqlite3 和 mysql
-sqlite:                 # dbType为sqlite3时填 dbPath为数据保存文件地址
-   dbPath: "es_view.db"
-mysql:                  # dbType为mysql时填
-   username: "root"
-   pwd: "123456"
-   ip: "127.0.01"
-   port: "3306"
-   dbName: "es_view"
-   maxOpenConns: 10
-   maxIdleConns: 10
-esPwdSecret: "concat_mail!!->1340691923@qq.com" # es密码加密密钥 加密方式为 AES
-version: "1.8.5"  # ES 版本号
-deBug: false      # 是否为测试模式 如果为 false则打开默认浏览器直接访问地址
+```bash
+
+# git clone
+git clone https://github.com:1340691923/ElasticView.git
+
+# install gowatch
+go install github.com/silenceper/gowatch@latest
+
+# run
+gowatch
+
+# default port
+0.0.0.0:8090
+
+
 ```
 
-4. 挂载`config`目录或`config.yml`配置文件启动镜像
+### 3.2 run vue
 
-```shell
-docker run --restart=unless-stopped -d -p 8090:8090 -v /data/elastic_view/data:/data -v /data/elastic_view/config:/config -v /data/elastic_view/logs:/logs kecikeci/elastic_view:latest
+```bash
+
+cd resources\vue
+
+# Install Dependencies
+pnpm install
+
+# run
+npm run dev
 ```
 
-- 浏览器访问对应ip:8090，初始用户名：admin，初始密码：admin
+### 3.3 run build
 
-## 🛠️手动构建
+```bash
 
-```shell
-# 拉取项目源代码
-git clone https://github.com/1340691923/ElasticView
+# install build tools
 
-# 同步前端项目依赖
-cd resources/vue && npm install
+go install github.com/1340691923/ElasticView/cmd/ev_builder@v0.0.12
 
-# 构建前端包
-npm run build:prod
+# start build
 
-# 构建项目二进制程序
-CGO_ENABLED=0 GOOS=linux go build -ldflags '-w -s' -o ev cmd/ev/main.go
+./ev_builder
+
+# then look at resource/dist
+
 ```
 
-## 更多
+### 3.4. Technology selection
 
-* 铸龙用户行为分析系统     https://github.com/1340691923/xwl_bi
-* 软考成绩快查工具        https://github.com/1340691923/SoftTestMonitor
+- Front-end: Use [Element](https://github.com/ElemeFE/element) based on [Vue](https://vuejs.org) to build basic pages.
+- Back-end: Use [Gin](https://gin-gonic.com/) to quickly build basic APIs. [Gin](https://gin-gonic.com/) is a web framework written in go language.
+- Database: Use [gorm](http://gorm.cn) to implement basic database operations.
+- API documentation: Use `Swagger` to build automated documentation.
+- Configuration file: Use [viper](https://github.com/spf13/viper) to implement configuration files in `yaml` format.
+- Log: Use [zap](https://github.com/uber-go/zap) to implement logging.
 
-### 求职中，个人微信二维码
+## 4. Plugin related
 
-<!-- ![image](https://gitee.com/cynthia520/elastic-view/raw/main/static/show_img/weixin.jpg)   -->
-<img src="https://raw.githubusercontent.com/1340691923/ElasticView/main/resources/show_img/weixin.jpg" style="width: 220px"> 
-### 求职中，团队成员微信二维码
+### 4.1 Official plugin
+- [ev tools](https://github.com/1340691923/ev-tools): plugin for managing elasticsearch6, 7, 8 version index
+- [Plugin development template](https://github.com/1340691923/eve-plugin-vue3-template): This is a template project for rapid development of plugins
 
-<img src="http://cdn.ycvod.net/img/wx2.jpg" style="width: 220px"> 
+### 4.2 Community plugin
+- To be improved
 
-### QQ群
+### 4.3 Release plugin
+- [Developer Backend](http://dev.elastic-view.cn): used to publish your own plugin for ElasticView users
 
-<img src="https://raw.githubusercontent.com/1340691923/ElasticView/main/resources/show_img/qq_group.jpg" style="width: 220px">
+
+## 5. Contact information
+
+### QQ communication group: 685549060
+
+### WeChat public account: gh_7247127deece
+
+### WeChat communication group
+| WeChat |
+| :---: |
+| <img width="150" src="https://raw.githubusercontent.com/1340691923/ElasticView/main/resources/show_img/weixin.jpg">
+
+
+
+## 6. Donation
+
+If you think this project is helpful to you, you can buy the author a drink :tropical_drink: [click me](http://www.elastic-view.cn/suporrt.html)
+
+## 7. Commercial precautions
+
+If you use this project for commercial purposes, please comply with the Apache2.0 agreement and keep the author's technical support statement.
